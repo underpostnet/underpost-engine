@@ -2,9 +2,10 @@
   "name": "underpost-engine",
   "version": "2.0.0",
   "description": "underpost engine server",
-  "main": "server.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
+    "dev": "nodemon src/server",
     "test": "mocha"
   },
   "repository": {
@@ -24,5 +25,8 @@
   "homepage": "https://github.com/underpostnet/underpost-engine#readme",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
