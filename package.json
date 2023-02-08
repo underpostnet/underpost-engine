@@ -1,0 +1,28 @@
+{
+  "name": "underpost-engine",
+  "version": "2.0.0",
+  "description": "underpost engine server",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/underpostnet/underpost-engine.git"
+  },
+  "keywords": [
+    "underpost",
+    "engine",
+    "server"
+  ],
+  "author": "fcoverdugoa@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/underpostnet/underpost-engine/issues"
+  },
+  "homepage": "https://github.com/underpostnet/underpost-engine#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
