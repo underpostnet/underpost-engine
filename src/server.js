@@ -12,11 +12,18 @@ console.log(`version: `, process.env.npm_package_version);
 console.log(`env: `, process.env.NODE_ENV);
 
 const httpClient = express()
+const dirClient = './public'
+const pathsClient = [
+    {
+        path: ''
+    },
+    {
+        path: 'test/test'
+    }
+];
 
-clientBuild('./public', [''].map(path => {
-    return { path }
-}))
-httpClient.use('/', express.static('./public'))
+clientBuild(dirClient, pathsClient)
+httpClient.use('/', express.static(dirClient))
 
 httpClient.listen(process.env.CLIENT_PORT, () => {
     console.log(`httpClient Server is running on port ${process.env.CLIENT_PORT}`)

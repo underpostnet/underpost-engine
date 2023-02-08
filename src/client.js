@@ -1,2 +1,2 @@
 
-append('body', logDataManage(passwordValidator('asdasd'), true));
+append('body', 'Hello World! <br> URI:' + getURI());

@@ -88,11 +88,7 @@ const renderMediaQuery = mediaData => {
 const setURI = (uri, objData, title) =>
     history.pushState(objData, title, uri)
 
-const getURI = () => {
-    const uri = location.pathname.slice(-1) == '/' ?
-        location.pathname.slice(0, -1) : location.pathname;
-    return uri == '' ? '/' : uri;
-};
+const getURI = () => location.pathname;
 
 const serviceRequest = (url, options) => new Promise(
     (resolve, reject) => {

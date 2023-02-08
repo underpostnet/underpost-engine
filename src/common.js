@@ -106,14 +106,6 @@ const getRandomPoint = (suffix, pointsArray) => {
     return returnPoint;
 };
 
-const clearSubUri = path => {
-    let _path = path.slice(1).split('/');
-    _path.shift();
-    return `/${_path.join('/')}`
-};
-
-const clearURI = uri => uri.split('#')[0].split('?')[0];
-
 const getYouTubeID = url => {
     const p = /^(?:https?:\/\/)?(?:m\.|www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
     if (url.match(p)) return url.match(p)[1]
@@ -227,8 +219,8 @@ const JSONmatrix = matrix => `[\r\n${matrix.map((x, i) =>
     + '\r\n').join('')}]`;
 
 const getDistance = (x1, y1, x2, y2) => {
-    var disX = Math.abs(x2 - x1);
-    var disY = Math.abs(y2 - y1);
+    const disX = Math.abs(x2 - x1);
+    const disY = Math.abs(y2 - y1);
     return Math.sqrt(disX * disX + disY * disY);
 };
 
@@ -310,14 +302,11 @@ const commonFunctions = () => `
     const newInstance = ${newInstance};
     const cap = ${cap};
     const uniqueArray = ${uniqueArray};
-    const clearSubUri = ${clearSubUri};
-    const _clearURI = ${clearURI};
     const getRawCsvFromArray = ${getRawCsvFromArray};
     const orderArrayFromAttrInt = ${orderArrayFromAttrInt};
     const reOrderIntArray = ${reOrderIntArray};
     // encodeURIComponent
     // decodeURIComponent
-    const clearURI = uri => decodeURIComponent(_clearURI(uri));
     const getYouTubeID = ${getYouTubeID};
     const timer = ${timer};
     const logDataManage = ${logDataManage};
@@ -345,7 +334,6 @@ export {
     newInstance,
     cap,
     uniqueArray,
-    clearSubUri,
     orderArrayFromAttrInt,
     getYouTubeID,
     timer,
