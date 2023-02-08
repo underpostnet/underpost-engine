@@ -3,35 +3,21 @@
 'use strict'
 
 import express from 'express'
-import fs from 'fs'
-import { commonFunctions } from './common.js'
+import dotenv from 'dotenv'
+import { clientBuild } from './client-build.js'
 
-if (!fs.existsSync('./public')) fs.mkdirSync('./public')
+dotenv.config();
+console.log(process.argv);
+console.log(`version: `, process.env.npm_package_version);
+console.log(`env: `, process.env.NODE_ENV);
 
-fs.writeFileSync('./public/index.html', /*html*/`
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>CYBERIA</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-        <script>
-            (function(){
-                ${commonFunctions()}
-                ${fs.readFileSync('./src/vanilla.js', 'utf8')}
-                ${fs.readFileSync('./src/client.js', 'utf8')}
-            })()
-        </script>
-    </body>
-    </html>      
-`, 'utf8');
+const httpClient = express()
 
-const app = express()
+clientBuild('./public', [''].map(path => {
+    return { path }
+}))
+httpClient.use('/', express.static('./public'))
 
-app.use('/', express.static('./public'))
-
-app.listen(5000, () => {
-    console.log('server runing on port 5000')
+httpClient.listen(process.env.CLIENT_PORT, () => {
+    console.log(`httpClient Server is running on port ${process.env.CLIENT_PORT}`)
 })
