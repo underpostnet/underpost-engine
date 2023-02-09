@@ -1,8 +1,15 @@
 import fs from 'fs'
 import { commonFunctions } from './common.js'
 import { deleteFolderRecursive } from './files.js'
+import dotenv from 'dotenv'
+import express from 'express'
 
-const clientBuild = (dir, paths) => {
+dotenv.config();
+
+const clientServer = options => {
+
+    const { paths, dir } = options
+    const server = express()
 
     deleteFolderRecursive(`${dir}`);
     paths.map(pathObj => {
@@ -28,7 +35,13 @@ const clientBuild = (dir, paths) => {
         </body>
         </html>      
     `, 'utf8');
+    });
+
+    server.use('/', express.static(dir))
+
+    server.listen(process.env.CLIENT_PORT, () => {
+        console.log(`Client Server is running on port ${process.env.CLIENT_PORT}`)
     })
 };
 
-export { clientBuild };
+export { clientServer };
