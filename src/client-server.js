@@ -6,6 +6,7 @@ import { commonFunctions } from './common.js'
 import { copyDir, deleteFolderRecursive } from './files.js'
 import { baseCss } from './css.js'
 import { ssrColor } from './colors.js'
+import { ssrCyberia } from './ws-server.js'
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const clientServer = options => {
 
     deleteFolderRecursive(`${dir}`);
     copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
+    copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
     paths.map(pathObj => {
         let { path } = pathObj;
         if (path !== '') path += '/'
@@ -30,6 +32,7 @@ const clientServer = options => {
                 <title>CYBERIA</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <script src="/socket.io/socket.io.js"></script>
+                <script src="/pixi.js/pixi.js"></script>
                 <style>${baseCss}</style>
             </head>
             <body>
@@ -37,6 +40,7 @@ const clientServer = options => {
                         ${commonFunctions()}
                         ${fs.readFileSync('./src/vanilla.js', 'utf8')}
                         ${ssrColor}
+                        ${ssrCyberia}
                         ${fs.readFileSync('./src/client.js', 'utf8')}
                 </script>
             </body>
