@@ -100,11 +100,22 @@ const validateCollision = (A, B) => {
     return false;
 };
 
+const collision = (render, types) => {
+    for (const type of types) {
+        if (typeModels[type].elements.find(element => validateCollision(
+            element.render,
+            render
+        ))) return true;
+    }
+    return false;
+};
+
 const common = `
     const getAllElements = ${getAllElements};
     const id = ${id};
     const matrixIterator = ${matrixIterator};
     const validateCollision = ${validateCollision};
+    const collision = ${collision};
 `;
 
 // end common
@@ -154,7 +165,7 @@ matrixIterator(MAIN, (x, y) => {
     }
 });
 
-const ssrCyberia = `
+const ssrWS = `
     const ssrMAIN = ${JSONweb(MAIN)};
     ${common}
 `;
@@ -169,16 +180,8 @@ const initInstance = () => {
             const { color, render } = getParamsType(type);
             const { dim } = render;
 
-            const buildingElement = typeModels['building'].elements.find(element => validateCollision(
-                element.render,
-                { x, y, dim }
-            ));
-            const botElement = typeModels['bot'].elements.find(element => validateCollision(
-                element.render,
-                { x, y, dim }
-            ));
 
-            if (!buildingElement && !botElement) {
+            if (!collision({ dim, x, y }, ['building', 'bot'])) {
                 typeModels[type].elements.push({
                     id: id(typeModels),
                     type,
@@ -200,16 +203,10 @@ const initInstance = () => {
     // view test matrix
     const matrix = range(minRangeMap, maxRangeMap).map(y => {
         return range(minRangeMap, maxRangeMap).map(x => {
-            const botElement = typeModels['bot'].elements.find(element => validateCollision(
-                element.render,
-                { x, y, dim: 1 }
-            ));
-            const buildingElement = typeModels['building'].elements.find(element => validateCollision(
-                element.render,
-                { x, y, dim: 1 }
-            ));
-            if (botElement) return Object.keys(typeModels).indexOf(botElement.type);
-            if (buildingElement) return Object.keys(typeModels).indexOf(buildingElement.type);
+            for (const type of ['bot', 'building']) {
+                if (collision({ x, y, dim: 1 }, [type])) return Object.keys(typeModels).indexOf(type);
+            }
+
             return 0;
         });
     });
@@ -221,11 +218,7 @@ const initInstance = () => {
     const matrixCollisionBotBuilding = range(minRangeMap, maxRangeMap).map(y => {
         return range(minRangeMap, maxRangeMap).map(x => {
             const dim = typeModels['bot'].render().dim();
-            const buildingElement = typeModels['building'].elements.find(element => validateCollision(
-                element.render,
-                { x, y, dim }
-            ));
-            if (buildingElement) return 1;
+            if (collision({ x, y, dim }, ['building'])) return 1;
             return 0;
         });
     });
@@ -237,11 +230,7 @@ const initInstance = () => {
     });
     const endPointMatrixCollisionBotBuilding = [];
     matrixIterator(MAIN, (x, y) => {
-        const buildingElement = typeModels['building'].elements.find(element => validateCollision(
-            element.render,
-            { x, y, dim: 1 }
-        ));
-        if (!buildingElement) endPointMatrixCollisionBotBuilding.push([x, y]);
+        if (!collision({ x, y, dim: 1 }, ['building'])) endPointMatrixCollisionBotBuilding.push([x, y]);
     });
 
     return {
@@ -325,6 +314,6 @@ const wsServer = () => {
     return { io, clients };
 };
 
-export { wsServer, ssrCyberia };
+export { wsServer, ssrWS };
 
 

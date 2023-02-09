@@ -6,7 +6,7 @@ import { commonFunctions } from './common.js'
 import { copyDir, deleteFolderRecursive } from './files.js'
 import { baseCss } from './css.js'
 import { ssrColor } from './colors.js'
-import { ssrCyberia } from './ws-server.js'
+import { ssrWS } from './ws-server.js'
 
 dotenv.config();
 
@@ -40,7 +40,7 @@ const clientServer = options => {
                         ${commonFunctions()}
                         ${fs.readFileSync('./src/vanilla.js', 'utf8')}
                         ${ssrColor}
-                        ${ssrCyberia}
+                        ${ssrWS}
                         ${fs.readFileSync('./src/client.js', 'utf8')}
                 </script>
             </body>
