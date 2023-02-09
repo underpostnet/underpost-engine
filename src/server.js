@@ -4,6 +4,7 @@
 
 import dotenv from 'dotenv'
 import { clientServer } from './client-server.js'
+import { wsServer } from './ws-server.js';
 
 dotenv.config();
 console.log(process.argv);
@@ -20,4 +21,6 @@ clientServer({
             path: 'test/test'
         }
     ]
-})
+});
+
+wsServer();

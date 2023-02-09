@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 
 import { commonFunctions } from './common.js'
-import { deleteFolderRecursive } from './files.js'
+import { copyDir, deleteFolderRecursive } from './files.js'
 import { baseCss } from './css.js'
 import { ssrColor } from './colors.js'
 
@@ -15,6 +15,7 @@ const clientServer = options => {
     const server = express()
 
     deleteFolderRecursive(`${dir}`);
+    copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
     paths.map(pathObj => {
         let { path } = pathObj;
         if (path !== '') path += '/'
@@ -28,6 +29,7 @@ const clientServer = options => {
                 <meta charset="UTF-8">
                 <title>CYBERIA</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
+                <script src="/socket.io/socket.io.js"></script>
                 <style>${baseCss}</style>
             </head>
             <body>
