@@ -10,7 +10,10 @@ const renderLang = (langs, req) => {
     return langs['en'];
 };
 
+const JSONweb = data => "JSON.parse(`" + JSON.stringify(data) + "`)";
+
 export {
     replaceAll,
-    renderLang
+    renderLang,
+    JSONweb
 }

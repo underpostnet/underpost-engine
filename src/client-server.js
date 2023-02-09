@@ -1,8 +1,11 @@
 import fs from 'fs'
-import { commonFunctions } from './common.js'
-import { deleteFolderRecursive } from './files.js'
 import dotenv from 'dotenv'
 import express from 'express'
+
+import { commonFunctions } from './common.js'
+import { deleteFolderRecursive } from './files.js'
+import { baseCss } from './css.js'
+import { ssrColor } from './colors.js'
 
 dotenv.config();
 
@@ -19,22 +22,24 @@ const clientServer = options => {
         console.log('render: ', path);
 
         fs.writeFileSync(`${dir}/${path}index.html`, /*html*/`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>CYBERIA</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-        </head>
-        <body>
-            <script>
-                    ${commonFunctions()}
-                    ${fs.readFileSync('./src/vanilla.js', 'utf8')}
-                    ${fs.readFileSync('./src/client.js', 'utf8')}
-            </script>
-        </body>
-        </html>      
-    `, 'utf8');
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>CYBERIA</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <style>${baseCss}</style>
+            </head>
+            <body>
+                <script>
+                        ${commonFunctions()}
+                        ${fs.readFileSync('./src/vanilla.js', 'utf8')}
+                        ${ssrColor}
+                        ${fs.readFileSync('./src/client.js', 'utf8')}
+                </script>
+            </body>
+            </html>  
+        `, 'utf8');
     });
 
     server.use('/', express.static(dir))

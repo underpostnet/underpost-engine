@@ -209,9 +209,6 @@ const getDirection = (x1, y1, x2, y2) => {
     };
 };
 
-
-const JSONweb = data => "JSON.parse(`" + JSON.stringify(data) + "`)";
-
 const JSONmatrix = matrix => `[\r\n${matrix.map((x, i) =>
     `   `
     + JSON.stringify(x)
@@ -349,7 +346,6 @@ export {
     round10,
     floor10,
     ceil10,
-    JSONweb,
     JSONmatrix,
     getRandomPoint
 };
