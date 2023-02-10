@@ -7,7 +7,6 @@ import fs from 'fs'
 import pathfinding from 'pathfinding'
 import { s4, range, random, JSONmatrix, getRandomPoint } from './common.js'
 import { JSONweb } from './util.js'
-// import { createServer } from 'http'
 
 dotenv.config()
 
@@ -128,25 +127,10 @@ const getAvailablePoints = (type, types) => {
     return availablePoints;
 };
 
-const common = `
-    const getAllElements = ${getAllElements};
-    const id = ${id};
-    const matrixIterator = ${matrixIterator};
-    const validateCollision = ${validateCollision};
-    const collision = ${collision};
-    const getMatrixCollision = ${getMatrixCollision};
-    const getAvailablePoints = ${getAvailablePoints};
-`;
 
-// end common
 
-const MAIN = {
-    minRangeMap,
-    maxRangeMap,
-    typeModels
-};
+// statics init elements
 
-// ssr init elements
 
 (() => {
     const type = 'floor';
@@ -185,12 +169,26 @@ matrixIterator((x, y) => {
     }
 });
 
+// main ssr
+
+const MAIN = {
+    minRangeMap,
+    maxRangeMap,
+    typeModels
+};
+
 const ssrWS = `
     const ssrMAIN = ${JSONweb(MAIN)};
-    ${common}
+    const getAllElements = ${getAllElements};
+    const id = ${id};
+    const matrixIterator = ${matrixIterator};
+    const validateCollision = ${validateCollision};
+    const collision = ${collision};
+    const getMatrixCollision = ${getMatrixCollision};
+    const getAvailablePoints = ${getAvailablePoints};
 `;
 
-const initInstance = () => {
+const wsServer = () => {
 
     matrixIterator((x, y) => {
         // if (x > maxRangeMap - 1 || y > maxRangeMap - 1) return;
@@ -232,31 +230,6 @@ const initInstance = () => {
     });
     fs.writeFileSync(`./data/${nameFolderData}/matrix.json`, JSONmatrix(matrix), 'utf8');
 
-
-
-    // bots
-    const matrixCollisionBotBuilding = getMatrixCollision('bot', ['building']);
-    fs.writeFileSync(`./data/${nameFolderData}/matrixCollisionBotBuilding.json`, JSONmatrix(matrixCollisionBotBuilding), 'utf8');
-
-    const endPointMatrixCollisionBotBuilding = getAvailablePoints('bot', ['building']);
-
-
-    return {
-        bots: {
-            matrixCollisionBotBuilding,
-            endPointMatrixCollisionBotBuilding
-        }
-    }
-
-};
-
-const wsServer = () => {
-
-    const {
-        matrixCollisionBotBuilding,
-        endPointMatrixCollisionBotBuilding
-    } = initInstance().bots;
-
     const io = new Server(process.env.IO_PORT, { cors: { origins: [`http://localhost:${process.env.CLIENT_PORT}`] } })
     const clients = [];
     io.on("connection", (socket) => {
@@ -284,6 +257,11 @@ const wsServer = () => {
         dontCrossCorners: false, // corner of a solid
         heuristic: pathfinding.Heuristic.chebyshev
     });
+
+    // bots controller
+    const matrixCollisionBotBuilding = getMatrixCollision('bot', ['building']);
+    fs.writeFileSync(`./data/${nameFolderData}/matrixCollisionBotBuilding.json`, JSONmatrix(matrixCollisionBotBuilding), 'utf8');
+    const endPointMatrixCollisionBotBuilding = getAvailablePoints('bot', ['building']);
     setInterval(() => {
         getAllElements().map(element => {
             if (element.type === 'bot') {
