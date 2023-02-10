@@ -9,7 +9,7 @@ dotenv.config();
 
 const nameFolderData = 'cyberia';
 const maxRangeMapParam = 31;
-
+const elements = {};
 const maxRangeMap = (arg) =>
   maxRangeMapParam - (arg !== undefined ? (typeof arg === 'string' ? typeModels[arg].render().dim() : arg) : 0);
 
@@ -34,7 +34,7 @@ const typeModels = {
     color: () => 'yellow',
     render: () => {
       return {
-        dim: () => 2,
+        dim: () => 4,
       };
     },
   },
@@ -48,8 +48,8 @@ const typeModels = {
   },
 };
 
-Object.keys(typeModels).map((keyType) => {
-  typeModels[keyType].elements = [];
+Object.keys(typeModels).map((type) => {
+  elements[type] = [];
 });
 
 const getParamsType = (type) => {
@@ -64,11 +64,11 @@ const getParamsType = (type) => {
 // common
 
 const getAllElements = () => {
-  let elements = [];
-  Object.keys(typeModels).map((keyType) => {
-    elements = elements.concat(typeModels[keyType].elements);
+  let elementsReturn = [];
+  Object.keys(typeModels).map((type) => {
+    elementsReturn = elementsReturn.concat(elements[type]);
   });
-  return elements;
+  return elementsReturn;
 };
 
 const id = () => {
@@ -97,7 +97,7 @@ const validateCollision = (A, B) => {
 
 const collision = (render, types) => {
   for (const type of types) {
-    if (typeModels[type].elements.find((element) => validateCollision(element.render, render))) return true;
+    if (elements[type].find((element) => validateCollision(element.render, render))) return true;
   }
   return false;
 };
@@ -126,7 +126,7 @@ const getAvailablePoints = (type, types) => {
   const type = 'floor';
   const { color, render } = getParamsType(type);
   const { dim } = render;
-  typeModels[type].elements.push({
+  elements[type].push({
     id: id(),
     type,
     color,
@@ -144,7 +144,7 @@ const getAvailablePoints = (type, types) => {
   const { dim } = render;
   matrixIterator((x, y) => {
     if (random(1, 100) <= 3) {
-      typeModels[type].elements.push({
+      elements[type].push({
         id: id(),
         type,
         color,
@@ -169,6 +169,7 @@ const ssrWS = `
     const collision = ${collision};
     const getMatrixCollision = ${getMatrixCollision};
     const getAvailablePoints = ${getAvailablePoints};
+    const elements = ${JSONweb(elements)};
 `;
 
 const wsServer = () => {
@@ -179,7 +180,7 @@ const wsServer = () => {
     matrixIterator((x, y) => {
       if (random(1, 100) <= 1) {
         if (!collision({ dim, x, y }, ['building', 'bot'])) {
-          typeModels[type].elements.push({
+          elements[type].push({
             id: id(),
             type,
             color,
@@ -219,7 +220,7 @@ const wsServer = () => {
     const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building']));
     const { color, render } = getParamsType(type);
     const { dim } = render;
-    typeModels[type].elements.push({
+    elements[type].push({
       id: socket.id,
       type,
       color,
@@ -237,8 +238,8 @@ const wsServer = () => {
     socket.on('disconnect', (reason) => {
       console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
       clients.splice(clients.indexOf(socket), 1);
-      typeModels[type].elements.splice(
-        typeModels[type].elements.findIndex((element) => element.id === socket.id),
+      elements[type].splice(
+        elements[type].findIndex((element) => element.id === socket.id),
         1
       );
       console.log(`socket.io | currents clients: ${clients.length}`);

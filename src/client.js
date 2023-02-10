@@ -84,7 +84,7 @@ socket.on('message', (...args) => {
     element.render = render;
     return renderPixiEventElement(element);
   }
-  return typeModels[type].elements.push(renderPixiInitElement(eventElement));
+  return elements[type].push(renderPixiInitElement(eventElement));
 });
 
 socket.onAny((event, ...args) => {
