@@ -7,8 +7,9 @@
   "scripts": {
     "start": "node src/server",
     "dev": "nodemon src/server",
-    "test": "mocha",
-    "prettier": "prettier --write ."
+    "test-dev": "mocha",
+    "prettier": "prettier --write .",
+    "install-global": "npm install -g npm@latest && npm install -g mocha"
   },
   "repository": {
     "type": "git",
