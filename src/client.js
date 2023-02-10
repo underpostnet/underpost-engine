@@ -8,17 +8,12 @@ append('body', /*html*/`
 
 
 const amplitudeRender = 13;
-const MAIN = { ...ssrMAIN };
 
-const { maxRangeMap, minRangeMap } = MAIN;
-
-MAIN.app = new PIXI.Application({
-    width: maxRangeMap * amplitudeRender,
-    height: maxRangeMap * amplitudeRender,
+const app = new PIXI.Application({
+    width: maxRangeMap() * amplitudeRender,
+    height: maxRangeMap() * amplitudeRender,
     background: 'gray'
 });
-
-const { app, typeModels } = MAIN;
 
 const setAmplitudeRender = render => {
     Object.keys(render).map(keyRender => {
@@ -30,7 +25,7 @@ const setAmplitudeRender = render => {
 s('pixi-container').appendChild(app.view);
 
 
-console.log('MAIN', MAIN);
+console.log('typeModels', typeModels);
 
 const renderPixiInitElement = element => {
 

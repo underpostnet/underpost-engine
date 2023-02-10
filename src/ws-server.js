@@ -10,16 +10,20 @@ import { JSONweb } from './util.js'
 
 dotenv.config()
 
-const nameFolderData = 'cyberia'
-const minRangeMap = 0
-const maxRangeMap = 31
+const nameFolderData = 'cyberia';
+const maxRangeMapParam = 31;
+
+const maxRangeMap = arg => maxRangeMapParam - (arg !== undefined ?
+    typeof arg === 'string' ?
+        typeModels[arg].render().dim() : arg
+    : 0);
 
 const typeModels = {
     'floor': {
         color: () => 'green (html/css color)',
         render: () => {
             return {
-                dim: () => maxRangeMap
+                dim: () => maxRangeMap()
             }
         }
     },
@@ -74,9 +78,9 @@ const id = () => {
     return _id;
 };
 
-const matrixIterator = (fn) =>
-    range(minRangeMap, maxRangeMap).map(y =>
-        range(minRangeMap, maxRangeMap).map(x =>
+const matrixIterator = (fn, maxMapArg) =>
+    range(0, maxRangeMap(maxMapArg)).map(y =>
+        range(0, maxRangeMap(maxMapArg)).map(x =>
             fn(x, y)
         )
     );
@@ -110,8 +114,8 @@ const collision = (render, types) => {
     return false;
 };
 
-const getMatrixCollision = (type, types) => range(minRangeMap, maxRangeMap).map(y => {
-    return range(minRangeMap, maxRangeMap).map(x => {
+const getMatrixCollision = (type, types) => range(0, maxRangeMap(type)).map(y => {
+    return range(0, maxRangeMap(type)).map(x => {
         const dim = typeModels[type].render().dim();
         if (collision({ x, y, dim }, types)) return 1;
         return 0;
@@ -123,7 +127,7 @@ const getAvailablePoints = (type, types) => {
     const dim = typeModels[type].render().dim();
     matrixIterator((x, y) => {
         if (!collision({ x, y, dim }, types)) availablePoints.push([x, y]);
-    });
+    }, type);
     return availablePoints;
 };
 
@@ -146,39 +150,36 @@ const getAvailablePoints = (type, types) => {
             dim
         }
     });
-})()
+})();
 
-matrixIterator((x, y) => {
-    // if (x > maxRangeMap - 1 || y > maxRangeMap - 1) return;
-    if (random(1, 100) <= 10) {
+(() => {
+    const type = 'building';
+    matrixIterator((x, y) => {
 
-        const type = 'building';
-        const { color, render } = getParamsType(type);
-        const { dim } = render;
+        if (random(1, 100) <= 3) {
 
-        typeModels[type].elements.push({
-            id: id(),
-            type,
-            color,
-            render: {
-                x,
-                y,
-                dim
-            }
-        });
-    }
-});
 
-// main ssr
+            const { color, render } = getParamsType(type);
+            const { dim } = render;
 
-const MAIN = {
-    minRangeMap,
-    maxRangeMap,
-    typeModels
-};
+            typeModels[type].elements.push({
+                id: id(),
+                type,
+                color,
+                render: {
+                    x,
+                    y,
+                    dim
+                }
+            });
+        }
+    }, type);
+})();
 
 const ssrWS = `
-    const ssrMAIN = ${JSONweb(MAIN)};
+    const typeModels = ${JSONweb(typeModels)};
+    const maxRangeMapParam = ${maxRangeMapParam};
+    const maxRangeMap = ${maxRangeMap};
     const getAllElements = ${getAllElements};
     const id = ${id};
     const matrixIterator = ${matrixIterator};
@@ -190,37 +191,40 @@ const ssrWS = `
 
 const wsServer = () => {
 
-    matrixIterator((x, y) => {
-        // if (x > maxRangeMap - 1 || y > maxRangeMap - 1) return;
-        if (random(1, 100) <= 1) {
+    (() => {
+        const type = 'bot';
+        matrixIterator((x, y) => {
 
-            const type = 'bot';
-            const { color, render } = getParamsType(type);
-            const { dim } = render;
+            if (random(1, 100) <= 1) {
 
 
-            if (!collision({ dim, x, y }, ['building', 'bot'])) {
-                typeModels[type].elements.push({
-                    id: id(),
-                    type,
-                    color,
-                    render: {
-                        x,
-                        y,
-                        dim
-                    }
-                });
+                const { color, render } = getParamsType(type);
+                const { dim } = render;
+
+
+                if (!collision({ dim, x, y }, ['building', 'bot'])) {
+                    typeModels[type].elements.push({
+                        id: id(),
+                        type,
+                        color,
+                        render: {
+                            x,
+                            y,
+                            dim
+                        }
+                    });
+                }
             }
-        }
-    });
+        }, type);
+    })();
 
 
     if (!fs.existsSync('./data/cyberia'))
         fs.mkdirSync('./data/cyberia', { recursive: true });
 
     // view test matrix
-    const matrix = range(minRangeMap, maxRangeMap).map(y => {
-        return range(minRangeMap, maxRangeMap).map(x => {
+    const matrix = range(0, maxRangeMap()).map(y => {
+        return range(0, maxRangeMap()).map(x => {
             for (const type of ['bot', 'building']) {
                 if (collision({ x, y, dim: 1 }, [type])) return Object.keys(typeModels).indexOf(type);
             }
@@ -298,7 +302,6 @@ const wsServer = () => {
         });
     }, 10);
 
-    return { io, clients };
 };
 
 export { wsServer, ssrWS };
