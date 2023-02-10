@@ -11,8 +11,9 @@ import { JSONweb } from './util.js'
 
 dotenv.config()
 
-const minRangeMap = 0;
-const maxRangeMap = 31;
+const nameFolderData = 'cyberia'
+const minRangeMap = 0
+const maxRangeMap = 31
 
 const typeModels = {
     'floor': {
@@ -59,7 +60,7 @@ const getParamsType = type => {
 
 // common
 
-const getAllElements = typeModels => {
+const getAllElements = () => {
     let elements = [];
     Object.keys(typeModels).map(keyType => {
         elements = elements.concat(typeModels[keyType].elements);
@@ -67,16 +68,16 @@ const getAllElements = typeModels => {
     return elements;
 };
 
-const id = (typeModels) => {
+const id = () => {
     let _id = 'x' + s4() + s4();
-    while (getAllElements(typeModels).find(x => x.id === _id))
+    while (getAllElements().find(x => x.id === _id))
         _id = 'x' + s4() + s4();
     return _id;
 };
 
-const matrixIterator = (MAIN, fn) =>
-    range(MAIN.minRangeMap, MAIN.maxRangeMap).map(y =>
-        range(MAIN.minRangeMap, MAIN.maxRangeMap).map(x =>
+const matrixIterator = (fn) =>
+    range(minRangeMap, maxRangeMap).map(y =>
+        range(minRangeMap, maxRangeMap).map(x =>
             fn(x, y)
         )
     );
@@ -110,12 +111,31 @@ const collision = (render, types) => {
     return false;
 };
 
+const getMatrixCollision = (type, types) => range(minRangeMap, maxRangeMap).map(y => {
+    return range(minRangeMap, maxRangeMap).map(x => {
+        const dim = typeModels[type].render().dim();
+        if (collision({ x, y, dim }, types)) return 1;
+        return 0;
+    });
+});
+
+const getAvailablePoints = (type, types) => {
+    const availablePoints = [];
+    const dim = typeModels[type].render().dim();
+    matrixIterator((x, y) => {
+        if (!collision({ x, y, dim }, types)) availablePoints.push([x, y]);
+    });
+    return availablePoints;
+};
+
 const common = `
     const getAllElements = ${getAllElements};
     const id = ${id};
     const matrixIterator = ${matrixIterator};
     const validateCollision = ${validateCollision};
     const collision = ${collision};
+    const getMatrixCollision = ${getMatrixCollision};
+    const getAvailablePoints = ${getAvailablePoints};
 `;
 
 // end common
@@ -133,7 +153,7 @@ const MAIN = {
     const { color, render } = getParamsType(type);
     const { dim } = render;
     typeModels[type].elements.push({
-        id: id(typeModels),
+        id: id(),
         type,
         color,
         render: {
@@ -144,16 +164,16 @@ const MAIN = {
     });
 })()
 
-matrixIterator(MAIN, (x, y) => {
+matrixIterator((x, y) => {
     // if (x > maxRangeMap - 1 || y > maxRangeMap - 1) return;
-    if (random(1, 100) <= 2) {
+    if (random(1, 100) <= 10) {
 
         const type = 'building';
         const { color, render } = getParamsType(type);
         const { dim } = render;
 
         typeModels[type].elements.push({
-            id: id(typeModels),
+            id: id(),
             type,
             color,
             render: {
@@ -172,7 +192,7 @@ const ssrWS = `
 
 const initInstance = () => {
 
-    matrixIterator(MAIN, (x, y) => {
+    matrixIterator((x, y) => {
         // if (x > maxRangeMap - 1 || y > maxRangeMap - 1) return;
         if (random(1, 100) <= 1) {
 
@@ -183,7 +203,7 @@ const initInstance = () => {
 
             if (!collision({ dim, x, y }, ['building', 'bot'])) {
                 typeModels[type].elements.push({
-                    id: id(typeModels),
+                    id: id(),
                     type,
                     color,
                     render: {
@@ -210,33 +230,20 @@ const initInstance = () => {
             return 0;
         });
     });
-    fs.writeFileSync('./data/cyberia/matrix.json', JSONmatrix(matrix), 'utf8');
+    fs.writeFileSync(`./data/${nameFolderData}/matrix.json`, JSONmatrix(matrix), 'utf8');
 
 
 
     // bots
-    const matrixCollisionBotBuilding = range(minRangeMap, maxRangeMap).map(y => {
-        return range(minRangeMap, maxRangeMap).map(x => {
-            const dim = typeModels['bot'].render().dim();
-            if (collision({ x, y, dim }, ['building'])) return 1;
-            return 0;
-        });
-    });
-    fs.writeFileSync('./data/cyberia/matrixCollisionBotBuilding.json', JSONmatrix(matrixCollisionBotBuilding), 'utf8');
-    const finderMatrixCollisionBotBuilding = new pathfinding.AStarFinder({
-        allowDiagonal: true, // enable diagonal
-        dontCrossCorners: false, // corner of a solid
-        heuristic: pathfinding.Heuristic.chebyshev
-    });
-    const endPointMatrixCollisionBotBuilding = [];
-    matrixIterator(MAIN, (x, y) => {
-        if (!collision({ x, y, dim: 1 }, ['building'])) endPointMatrixCollisionBotBuilding.push([x, y]);
-    });
+    const matrixCollisionBotBuilding = getMatrixCollision('bot', ['building']);
+    fs.writeFileSync(`./data/${nameFolderData}/matrixCollisionBotBuilding.json`, JSONmatrix(matrixCollisionBotBuilding), 'utf8');
+
+    const endPointMatrixCollisionBotBuilding = getAvailablePoints('bot', ['building']);
+
 
     return {
         bots: {
             matrixCollisionBotBuilding,
-            finderMatrixCollisionBotBuilding,
             endPointMatrixCollisionBotBuilding
         }
     }
@@ -247,7 +254,6 @@ const wsServer = () => {
 
     const {
         matrixCollisionBotBuilding,
-        finderMatrixCollisionBotBuilding,
         endPointMatrixCollisionBotBuilding
     } = initInstance().bots;
 
@@ -273,9 +279,13 @@ const wsServer = () => {
 
     console.log(`Io Server is running on port ${process.env.IO_PORT}`);
 
-
+    const finder = new pathfinding.AStarFinder({
+        allowDiagonal: true, // enable diagonal
+        dontCrossCorners: false, // corner of a solid
+        heuristic: pathfinding.Heuristic.chebyshev
+    });
     setInterval(() => {
-        getAllElements(typeModels).map(element => {
+        getAllElements().map(element => {
             if (element.type === 'bot') {
 
                 if (!element.path) element.path = [];
@@ -287,14 +297,13 @@ const wsServer = () => {
 
                     const { x2, y2 } = getRandomPoint(2, endPointMatrixCollisionBotBuilding);
 
-                    element.path = finderMatrixCollisionBotBuilding
-                        .findPath(
-                            element.render.x,
-                            element.render.y,
-                            x2,
-                            y2,
-                            new pathfinding.Grid(matrixCollisionBotBuilding)
-                        );
+                    element.path = finder.findPath(
+                        element.render.x,
+                        element.render.y,
+                        x2,
+                        y2,
+                        new pathfinding.Grid(matrixCollisionBotBuilding)
+                    );
 
 
                 }

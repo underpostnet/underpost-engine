@@ -9,7 +9,8 @@ append('body', /*html*/`
 
 const amplitudeRender = 13;
 const MAIN = { ...ssrMAIN };
-const { maxRangeMap } = MAIN;
+
+const { maxRangeMap, minRangeMap } = MAIN;
 
 MAIN.app = new PIXI.Application({
     width: maxRangeMap * amplitudeRender,
