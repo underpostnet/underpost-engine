@@ -61,7 +61,7 @@ const renderPixiEventElement = element => {
     container.y = y;
 };
 
-getAllElements(typeModels)
+getAllElements()
     .map(element => renderPixiInitElement(element));
 
 const socket = io('ws://localhost:5501');
@@ -83,7 +83,7 @@ socket.on("message", (...args) => {
     // console.log(`socket.io event: message | reason: ${args}`);
     const eventElement = JSON.parse(args);
     const { id, render, type } = eventElement;
-    const element = getAllElements(typeModels).find(element => element.id === id);
+    const element = getAllElements().find(element => element.id === id);
     if (element) {
         element.render = render;
         return renderPixiEventElement(element);
