@@ -132,11 +132,10 @@ const getAvailablePoints = (type, types) => {
 
 (() => {
   const type = 'building';
+  const { color, render } = getParamsType(type);
+  const { dim } = render;
   matrixIterator((x, y) => {
     if (random(1, 100) <= 3) {
-      const { color, render } = getParamsType(type);
-      const { dim } = render;
-
       typeModels[type].elements.push({
         id: id(),
         type,
@@ -167,11 +166,10 @@ const ssrWS = `
 const wsServer = () => {
   (() => {
     const type = 'bot';
+    const { color, render } = getParamsType(type);
+    const { dim } = render;
     matrixIterator((x, y) => {
       if (random(1, 100) <= 1) {
-        const { color, render } = getParamsType(type);
-        const { dim } = render;
-
         if (!collision({ dim, x, y }, ['building', 'bot'])) {
           typeModels[type].elements.push({
             id: id(),
