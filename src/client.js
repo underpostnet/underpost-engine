@@ -63,7 +63,7 @@ getAllElements().map((element) => renderPixiInitElement(element));
 const socket = io('ws://localhost:5501');
 
 socket.on('connect', () => {
-  // console.log(`socket.io event: connect | session id: ${socket.id}`);
+  console.log(`socket.io event: connect | session id: ${socket.id}`);
   // socket.emit('message', 'msg test client');
 });
 
@@ -90,3 +90,7 @@ socket.on('message', (...args) => {
 socket.onAny((event, ...args) => {
   // console.log(`socket.io onAny event: ${event} | arguments: ${args}`);
 });
+
+window.activeKey = {};
+window.onkeydown = (e) => (window.activeKey[e.key] = true);
+window.onkeyup = (e) => (window.activeKey[e.key] = undefined);

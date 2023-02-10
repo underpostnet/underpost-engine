@@ -38,11 +38,11 @@ const clientServer = (options) => {
             </head>
             <body>
                 <script>
-                        ${commonFunctions()}
-                        ${fs.readFileSync('./src/vanilla.js', 'utf8')}
-                        ${ssrColor}
-                        ${ssrWS}
-                        ${fs.readFileSync('./src/client.js', 'utf8')}
+                  ${commonFunctions()}
+                  ${fs.readFileSync('./src/vanilla.js', 'utf8')}
+                  ${ssrColor}
+                  ${ssrWS}
+                  ${fs.readFileSync('./src/client.js', 'utf8')}
                 </script>
             </body>
             </html>  

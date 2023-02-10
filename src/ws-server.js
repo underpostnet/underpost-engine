@@ -38,6 +38,14 @@ const typeModels = {
       };
     },
   },
+  user: {
+    color: () => 'cornell red',
+    render: () => {
+      return {
+        dim: () => 2,
+      };
+    },
+  },
 };
 
 Object.keys(typeModels).map((keyType) => {
@@ -64,8 +72,8 @@ const getAllElements = () => {
 };
 
 const id = () => {
-  let _id = 'x' + s4() + s4();
-  while (getAllElements().find((x) => x.id === _id)) _id = 'x' + s4() + s4();
+  let _id;
+  while (getAllElements().find((x) => x.id === _id)) _id = 'x' + (s4() + s4() + s4() + s4() + s4()).slice(1);
   return _id;
 };
 
@@ -207,6 +215,22 @@ const wsServer = () => {
     clients.push(socket);
     console.log(`socket.io | currents clients: ${clients.length}`);
     // socket.emit('message', 'msg test server');
+    (() => {
+      return;
+      const type = 'user';
+      const { color, render } = getParamsType(type);
+      const { dim } = render;
+      typeModels[type].elements.push({
+        id: socket.id,
+        type,
+        color,
+        render: {
+          x,
+          y,
+          dim,
+        },
+      });
+    })();
 
     socket.on('message', (...args) => {
       console.log(`socket.io | message ${socket.id} due to data: ${args}`);
@@ -228,39 +252,41 @@ const wsServer = () => {
   });
 
   // bots controller
-  const matrixCollisionBotBuilding = getMatrixCollision('bot', ['building']);
-  fs.writeFileSync(
-    `./data/${nameFolderData}/matrixCollisionBotBuilding.json`,
-    JSONmatrix(matrixCollisionBotBuilding),
-    'utf8'
-  );
-  const endPointMatrixCollisionBotBuilding = getAvailablePoints('bot', ['building']);
+  const MatrixCollision_A = getMatrixCollision('bot', ['building']);
+  fs.writeFileSync(`./data/${nameFolderData}/matrixCollisionBotBuilding.json`, JSONmatrix(MatrixCollision_A), 'utf8');
+  const AvailablePoints_A = getAvailablePoints('bot', ['building']);
   setInterval(() => {
     getAllElements().map((element) => {
-      if (element.type === 'bot') {
-        if (!element.path) element.path = [];
-        element.path.shift();
+      switch (element.type) {
+        case 'bot':
+          if (!element.path) element.path = [];
+          element.path.shift();
 
-        while (element.path.length === 0) {
-          // element.path = range(0, maxRangeMap).map(i => [i, i]);
+          while (element.path.length === 0) {
+            // element.path = range(0, maxRangeMap).map(i => [i, i]);
 
-          const { x2, y2 } = getRandomPoint(2, endPointMatrixCollisionBotBuilding);
+            const { x2, y2 } = getRandomPoint(2, AvailablePoints_A);
 
-          element.path = finder.findPath(
-            element.render.x,
-            element.render.y,
-            x2,
-            y2,
-            new pathfinding.Grid(matrixCollisionBotBuilding)
-          );
-        }
+            element.path = finder.findPath(
+              element.render.x,
+              element.render.y,
+              x2,
+              y2,
+              new pathfinding.Grid(MatrixCollision_A)
+            );
+          }
 
-        element.render.x = element.path[0][0];
-        element.render.y = element.path[0][1];
+          element.render.x = element.path[0][0];
+          element.render.y = element.path[0][1];
 
-        clients.map((client) => {
-          client.emit('message', JSON.stringify(element));
-        });
+          clients.map((client) => {
+            client.emit('message', JSON.stringify(element));
+          });
+
+          break;
+
+        default:
+          break;
       }
     });
   }, 10);
