@@ -215,22 +215,20 @@ const wsServer = () => {
     clients.push(socket);
     console.log(`socket.io | currents clients: ${clients.length}`);
     // socket.emit('message', 'msg test server');
-    (() => {
-      return;
-      const type = 'user';
-      const { color, render } = getParamsType(type);
-      const { dim } = render;
-      typeModels[type].elements.push({
-        id: socket.id,
-        type,
-        color,
-        render: {
-          x,
-          y,
-          dim,
-        },
-      });
-    })();
+    const type = 'user';
+    const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building']));
+    const { color, render } = getParamsType(type);
+    const { dim } = render;
+    typeModels[type].elements.push({
+      id: socket.id,
+      type,
+      color,
+      render: {
+        x,
+        y,
+        dim,
+      },
+    });
 
     socket.on('message', (...args) => {
       console.log(`socket.io | message ${socket.id} due to data: ${args}`);
@@ -239,6 +237,10 @@ const wsServer = () => {
     socket.on('disconnect', (reason) => {
       console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
       clients.splice(clients.indexOf(socket), 1);
+      typeModels[type].elements.splice(
+        typeModels[type].elements.findIndex((element) => element.id === socket.id),
+        1
+      );
       console.log(`socket.io | currents clients: ${clients.length}`);
     });
   });
@@ -284,7 +286,11 @@ const wsServer = () => {
           });
 
           break;
-
+        case 'user':
+          clients.map((client) => {
+            client.emit('message', JSON.stringify(element));
+          });
+          break;
         default:
           break;
       }
