@@ -23,7 +23,8 @@ const setAmplitudeRender = (render) => {
 
 s('pixi-container').appendChild(app.view);
 
-console.log('typeModels', typeModels);
+console.log('typeModels', typeModels());
+console.log('elements', elements);
 
 const renderPixiInitElement = (element) => {
   const { x, y, dim } = setAmplitudeRender(element.render);

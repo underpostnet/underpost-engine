@@ -10,53 +10,56 @@ dotenv.config();
 const nameFolderData = 'cyberia';
 const maxRangeMapParam = 31;
 const elements = {};
-const maxRangeMap = (arg) =>
-  maxRangeMapParam - (arg !== undefined ? (typeof arg === 'string' ? typeModels[arg].render().dim() : arg) : 0);
 
-const typeModels = {
-  floor: {
-    color: () => 'green (html/css color)',
-    render: () => {
-      return {
-        dim: () => maxRangeMap(),
-      };
+const typeModels = () => {
+  return {
+    floor: {
+      color: () => 'green (html/css color)',
+      render: () => {
+        return {
+          dim: () => maxRangeMap(),
+        };
+      },
     },
-  },
-  building: {
-    color: () => 'black',
-    render: () => {
-      return {
-        dim: () => 2,
-      };
+    building: {
+      color: () => 'black',
+      render: () => {
+        return {
+          dim: () => 2,
+        };
+      },
     },
-  },
-  bot: {
-    color: () => 'yellow',
-    render: () => {
-      return {
-        dim: () => 4,
-      };
+    bot: {
+      color: () => 'yellow',
+      render: () => {
+        return {
+          dim: () => 4,
+        };
+      },
     },
-  },
-  user: {
-    color: () => 'cornell red',
-    render: () => {
-      return {
-        dim: () => 2,
-      };
+    user: {
+      color: () => 'cornell red',
+      render: () => {
+        return {
+          dim: () => 2,
+        };
+      },
     },
-  },
+  };
 };
 
-Object.keys(typeModels).map((type) => {
+const maxRangeMap = (arg) =>
+  maxRangeMapParam - (arg !== undefined ? (typeof arg === 'string' ? typeModels()[arg].render().dim() : arg) : 0);
+
+Object.keys(typeModels()).map((type) => {
   elements[type] = [];
 });
 
 const getParamsType = (type) => {
   return {
-    color: typeModels[type].color(),
+    color: typeModels()[type].color(),
     render: {
-      dim: typeModels[type].render().dim(),
+      dim: typeModels()[type].render().dim(),
     },
   };
 };
@@ -65,7 +68,7 @@ const getParamsType = (type) => {
 
 const getAllElements = () => {
   let elementsReturn = [];
-  Object.keys(typeModels).map((type) => {
+  Object.keys(typeModels()).map((type) => {
     elementsReturn = elementsReturn.concat(elements[type]);
   });
   return elementsReturn;
@@ -105,7 +108,7 @@ const collision = (render, types) => {
 const getMatrixCollision = (type, types) =>
   range(0, maxRangeMap(type)).map((y) => {
     return range(0, maxRangeMap(type)).map((x) => {
-      const dim = typeModels[type].render().dim();
+      const dim = typeModels()[type].render().dim();
       if (collision({ x, y, dim }, types)) return 1;
       return 0;
     });
@@ -113,7 +116,7 @@ const getMatrixCollision = (type, types) =>
 
 const getAvailablePoints = (type, types) => {
   const availablePoints = [];
-  const dim = typeModels[type].render().dim();
+  const dim = typeModels()[type].render().dim();
   matrixIterator((x, y) => {
     if (!collision({ x, y, dim }, types)) availablePoints.push([x, y]);
   }, type);
@@ -159,7 +162,7 @@ const getAvailablePoints = (type, types) => {
 })();
 
 const ssrWS = `
-    const typeModels = ${JSONweb(typeModels)};
+    const typeModels = ${typeModels};
     const maxRangeMapParam = ${maxRangeMapParam};
     const maxRangeMap = ${maxRangeMap};
     const getAllElements = ${getAllElements};
@@ -201,7 +204,7 @@ const wsServer = () => {
   const matrix = range(0, maxRangeMap()).map((y) => {
     return range(0, maxRangeMap()).map((x) => {
       for (const type of ['bot', 'building']) {
-        if (collision({ x, y, dim: 1 }, [type])) return Object.keys(typeModels).indexOf(type);
+        if (collision({ x, y, dim: 1 }, [type])) return Object.keys(typeModels()).indexOf(type);
       }
 
       return 0;
