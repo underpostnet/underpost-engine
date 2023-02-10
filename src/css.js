@@ -1,5 +1,4 @@
-
-const baseCss = /*css*/`
+const baseCss = /*css*/ `
 
     html {
         scroll-behavior: smooth
@@ -75,4 +74,4 @@ const baseCss = /*css*/`
 
 `;
 
-export { baseCss }
+export { baseCss };

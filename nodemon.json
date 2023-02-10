@@ -1,8 +1,6 @@
 {
-    "watch": [],
-    "ext": "js",
-    "delay": "0",
-    "ignore": [
-        "./public"
-    ]
+  "watch": [],
+  "ext": "js",
+  "delay": "0",
+  "ignore": ["./public"]
 }
