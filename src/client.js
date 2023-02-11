@@ -58,6 +58,14 @@ const renderPixiEventElement = (element) => {
   container.x = x;
   container.y = y;
 };
+const removePixiElement = (element) => {
+  const { id, type, pixi } = element;
+  Object.keys(pixi).map((pixiKey) => pixi[pixiKey].destroy());
+  elements[type].splice(
+    elements[type].findIndex((element) => element.id === id),
+    1
+  );
+};
 
 getAllElements().map((element) => renderPixiInitElement(element));
 
@@ -76,8 +84,8 @@ socket.on('disconnect', (reason) => {
   // console.log(`socket.io event: disconnect | reason: ${reason}`);
 });
 
-socket.on('message', (...args) => {
-  // console.log(`socket.io event: message | reason: ${args}`);
+socket.on('update', (...args) => {
+  // console.log(`socket.io event: update | reason: ${args}`);
   const eventElement = JSON.parse(args);
   const { id, render, type } = eventElement;
   const element = getAllElements().find((element) => element.id === id);
@@ -86,6 +94,13 @@ socket.on('message', (...args) => {
     return renderPixiEventElement(element);
   }
   return elements[type].push(renderPixiInitElement(eventElement));
+});
+
+socket.on('close', (...args) => {
+  // console.log(`socket.io event: close | reason: ${args}`);
+  const eventElement = JSON.parse(args);
+  const { id, type } = eventElement;
+  removePixiElement(elements[type].find((element) => element.id === id));
 });
 
 socket.onAny((event, ...args) => {

@@ -33,7 +33,7 @@ const typeModels = () => {
       color: () => 'yellow',
       render: () => {
         return {
-          dim: () => 4,
+          dim: () => 1,
         };
       },
     },
@@ -234,12 +234,17 @@ const wsServer = () => {
       },
     });
 
-    socket.on('message', (...args) => {
-      console.log(`socket.io | message ${socket.id} due to data: ${args}`);
+    socket.on('update', (...args) => {
+      console.log(`socket.io | update ${socket.id} due to data: ${args}`);
+      const eventElement = JSON.parse(args);
+      elements[type][elements[type].findIndex((element) => element.id === socket.id)] = eventElement;
     });
 
     socket.on('disconnect', (reason) => {
       console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
+      clients.map((client) =>
+        client.emit('close', JSON.stringify(elements[type].find((element) => element.id === socket.id)))
+      );
       clients.splice(clients.indexOf(socket), 1);
       elements[type].splice(
         elements[type].findIndex((element) => element.id === socket.id),
@@ -286,20 +291,20 @@ const wsServer = () => {
           element.render.y = element.path[0][1];
 
           clients.map((client) => {
-            client.emit('message', JSON.stringify(element));
+            client.emit('update', JSON.stringify(element));
           });
 
           break;
         case 'user':
           clients.map((client) => {
-            client.emit('message', JSON.stringify(element));
+            client.emit('update', JSON.stringify(element));
           });
           break;
         default:
           break;
       }
     });
-  }, 10);
+  }, 20);
 };
 
 export { wsServer, ssrWS };
