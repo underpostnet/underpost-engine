@@ -98,10 +98,12 @@ socket.on('update', (...args) => {
   return elements[type].push(renderPixiInitElement(eventElement));
 });
 
-socket.on('user-ids', (...args) => {
-  const userIds = JSON.parse(args);
-  newInstance(elements['user']).map((element) => {
-    if (!userIds.find((id) => id === element.id)) removePixiElement(element);
+socket.on('ids', (...args) => {
+  const ids = JSON.parse(args);
+  Object.keys(ids).map((type) => {
+    newInstance(elements[type]).map((element) => {
+      if (!ids[type].find((id) => id === element.id)) removePixiElement(element);
+    });
   });
 });
 

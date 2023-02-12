@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
-import { s4, range, random, JSONmatrix, getRandomPoint } from './common.js';
+import { s4, range, random, JSONmatrix, getRandomPoint, newInstance } from './common.js';
 import { JSONweb } from './util.js';
 
 dotenv.config();
@@ -76,7 +76,7 @@ const getAllElements = () => {
 
 const id = () => {
   let _id;
-  while (getAllElements().find((x) => x.id === _id)) _id = 'x' + (s4() + s4() + s4() + s4() + s4()).slice(1);
+  while (getAllElements().find((x) => x.id === _id) || !_id) _id = 'x' + (s4() + s4() + s4() + s4() + s4()).slice(1);
   return _id;
 };
 
@@ -287,21 +287,23 @@ const wsServer = () => {
           element.render.x = element.path[0][0];
           element.render.y = element.path[0][1];
 
-          clients.map((client) => {
-            client.emit('update', JSON.stringify(element));
-          });
-
           break;
         case 'user':
-          clients.map((client) => {
-            client.emit('update', JSON.stringify(element));
-          });
           break;
         default:
           break;
       }
     });
-    clients.map((client) => client.emit('user-ids', JSON.stringify(elements['user'].map((element) => element.id))));
+    const idsElmentsType = newInstance(elements);
+    Object.keys(idsElmentsType).map((type) => {
+      idsElmentsType[type] = idsElmentsType[type].map((x) => x.id);
+      elements[type].map((element) => {
+        clients.map((client) => {
+          client.emit('update', JSON.stringify(element));
+        });
+      });
+    });
+    clients.map((client) => client.emit('ids', JSON.stringify(idsElmentsType)));
   }, 20);
 };
 
