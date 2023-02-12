@@ -242,9 +242,6 @@ const wsServer = () => {
 
     socket.on('disconnect', (reason) => {
       console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
-      clients.map((client) =>
-        client.emit('close', JSON.stringify(elements[type].find((element) => element.id === socket.id)))
-      );
       clients.splice(clients.indexOf(socket), 1);
       elements[type].splice(
         elements[type].findIndex((element) => element.id === socket.id),
@@ -304,6 +301,7 @@ const wsServer = () => {
           break;
       }
     });
+    clients.map((client) => client.emit('user-ids', JSON.stringify(elements['user'].map((element) => element.id))));
   }, 20);
 };
 

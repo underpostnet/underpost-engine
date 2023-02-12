@@ -8,6 +8,8 @@ append(
 
 const amplitudeRender = 13;
 
+const pixi = {};
+
 const app = new PIXI.Application({
   width: maxRangeMap() * amplitudeRender,
   height: maxRangeMap() * amplitudeRender,
@@ -31,18 +33,18 @@ const renderPixiInitElement = (element) => {
   element.color = numberColors[element.color];
   const { color } = element;
 
-  element.pixi = {};
+  pixi[element.id] = {};
 
-  element.pixi.container = new PIXI.Container();
-  const container = element.pixi.container;
+  pixi[element.id].container = new PIXI.Container();
+  const container = pixi[element.id].container;
   container.x = x;
   container.y = y;
   container.width = dim;
   container.height = dim;
   app.stage.addChild(container);
 
-  element.pixi.background = new PIXI.Sprite(PIXI.Texture.WHITE);
-  const background = element.pixi.background;
+  pixi[element.id].background = new PIXI.Sprite(PIXI.Texture.WHITE);
+  const background = pixi[element.id].background;
   background.x = 0;
   background.y = 0;
   background.width = dim;
@@ -54,13 +56,13 @@ const renderPixiInitElement = (element) => {
 };
 const renderPixiEventElement = (element) => {
   const { x, y } = setAmplitudeRender(element.render);
-  const container = element.pixi.container;
+  const container = pixi[element.id].container;
   container.x = x;
   container.y = y;
 };
 const removePixiElement = (element) => {
-  const { id, type, pixi } = element;
-  Object.keys(pixi).map((pixiKey) => pixi[pixiKey].destroy());
+  const { id, type } = element;
+  Object.keys(pixi[element.id]).map((pixiKey) => pixi[element.id][pixiKey].destroy());
   elements[type].splice(
     elements[type].findIndex((element) => element.id === id),
     1
@@ -96,11 +98,11 @@ socket.on('update', (...args) => {
   return elements[type].push(renderPixiInitElement(eventElement));
 });
 
-socket.on('close', (...args) => {
-  // console.log(`socket.io event: close | reason: ${args}`);
-  const eventElement = JSON.parse(args);
-  const { id, type } = eventElement;
-  removePixiElement(elements[type].find((element) => element.id === id));
+socket.on('user-ids', (...args) => {
+  const userIds = JSON.parse(args);
+  newInstance(elements['user']).map((element) => {
+    if (!userIds.find((id) => id === element.id)) removePixiElement(element);
+  });
 });
 
 socket.onAny((event, ...args) => {
