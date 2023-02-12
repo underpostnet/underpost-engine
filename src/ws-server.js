@@ -172,7 +172,6 @@ const ssrWS = `
     const collision = ${collision};
     const getMatrixCollision = ${getMatrixCollision};
     const getAvailablePoints = ${getAvailablePoints};
-    const elements = ${JSONweb(elements)};
 `;
 
 const wsServer = () => {

@@ -8,7 +8,10 @@ append(
 
 const amplitudeRender = 13;
 
+const elements = {};
 const pixi = {};
+
+Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {})));
 
 const app = new PIXI.Application({
   width: maxRangeMap() * amplitudeRender,
@@ -27,24 +30,26 @@ s('pixi-container').appendChild(app.view);
 
 console.log('typeModels', typeModels());
 console.log('elements', elements);
+console.log('pixi', pixi);
 
 const renderPixiInitElement = (element) => {
+  const { type } = element;
   const { x, y, dim } = setAmplitudeRender(element.render);
   element.color = numberColors[element.color];
   const { color } = element;
 
-  pixi[element.id] = {};
+  pixi[type][element.id] = {};
 
-  pixi[element.id].container = new PIXI.Container();
-  const container = pixi[element.id].container;
+  pixi[type][element.id].container = new PIXI.Container();
+  const container = pixi[type][element.id].container;
   container.x = x;
   container.y = y;
   container.width = dim;
   container.height = dim;
   app.stage.addChild(container);
 
-  pixi[element.id].background = new PIXI.Sprite(PIXI.Texture.WHITE);
-  const background = pixi[element.id].background;
+  pixi[type][element.id].background = new PIXI.Sprite(PIXI.Texture.WHITE);
+  const background = pixi[type][element.id].background;
   background.x = 0;
   background.y = 0;
   background.width = dim;
@@ -55,21 +60,21 @@ const renderPixiInitElement = (element) => {
   return element;
 };
 const renderPixiEventElement = (element) => {
+  const { type } = element;
   const { x, y } = setAmplitudeRender(element.render);
-  const container = pixi[element.id].container;
+  const container = pixi[type][element.id].container;
   container.x = x;
   container.y = y;
 };
 const removePixiElement = (element) => {
   const { id, type } = element;
-  Object.keys(pixi[element.id]).map((pixiKey) => pixi[element.id][pixiKey].destroy());
+  Object.keys(pixi[type][element.id]).map((pixiKey) => pixi[type][element.id][pixiKey].destroy());
   elements[type].splice(
     elements[type].findIndex((element) => element.id === id),
     1
   );
+  delete pixi[type][element.id];
 };
-
-getAllElements().map((element) => renderPixiInitElement(element));
 
 const socket = io('ws://localhost:5501');
 
