@@ -12,6 +12,7 @@ append(
       canvas {
         margin: auto;
         display: block;
+        position: relative;
         cursor: url('/assets/cursors/black-pointer.png') -30 -30, auto !important;
       }
     </style>
@@ -232,6 +233,7 @@ setInterval(() => {
       canvas {
         width: ${screnDim.minValue}px;
         height: ${screnDim.minValue}px;
+        top: ${screnDim.maxType === 'height' ? (screnDim.maxValue - screnDim.minValue) / 2 : 0}px;
       }
     `
     );
