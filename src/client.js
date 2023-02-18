@@ -1,6 +1,19 @@
 append(
   'body',
   /*html*/ `
+    <style>
+      body {
+        background: black;
+        color: white;
+        padding: 0px;
+        margin: 0px;
+      }
+      canvas {
+        margin: auto;
+        display: block;
+      }
+    </style>
+    <style class='canvas-dim'></style>
     <pixi-container class='in'></pixi-container>
 
 `
@@ -165,5 +178,23 @@ setInterval(() => {
       renderPixiEventElement(element);
       socket.emit('update', JSON.stringify(element));
     }
+  }
+}, 20);
+
+// canvas dim controller
+let lastScreenDim;
+setInterval(() => {
+  const screnDim = dimState();
+  if (lastScreenDim !== screnDim.minValue) {
+    lastScreenDim = newInstance(screnDim.minValue);
+    htmls(
+      '.canvas-dim',
+      /*css*/ `
+      canvas {
+        width: ${screnDim.minValue}px;
+        height: ${screnDim.minValue}px;
+      }
+    `
+    );
   }
 }, 20);
