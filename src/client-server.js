@@ -51,7 +51,7 @@ const clientServer = (options) => {
     );
   });
 
-  // server.use('/', express.static('./www'));
+  // server.use('/', express.static('./builds/www'));
   server.use('/', express.static(dir));
 
   server.listen(process.env.CLIENT_PORT, () => {

@@ -3,7 +3,6 @@ import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
 import { s4, range, random, JSONmatrix, getRandomPoint, newInstance } from './common.js';
-import { JSONweb } from './util.js';
 
 dotenv.config();
 
@@ -25,7 +24,7 @@ const typeModels = () => {
       color: () => 'black',
       render: () => {
         return {
-          dim: () => 2,
+          dim: () => 3,
         };
       },
     },
@@ -76,7 +75,8 @@ const getAllElements = () => {
 
 const id = () => {
   let _id;
-  while (getAllElements().find((x) => x.id === _id) || !_id) _id = 'x' + (s4() + s4() + s4() + s4() + s4()).slice(1);
+  while (getAllElements().find((element) => element.id === _id) || !_id)
+    _id = 'x' + (s4() + s4() + s4() + s4() + s4()).slice(1);
   return _id;
 };
 
@@ -222,7 +222,7 @@ const wsServer = () => {
     const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building']));
     const { color, render } = getParamsType(type);
     const { dim } = render;
-    elements[type].push({
+    const element = {
       id: socket.id,
       type,
       color,
@@ -231,12 +231,18 @@ const wsServer = () => {
         y,
         dim,
       },
-    });
+    };
+    getAllElements().map((element) => socket.emit('update', JSON.stringify(element)));
+    elements[type].push(element);
+    clients.map((client) => client.emit('update', JSON.stringify(element)));
 
-    socket.on('update', (...args) => {
+    socket.on('update', (args) => {
       console.log(`socket.io | update ${socket.id} due to data: ${args}`);
       const eventElement = JSON.parse(args);
       elements[type][elements[type].findIndex((element) => element.id === socket.id)] = eventElement;
+      clients.map((client) => {
+        if (socket.id !== client.id) client.emit('update', JSON.stringify(eventElement));
+      });
     });
 
     socket.on('disconnect', (reason) => {
@@ -285,7 +291,7 @@ const wsServer = () => {
 
           element.render.x = element.path[0][0];
           element.render.y = element.path[0][1];
-
+          clients.map((client) => client.emit('update', JSON.stringify(element)));
           break;
         case 'user':
           break;
@@ -293,17 +299,15 @@ const wsServer = () => {
           break;
       }
     });
+  }, 20);
+
+  setInterval(() => {
     const idsElmentsType = newInstance(elements);
     Object.keys(idsElmentsType).map((type) => {
-      idsElmentsType[type] = idsElmentsType[type].map((x) => x.id);
-      elements[type].map((element) => {
-        clients.map((client) => {
-          client.emit('update', JSON.stringify(element));
-        });
-      });
+      idsElmentsType[type] = idsElmentsType[type].map((element) => element.id);
     });
     clients.map((client) => client.emit('ids', JSON.stringify(idsElmentsType)));
-  }, 20);
+  }, 1000);
 };
 
 export { wsServer, ssrWS };

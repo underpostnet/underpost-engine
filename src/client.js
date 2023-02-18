@@ -20,10 +20,11 @@ const app = new PIXI.Application({
 });
 
 const setAmplitudeRender = (render) => {
+  const returnRender = {};
   Object.keys(render).map((keyRender) => {
-    render[keyRender] = render[keyRender] * amplitudeRender;
+    returnRender[keyRender] = render[keyRender] * amplitudeRender;
   });
-  return render;
+  return returnRender;
 };
 
 s('pixi-container').appendChild(app.view);
@@ -33,10 +34,10 @@ console.log('elements', elements);
 console.log('pixi', pixi);
 
 const renderPixiInitElement = (element) => {
+  console.log('renderPixiInitElement', element);
   const { type } = element;
   const { x, y, dim } = setAmplitudeRender(element.render);
-  element.color = numberColors[element.color];
-  const { color } = element;
+  const color = numberColors[element.color];
 
   pixi[type][element.id] = {};
 
@@ -67,12 +68,8 @@ const renderPixiEventElement = (element) => {
   container.y = y;
 };
 const removePixiElement = (element) => {
-  const { id, type } = element;
+  const { type } = element;
   Object.keys(pixi[type][element.id]).map((pixiKey) => pixi[type][element.id][pixiKey].destroy());
-  elements[type].splice(
-    elements[type].findIndex((element) => element.id === id),
-    1
-  );
   delete pixi[type][element.id];
 };
 
@@ -95,19 +92,27 @@ socket.on('update', (...args) => {
   // console.log(`socket.io event: update | reason: ${args}`);
   const eventElement = JSON.parse(args);
   const { id, render, type } = eventElement;
-  const element = getAllElements().find((element) => element.id === id);
+  const element = elements[type].find((element) => element.id === id);
   if (element) {
     element.render = render;
     return renderPixiEventElement(element);
   }
-  return elements[type].push(renderPixiInitElement(eventElement));
+  elements[type].push(eventElement);
+  return renderPixiInitElement(eventElement);
 });
 
 socket.on('ids', (...args) => {
   const ids = JSON.parse(args);
   Object.keys(ids).map((type) => {
     newInstance(elements[type]).map((element) => {
-      if (!ids[type].find((id) => id === element.id)) removePixiElement(element);
+      if (!ids[type].find((id) => id === element.id)) {
+        const { id } = element;
+        removePixiElement(element);
+        elements[type].splice(
+          elements[type].findIndex((element) => element.id === id),
+          1
+        );
+      }
     });
   });
 });
@@ -119,3 +124,30 @@ socket.onAny((event, ...args) => {
 window.activeKey = {};
 window.onkeydown = (e) => (window.activeKey[e.key] = true);
 window.onkeyup = (e) => (window.activeKey[e.key] = undefined);
+
+setInterval(() => {
+  const element = elements.user.find((element) => element.id === socket.id);
+  if (element) {
+    let update = false;
+    if (window.activeKey['ArrowLeft']) {
+      element.render.x -= 1;
+      update = true;
+    }
+    if (window.activeKey['ArrowRight']) {
+      element.render.x += 1;
+      update = true;
+    }
+    if (window.activeKey['ArrowDown']) {
+      element.render.y += 1;
+      update = true;
+    }
+    if (window.activeKey['ArrowUp']) {
+      element.render.y -= 1;
+      update = true;
+    }
+    if (update) {
+      renderPixiEventElement(element);
+      socket.emit('update', JSON.stringify(element));
+    }
+  }
+}, 20);
