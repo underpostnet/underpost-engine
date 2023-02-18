@@ -32,7 +32,7 @@ const typeModels = () => {
       color: () => 'yellow',
       render: () => {
         return {
-          dim: () => 1,
+          dim: () => 3,
         };
       },
     },
@@ -40,7 +40,7 @@ const typeModels = () => {
       color: () => 'cornell red',
       render: () => {
         return {
-          dim: () => 2,
+          dim: () => 3,
         };
       },
     },
@@ -146,7 +146,7 @@ const getAvailablePoints = (type, types) => {
   const { color, render } = getParamsType(type);
   const { dim } = render;
   matrixIterator((x, y) => {
-    if (random(1, 100) <= 3) {
+    if (random(1, 100) <= 1) {
       elements[type].push({
         id: id(),
         type,
@@ -237,7 +237,7 @@ const wsServer = () => {
     clients.map((client) => client.emit('update', JSON.stringify(element)));
 
     socket.on('update', (args) => {
-      console.log(`socket.io | update ${socket.id} due to data: ${args}`);
+      // console.log(`socket.io | update ${socket.id} due to data: ${args}`);
       const eventElement = JSON.parse(args);
       elements[type][elements[type].findIndex((element) => element.id === socket.id)] = eventElement;
       clients.map((client) => {

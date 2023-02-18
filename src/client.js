@@ -7,7 +7,6 @@ append(
 );
 
 const amplitudeRender = 13;
-
 const elements = {};
 const pixi = {};
 
@@ -88,6 +87,8 @@ socket.on('disconnect', (reason) => {
   // console.log(`socket.io event: disconnect | reason: ${reason}`);
 });
 
+let userPositionAvailablePoints = [];
+
 socket.on('update', (...args) => {
   // console.log(`socket.io event: update | reason: ${args}`);
   const eventElement = JSON.parse(args);
@@ -98,6 +99,9 @@ socket.on('update', (...args) => {
     return renderPixiEventElement(element);
   }
   elements[type].push(eventElement);
+  if (eventElement.id === socket.id) {
+    userPositionAvailablePoints = getAvailablePoints('user', ['building']);
+  }
   return renderPixiInitElement(eventElement);
 });
 
@@ -129,19 +133,31 @@ setInterval(() => {
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
     let update = false;
-    if (window.activeKey['ArrowLeft']) {
+    if (
+      window.activeKey['ArrowLeft'] &&
+      userPositionAvailablePoints.find((point) => point[0] === element.render.x - 1 && point[1] === element.render.y)
+    ) {
       element.render.x -= 1;
       update = true;
     }
-    if (window.activeKey['ArrowRight']) {
+    if (
+      window.activeKey['ArrowRight'] &&
+      userPositionAvailablePoints.find((point) => point[0] === element.render.x + 1 && point[1] === element.render.y)
+    ) {
       element.render.x += 1;
       update = true;
     }
-    if (window.activeKey['ArrowDown']) {
+    if (
+      window.activeKey['ArrowDown'] &&
+      userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y + 1)
+    ) {
       element.render.y += 1;
       update = true;
     }
-    if (window.activeKey['ArrowUp']) {
+    if (
+      window.activeKey['ArrowUp'] &&
+      userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y - 1)
+    ) {
       element.render.y -= 1;
       update = true;
     }
