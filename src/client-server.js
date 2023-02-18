@@ -17,6 +17,8 @@ const clientServer = (options) => {
   deleteFolderRecursive(`${dir}`);
   copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
   copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
+  copyDir('./src/assets', `${dir}/assets`);
+
   paths.map((pathObj) => {
     let { path } = pathObj;
     if (path !== '') path += '/';

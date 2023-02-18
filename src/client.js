@@ -7,10 +7,12 @@ append(
         color: white;
         padding: 0px;
         margin: 0px;
+        cursor: url('/assets/cursors/black-default.png') -30 -30, auto;
       }
       canvas {
         margin: auto;
         display: block;
+        cursor: url('/assets/cursors/black-pointer.png') -30 -30, auto !important;
       }
     </style>
     <style class='canvas-dim'></style>
@@ -70,6 +72,42 @@ const renderPixiInitElement = (element) => {
   background.tint = color;
   container.addChild(background);
 
+  if (typeModels()[type].components().includes('head')) {
+    pixi[type][element.id].head = new PIXI.Sprite(PIXI.Texture.WHITE);
+    const head = pixi[type][element.id].head;
+    const headDimFactor = 0.6;
+    head.x = (dim - dim * headDimFactor) * 0.5;
+    head.y = 0;
+    head.width = dim * headDimFactor;
+    head.height = dim * headDimFactor;
+    head.tint = numberColors['cream'];
+    container.addChild(head);
+
+    // eyes
+    const distanceEyeFactor = 0.15;
+    const distanceEyeYFactor = 0.08;
+
+    pixi[type][element.id].leftEye = new PIXI.Sprite(PIXI.Texture.WHITE);
+    const leftEye = pixi[type][element.id].leftEye;
+    const leftEyeDimFactor = 0.2;
+    leftEye.x = (dim - dim * leftEyeDimFactor) * 0.5 - dim * distanceEyeFactor;
+    leftEye.y = dim * distanceEyeYFactor;
+    leftEye.width = dim * leftEyeDimFactor;
+    leftEye.height = dim * leftEyeDimFactor;
+    leftEye.tint = numberColors['blueberry'];
+    container.addChild(leftEye);
+
+    pixi[type][element.id].rightEye = new PIXI.Sprite(PIXI.Texture.WHITE);
+    const rightEye = pixi[type][element.id].rightEye;
+    const rightEyeDimFactor = 0.2;
+    rightEye.x = (dim - dim * rightEyeDimFactor) * 0.5 + dim * distanceEyeFactor;
+    rightEye.y = dim * distanceEyeYFactor;
+    rightEye.width = dim * rightEyeDimFactor;
+    rightEye.height = dim * rightEyeDimFactor;
+    rightEye.tint = numberColors['blueberry'];
+    container.addChild(rightEye);
+  }
+
   return element;
 };
 const renderPixiEventElement = (element) => {
@@ -98,6 +136,7 @@ socket.on('connect_error', (err) => {
 
 socket.on('disconnect', (reason) => {
   // console.log(`socket.io event: disconnect | reason: ${reason}`);
+  // setTimeout(() => location.reload(), 2000);
 });
 
 let userPositionAvailablePoints = [];
@@ -198,3 +237,10 @@ setInterval(() => {
     );
   }
 }, 20);
+
+s('canvas').onclick = (e) => {
+  const x = parseInt(maxRangeMap() * (e.offsetX / dimState().minValue));
+  const y = parseInt(maxRangeMap() * (e.offsetY / dimState().minValue));
+  console.log('x', x);
+  console.log('y', y);
+};

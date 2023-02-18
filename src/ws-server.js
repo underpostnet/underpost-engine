@@ -14,6 +14,7 @@ const typeModels = () => {
   return {
     floor: {
       color: () => 'green (html/css color)',
+      components: () => [],
       render: () => {
         return {
           dim: () => maxRangeMap(),
@@ -22,6 +23,7 @@ const typeModels = () => {
     },
     building: {
       color: () => 'black',
+      components: () => [],
       render: () => {
         return {
           dim: () => 3,
@@ -30,6 +32,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
+      components: () => [],
       render: () => {
         return {
           dim: () => 3,
@@ -38,6 +41,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
+      components: () => ['head'],
       render: () => {
         return {
           dim: () => 3,
