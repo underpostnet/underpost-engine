@@ -9,6 +9,8 @@ dotenv.config();
 const nameFolderData = 'cyberia';
 const maxRangeMapParam = 31;
 const elements = {};
+const allowDiagonal = true;
+const dontCrossCorners = true;
 
 const typeModels = () => {
   return {
@@ -176,6 +178,8 @@ const ssrWS = `
     const collision = ${collision};
     const getMatrixCollision = ${getMatrixCollision};
     const getAvailablePoints = ${getAvailablePoints};
+    const allowDiagonal = ${allowDiagonal};
+    const dontCrossCorners = ${dontCrossCorners};
 `;
 
 const wsServer = () => {
@@ -263,15 +267,15 @@ const wsServer = () => {
   console.log(`Io Server is running on port ${process.env.IO_PORT}`);
 
   const finder = new pathfinding.AStarFinder({
-    allowDiagonal: true, // enable diagonal
-    dontCrossCorners: false, // corner of a solid
+    allowDiagonal, // enable diagonal
+    dontCrossCorners, // corner of a solid
     heuristic: pathfinding.Heuristic.chebyshev,
   });
 
   // bots controller
-  const MatrixCollision_A = getMatrixCollision('bot', ['building']);
-  fs.writeFileSync(`./data/${nameFolderData}/matrixCollisionBotBuilding.json`, JSONmatrix(MatrixCollision_A), 'utf8');
-  const AvailablePoints_A = getAvailablePoints('bot', ['building']);
+  const botMatrixCollision = getMatrixCollision('bot', ['building']);
+  fs.writeFileSync(`./data/${nameFolderData}/matrixCollisionBotBuilding.json`, JSONmatrix(botMatrixCollision), 'utf8');
+  const botPositionAvailablePoints = getAvailablePoints('bot', ['building']);
   setInterval(() => {
     getAllElements().map((element) => {
       switch (element.type) {
@@ -282,14 +286,14 @@ const wsServer = () => {
           while (element.path.length === 0) {
             // element.path = range(0, maxRangeMap).map(i => [i, i]);
 
-            const { x2, y2 } = getRandomPoint(2, AvailablePoints_A);
+            const { x2, y2 } = getRandomPoint(2, botPositionAvailablePoints);
 
             element.path = finder.findPath(
               element.render.x,
               element.render.y,
               x2,
               y2,
-              new pathfinding.Grid(MatrixCollision_A)
+              new pathfinding.Grid(botMatrixCollision)
             );
           }
 

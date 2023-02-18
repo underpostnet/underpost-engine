@@ -17,6 +17,7 @@ const clientServer = (options) => {
   deleteFolderRecursive(`${dir}`);
   copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
   copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
+  copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
   copyDir('./src/assets', `${dir}/assets`);
 
   paths.map((pathObj) => {
@@ -36,6 +37,7 @@ const clientServer = (options) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <script src="/socket.io/socket.io.js"></script>
                 <script src="/pixi.js/pixi.js"></script>
+                <script src="/pathfinding/pathfinding-browser.min.js"></script>
                 <style>${baseCss}</style>
             </head>
             <body>

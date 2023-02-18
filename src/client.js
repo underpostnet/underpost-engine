@@ -141,6 +141,7 @@ socket.on('disconnect', (reason) => {
 });
 
 let userPositionAvailablePoints = [];
+let userMatrixCollision = [];
 
 socket.on('update', (...args) => {
   // console.log(`socket.io event: update | reason: ${args}`);
@@ -154,6 +155,8 @@ socket.on('update', (...args) => {
   elements[type].push(eventElement);
   if (eventElement.id === socket.id) {
     userPositionAvailablePoints = getAvailablePoints('user', ['building']);
+    userMatrixCollision = getMatrixCollision('user', ['building']);
+    console.log('userMatrixCollision', JSONmatrix(userMatrixCollision));
   }
   return renderPixiInitElement(eventElement);
 });
@@ -177,6 +180,51 @@ socket.on('ids', (...args) => {
 socket.onAny((event, ...args) => {
   // console.log(`socket.io onAny event: ${event} | arguments: ${args}`);
 });
+
+// canvas dim controller
+let lastScreenDim;
+setInterval(() => {
+  const screnDim = dimState();
+  if (lastScreenDim !== screnDim.minValue) {
+    lastScreenDim = newInstance(screnDim.minValue);
+    htmls(
+      '.canvas-dim',
+      /*css*/ `
+      canvas {
+        width: ${screnDim.minValue}px;
+        height: ${screnDim.minValue}px;
+        top: ${screnDim.maxType === 'height' ? (screnDim.maxValue - screnDim.minValue) / 2 : 0}px;
+      }
+    `
+    );
+  }
+}, 20);
+
+window.pathfinding = PF;
+const finder = new pathfinding.AStarFinder({
+  allowDiagonal, // enable diagonal
+  dontCrossCorners, // corner of a solid
+  heuristic: pathfinding.Heuristic.chebyshev,
+});
+
+s('canvas').onclick = (e) => {
+  const x2 = parseInt(maxRangeMap() * (e.offsetX / dimState().minValue));
+  const y2 = parseInt(maxRangeMap() * (e.offsetY / dimState().minValue));
+  const element = elements.user.find((element) => element.id === socket.id);
+  if (element) {
+    const x1 = element.render.x;
+    const y1 = element.render.y;
+    console.log(x1, y1, '->', x2, y2);
+    element.path = finder.findPath(
+      x1,
+      y1,
+      x2,
+      y2,
+      new pathfinding.Grid(userMatrixCollision.length, userMatrixCollision.length, userMatrixCollision)
+    );
+    console.log(element.path);
+  }
+};
 
 window.activeKey = {};
 window.onkeydown = (e) => (window.activeKey[e.key] = true);
@@ -214,35 +262,15 @@ setInterval(() => {
       element.render.y -= 1;
       update = true;
     }
+    if (element.path && element.path.length > 0) {
+      element.render.x = element.path[0][0];
+      element.render.y = element.path[0][1];
+      update = true;
+      element.path.shift();
+    }
     if (update) {
       renderPixiEventElement(element);
       socket.emit('update', JSON.stringify(element));
     }
   }
 }, 20);
-
-// canvas dim controller
-let lastScreenDim;
-setInterval(() => {
-  const screnDim = dimState();
-  if (lastScreenDim !== screnDim.minValue) {
-    lastScreenDim = newInstance(screnDim.minValue);
-    htmls(
-      '.canvas-dim',
-      /*css*/ `
-      canvas {
-        width: ${screnDim.minValue}px;
-        height: ${screnDim.minValue}px;
-        top: ${screnDim.maxType === 'height' ? (screnDim.maxValue - screnDim.minValue) / 2 : 0}px;
-      }
-    `
-    );
-  }
-}, 20);
-
-s('canvas').onclick = (e) => {
-  const x = parseInt(maxRangeMap() * (e.offsetX / dimState().minValue));
-  const y = parseInt(maxRangeMap() * (e.offsetY / dimState().minValue));
-  console.log('x', x);
-  console.log('y', y);
-};
