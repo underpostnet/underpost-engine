@@ -127,8 +127,17 @@ const renderPixiEventElement = (element) => {
   const { type } = element;
   const { x, y } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
-  container.x = x;
-  container.y = y;
+  const frames = 4;
+  const intervalChangeX = Math.abs(x - container.x) / frames;
+  const intervalChangeY = Math.abs(y - container.y) / frames;
+  range(0, frames - 1).map((frameTime) => {
+    setTimeout(() => {
+      if (container.x > x) container.x = container.x - intervalChangeX;
+      if (container.x < x) container.x = container.x + intervalChangeX;
+      if (container.y > y) container.y = container.y - intervalChangeY;
+      if (container.y < y) container.y = container.y + intervalChangeY;
+    }, frameTime * (updateTimeInterval / 3));
+  });
 };
 const removePixiElement = (element) => {
   const { type } = element;

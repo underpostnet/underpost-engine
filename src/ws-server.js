@@ -12,11 +12,11 @@ const maxRangeMapParam = 16;
 const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
-const maxBots = 3;
+const maxBots = 4;
 const map = [
-  [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
   [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
   [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
   [1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0],
@@ -336,7 +336,7 @@ const wsServer = () => {
               new pathfinding.Grid(botMatrixCollision)
             );
             if (usersTarget.length > 0) {
-              range(0, 1).map(() => element.path.pop());
+              range(0, 0).map(() => element.path.pop());
               targetUser = true;
             }
           }
