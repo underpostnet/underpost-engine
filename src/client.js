@@ -297,7 +297,6 @@ s('canvas').onclick = (e, subPath) => {
             break;
         }
         if (userMatrixCollision[dirsArr[dir].y] && userMatrixCollision[dirsArr[dir].y][dirsArr[dir].x] === 0) {
-          console.error('entro');
           dirsArr[dir].w = getDistance(x2, y2, dirsArr[dir].x, dirsArr[dir].y);
           dirsArr[dir].path = finder.findPath(
             x1,
