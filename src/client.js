@@ -205,9 +205,9 @@ const finder = new pathfinding.AStarFinder({
   heuristic: pathfinding.Heuristic.chebyshev,
 });
 
-s('canvas').onclick = (e, subSearch) => {
-  let x2 = subSearch === undefined ? parseInt(maxRangeMap() * (e.offsetX / dimState().minValue)) : e.offsetX;
-  let y2 = subSearch === undefined ? parseInt(maxRangeMap() * (e.offsetY / dimState().minValue)) : e.offsetY;
+s('canvas').onclick = (e, subPath) => {
+  let x2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetX / dimState().minValue)) : e.offsetX;
+  let y2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetY / dimState().minValue)) : e.offsetY;
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
     if (x2 > maxRangeMap(element.render.dim)) x2 = maxRangeMap(element.render.dim);
@@ -215,15 +215,18 @@ s('canvas').onclick = (e, subSearch) => {
     const x1 = element.render.x;
     const y1 = element.render.y;
     console.log(x1, y1, '->', x2, y2);
-    element.path = finder.findPath(
-      x1,
-      y1,
-      x2,
-      y2,
-      new pathfinding.Grid(userMatrixCollision.length, userMatrixCollision.length, userMatrixCollision)
-    );
+    element.path =
+      subPath === undefined
+        ? finder.findPath(
+            x1,
+            y1,
+            x2,
+            y2,
+            new pathfinding.Grid(userMatrixCollision.length, userMatrixCollision.length, userMatrixCollision)
+          )
+        : subPath;
     console.log(element.path);
-    if (element.path.length === 0 && subSearch === undefined) {
+    if (element.path.length === 0 && subPath === undefined) {
       const dirsArr = {};
       const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
       let wArray = [];
@@ -293,27 +296,32 @@ s('canvas').onclick = (e, subSearch) => {
             }
             break;
         }
-        dirsArr[dir].w = getDistance(x2, y2, dirsArr[dir].x, dirsArr[dir].y);
-        dirsArr[dir].validate =
-          userMatrixCollision[dirsArr[dir].y] && userMatrixCollision[dirsArr[dir].y][dirsArr[dir].x] === 0
-            ? true
-            : false;
-        wArray.push(dirsArr[dir]);
+        if (userMatrixCollision[dirsArr[dir].y] && userMatrixCollision[dirsArr[dir].y][dirsArr[dir].x] === 0) {
+          console.error('entro');
+          dirsArr[dir].w = getDistance(x2, y2, dirsArr[dir].x, dirsArr[dir].y);
+          dirsArr[dir].path = finder.findPath(
+            x1,
+            y1,
+            dirsArr[dir].x,
+            dirsArr[dir].y,
+            new pathfinding.Grid(userMatrixCollision.length, userMatrixCollision.length, userMatrixCollision)
+          );
+          if (dirsArr[dir].path.length > 0) wArray.push(dirsArr[dir]);
+        }
       });
       console.log('wArray', wArray);
-      wArray = wArray.filter((dirObj) => dirObj.validate === true);
       if (wArray[0]) {
         const wArrayOrder = orderArrayFromAttrInt(wArray, 'w', 'asc');
         wArray = wArrayOrder.filter((dirObj) => dirObj.w === wArrayOrder[0].w);
         const newPoint = wArray[random(0, wArray.length - 1)];
         console.log('newPoint', newPoint);
-        const { x, y } = newPoint;
+        const { x, y, path } = newPoint;
         s('canvas').onclick(
           {
             offsetX: x,
             offsetY: y,
           },
-          true
+          path
         );
       }
     }
