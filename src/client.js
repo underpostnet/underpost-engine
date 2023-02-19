@@ -207,10 +207,12 @@ const finder = new pathfinding.AStarFinder({
 });
 
 s('canvas').onclick = (e) => {
-  const x2 = parseInt(maxRangeMap() * (e.offsetX / dimState().minValue));
-  const y2 = parseInt(maxRangeMap() * (e.offsetY / dimState().minValue));
+  let x2 = parseInt(maxRangeMap() * (e.offsetX / dimState().minValue));
+  let y2 = parseInt(maxRangeMap() * (e.offsetY / dimState().minValue));
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
+    if (x2 > maxRangeMap(element.render.dim)) x2 = maxRangeMap(element.render.dim);
+    if (y2 > maxRangeMap(element.render.dim)) y2 = maxRangeMap(element.render.dim);
     const x1 = element.render.x;
     const y1 = element.render.y;
     console.log(x1, y1, '->', x2, y2);
