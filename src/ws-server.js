@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
-import { s4, range, random, JSONmatrix, getRandomPoint, newInstance } from './common.js';
+import { s4, range, random, JSONmatrix, getRandomPoint, newInstance, getDistance } from './common.js';
 
 dotenv.config();
 
@@ -256,6 +256,7 @@ const wsServer = () => {
     socket.on('disconnect', (reason) => {
       console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
       clients.splice(clients.indexOf(socket), 1);
+      clients.map((client) => client.emit('close', JSON.stringify(element)));
       elements[type].splice(
         elements[type].findIndex((element) => element.id === socket.id),
         1
@@ -282,11 +283,29 @@ const wsServer = () => {
         case 'bot':
           if (!element.path) element.path = [];
           element.path.shift();
-
-          while (element.path.length === 0) {
+          let targetUser;
+          while (element.path.length === 0 && !targetUser) {
             // element.path = range(0, maxRangeMap).map(i => [i, i]);
 
-            const { x2, y2 } = getRandomPoint(2, botPositionAvailablePoints);
+            let x2, y2, point;
+            const usersTarget = elements['user'].filter((userElement) => {
+              const userDistance = getDistance(
+                element.render.x + parseInt(element.render.dim / 2),
+                element.render.y + parseInt(element.render.dim / 2),
+                userElement.render.x + parseInt(userElement.render.dim / 2),
+                userElement.render.y + parseInt(userElement.render.dim / 2)
+              );
+              return userDistance < maxRangeMap() * 0.3;
+            });
+            if (usersTarget.length > 0) {
+              point = usersTarget[random(0, usersTarget.length - 1)].render;
+              x2 = point.x;
+              y2 = point.y;
+            } else {
+              point = getRandomPoint('', botPositionAvailablePoints);
+              x2 = point.x;
+              y2 = point.y;
+            }
 
             element.path = finder.findPath(
               element.render.x,
@@ -295,10 +314,15 @@ const wsServer = () => {
               y2,
               new pathfinding.Grid(botMatrixCollision)
             );
+            if (usersTarget.length > 0) {
+              range(0, 1).map(() => element.path.pop());
+              targetUser = true;
+            }
           }
-
-          element.render.x = element.path[0][0];
-          element.render.y = element.path[0][1];
+          if (element.path[0]) {
+            element.render.x = element.path[0][0];
+            element.render.y = element.path[0][1];
+          }
           clients.map((client) => client.emit('update', JSON.stringify(element)));
           break;
         case 'user':
@@ -308,14 +332,6 @@ const wsServer = () => {
       }
     });
   }, 20);
-
-  setInterval(() => {
-    const idsElmentsType = newInstance(elements);
-    Object.keys(idsElmentsType).map((type) => {
-      idsElmentsType[type] = idsElmentsType[type].map((element) => element.id);
-    });
-    clients.map((client) => client.emit('ids', JSON.stringify(idsElmentsType)));
-  }, 1000);
 };
 
 export { wsServer, ssrWS };

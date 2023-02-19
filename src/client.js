@@ -138,6 +138,10 @@ socket.on('connect_error', (err) => {
 socket.on('disconnect', (reason) => {
   // console.log(`socket.io event: disconnect | reason: ${reason}`);
   // setTimeout(() => location.reload(), 2000);
+  Object.keys(elements).map((type) => {
+    elements[type].map((element) => removePixiElement(element));
+    elements[type] = [];
+  });
 });
 
 let userPositionAvailablePoints = [];
@@ -161,20 +165,15 @@ socket.on('update', (...args) => {
   return renderPixiInitElement(eventElement);
 });
 
-socket.on('ids', (...args) => {
-  const ids = JSON.parse(args);
-  Object.keys(ids).map((type) => {
-    newInstance(elements[type]).map((element) => {
-      if (!ids[type].find((id) => id === element.id)) {
-        const { id } = element;
-        removePixiElement(element);
-        elements[type].splice(
-          elements[type].findIndex((element) => element.id === id),
-          1
-        );
-      }
-    });
-  });
+socket.on('close', (...args) => {
+  const eventElement = JSON.parse(args);
+  const { id, type } = eventElement;
+  removePixiElement(eventElement);
+  elements[type].splice(
+    elements[type].findIndex((element) => element.id === id),
+    1
+  );
+  console.log('close', type, elements[type]);
 });
 
 socket.onAny((event, ...args) => {
