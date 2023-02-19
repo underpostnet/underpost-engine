@@ -7,13 +7,13 @@ append(
         color: white;
         padding: 0px;
         margin: 0px;
-        cursor: url('/assets/cursors/black-default.png') -30 -30, auto;
+        cursor: url('/cursors/black-default.png') -30 -30, auto;
       }
       canvas {
         margin: auto;
         display: block;
         position: relative;
-        cursor: url('/assets/cursors/black-pointer.png') -30 -30, auto !important;
+        cursor: url('/cursors/black-pointer.png') -30 -30, auto !important;
       }
     </style>
     <style class='canvas-dim'></style>

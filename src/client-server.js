@@ -18,7 +18,7 @@ const clientServer = (options) => {
   copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
   copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
   copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
-  copyDir('./src/assets', `${dir}/assets`);
+  copyDir('./src/assets', `${dir}`);
 
   paths.map((pathObj) => {
     let { path } = pathObj;
@@ -34,6 +34,7 @@ const clientServer = (options) => {
             <head>
                 <meta charset="UTF-8">
                 <title>CYBERIA</title>
+                <link rel='icon' type='image/x-icon' href='/favicon.ico'>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <script src="/socket.io/socket.io.js"></script>
                 <script src="/pixi.js/pixi.js"></script>
