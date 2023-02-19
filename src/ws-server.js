@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
-import { s4, range, random, JSONmatrix, getRandomPoint, newInstance, getDistance } from './common.js';
+import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge } from './common.js';
 
 dotenv.config();
 
@@ -225,7 +225,6 @@ const wsServer = () => {
     console.log(`socket.io | connect ${socket.id}`);
     clients.push(socket);
     console.log(`socket.io | currents clients: ${clients.length}`);
-    // socket.emit('message', 'msg test server');
     const type = 'user';
     const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building']));
     const { color, render } = getParamsType(type);
@@ -247,16 +246,17 @@ const wsServer = () => {
     socket.on('update', (args) => {
       // console.log(`socket.io | update ${socket.id} due to data: ${args}`);
       const eventElement = JSON.parse(args);
-      elements[type][elements[type].findIndex((element) => element.id === socket.id)] = eventElement;
+      const indexElement = elements[type].findIndex((element) => element.id === socket.id);
+      elements[type][indexElement] = merge(elements[type][indexElement], eventElement);
       clients.map((client) => {
-        if (socket.id !== client.id) client.emit('update', JSON.stringify(eventElement));
+        if (socket.id !== client.id) client.emit('update', JSON.stringify({ id: socket.id, type, ...eventElement }));
       });
     });
 
     socket.on('disconnect', (reason) => {
       console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
       clients.splice(clients.indexOf(socket), 1);
-      clients.map((client) => client.emit('close', JSON.stringify(element)));
+      clients.map((client) => client.emit('close', JSON.stringify({ id: socket.id, type })));
       elements[type].splice(
         elements[type].findIndex((element) => element.id === socket.id),
         1
@@ -323,7 +323,19 @@ const wsServer = () => {
             element.render.x = element.path[0][0];
             element.render.y = element.path[0][1];
           }
-          clients.map((client) => client.emit('update', JSON.stringify(element)));
+          clients.map((client) =>
+            client.emit(
+              'update',
+              JSON.stringify({
+                id: element.id,
+                type: element.type,
+                render: {
+                  x: element.render.x,
+                  y: element.render.y,
+                },
+              })
+            )
+          );
           break;
         case 'user':
           break;

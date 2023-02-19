@@ -128,7 +128,6 @@ const socket = io('ws://localhost:5501');
 
 socket.on('connect', () => {
   console.log(`socket.io event: connect | session id: ${socket.id}`);
-  // socket.emit('message', 'msg test client');
 });
 
 socket.on('connect_error', (err) => {
@@ -150,11 +149,11 @@ let userMatrixCollision = [];
 socket.on('update', (...args) => {
   // console.log(`socket.io event: update | reason: ${args}`);
   const eventElement = JSON.parse(args);
-  const { id, render, type } = eventElement;
-  const element = elements[type].find((element) => element.id === id);
-  if (element) {
-    element.render = render;
-    return renderPixiEventElement(element);
+  const { id, type } = eventElement;
+  const elementIndex = elements[type].findIndex((element) => element.id === id);
+  if (elementIndex > -1) {
+    elements[type][elementIndex] = merge(elements[type][elementIndex], eventElement);
+    return renderPixiEventElement(elements[type][elementIndex]);
   }
   elements[type].push(eventElement);
   if (eventElement.id === socket.id) {
@@ -234,12 +233,16 @@ window.onkeyup = (e) => (window.activeKey[e.key] = undefined);
 setInterval(() => {
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
+    const emitElement = {
+      render: {},
+    };
     let update = false;
     if (
       window.activeKey['ArrowLeft'] &&
       userPositionAvailablePoints.find((point) => point[0] === element.render.x - 1 && point[1] === element.render.y)
     ) {
       element.render.x -= 1;
+      emitElement.render.x = element.render.x;
       update = true;
     }
     if (
@@ -247,6 +250,7 @@ setInterval(() => {
       userPositionAvailablePoints.find((point) => point[0] === element.render.x + 1 && point[1] === element.render.y)
     ) {
       element.render.x += 1;
+      emitElement.render.x = element.render.x;
       update = true;
     }
     if (
@@ -254,6 +258,7 @@ setInterval(() => {
       userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y + 1)
     ) {
       element.render.y += 1;
+      emitElement.render.y = element.render.y;
       update = true;
     }
     if (
@@ -261,17 +266,20 @@ setInterval(() => {
       userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y - 1)
     ) {
       element.render.y -= 1;
+      emitElement.render.y = element.render.y;
       update = true;
     }
     if (element.path && element.path.length > 0) {
       element.render.x = element.path[0][0];
       element.render.y = element.path[0][1];
+      emitElement.render.y = element.render.y;
+      emitElement.render.x = element.render.x;
       update = true;
       element.path.shift();
     }
     if (update) {
       renderPixiEventElement(element);
-      socket.emit('update', JSON.stringify(element));
+      socket.emit('update', JSON.stringify(emitElement));
     }
   }
 }, 20);
