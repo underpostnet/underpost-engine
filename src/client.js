@@ -64,14 +64,26 @@ const renderPixiInitElement = (element) => {
   container.height = dim;
   app.stage.addChild(container);
 
-  pixi[type][element.id].background = new PIXI.Sprite(PIXI.Texture.WHITE);
-  const background = pixi[type][element.id].background;
-  background.x = 0;
-  background.y = 0;
-  background.width = dim;
-  background.height = dim;
-  background.tint = color;
-  container.addChild(background);
+  if (typeModels()[type].components().includes('tile8.PNG')) {
+    pixi[type][element.id].tile = PIXI.Sprite.from('/tiles/tile8.PNG');
+    const tile = pixi[type][element.id].tile;
+    tile.x = 0;
+    tile.y = 0;
+    tile.width = dim;
+    tile.height = dim;
+    container.addChild(tile);
+  }
+
+  if (typeModels()[type].components().includes('background')) {
+    pixi[type][element.id].background = new PIXI.Sprite(PIXI.Texture.WHITE);
+    const background = pixi[type][element.id].background;
+    background.x = 0;
+    background.y = 0;
+    background.width = dim;
+    background.height = dim;
+    background.tint = color;
+    container.addChild(background);
+  }
 
   if (typeModels()[type].components().includes('head')) {
     pixi[type][element.id].head = new PIXI.Sprite(PIXI.Texture.WHITE);
@@ -196,7 +208,7 @@ setInterval(() => {
     `
     );
   }
-}, 20);
+}, updateTimeInterval);
 
 window.pathfinding = PF;
 const finder = new pathfinding.AStarFinder({
@@ -383,4 +395,4 @@ setInterval(() => {
       socket.emit('update', JSON.stringify(emitElement));
     }
   }
-}, 20);
+}, updateTimeInterval);

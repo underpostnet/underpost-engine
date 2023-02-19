@@ -7,16 +7,36 @@ import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge } fro
 dotenv.config();
 
 const nameFolderData = 'cyberia';
-const maxRangeMapParam = 31;
+const updateTimeInterval = 50;
+const maxRangeMapParam = 16;
 const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
+const maxBots = 3;
+const map = [
+  [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+  [1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+  [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+  [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+];
 
 const typeModels = () => {
   return {
     floor: {
       color: () => 'green (html/css color)',
-      components: () => [],
+      components: () => ['tile8.PNG'],
       render: () => {
         return {
           dim: () => maxRangeMap(),
@@ -28,25 +48,25 @@ const typeModels = () => {
       components: () => [],
       render: () => {
         return {
-          dim: () => 3,
+          dim: () => 1,
         };
       },
     },
     bot: {
       color: () => 'yellow',
-      components: () => [],
+      components: () => ['background'],
       render: () => {
         return {
-          dim: () => 3,
+          dim: () => 1,
         };
       },
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['head'],
+      components: () => ['background', 'head'],
       render: () => {
         return {
-          dim: () => 3,
+          dim: () => 1,
         };
       },
     },
@@ -151,20 +171,22 @@ const getAvailablePoints = (type, types) => {
   const type = 'building';
   const { color, render } = getParamsType(type);
   const { dim } = render;
-  matrixIterator((x, y) => {
-    if (random(1, 100) <= 1) {
-      elements[type].push({
-        id: id(),
-        type,
-        color,
-        render: {
-          x,
-          y,
-          dim,
-        },
-      });
-    }
-  }, type);
+  map.map((row, y) =>
+    row.map((cell, x) => {
+      if (cell === 1) {
+        elements[type].push({
+          id: id(),
+          type,
+          color,
+          render: {
+            x,
+            y,
+            dim,
+          },
+        });
+      }
+    })
+  );
 })();
 
 const ssrWS = `
@@ -180,6 +202,7 @@ const ssrWS = `
     const getAvailablePoints = ${getAvailablePoints};
     const allowDiagonal = ${allowDiagonal};
     const dontCrossCorners = ${dontCrossCorners};
+    const updateTimeInterval = ${updateTimeInterval};
 `;
 
 const wsServer = () => {
@@ -187,25 +210,23 @@ const wsServer = () => {
     const type = 'bot';
     const { color, render } = getParamsType(type);
     const { dim } = render;
-    matrixIterator((x, y) => {
-      if (random(1, 100) <= 1) {
-        if (!collision({ dim, x, y }, ['building', 'bot'])) {
-          elements[type].push({
-            id: id(),
-            type,
-            color,
-            render: {
-              x,
-              y,
-              dim,
-            },
-          });
-        }
-      }
-    }, type);
+    const botsAvailablePoints = getAvailablePoints(type, ['building']);
+    while (botsAvailablePoints.length > 0 && elements[type].length < maxBots) {
+      const point = botsAvailablePoints[random(0, botsAvailablePoints.length - 1)];
+      elements[type].push({
+        id: id(),
+        type,
+        color,
+        render: {
+          x: point[0],
+          y: point[1],
+          dim,
+        },
+      });
+    }
   })();
 
-  if (!fs.existsSync('./data/cyberia')) fs.mkdirSync('./data/cyberia', { recursive: true });
+  if (!fs.existsSync(`./data/${nameFolderData}`)) fs.mkdirSync(`./data/${nameFolderData}`, { recursive: true });
 
   // view test matrix
   const matrix = range(0, maxRangeMap()).map((y) => {
@@ -343,7 +364,7 @@ const wsServer = () => {
           break;
       }
     });
-  }, 20);
+  }, updateTimeInterval);
 };
 
 export { wsServer, ssrWS };
