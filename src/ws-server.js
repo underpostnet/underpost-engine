@@ -14,7 +14,6 @@ const maxRangeMapParam = 16;
 const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
-const maxBots = 4;
 
 const typeModels = () => {
   return {
@@ -106,27 +105,27 @@ const validateCollision = (A, B) => {
   return false;
 };
 
-const collision = (render, types) => {
+const collision = (render, types, map) => {
   for (const type of types) {
-    if (elements[type].find((element) => validateCollision(element.render, render))) return true;
+    if (elements[type].find((element) => element.map === map && validateCollision(element.render, render))) return true;
   }
   return false;
 };
 
-const getMatrixCollision = (type, types) =>
+const getMatrixCollision = (type, types, map) =>
   range(0, maxRangeMap(type)).map((y) => {
     return range(0, maxRangeMap(type)).map((x) => {
       const dim = typeModels()[type].render().dim();
-      if (collision({ x, y, dim }, types)) return 1;
+      if (collision({ x, y, dim }, types, map)) return 1;
       return 0;
     });
   });
 
-const getAvailablePoints = (type, types) => {
+const getAvailablePoints = (type, types, map) => {
   const availablePoints = [];
   const dim = typeModels()[type].render().dim();
   matrixIterator((x, y) => {
-    if (!collision({ x, y, dim }, types)) availablePoints.push([x, y]);
+    if (!collision({ x, y, dim }, types, map)) availablePoints.push([x, y]);
   }, type);
   return availablePoints;
 };
@@ -192,41 +191,6 @@ const ssrWS = `
 `;
 
 const wsServer = () => {
-  (() => {
-    return;
-    const type = 'bot';
-    const { color, render } = getParamsType(type);
-    const { dim } = render;
-    const botsAvailablePoints = getAvailablePoints(type, ['building']);
-    while (botsAvailablePoints.length > 0 && elements[type].length < maxBots) {
-      const point = botsAvailablePoints[random(0, botsAvailablePoints.length - 1)];
-      elements[type].push({
-        id: id(),
-        type,
-        color,
-        render: {
-          x: point[0],
-          y: point[1],
-          dim,
-        },
-      });
-    }
-  })();
-
-  if (!fs.existsSync(`./data/${nameFolderData}`)) fs.mkdirSync(`./data/${nameFolderData}`, { recursive: true });
-
-  // view test matrix
-  const matrix = range(0, maxRangeMap()).map((y) => {
-    return range(0, maxRangeMap()).map((x) => {
-      for (const type of ['bot', 'building']) {
-        if (collision({ x, y, dim: 1 }, [type])) return Object.keys(typeModels()).indexOf(type);
-      }
-
-      return 0;
-    });
-  });
-  fs.writeFileSync(`./data/${nameFolderData}/matrix.json`, JSONmatrix(matrix), 'utf8');
-
   const io = new Server(process.env.IO_PORT, { cors: { origins: [`http://localhost:${process.env.CLIENT_PORT}`] } });
   const clients = [];
   io.on('connection', (socket) => {
@@ -238,7 +202,7 @@ const wsServer = () => {
       clients.push(socket);
       console.log(`socket.io | currents clients: ${clients.length}`);
       const map = replaceAll(args, '/', '');
-      const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building']));
+      const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
       const { color, render } = getParamsType(type);
       const { dim } = render;
       const element = {
@@ -300,13 +264,39 @@ const wsServer = () => {
   });
 
   // bots controller
-  const botMatrixCollision = getMatrixCollision('bot', ['building']);
-  fs.writeFileSync(`./data/${nameFolderData}/matrixCollisionBotBuilding.json`, JSONmatrix(botMatrixCollision), 'utf8');
-  const botPositionAvailablePoints = getAvailablePoints('bot', ['building']);
-  setInterval(() => {
-    getAllElements().map((element) => {
-      switch (element.type) {
-        case 'bot':
+  maps.map((dataMap) => {
+    const map = dataMap.name_map;
+    const type = 'bot';
+    const botMatrixCollision = getMatrixCollision(type, ['building'], map);
+    const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
+
+    (() => {
+      const maxBots = random(2, 4);
+      const { color, render } = getParamsType(type);
+      const { dim } = render;
+      while (
+        botPositionAvailablePoints.length > 0 &&
+        elements[type].filter((element) => element.map === map).length < maxBots
+      ) {
+        const point = botPositionAvailablePoints[random(0, botPositionAvailablePoints.length - 1)];
+        elements[type].push({
+          id: id(),
+          type,
+          color,
+          map,
+          render: {
+            x: point[0],
+            y: point[1],
+            dim,
+          },
+        });
+      }
+    })();
+
+    setInterval(() => {
+      elements[type]
+        .filter((element) => element.map === map)
+        .map((element) => {
           if (!element.path) element.path = [];
           element.path.shift();
           let targetUser;
@@ -315,6 +305,7 @@ const wsServer = () => {
 
             let x2, y2, point;
             const usersTarget = elements['user'].filter((userElement) => {
+              if (userElement.map !== map) return false;
               const userDistance = getDistance(
                 element.render.x + parseInt(element.render.dim / 2),
                 element.render.y + parseInt(element.render.dim / 2),
@@ -349,7 +340,9 @@ const wsServer = () => {
             element.render.x = element.path[0][0];
             element.render.y = element.path[0][1];
           }
-          clients.map((client) =>
+          clients.map((client) => {
+            const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+            if (elements['user'][clientIndex].map !== map) return;
             client.emit(
               'update',
               JSON.stringify({
@@ -360,16 +353,11 @@ const wsServer = () => {
                   y: element.render.y,
                 },
               })
-            )
-          );
-          break;
-        case 'user':
-          break;
-        default:
-          break;
-      }
-    });
-  }, updateTimeInterval);
+            );
+          });
+        });
+    }, updateTimeInterval);
+  });
 };
 
 export { wsServer, ssrWS };
