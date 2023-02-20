@@ -2,17 +2,19 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import express from 'express';
 
-import { commonFunctions } from './common.js';
+import { commonFunctions, random } from './common.js';
 import { copyDir, deleteFolderRecursive } from './files.js';
 import { baseCss } from './css.js';
 import { ssrColor } from './colors.js';
 import { ssrWS } from './ws-server.js';
+import { maps } from './maps.js';
+import { replaceAll } from './util.js';
 
 dotenv.config();
 
-const clientServer = (options) => {
-  const { paths, dir } = options;
+const httpServer = () => {
   const server = express();
+  const dir = './public';
 
   deleteFolderRecursive(`${dir}`);
   copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
@@ -20,8 +22,8 @@ const clientServer = (options) => {
   copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
   copyDir('./src/assets', `${dir}`);
 
-  paths.map((pathObj) => {
-    let { path } = pathObj;
+  maps.map((pathObj) => {
+    let path = pathObj.name_map;
     if (path !== '') path += '/';
     if (!fs.existsSync(`${dir}/${path}`)) fs.mkdirSync(`${dir}/${path}`, { recursive: true });
     console.log('render: ', path);
@@ -33,7 +35,7 @@ const clientServer = (options) => {
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>CYBERIA</title>
+                <title>CYBERIA - ${replaceAll(pathObj.name_map, '-', ' ')}</title>
                 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <script src="/socket.io/socket.io.js"></script>
@@ -62,6 +64,8 @@ const clientServer = (options) => {
   server.listen(process.env.CLIENT_PORT, () => {
     console.log(`Client Server is running on port ${process.env.CLIENT_PORT}`);
   });
+
+  server.get('/', (req, res) => res.redirect(`/${maps[random(0, maps.length - 1)].name_map}`));
 };
 
-export { clientServer };
+export { httpServer };

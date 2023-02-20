@@ -3,6 +3,8 @@ import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
 import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge } from './common.js';
+import { maps } from './maps.js';
+import { replaceAll } from './util.js';
 
 dotenv.config();
 
@@ -18,7 +20,7 @@ const typeModels = () => {
   return {
     floor: {
       color: () => 'green (html/css color)',
-      components: () => ['background'],
+      components: () => ['tile'],
       render: () => {
         return {
           dim: () => maxRangeMap(),
@@ -27,7 +29,7 @@ const typeModels = () => {
     },
     building: {
       color: () => 'black',
-      components: () => ['background'],
+      components: () => [],
       render: () => {
         return {
           dim: () => 1,
@@ -70,8 +72,6 @@ const getParamsType = (type) => {
     },
   };
 };
-
-// common
 
 const getAllElements = () => {
   let elementsReturn = [];
@@ -131,45 +131,48 @@ const getAvailablePoints = (type, types) => {
   return availablePoints;
 };
 
-// statics init elements
-
 (() => {
-  const type = 'floor';
-  const { color, render } = getParamsType(type);
-  const { dim } = render;
-  elements[type].push({
-    id: id(),
-    type,
-    color,
-    render: {
-      x: 0,
-      y: 0,
-      dim,
-    },
-  });
-})();
-
-(() => {
-  return;
   const type = 'building';
   const { color, render } = getParamsType(type);
   const { dim } = render;
-  map.map((row, y) =>
-    row.map((cell, x) => {
-      if (cell === 1) {
-        elements[type].push({
-          id: id(),
-          type,
-          color,
-          render: {
-            x,
-            y,
-            dim,
-          },
-        });
-      }
-    })
-  );
+  maps.map((dataMap) => {
+    const map = dataMap.name_map;
+    (() => {
+      const type = 'floor';
+      const { color, render } = getParamsType(type);
+      const { dim } = render;
+      elements[type].push({
+        id: id(),
+        type,
+        color,
+        map,
+        render: {
+          x: 0,
+          y: 0,
+          dim,
+        },
+      });
+    })();
+    dataMap.matrix
+      .map((row) => row.map((cell) => (cell === 1 ? 1 : 0)))
+      .map((row, y) =>
+        row.map((cell, x) => {
+          if (cell === 1) {
+            elements[type].push({
+              id: id(),
+              type,
+              color,
+              map,
+              render: {
+                x,
+                y,
+                dim,
+              },
+            });
+          }
+        })
+      );
+  });
 })();
 
 const ssrWS = `
@@ -190,6 +193,7 @@ const ssrWS = `
 
 const wsServer = () => {
   (() => {
+    return;
     const type = 'bot';
     const { color, render } = getParamsType(type);
     const { dim } = render;
@@ -226,41 +230,59 @@ const wsServer = () => {
   const io = new Server(process.env.IO_PORT, { cors: { origins: [`http://localhost:${process.env.CLIENT_PORT}`] } });
   const clients = [];
   io.on('connection', (socket) => {
-    console.log(`socket.io | connect ${socket.id}`);
-    clients.push(socket);
-    console.log(`socket.io | currents clients: ${clients.length}`);
+    console.log(`socket.io | user connect ${socket.id}`);
     const type = 'user';
-    const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building']));
-    const { color, render } = getParamsType(type);
-    const { dim } = render;
-    const element = {
-      id: socket.id,
-      type,
-      color,
-      render: {
-        x,
-        y,
-        dim,
-      },
-    };
-    getAllElements().map((element) => socket.emit('update', JSON.stringify(element)));
-    elements[type].push(element);
-    clients.map((client) => client.emit('update', JSON.stringify(element)));
+
+    socket.on('init', (args) => {
+      console.log(`socket.io | init ${socket.id} due to data: ${args}`);
+      clients.push(socket);
+      console.log(`socket.io | currents clients: ${clients.length}`);
+      const map = replaceAll(args, '/', '');
+      const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building']));
+      const { color, render } = getParamsType(type);
+      const { dim } = render;
+      const element = {
+        id: socket.id,
+        type,
+        color,
+        map,
+        render: {
+          x,
+          y,
+          dim,
+        },
+      };
+      getAllElements().map((element) => {
+        if (element.map === map) socket.emit('update', JSON.stringify(element));
+      });
+      elements[type].push(element);
+      clients.map((client) => {
+        const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+        if (clientIndex > -1 && elements[type][clientIndex].map === map) client.emit('update', JSON.stringify(element));
+      });
+    });
 
     socket.on('update', (args) => {
       // console.log(`socket.io | update ${socket.id} due to data: ${args}`);
-      const eventElement = JSON.parse(args);
-      const indexElement = elements[type].findIndex((element) => element.id === socket.id);
-      elements[type][indexElement] = merge(elements[type][indexElement], eventElement);
+      const elementEvent = JSON.parse(args);
+      const elementIndex = elements[type].findIndex((element) => element.id === socket.id);
+      elements[type][elementIndex] = merge(elements[type][elementIndex], elementEvent);
       clients.map((client) => {
-        if (socket.id !== client.id) client.emit('update', JSON.stringify({ id: socket.id, type, ...eventElement }));
+        const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+        if (elements[type][clientIndex].map === elements[type][elementIndex].map && socket.id !== client.id)
+          client.emit('update', JSON.stringify({ id: socket.id, type, ...elementEvent }));
       });
     });
 
     socket.on('disconnect', (reason) => {
       console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
       clients.splice(clients.indexOf(socket), 1);
-      clients.map((client) => client.emit('close', JSON.stringify({ id: socket.id, type })));
+      const elementIndex = elements[type].findIndex((element) => element.id === socket.id);
+      clients.map((client) => {
+        const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+        if (elements[type][clientIndex].map === elements[type][elementIndex].map)
+          client.emit('close', JSON.stringify({ id: socket.id, type }));
+      });
       elements[type].splice(
         elements[type].findIndex((element) => element.id === socket.id),
         1

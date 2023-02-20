@@ -64,6 +64,16 @@ const renderPixiInitElement = (element) => {
   container.height = dim;
   app.stage.addChild(container);
 
+  if (typeModels()[type].components().includes('tile')) {
+    pixi[type][element.id].tile = PIXI.Sprite.from(`/tiles/${element.map}.PNG`);
+    const tile = pixi[type][element.id].tile;
+    tile.x = 0;
+    tile.y = 0;
+    tile.width = dim;
+    tile.height = dim;
+    container.addChild(tile);
+  }
+
   if (typeModels()[type].components().includes('background')) {
     pixi[type][element.id].background = new PIXI.Sprite(PIXI.Texture.WHITE);
     const background = pixi[type][element.id].background;
@@ -103,6 +113,7 @@ const socket = io('ws://localhost:5501');
 
 socket.on('connect', () => {
   console.log(`socket.io event: connect | session id: ${socket.id}`);
+  socket.emit('init', getURI());
 });
 
 socket.on('connect_error', (err) => {
