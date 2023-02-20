@@ -64,16 +64,6 @@ const renderPixiInitElement = (element) => {
   container.height = dim;
   app.stage.addChild(container);
 
-  if (typeModels()[type].components().includes('tile8.PNG')) {
-    pixi[type][element.id].tile = PIXI.Sprite.from('/tiles/tile8.PNG');
-    const tile = pixi[type][element.id].tile;
-    tile.x = 0;
-    tile.y = 0;
-    tile.width = dim;
-    tile.height = dim;
-    container.addChild(tile);
-  }
-
   if (typeModels()[type].components().includes('background')) {
     pixi[type][element.id].background = new PIXI.Sprite(PIXI.Texture.WHITE);
     const background = pixi[type][element.id].background;
@@ -83,42 +73,6 @@ const renderPixiInitElement = (element) => {
     background.height = dim;
     background.tint = color;
     container.addChild(background);
-  }
-
-  if (typeModels()[type].components().includes('head')) {
-    pixi[type][element.id].head = new PIXI.Sprite(PIXI.Texture.WHITE);
-    const head = pixi[type][element.id].head;
-    const headDimFactor = 0.6;
-    head.x = (dim - dim * headDimFactor) * 0.5;
-    head.y = 0;
-    head.width = dim * headDimFactor;
-    head.height = dim * headDimFactor;
-    head.tint = numberColors['cream'];
-    container.addChild(head);
-
-    // eyes
-    const distanceEyeFactor = 0.15;
-    const distanceEyeYFactor = 0.08;
-
-    pixi[type][element.id].leftEye = new PIXI.Sprite(PIXI.Texture.WHITE);
-    const leftEye = pixi[type][element.id].leftEye;
-    const leftEyeDimFactor = 0.2;
-    leftEye.x = (dim - dim * leftEyeDimFactor) * 0.5 - dim * distanceEyeFactor;
-    leftEye.y = dim * distanceEyeYFactor;
-    leftEye.width = dim * leftEyeDimFactor;
-    leftEye.height = dim * leftEyeDimFactor;
-    leftEye.tint = numberColors['blueberry'];
-    container.addChild(leftEye);
-
-    pixi[type][element.id].rightEye = new PIXI.Sprite(PIXI.Texture.WHITE);
-    const rightEye = pixi[type][element.id].rightEye;
-    const rightEyeDimFactor = 0.2;
-    rightEye.x = (dim - dim * rightEyeDimFactor) * 0.5 + dim * distanceEyeFactor;
-    rightEye.y = dim * distanceEyeYFactor;
-    rightEye.width = dim * rightEyeDimFactor;
-    rightEye.height = dim * rightEyeDimFactor;
-    rightEye.tint = numberColors['blueberry'];
-    container.addChild(rightEye);
   }
 
   return element;

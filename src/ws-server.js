@@ -13,30 +13,12 @@ const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
 const maxBots = 4;
-const map = [
-  [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-  [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-  [1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0],
-  [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-];
 
 const typeModels = () => {
   return {
     floor: {
       color: () => 'green (html/css color)',
-      components: () => ['tile8.PNG'],
+      components: () => ['background'],
       render: () => {
         return {
           dim: () => maxRangeMap(),
@@ -45,7 +27,7 @@ const typeModels = () => {
     },
     building: {
       color: () => 'black',
-      components: () => [],
+      components: () => ['background'],
       render: () => {
         return {
           dim: () => 1,
@@ -63,7 +45,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['background', 'head'],
+      components: () => ['background'],
       render: () => {
         return {
           dim: () => 1,
@@ -168,6 +150,7 @@ const getAvailablePoints = (type, types) => {
 })();
 
 (() => {
+  return;
   const type = 'building';
   const { color, render } = getParamsType(type);
   const { dim } = render;
