@@ -22,11 +22,14 @@ append(
 `
 );
 
-const amplitudeRender = 13;
+const amplitudeRender = 50;
 const elements = {};
 const pixi = {};
+const params = {};
 
-Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {})));
+const spriteDirs = ['02', '04', '06', '08'];
+
+Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
 const app = new PIXI.Application({
   width: maxRangeMap() * amplitudeRender,
@@ -48,6 +51,49 @@ console.log('typeModels', typeModels());
 console.log('elements', elements);
 console.log('pixi', pixi);
 
+const renderPixiSpriteElement = (element) => {
+  const { type } = element;
+  const { direction } = params[type][element.id];
+  spriteDirs.map((spriteType) => (pixi[type][element.id][`s${spriteType}`].visible = false));
+  switch (direction) {
+    case 'South East':
+      // ↘
+      pixi[type][element.id][`s06`].visible = true;
+      break;
+    case 'East':
+      // →
+      pixi[type][element.id][`s06`].visible = true;
+      break;
+    case 'North East':
+      // ↗
+      pixi[type][element.id][`s06`].visible = true;
+      break;
+    case 'South':
+      // ↓
+      pixi[type][element.id][`s08`].visible = true;
+      break;
+    case 'North':
+      // ↑
+      pixi[type][element.id][`s02`].visible = true;
+      break;
+    case 'South West':
+      // ↙
+      pixi[type][element.id][`s04`].visible = true;
+      break;
+    case 'West':
+      // ←
+      pixi[type][element.id][`s04`].visible = true;
+      break;
+    case 'North West':
+      // ↖
+      pixi[type][element.id][`s04`].visible = true;
+      break;
+    default:
+      pixi[type][element.id][`s08`].visible = true;
+      break;
+  }
+};
+
 const renderPixiInitElement = (element) => {
   console.log('renderPixiInitElement', element);
   const { type } = element;
@@ -55,6 +101,10 @@ const renderPixiInitElement = (element) => {
   const color = numberColors[element.color];
 
   pixi[type][element.id] = {};
+
+  params[type][element.id] = {
+    direction: 'South',
+  };
 
   pixi[type][element.id].container = new PIXI.Container();
   const container = pixi[type][element.id].container;
@@ -64,7 +114,7 @@ const renderPixiInitElement = (element) => {
   container.height = dim;
   app.stage.addChild(container);
 
-  if (typeModels()[type].components().includes('tile')) {
+  if (typeModels()[type].components().includes('tiles')) {
     pixi[type][element.id].tile = PIXI.Sprite.from(`/tiles/${element.map}.PNG`);
     const tile = pixi[type][element.id].tile;
     tile.x = 0;
@@ -85,12 +135,28 @@ const renderPixiInitElement = (element) => {
     container.addChild(background);
   }
 
+  if (typeModels()[type].components().includes('sprites')) {
+    const sprite = element.sprite;
+    spriteDirs.map((spriteType) => {
+      pixi[type][element.id][`s${spriteType}`] = PIXI.Sprite.from(`/sprites/${sprite}/${spriteType}/${spriteType}.png`);
+      pixi[type][element.id][`s${spriteType}`].x = 0;
+      pixi[type][element.id][`s${spriteType}`].y = 0;
+      pixi[type][element.id][`s${spriteType}`].width = dim;
+      pixi[type][element.id][`s${spriteType}`].height = dim;
+      pixi[type][element.id][`s${spriteType}`].visible = false;
+      container.addChild(pixi[type][element.id][`s${spriteType}`]);
+    });
+    renderPixiSpriteElement(element);
+  }
+
   return element;
 };
 const renderPixiEventElement = (element) => {
   const { type } = element;
   const { x, y } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
+  params[type][element.id].direction = getDirection(container.x, container.y, x, y).direction;
+  if (element.sprite) renderPixiSpriteElement(element);
   const frames = 4;
   const intervalChangeX = Math.abs(x - container.x) / frames;
   const intervalChangeY = Math.abs(y - container.y) / frames;
@@ -106,6 +172,7 @@ const renderPixiEventElement = (element) => {
 const removePixiElement = (element) => {
   const { type } = element;
   Object.keys(pixi[type][element.id]).map((pixiKey) => pixi[type][element.id][pixiKey].destroy());
+  delete params[type][element.id];
   delete pixi[type][element.id];
 };
 

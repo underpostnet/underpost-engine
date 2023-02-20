@@ -8,7 +8,6 @@ import { replaceAll } from './util.js';
 
 dotenv.config();
 
-const nameFolderData = 'cyberia';
 const updateTimeInterval = 50;
 const maxRangeMapParam = 16;
 const elements = {};
@@ -19,7 +18,7 @@ const typeModels = () => {
   return {
     floor: {
       color: () => 'green (html/css color)',
-      components: () => ['tile'],
+      components: () => ['tiles'],
       render: () => {
         return {
           dim: () => maxRangeMap(),
@@ -46,7 +45,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['background'],
+      components: () => ['sprites'],
       render: () => {
         return {
           dim: () => 1,
@@ -210,6 +209,7 @@ const wsServer = () => {
         type,
         color,
         map,
+        sprite: 'anon',
         render: {
           x,
           y,
