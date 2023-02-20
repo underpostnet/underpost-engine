@@ -1,7 +1,7 @@
 'use strict';
 
 import dotenv from 'dotenv';
-import { httpServer } from './client-server.js';
+import { httpServer } from './http-server.js';
 import { wsServer } from './ws-server.js';
 
 dotenv.config();
