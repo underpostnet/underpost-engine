@@ -138,7 +138,7 @@ const renderPixiInitElement = (element) => {
   if (typeModels()[type].components().includes('sprites')) {
     const sprite = element.sprite;
     spriteDirs.map((spriteType) => {
-      pixi[type][element.id][`s${spriteType}`] = PIXI.Sprite.from(`/sprites/${sprite}/${spriteType}/${spriteType}.png`);
+      pixi[type][element.id][`s${spriteType}`] = PIXI.Sprite.from(`/sprites/${sprite}/${spriteType}/0.png`);
       pixi[type][element.id][`s${spriteType}`].x = 0;
       pixi[type][element.id][`s${spriteType}`].y = 0;
       pixi[type][element.id][`s${spriteType}`].width = dim;

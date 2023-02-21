@@ -34,6 +34,7 @@
     "socket.io": "^4.6.0"
   },
   "devDependencies": {
+    "gif-frames": "^1.0.1",
     "nodemon": "^2.0.20"
   }
 }
