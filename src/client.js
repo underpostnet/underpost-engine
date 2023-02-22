@@ -27,8 +27,6 @@ const elements = {};
 const pixi = {};
 const params = {};
 
-const spriteDirs = ['02', '04', '06', '08'];
-
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
 const app = new PIXI.Application({
@@ -50,49 +48,6 @@ s('pixi-container').appendChild(app.view);
 console.log('typeModels', typeModels());
 console.log('elements', elements);
 console.log('pixi', pixi);
-
-const renderPixiSpriteElement = (element) => {
-  const { type } = element;
-  const { direction } = params[type][element.id];
-  spriteDirs.map((spriteType) => (pixi[type][element.id][`s${spriteType}`].visible = false));
-  switch (direction) {
-    case 'South East':
-      // ↘
-      pixi[type][element.id][`s06`].visible = true;
-      break;
-    case 'East':
-      // →
-      pixi[type][element.id][`s06`].visible = true;
-      break;
-    case 'North East':
-      // ↗
-      pixi[type][element.id][`s06`].visible = true;
-      break;
-    case 'South':
-      // ↓
-      pixi[type][element.id][`s08`].visible = true;
-      break;
-    case 'North':
-      // ↑
-      pixi[type][element.id][`s02`].visible = true;
-      break;
-    case 'South West':
-      // ↙
-      pixi[type][element.id][`s04`].visible = true;
-      break;
-    case 'West':
-      // ←
-      pixi[type][element.id][`s04`].visible = true;
-      break;
-    case 'North West':
-      // ↖
-      pixi[type][element.id][`s04`].visible = true;
-      break;
-    default:
-      pixi[type][element.id][`s08`].visible = true;
-      break;
-  }
-};
 
 const renderPixiInitElement = (element) => {
   console.log('renderPixiInitElement', element);
@@ -136,27 +91,23 @@ const renderPixiInitElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('sprites')) {
-    const sprite = element.sprite;
-    spriteDirs.map((spriteType) => {
-      pixi[type][element.id][`s${spriteType}`] = PIXI.Sprite.from(`/sprites/${sprite}/${spriteType}/0.png`);
-      pixi[type][element.id][`s${spriteType}`].x = 0;
-      pixi[type][element.id][`s${spriteType}`].y = 0;
-      pixi[type][element.id][`s${spriteType}`].width = dim;
-      pixi[type][element.id][`s${spriteType}`].height = dim;
-      pixi[type][element.id][`s${spriteType}`].visible = false;
-      container.addChild(pixi[type][element.id][`s${spriteType}`]);
-    });
-    renderPixiSpriteElement(element);
+    const src = `/sprites/${element.sprite}/08/0.png`;
+    pixi[type][element.id][src] = PIXI.Sprite.from(src);
+    pixi[type][element.id][src].x = 0;
+    pixi[type][element.id][src].y = 0;
+    pixi[type][element.id][src].width = dim;
+    pixi[type][element.id][src].height = dim;
+    pixi[type][element.id][src].visible = true;
+    container.addChild(pixi[type][element.id][src]);
   }
 
   return element;
 };
+
 const renderPixiEventElement = (element) => {
   const { type } = element;
   const { x, y } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
-  params[type][element.id].direction = getDirection(container.x, container.y, x, y).direction;
-  if (element.sprite) renderPixiSpriteElement(element);
   const frames = 4;
   const intervalChangeX = Math.abs(x - container.x) / frames;
   const intervalChangeY = Math.abs(y - container.y) / frames;
@@ -166,7 +117,7 @@ const renderPixiEventElement = (element) => {
       if (container.x < x) container.x = container.x + intervalChangeX;
       if (container.y > y) container.y = container.y - intervalChangeY;
       if (container.y < y) container.y = container.y + intervalChangeY;
-    }, frameTime * (updateTimeInterval / 3));
+    }, frameTime * (updateTimeInterval / (frames - 1))); // 33*0 33*1 33*2 33*3
   });
 };
 const removePixiElement = (element) => {
@@ -281,7 +232,6 @@ s('canvas').onclick = (e, subPath) => {
     console.log(element.path);
     if (element.path.length === 0 && subPath === undefined) {
       const dirsArr = {};
-      const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
       let wArray = [];
 
       directions.map((dir) => {

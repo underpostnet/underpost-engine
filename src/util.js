@@ -11,4 +11,4 @@ const renderLang = (langs, req) => {
 
 const JSONweb = (data) => 'JSON.parse(`' + JSON.stringify(data) + '`)';
 
-export { replaceAll, renderLang, JSONweb };
+export { renderLang, JSONweb };

@@ -1,14 +1,12 @@
 import gifFrames from 'gif-frames';
 import fs from 'fs';
 import { getAllFiles, deleteFolderRecursive } from '../src/files.js';
-import { replaceAll } from '../src/util.js';
-
 const pathSrcSprites = './src/assets/sprites';
 
 if (fs.existsSync(`${pathSrcSprites}`)) deleteFolderRecursive(`${pathSrcSprites}`);
 
 const paths = getAllFiles('./private-engine/express-ywork/cyberia/assets/clases').map(
-  (path) => './' + replaceAll(path, '\\', '/')
+  (path) => './' + path.replaceAll('\\', '/')
 );
 
 console.log(paths);

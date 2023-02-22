@@ -8,7 +8,6 @@ import { baseCss } from './css.js';
 import { ssrColor } from './colors.js';
 import { ssrWS } from './ws-server.js';
 import { maps } from './maps.js';
-import { replaceAll } from './util.js';
 
 dotenv.config();
 
@@ -35,7 +34,7 @@ const httpServer = () => {
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>CYBERIA - ${replaceAll(pathObj.name_map, '-', ' ')}</title>
+                <title>${pathObj.name_map.replaceAll('-', ' ').toUpperCase()} | CYBERIA</title>
                 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <script src="/socket.io/socket.io.js"></script>

@@ -4,15 +4,18 @@ import fs from 'fs';
 import pathfinding from 'pathfinding';
 import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge } from './common.js';
 import { maps } from './maps.js';
-import { replaceAll } from './util.js';
+import { JSONweb } from './util.js';
 
 dotenv.config();
 
-const updateTimeInterval = 50;
+const updateTimeInterval = 100;
 const maxRangeMapParam = 16;
 const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
+
+const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
+const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 
 const typeModels = () => {
   return {
@@ -36,7 +39,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
-      components: () => ['background'],
+      components: () => ['sprites'],
       render: () => {
         return {
           dim: () => 1,
@@ -187,6 +190,8 @@ const ssrWS = `
     const allowDiagonal = ${allowDiagonal};
     const dontCrossCorners = ${dontCrossCorners};
     const updateTimeInterval = ${updateTimeInterval};
+    const spriteDirs = ${JSONweb(spriteDirs)};
+    const directions = ${JSONweb(directions)};
 `;
 
 const wsServer = () => {
@@ -200,7 +205,7 @@ const wsServer = () => {
       console.log(`socket.io | init ${socket.id} due to data: ${args}`);
       clients.push(socket);
       console.log(`socket.io | currents clients: ${clients.length}`);
-      const map = replaceAll(args, '/', '');
+      const map = args.replaceAll('/', '');
       const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
       const { color, render } = getParamsType(type);
       const { dim } = render;
@@ -284,6 +289,7 @@ const wsServer = () => {
           type,
           color,
           map,
+          sprite: 'purple',
           render: {
             x: point[0],
             y: point[1],
