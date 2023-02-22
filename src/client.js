@@ -91,14 +91,19 @@ const renderPixiInitElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('sprites')) {
-    const src = `/sprites/${element.sprite}/08/0.png`;
-    pixi[type][element.id][src] = PIXI.Sprite.from(src);
-    pixi[type][element.id][src].x = 0;
-    pixi[type][element.id][src].y = 0;
-    pixi[type][element.id][src].width = dim;
-    pixi[type][element.id][src].height = dim;
-    pixi[type][element.id][src].visible = true;
-    container.addChild(pixi[type][element.id][src]);
+    spriteDirs.map((spriteDir) => {
+      range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
+        const src = `/sprites/${element.sprite}/${spriteDir}/${spriteFrame}.png`;
+        pixi[type][element.id][src] = PIXI.Sprite.from(src);
+        pixi[type][element.id][src].x = 0;
+        pixi[type][element.id][src].y = 0;
+        pixi[type][element.id][src].width = dim;
+        pixi[type][element.id][src].height = dim;
+        pixi[type][element.id][src].visible = spriteDir === '08';
+        console.log('load', src, pixi[type][element.id][src].visible);
+        container.addChild(pixi[type][element.id][src]);
+      });
+    });
   }
 
   return element;
@@ -108,7 +113,7 @@ const renderPixiEventElement = (element) => {
   const { type } = element;
   const { x, y } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
-  const frames = 4;
+  const frames = 6;
   const intervalChangeX = Math.abs(x - container.x) / frames;
   const intervalChangeY = Math.abs(y - container.y) / frames;
   range(0, frames - 1).map((frameTime) => {
@@ -117,7 +122,7 @@ const renderPixiEventElement = (element) => {
       if (container.x < x) container.x = container.x + intervalChangeX;
       if (container.y > y) container.y = container.y - intervalChangeY;
       if (container.y < y) container.y = container.y + intervalChangeY;
-    }, frameTime * (updateTimeInterval / (frames - 1))); // 33*0 33*1 33*2 33*3
+    }, frameTime * (updateTimeInterval / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
   });
 };
 const removePixiElement = (element) => {
