@@ -59,6 +59,10 @@ const renderPixiInitElement = (element) => {
 
   params[type][element.id] = {
     direction: 'South',
+    directionCheckTimeInterval: 500,
+    directionChangeActive: true,
+    spriteFrameInterval: 250,
+    spriteIdStop: null,
   };
 
   pixi[type][element.id].container = new PIXI.Container();
@@ -100,7 +104,6 @@ const renderPixiInitElement = (element) => {
         pixi[type][element.id][src].width = dim;
         pixi[type][element.id][src].height = dim;
         pixi[type][element.id][src].visible = spriteDir === '08';
-        console.log('load', src, pixi[type][element.id][src].visible);
         container.addChild(pixi[type][element.id][src]);
       });
     });
@@ -109,10 +112,125 @@ const renderPixiInitElement = (element) => {
   return element;
 };
 
+const clearFramesSprites = (element) => {
+  const { type } = element;
+  spriteDirs.map((spriteDir) => {
+    range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
+      const src = `/sprites/${element.sprite}/${spriteDir}/${spriteFrame}.png`;
+      pixi[type][element.id][src].visible = false;
+    });
+  });
+};
+
 const renderPixiEventElement = (element) => {
   const { type } = element;
   const { x, y } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
+  // change sprite animation
+  const direction = getDirection(container.x, container.y, x, y).direction;
+
+  if (
+    (params[type][element.id].directionChangeActive === true && (container.x !== x || container.y !== y)) ||
+    params[type][element.id].direction !== direction
+  ) {
+    params[type][element.id].directionChangeActive = false;
+    const frames = params[type][element.id].directionCheckTimeInterval / params[type][element.id].spriteFrameInterval;
+    range(0, frames).map((frame) => {
+      setTimeout(() => {
+        if (params[type][element.id].direction !== direction) return;
+        const typeFrame = frame % 2;
+        if (frame !== frames) {
+          clearFramesSprites(element);
+          switch (direction) {
+            case 'South East':
+              // ↘
+              pixi[type][element.id][`/sprites/${element.sprite}/16/${typeFrame}.png`].visible = true;
+              break;
+            case 'East':
+              // →
+              pixi[type][element.id][`/sprites/${element.sprite}/16/${typeFrame}.png`].visible = true;
+              break;
+            case 'North East':
+              // ↗
+              pixi[type][element.id][`/sprites/${element.sprite}/16/${typeFrame}.png`].visible = true;
+              break;
+            case 'South':
+              // ↓
+              pixi[type][element.id][`/sprites/${element.sprite}/18/${typeFrame}.png`].visible = true;
+              break;
+            case 'North':
+              // ↑
+              pixi[type][element.id][`/sprites/${element.sprite}/12/${typeFrame}.png`].visible = true;
+              break;
+            case 'South West':
+              // ↙
+              pixi[type][element.id][`/sprites/${element.sprite}/14/${typeFrame}.png`].visible = true;
+              break;
+            case 'West':
+              // ←
+              pixi[type][element.id][`/sprites/${element.sprite}/14/${typeFrame}.png`].visible = true;
+              break;
+            case 'North West':
+              // ↖
+              pixi[type][element.id][`/sprites/${element.sprite}/14/${typeFrame}.png`].visible = true;
+              break;
+            default:
+              pixi[type][element.id][`/sprites/${element.sprite}/18/${typeFrame}.png`].visible = true;
+              break;
+          }
+        } else {
+          const spriteIdStop = s4();
+          params[type][element.id].spriteIdStop = newInstance(spriteIdStop);
+          setTimeout(() => {
+            if (params[type][element.id].spriteIdStop === spriteIdStop) {
+              clearFramesSprites(element);
+              switch (params[type][element.id].direction) {
+                case 'South East':
+                  // ↘
+                  pixi[type][element.id][`/sprites/${element.sprite}/06/0.png`].visible = true;
+                  break;
+                case 'East':
+                  // →
+                  pixi[type][element.id][`/sprites/${element.sprite}/06/0.png`].visible = true;
+                  break;
+                case 'North East':
+                  // ↗
+                  pixi[type][element.id][`/sprites/${element.sprite}/06/0.png`].visible = true;
+                  break;
+                case 'South':
+                  // ↓
+                  pixi[type][element.id][`/sprites/${element.sprite}/08/0.png`].visible = true;
+                  break;
+                case 'North':
+                  // ↑
+                  pixi[type][element.id][`/sprites/${element.sprite}/02/0.png`].visible = true;
+                  break;
+                case 'South West':
+                  // ↙
+                  pixi[type][element.id][`/sprites/${element.sprite}/04/0.png`].visible = true;
+                  break;
+                case 'West':
+                  // ←
+                  pixi[type][element.id][`/sprites/${element.sprite}/04/0.png`].visible = true;
+                  break;
+                case 'North West':
+                  // ↖
+                  pixi[type][element.id][`/sprites/${element.sprite}/04/0.png`].visible = true;
+                  break;
+                default:
+                  pixi[type][element.id][`/sprites/${element.sprite}/08/0.png`].visible = true;
+                  break;
+              }
+            }
+          }, params[type][element.id].spriteFrameInterval);
+          params[type][element.id].directionChangeActive = true;
+        }
+      }, frame * params[type][element.id].spriteFrameInterval);
+    });
+  }
+  if (direction !== undefined) params[type][element.id].direction = direction;
+
+  // change position animation
   const frames = 6;
   const intervalChangeX = Math.abs(x - container.x) / frames;
   const intervalChangeY = Math.abs(y - container.y) / frames;
@@ -122,6 +240,10 @@ const renderPixiEventElement = (element) => {
       if (container.x < x) container.x = container.x + intervalChangeX;
       if (container.y > y) container.y = container.y - intervalChangeY;
       if (container.y < y) container.y = container.y + intervalChangeY;
+      if (frameTime === frames - 1) {
+        container.x = x;
+        container.y = y;
+      }
     }, frameTime * (updateTimeInterval / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
   });
 };
