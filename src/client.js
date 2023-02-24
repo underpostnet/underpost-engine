@@ -61,7 +61,7 @@ const renderPixiInitElement = (element) => {
     direction: 'South',
     directionCheckTimeInterval: 500,
     directionChangeActive: true,
-    spriteFrameInterval: 250,
+    spriteFrameInterval: 100,
     spriteIdStop: null,
   };
 
@@ -135,7 +135,8 @@ const renderPixiEventElement = (element) => {
   ) {
     params[type][element.id].directionChangeActive = false;
     const frames = params[type][element.id].directionCheckTimeInterval / params[type][element.id].spriteFrameInterval;
-    range(0, frames).map((frame) => {
+    const switchInitFrame = [0, 1][random(0, 1)];
+    range(0 + switchInitFrame, frames + switchInitFrame).map((frame) => {
       setTimeout(() => {
         if (params[type][element.id].direction !== direction) return;
         const typeFrame = frame % 2;
