@@ -55,6 +55,15 @@ const typeModels = () => {
         };
       },
     },
+    bullet: {
+      color: () => 'venetian red',
+      components: () => ['background'],
+      render: () => {
+        return {
+          dim: () => 0.5,
+        };
+      },
+    },
   };
 };
 
@@ -192,6 +201,7 @@ const ssrWS = `
     const updateTimeInterval = ${updateTimeInterval};
     const spriteDirs = ${JSONweb(spriteDirs)};
     const directions = ${JSONweb(directions)};
+    const getParamsType = ${getParamsType};
 `;
 
 const wsServer = () => {
@@ -214,7 +224,7 @@ const wsServer = () => {
         type,
         color,
         map,
-        sprite: 'anon',
+        sprite: 'agent',
         render: {
           x,
           y,
@@ -234,11 +244,19 @@ const wsServer = () => {
     socket.on('update', (args) => {
       // console.log(`socket.io | update ${socket.id} due to data: ${args}`);
       const elementEvent = JSON.parse(args);
-      const elementIndex = elements[type].findIndex((element) => element.id === socket.id);
-      elements[type][elementIndex] = merge(elements[type][elementIndex], elementEvent);
+      const { type } = elementEvent;
+      let elementIndex = elements[type].findIndex((element) => element.id === socket.id);
+      if (elementIndex === -1) {
+        elementIndex = elements[type].length;
+        elements[type].push(elementEvent);
+      } else elements[type][elementIndex] = merge(elements[type][elementIndex], elementEvent);
       clients.map((client) => {
-        const clientIndex = elements[type].findIndex((element) => element.id === client.id);
-        if (elements[type][clientIndex].map === elements[type][elementIndex].map && socket.id !== client.id)
+        const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+        if (
+          clientIndex > -1 &&
+          elements['user'][clientIndex].map === elements[type][elementIndex].map &&
+          socket.id !== client.id
+        )
           client.emit('update', JSON.stringify({ id: socket.id, type, ...elementEvent }));
       });
     });
@@ -276,7 +294,7 @@ const wsServer = () => {
     const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
 
     (() => {
-      const maxBots = random(2, 4);
+      const maxBots = random(1, 3);
       const { color, render } = getParamsType(type);
       const { dim } = render;
       while (

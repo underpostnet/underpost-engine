@@ -122,6 +122,55 @@ const clearFramesSprites = (element) => {
   });
 };
 
+const getMissileDirection = (positionType, direction) => {
+  switch (direction) {
+    case 'South East':
+      // ↘
+      if (positionType === 'x') return 1;
+      if (positionType === 'y') return 1;
+      break;
+    case 'East':
+      // →
+      if (positionType === 'x') return 1;
+      if (positionType === 'y') return 0;
+      break;
+    case 'North East':
+      // ↗
+      if (positionType === 'x') return 1;
+      if (positionType === 'y') return -1;
+      break;
+    case 'South':
+      // ↓
+      if (positionType === 'x') return 0;
+      if (positionType === 'y') return 1;
+      break;
+    case 'North':
+      // ↑
+      if (positionType === 'x') return 0;
+      if (positionType === 'y') return -1;
+      break;
+    case 'South West':
+      // ↙
+      if (positionType === 'x') return -1;
+      if (positionType === 'y') return 1;
+      break;
+    case 'West':
+      // ←
+      if (positionType === 'x') return -1;
+      if (positionType === 'y') return 0;
+      break;
+    case 'North West':
+      // ↖
+      if (positionType === 'x') return -1;
+      if (positionType === 'y') return -1;
+      break;
+    default:
+      if (positionType === 'x') return 0;
+      if (positionType === 'y') return 1;
+      break;
+  }
+};
+
 const renderPixiEventElement = (element) => {
   const { type } = element;
   const { x, y } = setAmplitudeRender(element.render);
@@ -130,8 +179,9 @@ const renderPixiEventElement = (element) => {
   const direction = getDirection(container.x, container.y, x, y).direction;
 
   if (
-    (params[type][element.id].directionChangeActive === true && (container.x !== x || container.y !== y)) ||
-    params[type][element.id].direction !== direction
+    typeModels()[type].components().includes('sprites') &&
+    ((params[type][element.id].directionChangeActive === true && (container.x !== x || container.y !== y)) ||
+      params[type][element.id].direction !== direction)
   ) {
     params[type][element.id].directionChangeActive = false;
     const frames = params[type][element.id].directionCheckTimeInterval / params[type][element.id].spriteFrameInterval;
@@ -467,6 +517,7 @@ setInterval(() => {
   if (element) {
     const emitElement = {
       render: {},
+      type: 'user',
     };
     let update = false;
     if (
@@ -508,6 +559,27 @@ setInterval(() => {
       emitElement.render.x = element.render.x;
       update = true;
       element.path.shift();
+    }
+    if (window.activeKey['Q'] || window.activeKey['q']) {
+      (() => {
+        const type = 'bullet';
+        const { color, render } = getParamsType(type);
+        const { dim } = render;
+        const bullet = {
+          id: id(),
+          type,
+          color,
+          map: element.map,
+          render: {
+            x: element.render.x + getMissileDirection('x', params['user'][element.id].direction) + dim / 2,
+            y: element.render.y + getMissileDirection('y', params['user'][element.id].direction) + dim / 2,
+            dim,
+          },
+        };
+        elements['bullet'].push(bullet);
+        renderPixiInitElement(bullet);
+        socket.emit('update', JSON.stringify(bullet));
+      })();
     }
     if (update) {
       renderPixiEventElement(element);
