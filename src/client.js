@@ -63,6 +63,7 @@ const renderPixiInitElement = (element) => {
     directionChangeActive: true,
     spriteFrameInterval: 100,
     spriteIdStop: null,
+    shootActive: true,
   };
 
   pixi[type][element.id].container = new PIXI.Container();
@@ -107,6 +108,17 @@ const renderPixiInitElement = (element) => {
         container.addChild(pixi[type][element.id][src]);
       });
     });
+  }
+
+  if (typeModels()[type].components().includes('bar-life')) {
+    pixi[type][element.id].barLife = new PIXI.Sprite(PIXI.Texture.WHITE);
+    const barLife = pixi[type][element.id].barLife;
+    barLife.x = 0;
+    barLife.y = 0;
+    barLife.width = dim * (element.life / element.maxLife);
+    barLife.height = dim / 5;
+    barLife.tint = numberColors['office green'];
+    container.addChild(barLife);
   }
 
   return element;
@@ -173,7 +185,7 @@ const getMissileDirection = (positionType, direction) => {
 
 const renderPixiEventElement = (element) => {
   const { type } = element;
-  const { x, y } = setAmplitudeRender(element.render);
+  const { x, y, dim } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
   // change sprite animation
   const direction = getDirection(container.x, container.y, x, y).direction;
@@ -278,6 +290,10 @@ const renderPixiEventElement = (element) => {
         }
       }, frame * params[type][element.id].spriteFrameInterval);
     });
+
+    if (typeModels()[type].components().includes('bar-life')) {
+      pixi[type][element.id].barLife.width = dim * (element.life / element.maxLife);
+    }
   }
   if (direction !== undefined) params[type][element.id].direction = direction;
 
@@ -517,7 +533,6 @@ setInterval(() => {
   if (element) {
     const emitElement = {
       render: {},
-      type: 'user',
     };
     let update = false;
     if (
@@ -560,26 +575,12 @@ setInterval(() => {
       update = true;
       element.path.shift();
     }
-    if (window.activeKey['Q'] || window.activeKey['q']) {
-      (() => {
-        const type = 'bullet';
-        const { color, render } = getParamsType(type);
-        const { dim } = render;
-        const bullet = {
-          id: id(),
-          type,
-          color,
-          map: element.map,
-          render: {
-            x: element.render.x + getMissileDirection('x', params['user'][element.id].direction) + dim / 2,
-            y: element.render.y + getMissileDirection('y', params['user'][element.id].direction) + dim / 2,
-            dim,
-          },
-        };
-        elements['bullet'].push(bullet);
-        renderPixiInitElement(bullet);
-        socket.emit('update', JSON.stringify(bullet));
-      })();
+    if ((window.activeKey['Q'] || window.activeKey['q']) && params[element.type][element.id].shootActive === true) {
+      params[element.type][element.id].shootActive = false;
+
+      setTimeout(() => {
+        params[element.type][element.id].shootActive = true;
+      }, 500);
     }
     if (update) {
       renderPixiEventElement(element);

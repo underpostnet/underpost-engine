@@ -39,7 +39,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
-      components: () => ['sprites'],
+      components: () => ['sprites', 'bar-life'],
       render: () => {
         return {
           dim: () => 1,
@@ -48,7 +48,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['sprites'],
+      components: () => ['sprites', 'bar-life'],
       render: () => {
         return {
           dim: () => 1,
@@ -224,6 +224,8 @@ const wsServer = () => {
         type,
         color,
         map,
+        life: 100,
+        maxLife: 100,
         sprite: 'agent',
         render: {
           x,
@@ -244,17 +246,16 @@ const wsServer = () => {
     socket.on('update', (args) => {
       // console.log(`socket.io | update ${socket.id} due to data: ${args}`);
       const elementEvent = JSON.parse(args);
-      const { type } = elementEvent;
       let elementIndex = elements[type].findIndex((element) => element.id === socket.id);
       if (elementIndex === -1) {
         elementIndex = elements[type].length;
         elements[type].push(elementEvent);
       } else elements[type][elementIndex] = merge(elements[type][elementIndex], elementEvent);
       clients.map((client) => {
-        const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+        const clientIndex = elements[type].findIndex((element) => element.id === client.id);
         if (
           clientIndex > -1 &&
-          elements['user'][clientIndex].map === elements[type][elementIndex].map &&
+          elements[type][clientIndex].map === elements[type][elementIndex].map &&
           socket.id !== client.id
         )
           client.emit('update', JSON.stringify({ id: socket.id, type, ...elementEvent }));
@@ -308,6 +309,8 @@ const wsServer = () => {
           color,
           map,
           sprite: 'purple',
+          life: 100,
+          maxLife: 100,
           render: {
             x: point[0],
             y: point[1],
