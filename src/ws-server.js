@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
-import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge } from './common.js';
+import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge, ceil10 } from './common.js';
 import { maps } from './maps.js';
 import { JSONweb } from './util.js';
 
@@ -260,6 +260,72 @@ const wsServer = () => {
         )
           client.emit('update', JSON.stringify({ id: socket.id, type, ...elementEvent }));
       });
+    });
+
+    socket.on('event', (args) => {
+      console.log(`socket.io | event ${socket.id} due to data: ${args}`);
+      const eventElement = JSON.parse(args);
+      const clientElement = elements[type].find((element) => element.id === socket.id);
+      if (clientElement) {
+        const { map } = clientElement;
+        switch (eventElement.event) {
+          case 'attack':
+            (() => {
+              const type = 'bullet';
+              const { color, render } = getParamsType(type);
+              const { dim } = render;
+              const lifeTime = 500;
+              const bullet = {
+                id: id(),
+                type,
+                color,
+                map,
+                lifeTime,
+                render: {
+                  dim,
+                  x: eventElement.element.render.x + dim / 2,
+                  y: eventElement.element.render.y + dim / 2,
+                },
+              };
+              elements[type].push(bullet);
+              clients.map((client) => {
+                const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                  client.emit('update', JSON.stringify(bullet));
+              });
+
+              ['bot', 'user'].map((type) =>
+                elements[type].map((element) => {
+                  if (
+                    validateCollision(element.render, {
+                      dim: ceil10(bullet.render.dim),
+                      x: parseInt(bullet.render.x),
+                      y: parseInt(bullet.render.y),
+                    })
+                  ) {
+                    element.life = element.life - 20;
+                    if (element.life < 0) element.life = 0;
+                    clients.map((client) => {
+                      const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                      if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                        client.emit(
+                          'update',
+                          JSON.stringify({ id: element.id, type: element.type, life: element.life })
+                        );
+                    });
+                  }
+                })
+              );
+              setTimeout(() => {
+                elements[type] = elements[type].filter((element) => element.id !== bullet.id);
+              }, lifeTime);
+            })();
+            break;
+
+          default:
+            break;
+        }
+      }
     });
 
     socket.on('disconnect', (reason) => {

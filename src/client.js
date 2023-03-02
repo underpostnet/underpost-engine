@@ -349,6 +349,14 @@ socket.on('update', (...args) => {
   const eventElement = JSON.parse(args);
   const { id, type } = eventElement;
   const elementIndex = elements[type].findIndex((element) => element.id === id);
+  if (eventElement.lifeTime)
+    setTimeout(() => {
+      removePixiElement(eventElement);
+      elements[type].splice(
+        elements[type].findIndex((element) => element.id === id),
+        1
+      );
+    }, eventElement.lifeTime);
   if (elementIndex > -1) {
     elements[type][elementIndex] = merge(elements[type][elementIndex], eventElement);
     return renderPixiEventElement(elements[type][elementIndex]);
@@ -577,6 +585,19 @@ setInterval(() => {
     }
     if ((window.activeKey['Q'] || window.activeKey['q']) && params[element.type][element.id].shootActive === true) {
       params[element.type][element.id].shootActive = false;
+
+      socket.emit(
+        'event',
+        JSON.stringify({
+          event: 'attack',
+          element: {
+            render: {
+              x: element.render.x + getMissileDirection('x', params[element.type][element.id].direction),
+              y: element.render.y + getMissileDirection('y', params[element.type][element.id].direction),
+            },
+          },
+        })
+      );
 
       setTimeout(() => {
         params[element.type][element.id].shootActive = true;
