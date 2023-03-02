@@ -51,7 +51,7 @@ console.log('pixi', pixi);
 
 const renderPixiInitElement = (element) => {
   console.log('renderPixiInitElement', element);
-  const { type } = element;
+  const { type, id } = element;
   const { x, y, dim } = setAmplitudeRender(element.render);
   const color = numberColors[element.color];
 
@@ -119,6 +119,35 @@ const renderPixiInitElement = (element) => {
     barLife.height = dim / 5;
     barLife.tint = numberColors['office green'];
     container.addChild(barLife);
+  }
+
+  if (typeModels()[type].components().includes('id')) {
+    // https://pixijs.io/pixi-text-style/
+
+    pixi[type][element.id].nick = new PIXI.Text(
+      id.slice(0, 5).toUpperCase(),
+      new PIXI.TextStyle({
+        dropShadow: true,
+        dropShadowAngle: 6.8,
+        dropShadowBlur: 3,
+        dropShadowDistance: 2,
+        dropShadowColor: '#000000',
+        fill: id === socket.id ? 'yellow' : 'white',
+        fontFamily: 'Impact',
+        fontSize: 14,
+      })
+    );
+    const nick = pixi[type][element.id].nick;
+
+    pixi[type][element.id].containerText = new PIXI.Container();
+    const containerText = pixi[type][element.id].containerText;
+    containerText.x = 0;
+    containerText.y = (-1 * dim) / 5;
+    containerText.width = dim;
+    containerText.height = dim / 5;
+    containerText.addChild(nick);
+
+    container.addChild(containerText);
   }
 
   return element;

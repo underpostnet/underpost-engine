@@ -39,7 +39,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
-      components: () => ['sprites', 'bar-life'],
+      components: () => ['sprites', 'bar-life', 'id'],
       render: () => {
         return {
           dim: () => 1,
@@ -48,7 +48,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['sprites', 'bar-life'],
+      components: () => ['sprites', 'bar-life', 'id'],
       render: () => {
         return {
           dim: () => 1,
