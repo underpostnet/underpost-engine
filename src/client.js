@@ -50,6 +50,10 @@ console.log('elements', elements);
 console.log('pixi', pixi);
 
 const renderPixiInitElement = (element) => {
+  // https://pixijs.io/examples
+  // https://pixijs.download/release/docs/index.html
+  // https://pixijs.io/pixi-text-style/
+
   console.log('renderPixiInitElement', element);
   const { type, id } = element;
   const { x, y, dim } = setAmplitudeRender(element.render);
@@ -122,8 +126,6 @@ const renderPixiInitElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('id')) {
-    // https://pixijs.io/pixi-text-style/
-
     pixi[type][element.id].nick = new PIXI.Text(
       id.slice(0, 5).toUpperCase(),
       new PIXI.TextStyle({
@@ -149,6 +151,26 @@ const renderPixiInitElement = (element) => {
 
     container.addChild(containerText);
   }
+
+  //  = new PIXI.Graphics();
+  // .clear();
+
+  // .beginFill(randomNumberColor());
+  // .lineStyle(0);
+  // .drawCircle(0, 0, 1.5 * pixiAmplitudeFactor); // x,y,radio
+
+  // .rotation = -(Math.PI / 2);
+  // .pivot.x = elementsContainer[element.id].width / 2;
+  // .pivot.y = elementsContainer[element.id].width / 2;
+
+  // .beginFill(pixiColors['black'], 1);
+  // .lineStyle(0, randomNumberColor(), 1);
+
+  // .moveTo(0, 0);
+  // .lineTo(0, 0);
+  // .lineTo(0, 0);
+
+  // .endFill();
 
   return element;
 };
