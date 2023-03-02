@@ -160,8 +160,8 @@ const renderPixiInitElement = (element) => {
   // .drawCircle(0, 0, 1.5 * pixiAmplitudeFactor); // x,y,radio
 
   // .rotation = -(Math.PI / 2);
-  // .pivot.x = elementsContainer[element.id].width / 2;
-  // .pivot.y = elementsContainer[element.id].width / 2;
+  // .pivot.x = .width / 2;
+  // .pivot.y = .width / 2;
 
   // .beginFill(pixiColors['black'], 1);
   // .lineStyle(0, randomNumberColor(), 1);
