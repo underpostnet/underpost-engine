@@ -17,6 +17,43 @@ const dontCrossCorners = true;
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 
+const changeMapsPoints = [];
+maps.map((dataMap) => {
+  const fromMap = dataMap.name_map;
+  dataMap.matrix.map((rowFrom, y) =>
+    rowFrom.map((cellFrom, x) => {
+      if (typeof cellFrom === 'object' && cellFrom[0] === 'to-map') {
+        let toMapData;
+
+        maps.map((dataMap) => {
+          const toMap = dataMap.name_map;
+          if (toMap === cellFrom[1]) {
+            dataMap.matrix.map((rowTo, y) => {
+              rowTo.map((cellTo, x) => {
+                if (typeof cellTo === 'object' && cellTo[0] === 'tmi' && cellTo[1] === cellFrom[3]) {
+                  toMapData = { toMap, x, y };
+                }
+              });
+            });
+          }
+        });
+        const { toMap } = toMapData;
+
+        changeMapsPoints.push({
+          fromMap,
+          toMap,
+          fromX: x,
+          fromY: y,
+          toX: toMapData.x,
+          toY: toMapData.y,
+        });
+      }
+    })
+  );
+});
+
+// console.log('changeMapsPoints', changeMapsPoints);
+
 const typeModels = () => {
   return {
     floor: {
@@ -215,24 +252,30 @@ const wsServer = () => {
       console.log(`socket.io | init ${socket.id} due to data: ${args}`);
       clients.push(socket);
       console.log(`socket.io | currents clients: ${clients.length}`);
-      const map = args.replaceAll('/', '');
-      const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
-      const { color, render } = getParamsType(type);
-      const { dim } = render;
-      const element = {
-        id: socket.id,
-        type,
-        color,
-        map,
-        life: 100,
-        maxLife: 100,
-        sprite: 'agent',
-        render: {
-          x,
-          y,
-          dim,
-        },
-      };
+      let element;
+      if (args[0] === '{' || args[0] === '[') {
+        element = JSON.parse(args);
+      } else {
+        const map = args.replaceAll('/', '');
+        const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
+        const { color, render } = getParamsType(type);
+        const { dim } = render;
+        element = {
+          id: socket.id,
+          type,
+          color,
+          map,
+          life: 100,
+          maxLife: 100,
+          sprite: 'agent',
+          render: {
+            x,
+            y,
+            dim,
+          },
+        };
+      }
+      const map = element.map;
       getAllElements().map((element) => {
         if (element.map === map) socket.emit('update', JSON.stringify(element));
       });
@@ -241,6 +284,12 @@ const wsServer = () => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
         if (clientIndex > -1 && elements[type][clientIndex].map === map) client.emit('update', JSON.stringify(element));
       });
+      socket.emit(
+        'init-data',
+        JSON.stringify({
+          changeMapsPoints: changeMapsPoints.filter((mapData) => mapData.fromMap === map),
+        })
+      );
     });
 
     socket.on('update', (args) => {
@@ -328,8 +377,7 @@ const wsServer = () => {
       }
     });
 
-    socket.on('disconnect', (reason) => {
-      console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
+    const removeEvent = () => {
       clients.splice(clients.indexOf(socket), 1);
       const elementIndex = elements[type].findIndex((element) => element.id === socket.id);
       clients.map((client) => {
@@ -342,6 +390,16 @@ const wsServer = () => {
         1
       );
       console.log(`socket.io | currents clients: ${clients.length}`);
+    };
+
+    socket.on('disconnect', (reason) => {
+      console.log(`socket.io | disconnect ${socket.id} due to reason: ${reason}`);
+      removeEvent();
+    });
+
+    socket.on('close', () => {
+      console.log(`socket.io | close ${socket.id}`);
+      removeEvent();
     });
   });
 

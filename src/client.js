@@ -26,6 +26,7 @@ const amplitudeRender = 50;
 const elements = {};
 const pixi = {};
 const params = {};
+let changeMapsPoints = [];
 
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
@@ -68,6 +69,8 @@ const renderPixiInitElement = (element) => {
     spriteFrameInterval: 100,
     spriteIdStop: null,
     shootActive: true,
+    mapChangeActive: true,
+    mapChangeTimeBlock: 500,
   };
 
   pixi[type][element.id].container = new PIXI.Container();
@@ -234,8 +237,15 @@ const getMissileDirection = (positionType, direction) => {
   }
 };
 
+const resetsElements = () => {
+  Object.keys(elements).map((type) => {
+    elements[type].map((element) => removePixiElement(element));
+    elements[type] = [];
+  });
+};
+
 const renderPixiEventElement = (element) => {
-  const { type } = element;
+  const { type, id } = element;
   const { x, y, dim } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
   // change sprite animation
@@ -251,7 +261,7 @@ const renderPixiEventElement = (element) => {
     const switchInitFrame = [0, 1][random(0, 1)];
     range(0 + switchInitFrame, frames + switchInitFrame).map((frame) => {
       setTimeout(() => {
-        if (params[type][element.id].direction !== direction) return;
+        if (!params[type][element.id] || params[type][element.id].direction !== direction) return;
         const typeFrame = frame % 2;
         if (frame !== frames) {
           clearFramesSprites(element);
@@ -296,6 +306,7 @@ const renderPixiEventElement = (element) => {
           const spriteIdStop = s4();
           params[type][element.id].spriteIdStop = newInstance(spriteIdStop);
           setTimeout(() => {
+            if (!params[type][element.id]) return;
             if (params[type][element.id].spriteIdStop === spriteIdStop) {
               clearFramesSprites(element);
               switch (params[type][element.id].direction) {
@@ -361,6 +372,27 @@ const renderPixiEventElement = (element) => {
       if (frameTime === frames - 1) {
         container.x = x;
         container.y = y;
+        const newMapObj = changeMapsPoints.find(
+          (mapData) =>
+            mapData.fromMap === element.map && mapData.fromX === element.render.x && mapData.fromY === element.render.y
+        );
+        if (newMapObj && id === socket.id && params[type][id].mapChangeActive === true) {
+          console.log('newMapObj', newMapObj);
+          params[type][id].mapChangeActive = false;
+          setTimeout(() => {
+            const eventElement = newInstance(element);
+            eventElement.render.x = newMapObj.toX;
+            eventElement.render.y = newMapObj.toY;
+            eventElement.map = newMapObj.toMap;
+            resetsElements();
+            socket.emit('close');
+            socket.emit('init', JSON.stringify(eventElement));
+            setURI('/' + newMapObj.toMap);
+          }, 100);
+          setTimeout(() => {
+            params[type][id].mapChangeActive = true;
+          }, params[type][id].mapChangeTimeBlock);
+        }
       }
     }, frameTime * (updateTimeInterval / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
   });
@@ -386,10 +418,7 @@ socket.on('connect_error', (err) => {
 socket.on('disconnect', (reason) => {
   // console.log(`socket.io event: disconnect | reason: ${reason}`);
   // setTimeout(() => location.reload(), 2000);
-  Object.keys(elements).map((type) => {
-    elements[type].map((element) => removePixiElement(element));
-    elements[type] = [];
-  });
+  resetsElements();
 });
 
 let userPositionAvailablePoints = [];
@@ -419,6 +448,12 @@ socket.on('update', (...args) => {
     console.log('userMatrixCollision', JSONmatrix(userMatrixCollision));
   }
   return renderPixiInitElement(eventElement);
+});
+
+socket.on('init-data', (...args) => {
+  const initData = JSON.parse(args);
+  console.log('initData', initData);
+  changeMapsPoints = initData.changeMapsPoints;
 });
 
 socket.on('close', (...args) => {
