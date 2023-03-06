@@ -2,7 +2,7 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import express from 'express';
 
-import { commonFunctions, random } from './common.js';
+import { commonFunctions } from './common.js';
 import { copyDir, deleteFolderRecursive } from './files.js';
 import { baseCss } from './css.js';
 import { ssrColor } from './colors.js';
@@ -10,6 +10,9 @@ import { ssrWS } from './ws-server.js';
 import { maps } from './maps.js';
 
 dotenv.config();
+
+const renderInstanceTitle = (pathObj) =>
+  `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${pathObj.name_map === '' ? '' : ' | '}CYBERIA`;
 
 const httpServer = () => {
   const server = express();
@@ -34,7 +37,7 @@ const httpServer = () => {
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>${pathObj.name_map.replaceAll('-', ' ').toUpperCase()} | CYBERIA</title>
+                <title>${renderInstanceTitle(pathObj)}</title>
                 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
                 <meta name="viewport" content="width=device-width, initial-scale=1">
                 <script src="/socket.io/socket.io.js"></script>
@@ -46,6 +49,7 @@ const httpServer = () => {
                 <script>
                   ${commonFunctions()}
                   ${fs.readFileSync('./src/vanilla.js', 'utf8')}
+                  const renderInstanceTitle = ${renderInstanceTitle};
                   ${ssrColor}
                   ${ssrWS}
                   ${fs.readFileSync('./src/client.js', 'utf8')}
@@ -63,8 +67,6 @@ const httpServer = () => {
   server.listen(process.env.CLIENT_PORT, () => {
     console.log(`Client Server is running on port ${process.env.CLIENT_PORT}`);
   });
-
-  server.get('/', (req, res) => res.redirect(`/${maps[random(0, maps.length - 1)].name_map}`));
 };
 
 export { httpServer };

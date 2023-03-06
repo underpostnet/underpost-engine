@@ -111,6 +111,15 @@ const typeModels = () => {
         };
       },
     },
+    pointer: {
+      color: () => 'lust',
+      components: () => ['event-pointer-cross'],
+      render: () => {
+        return {
+          dim: () => 1,
+        };
+      },
+    },
   };
 };
 
@@ -266,7 +275,9 @@ const wsServer = () => {
       if (args[0] === '{' || args[0] === '[') {
         element = JSON.parse(args);
       } else {
-        const map = args.replaceAll('/', '');
+        let map;
+        map = args.replaceAll('/', '');
+        if (map === '') map = maps[random(0, maps.length - 1)].name_map;
         const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
         const { color, render } = getParamsType(type);
         const { dim } = render;
@@ -277,7 +288,7 @@ const wsServer = () => {
           map,
           life: 100,
           maxLife: 100,
-          sprite: 'agent',
+          sprite: 'anon',
           render: {
             x,
             y,

@@ -1,4 +1,5 @@
 const maps = [
+  { name_map: '', matrix: [] },
   {
     name_map: 'orange-over-purple',
     matrix: [

@@ -166,6 +166,25 @@ const renderPixiInitElement = (element) => {
     container.addChild(arrowMap);
   }
 
+  if (typeModels()[type].components().includes('event-pointer-cross')) {
+    const src = `/icons/200x200/cross.gif`;
+    const dimFactor = 0.8;
+    pixi[type][element.id][src] = PIXI.Sprite.from(src);
+    pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+    pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+    pixi[type][element.id][src].width = dim * dimFactor;
+    pixi[type][element.id][src].height = dim * dimFactor;
+    pixi[type][element.id][src].visible = true;
+    container.addChild(pixi[type][element.id][src]);
+    setTimeout(() => {
+      removePixiElement(element);
+      elements[type].splice(
+        elements[type].findIndex((element) => element.id === id),
+        1
+      );
+    }, 1000);
+  }
+
   //  = new PIXI.Graphics();
   // .clear();
 
@@ -390,16 +409,13 @@ const renderPixiEventElement = (element) => {
         if (newMapObj && id === socket.id && params[type][id].mapChangeActive === true) {
           console.log('newMapObj', newMapObj);
           params[type][id].mapChangeActive = false;
-          setTimeout(() => {
-            const eventElement = newInstance(element);
-            eventElement.render.x = newMapObj.toX;
-            eventElement.render.y = newMapObj.toY;
-            eventElement.map = newMapObj.toMap;
-            resetsElements();
-            socket.emit('close');
-            socket.emit('init', JSON.stringify(eventElement));
-            setURI('/' + newMapObj.toMap);
-          }, 100);
+          const eventElement = newInstance(element);
+          eventElement.render.x = newMapObj.toX;
+          eventElement.render.y = newMapObj.toY;
+          eventElement.map = newMapObj.toMap;
+          resetsElements();
+          socket.emit('close');
+          socket.emit('init', JSON.stringify(eventElement));
           setTimeout(() => {
             params[type][id].mapChangeActive = true;
           }, params[type][id].mapChangeTimeBlock);
@@ -457,6 +473,8 @@ socket.on('update', (...args) => {
     userPositionAvailablePoints = getAvailablePoints('user', ['building'], eventElement.map);
     userMatrixCollision = getMatrixCollision('user', ['building'], eventElement.map);
     console.log('userMatrixCollision', JSONmatrix(userMatrixCollision));
+    setURI('/' + eventElement.map);
+    htmls('title', renderInstanceTitle({ name_map: eventElement.map }));
   }
   return renderPixiInitElement(eventElement);
 });
@@ -532,6 +550,26 @@ const finder = new pathfinding.AStarFinder({
 s('canvas').onclick = (e, subPath) => {
   let x2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetX / dimState().minValue)) : e.offsetX;
   let y2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetY / dimState().minValue)) : e.offsetY;
+
+  if (subPath === undefined)
+    (() => {
+      const type = 'pointer';
+      const { color, render } = getParamsType(type);
+      const { dim } = render;
+      const crossElement = {
+        id: id(),
+        type,
+        color,
+        render: {
+          x: x2,
+          y: y2,
+          dim,
+        },
+      };
+      elements[type].push(crossElement);
+      renderPixiInitElement(crossElement);
+    })();
+
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
     if (x2 > maxRangeMap(element.render.dim)) x2 = maxRangeMap(element.render.dim);
