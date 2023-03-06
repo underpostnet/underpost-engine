@@ -155,6 +155,17 @@ const renderPixiInitElement = (element) => {
     container.addChild(containerText);
   }
 
+  if (typeModels()[type].components().includes('arrow-map')) {
+    pixi[type][element.id].arrowMap = new PIXI.Sprite(PIXI.Texture.WHITE);
+    const arrowMap = pixi[type][element.id].arrowMap;
+    arrowMap.x = (dim - dim * 0.5) / 2;
+    arrowMap.y = (dim - dim * 0.5) / 2;
+    arrowMap.width = dim * 0.5;
+    arrowMap.height = dim * 0.5;
+    arrowMap.tint = color;
+    container.addChild(arrowMap);
+  }
+
   //  = new PIXI.Graphics();
   // .clear();
 
@@ -454,6 +465,27 @@ socket.on('init-data', (...args) => {
   const initData = JSON.parse(args);
   console.log('initData', initData);
   changeMapsPoints = initData.changeMapsPoints;
+  changeMapsPoints.map((mapData) => {
+    (() => {
+      const type = 'to-map';
+      const { color, render } = getParamsType(type);
+      const { dim } = render;
+      const map = mapData.fromMap;
+      const toMapElement = {
+        id: id(),
+        type,
+        color,
+        map,
+        render: {
+          x: mapData.fromX,
+          y: mapData.fromY,
+          dim,
+        },
+      };
+      elements[type].push(toMapElement);
+      renderPixiInitElement(toMapElement);
+    })();
+  });
 });
 
 socket.on('close', (...args) => {

@@ -46,6 +46,7 @@ maps.map((dataMap) => {
           fromY: y,
           toX: toMapData.x,
           toY: toMapData.y,
+          arrow: cellFrom[2],
         });
       }
     })
@@ -98,6 +99,15 @@ const typeModels = () => {
       render: () => {
         return {
           dim: () => 0.5,
+        };
+      },
+    },
+    'to-map': {
+      color: () => 'peridot',
+      components: () => ['arrow-map'],
+      render: () => {
+        return {
+          dim: () => 1,
         };
       },
     },
