@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
-import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge, ceil10 } from './common.js';
+import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge, ceil10, newInstance } from './common.js';
 import { maps } from './maps.js';
 import { JSONweb } from './util.js';
 
@@ -374,7 +374,20 @@ const wsServer = () => {
                     })
                   ) {
                     element.life = element.life - 20;
-                    if (element.life < 0) element.life = 0;
+                    if (element.life <= 0) {
+                      element.life = 0;
+                      setTimeout(() => {
+                        element.life = newInstance(element.maxLife);
+                        clients.map((client) => {
+                          const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                          if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                            client.emit(
+                              'update',
+                              JSON.stringify({ id: element.id, type: element.type, life: element.life })
+                            );
+                        });
+                      }, 3000);
+                    }
                     clients.map((client) => {
                       const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
                       if (clientIndex > -1 && elements['user'][clientIndex].map === map)
@@ -477,7 +490,7 @@ const wsServer = () => {
 
             let x2, y2, point;
             const usersTarget = elements['user'].filter((userElement) => {
-              if (userElement.map !== map) return false;
+              if (userElement.map !== map || userElement.life === 0 || element.life === 0) return false;
               const userDistance = getDistance(
                 element.render.x + parseInt(element.render.dim / 2),
                 element.render.y + parseInt(element.render.dim / 2),

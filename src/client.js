@@ -111,10 +111,18 @@ const renderPixiInitElement = (element) => {
         pixi[type][element.id][src].y = 0;
         pixi[type][element.id][src].width = dim;
         pixi[type][element.id][src].height = dim;
-        pixi[type][element.id][src].visible = spriteDir === '08';
+        pixi[type][element.id][src].visible = spriteDir === '08' && element.life > 0;
         container.addChild(pixi[type][element.id][src]);
       });
     });
+    const src = `/sprites/ghost/08/0.png`;
+    pixi[type][element.id][src] = PIXI.Sprite.from(src);
+    pixi[type][element.id][src].x = (dim - dim * 0.6) * 0.5;
+    pixi[type][element.id][src].y = 0;
+    pixi[type][element.id][src].width = dim * 0.6;
+    pixi[type][element.id][src].height = dim;
+    pixi[type][element.id][src].visible = element.life <= 0;
+    container.addChild(pixi[type][element.id][src]);
   }
 
   if (typeModels()[type].components().includes('bar-life')) {
@@ -276,22 +284,49 @@ const resetsElements = () => {
 
 const renderPixiEventElement = (element) => {
   const { type, id } = element;
-  const { x, y, dim } = setAmplitudeRender(element.render);
-  const container = pixi[type][element.id].container;
+  if (!pixi[type][element.id]) return;
+  let x, y, dim, container;
+  if (element.render) {
+    const renderObj = setAmplitudeRender(element.render);
+    x = renderObj.x;
+    y = renderObj.y;
+    dim = renderObj.dim;
+  }
+  container = pixi[type][element.id].container;
+  if (!container) return;
   // change sprite animation
-  const direction = getDirection(container.x, container.y, x, y).direction;
+  let direction = getDirection(container.x, container.y, x, y).direction;
+  let rebird = false;
+  if (
+    typeModels()[type].components().includes('sprites') &&
+    element.life > 0 &&
+    pixi[type][element.id][`/sprites/ghost/08/0.png`].visible === true
+  ) {
+    pixi[type][element.id][`/sprites/ghost/08/0.png`].visible = false;
+    direction = 'South';
+    rebird = true;
+    params[type][element.id].directionChangeActive = true;
+  }
 
   if (
     typeModels()[type].components().includes('sprites') &&
-    ((params[type][element.id].directionChangeActive === true && (container.x !== x || container.y !== y)) ||
-      params[type][element.id].direction !== direction)
+    element.life <= 0 &&
+    pixi[type][element.id][`/sprites/ghost/08/0.png`].visible === false
+  ) {
+    clearFramesSprites(element);
+    pixi[type][element.id][`/sprites/ghost/08/0.png`].visible = true;
+  } else if (
+    element.life > 0 &&
+    typeModels()[type].components().includes('sprites') &&
+    ((params[type][element.id].directionChangeActive === true && (container.x !== x || container.y !== y || rebird)) ||
+      params[type][element.id].direction !== direction) &&
+    direction !== undefined
   ) {
     params[type][element.id].directionChangeActive = false;
     const frames = params[type][element.id].directionCheckTimeInterval / params[type][element.id].spriteFrameInterval;
     const switchInitFrame = [0, 1][random(0, 1)];
     range(0 + switchInitFrame, frames + switchInitFrame).map((frame) => {
       setTimeout(() => {
-        if (!params[type][element.id] || params[type][element.id].direction !== direction) return;
         const typeFrame = frame % 2;
         if (frame !== frames) {
           clearFramesSprites(element);
@@ -336,7 +371,6 @@ const renderPixiEventElement = (element) => {
           const spriteIdStop = s4();
           params[type][element.id].spriteIdStop = newInstance(spriteIdStop);
           setTimeout(() => {
-            if (!params[type][element.id]) return;
             if (params[type][element.id].spriteIdStop === spriteIdStop) {
               clearFramesSprites(element);
               switch (params[type][element.id].direction) {
@@ -382,11 +416,12 @@ const renderPixiEventElement = (element) => {
         }
       }, frame * params[type][element.id].spriteFrameInterval);
     });
-
-    if (typeModels()[type].components().includes('bar-life')) {
-      pixi[type][element.id].barLife.width = dim * (element.life / element.maxLife);
-    }
   }
+
+  if (typeModels()[type].components().includes('bar-life')) {
+    pixi[type][element.id].barLife.width = dim * (element.life / element.maxLife);
+  }
+
   if (direction !== undefined) params[type][element.id].direction = direction;
 
   // change position animation
@@ -406,7 +441,13 @@ const renderPixiEventElement = (element) => {
           (mapData) =>
             mapData.fromMap === element.map && mapData.fromX === element.render.x && mapData.fromY === element.render.y
         );
-        if (newMapObj && id === socket.id && params[type][id].mapChangeActive === true) {
+        if (
+          newMapObj &&
+          id === socket.id &&
+          params[type][id].mapChangeActive === true &&
+          element.life > 0 &&
+          (!element.path || element.path.length === 0)
+        ) {
           console.log('newMapObj', newMapObj);
           params[type][id].mapChangeActive = false;
           const eventElement = newInstance(element);
@@ -425,6 +466,7 @@ const renderPixiEventElement = (element) => {
   });
 };
 const removePixiElement = (element) => {
+  if (!element.type || !element.id || !pixi[element.type][element.id]) return;
   const { type } = element;
   Object.keys(pixi[type][element.id]).map((pixiKey) => pixi[type][element.id][pixiKey].destroy());
   delete params[type][element.id];
@@ -739,7 +781,11 @@ setInterval(() => {
       update = true;
       element.path.shift();
     }
-    if ((window.activeKey['Q'] || window.activeKey['q']) && params[element.type][element.id].shootActive === true) {
+    if (
+      element.life > 0 &&
+      (window.activeKey['Q'] || window.activeKey['q']) &&
+      params[element.type][element.id].shootActive === true
+    ) {
       params[element.type][element.id].shootActive = false;
 
       socket.emit(
