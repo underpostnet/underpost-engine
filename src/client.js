@@ -177,9 +177,8 @@ const renderPixiInitElement = (element) => {
       pixi[type][element.id][src].height = dim * dimFactor;
       pixi[type][element.id][src].visible = true;
       container.addChild(pixi[type][element.id][src]);
-      params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`] = setInterval(() => {
-        if (!params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`])
-          return clearInterval(params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`]);
+      params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`] = setInterval(function () {
+        if (!params[type][element.id]) return clearInterval(this);
         dimFactor === 0.7 ? (dimFactor = 0.6) : (dimFactor = 0.7);
         pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
         pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
@@ -206,6 +205,29 @@ const renderPixiInitElement = (element) => {
         1
       );
     }, 1000);
+  }
+
+  if (typeModels()[type].components().includes('blood')) {
+    const maxFrames = 6;
+    let currentFrame = 0;
+    range(0, maxFrames).map((frame) => {
+      const src = `/sprites/blood/08/${frame}.png`;
+      const dimFactor = 1;
+      pixi[type][element.id][src] = PIXI.Sprite.from(src);
+      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].width = dim * dimFactor;
+      pixi[type][element.id][src].height = dim * dimFactor;
+      pixi[type][element.id][src].visible = frame === currentFrame;
+      container.addChild(pixi[type][element.id][src]);
+    });
+    params[type][element.id][`interval-blood`] = setInterval(function () {
+      if (!params[type][element.id]) return clearInterval(this);
+      pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = false;
+      currentFrame++;
+      if (currentFrame > maxFrames) currentFrame = 0;
+      pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
+    }, 50);
   }
 
   //  = new PIXI.Graphics();

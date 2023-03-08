@@ -95,10 +95,10 @@ const typeModels = () => {
     },
     bullet: {
       color: () => 'venetian red',
-      components: () => ['background'],
+      components: () => ['blood'],
       render: () => {
         return {
-          dim: () => 0.5,
+          dim: () => 1,
         };
       },
     },
@@ -353,8 +353,8 @@ const wsServer = () => {
                 lifeTime,
                 render: {
                   dim,
-                  x: eventElement.element.render.x + dim / 2,
-                  y: eventElement.element.render.y + dim / 2,
+                  x: eventElement.element.render.x, //+ dim / 2,
+                  y: eventElement.element.render.y, //+ dim / 2,
                 },
               };
               elements[type].push(bullet);
