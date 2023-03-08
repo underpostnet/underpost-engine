@@ -164,14 +164,29 @@ const renderPixiInitElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('arrow-map')) {
-    pixi[type][element.id].arrowMap = new PIXI.Sprite(PIXI.Texture.WHITE);
-    const arrowMap = pixi[type][element.id].arrowMap;
-    arrowMap.x = (dim - dim * 0.5) / 2;
-    arrowMap.y = (dim - dim * 0.5) / 2;
-    arrowMap.width = dim * 0.5;
-    arrowMap.height = dim * 0.5;
-    arrowMap.tint = color;
-    container.addChild(arrowMap);
+    const dataMapArrow = changeMapsPoints.find(
+      (mapData) => mapData.fromX === element.render.x && mapData.fromY === element.render.y
+    );
+    if (dataMapArrow) {
+      const src = `/icons/200x200/arrow-${dataMapArrow.arrow}.png`;
+      let dimFactor = 0.7;
+      pixi[type][element.id][src] = PIXI.Sprite.from(src);
+      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].width = dim * dimFactor;
+      pixi[type][element.id][src].height = dim * dimFactor;
+      pixi[type][element.id][src].visible = true;
+      container.addChild(pixi[type][element.id][src]);
+      params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`] = setInterval(() => {
+        if (!params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`])
+          return clearInterval(params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`]);
+        dimFactor === 0.7 ? (dimFactor = 0.6) : (dimFactor = 0.7);
+        pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+        pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+        pixi[type][element.id][src].width = dim * dimFactor;
+        pixi[type][element.id][src].height = dim * dimFactor;
+      }, 250);
+    }
   }
 
   if (typeModels()[type].components().includes('event-pointer-cross')) {
