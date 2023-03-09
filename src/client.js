@@ -15,6 +15,11 @@ append(
         position: relative;
         cursor: url('/cursors/black-pointer.png') -30 -30, auto !important;
       }
+      @font-face {      
+        font-family: 'retro-font';      
+        src: URL('/fonts/PressStart2P.ttf') 
+        format('truetype');     
+      }
     </style>
     <style class='canvas-dim'></style>
     <pixi-container class='in'></pixi-container>
@@ -37,6 +42,7 @@ const app = new PIXI.Application({
 });
 
 const setAmplitudeRender = (render) => {
+  if (!render) return;
   const returnRender = {};
   Object.keys(render).map((keyRender) => {
     returnRender[keyRender] = render[keyRender] * amplitudeRender;
@@ -55,8 +61,9 @@ const renderPixiInitElement = (element) => {
   // https://pixijs.download/release/docs/index.html
   // https://pixijs.io/pixi-text-style/
 
-  console.log('renderPixiInitElement', element);
+  // console.log('renderPixiInitElement', element);
   const { type, id } = element;
+  if (!element.render) return;
   const { x, y, dim } = setAmplitudeRender(element.render);
   const color = numberColors[element.color];
 
@@ -102,7 +109,7 @@ const renderPixiInitElement = (element) => {
     container.addChild(background);
   }
 
-  if (typeModels()[type].components().includes('sprites')) {
+  if (typeModels()[type].components().includes('sprites') && element.sprite) {
     spriteDirs.map((spriteDir) => {
       range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
         const src = `/sprites/${element.sprite}/${spriteDir}/${spriteFrame}.png`;
@@ -147,35 +154,42 @@ const renderPixiInitElement = (element) => {
     barLife.y = 0;
     barLife.width = dim * (element.life / element.maxLife);
     barLife.height = dim / 5;
-    barLife.tint = numberColors['office green'];
+    barLife.tint = numberColors['green-yellow'];
     container.addChild(barLife);
   }
 
   if (typeModels()[type].components().includes('id')) {
-    pixi[type][element.id].nick = new PIXI.Text(
-      id.slice(0, 5).toUpperCase(),
-      new PIXI.TextStyle({
-        dropShadow: true,
-        dropShadowAngle: 6.8,
-        dropShadowBlur: 3,
-        dropShadowDistance: 2,
-        dropShadowColor: '#000000',
-        fill: id === socket.id ? 'yellow' : 'white',
-        fontFamily: 'Impact',
-        fontSize: 14,
-      })
+    range(0, 10).map((timeAttemp) =>
+      setTimeout(() => {
+        if (!pixi[type][element.id]) return;
+        pixi[type][element.id].nick = new PIXI.Text(
+          id.slice(0, 3).toUpperCase(),
+          new PIXI.TextStyle({
+            dropShadow: true,
+            dropShadowAngle: 6.8,
+            dropShadowBlur: 3,
+            dropShadowDistance: 2,
+            dropShadowColor: '#000000',
+            fill: id === socket.id ? 'yellow' : 'white',
+            fontFamily: 'retro-font', // Impact
+            fontSize: 10,
+            align: 'center',
+          })
+        );
+        // if (timeAttemp > 0) return;
+        const nick = pixi[type][element.id].nick;
+
+        pixi[type][element.id].containerText = new PIXI.Container();
+        const containerText = pixi[type][element.id].containerText;
+        containerText.x = 0;
+        containerText.y = (-1 * dim) / 5;
+        containerText.width = dim;
+        containerText.height = dim / 5;
+        containerText.addChild(nick);
+
+        container.addChild(containerText);
+      }, timeAttemp * 100)
     );
-    const nick = pixi[type][element.id].nick;
-
-    pixi[type][element.id].containerText = new PIXI.Container();
-    const containerText = pixi[type][element.id].containerText;
-    containerText.x = 0;
-    containerText.y = (-1 * dim) / 5;
-    containerText.width = dim;
-    containerText.height = dim / 5;
-    containerText.addChild(nick);
-
-    container.addChild(containerText);
   }
 
   if (typeModels()[type].components().includes('arrow-map')) {
@@ -193,7 +207,7 @@ const renderPixiInitElement = (element) => {
       pixi[type][element.id][src].visible = true;
       container.addChild(pixi[type][element.id][src]);
       params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`] = setInterval(function () {
-        if (!params[type][element.id]) return clearInterval(this);
+        if (!params[type][element.id] || !pixi[type][element.id][src]) return clearInterval(this);
         dimFactor === 0.7 ? (dimFactor = 0.6) : (dimFactor = 0.7);
         pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
         pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
@@ -237,10 +251,17 @@ const renderPixiInitElement = (element) => {
       container.addChild(pixi[type][element.id][src]);
     });
     params[type][element.id][`interval-red-power`] = setInterval(function () {
-      if (!params[type][element.id]) return clearInterval(this);
+      if (
+        !params[type][element.id] ||
+        !params[type][element.id][`interval-red-power`] ||
+        !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`]
+      )
+        return clearInterval(this);
       pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = false;
       currentFrame++;
       if (currentFrame > maxFrames) currentFrame = 0;
+      if (!params[type][element.id] || !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`])
+        return clearInterval(this);
       pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = true;
     }, 50);
   }
@@ -273,9 +294,21 @@ const clearFramesSprites = (element) => {
   spriteDirs.map((spriteDir) => {
     range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
       const src = `/sprites/${element.sprite}/${spriteDir}/${spriteFrame}.png`;
+      if (!pixi[type][element.id] || !pixi[type][element.id][src]) return;
       pixi[type][element.id][src].visible = false;
     });
   });
+};
+
+validateSpritesFrames = (element) => {
+  const { type } = element;
+  for (const spriteDir of spriteDirs) {
+    for (const spriteFrame of range(0, parseInt(spriteDir[0]))) {
+      const src = `/sprites/${element.sprite}/${spriteDir}/${spriteFrame}.png`;
+      if (!pixi[type][element.id] || !pixi[type][element.id][src]) return false;
+    }
+  }
+  return true;
 };
 
 const resetsElements = () => {
@@ -330,10 +363,12 @@ const renderPixiEventElement = (element) => {
     const switchInitFrame = [0, 1][random(0, 1)];
     range(0 + switchInitFrame, frames + switchInitFrame).map((frame) => {
       setTimeout(() => {
+        if (!pixi[type][element.id]) return;
         const typeFrame = frame % 2;
         if (frame !== frames) {
           clearFramesSprites(element);
           if (element.life <= 0) return;
+          if (!validateSpritesFrames(element)) return;
           switch (direction) {
             case 'South East':
               // ↘
@@ -375,9 +410,11 @@ const renderPixiEventElement = (element) => {
           const spriteIdStop = s4();
           params[type][element.id].spriteIdStop = newInstance(spriteIdStop);
           setTimeout(() => {
+            if (!pixi[type][element.id]) return;
             if (params[type][element.id].spriteIdStop === spriteIdStop) {
               clearFramesSprites(element);
               if (element.life <= 0) return;
+              if (!validateSpritesFrames(element)) return;
               switch (params[type][element.id].direction) {
                 case 'South East':
                   // ↘
@@ -431,20 +468,29 @@ const renderPixiEventElement = (element) => {
       element.life !== element.maxLife
     ) {
       (() => {
+        if (!pixi[type][element.id]) return;
         const maxFrames = 6;
         let currentFrame = 0;
         pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
         params[type][element.id][`interval-blood`] = setInterval(function () {
+          if (
+            !params[type][element.id] ||
+            !params[type][element.id][`interval-blood`] ||
+            !pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`]
+          )
+            return clearInterval(this);
           pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = false;
           currentFrame++;
           if (currentFrame > maxFrames) currentFrame = 0;
+          if (!params[type][element.id] || !pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`])
+            return clearInterval(this);
           pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
         }, 100);
         setTimeout(() => {
-          clearInterval(params[type][element.id][`interval-blood`]);
+          if (params[type][element.id][`interval-blood`]) clearInterval(params[type][element.id][`interval-blood`]);
           range(0, maxFrames).map((frame) => {
-            if (!pixi[type][element.id]) return;
             const src = `/sprites/blood/08/${frame}.png`;
+            if (!pixi[type][element.id] || !pixi[type][element.id][src]) return;
             pixi[type][element.id][src].visible = false;
           });
         }, 500);
@@ -461,6 +507,11 @@ const renderPixiEventElement = (element) => {
   const intervalChangeY = Math.abs(y - container.y) / frames;
   range(0, frames - 1).map((frameTime) => {
     setTimeout(() => {
+      try {
+        container.x;
+      } catch (error) {
+        return;
+      }
       if (container.x > x) container.x = container.x - intervalChangeX;
       if (container.x < x) container.x = container.x + intervalChangeX;
       if (container.y > y) container.y = container.y - intervalChangeY;
@@ -488,9 +539,6 @@ const renderPixiEventElement = (element) => {
           resetsElements();
           socket.emit('close');
           socket.emit('init', JSON.stringify(eventElement));
-          setTimeout(() => {
-            params[type][id].mapChangeActive = true;
-          }, params[type][id].mapChangeTimeBlock);
         }
       }
     }, frameTime * (updateTimeInterval / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
@@ -532,10 +580,11 @@ socket.on('update', (...args) => {
   if (eventElement.lifeTime)
     setTimeout(() => {
       removePixiElement(eventElement);
-      elements[type].splice(
-        elements[type].findIndex((element) => element.id === id),
-        1
-      );
+      if (elements[type].findIndex((element) => element.id === id) > -1)
+        elements[type].splice(
+          elements[type].findIndex((element) => element.id === id),
+          1
+        );
     }, eventElement.lifeTime);
   if (elementIndex > -1) {
     elements[type][elementIndex] = merge(elements[type][elementIndex], eventElement);
@@ -834,6 +883,7 @@ setInterval(() => {
       );
 
       setTimeout(() => {
+        if (!params[element.type][element.id]) return;
         params[element.type][element.id].shootActive = true;
       }, 500);
     }
