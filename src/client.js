@@ -125,6 +125,21 @@ const renderPixiInitElement = (element) => {
     container.addChild(pixi[type][element.id][src]);
   }
 
+  if (typeModels()[type].components().includes('blood')) {
+    const maxFrames = 2;
+    range(0, maxFrames).map((frame) => {
+      const src = `/sprites/blood/08/${frame}.png`;
+      const dimFactor = 1;
+      pixi[type][element.id][src] = PIXI.Sprite.from(src);
+      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].width = dim * dimFactor;
+      pixi[type][element.id][src].height = dim * dimFactor;
+      pixi[type][element.id][src].visible = false;
+      container.addChild(pixi[type][element.id][src]);
+    });
+  }
+
   if (typeModels()[type].components().includes('bar-life')) {
     pixi[type][element.id].barLife = new PIXI.Sprite(PIXI.Texture.WHITE);
     const barLife = pixi[type][element.id].barLife;
@@ -205,29 +220,6 @@ const renderPixiInitElement = (element) => {
         1
       );
     }, 1000);
-  }
-
-  if (typeModels()[type].components().includes('blood')) {
-    const maxFrames = 6;
-    let currentFrame = 0;
-    range(0, maxFrames).map((frame) => {
-      const src = `/sprites/blood/08/${frame}.png`;
-      const dimFactor = 1;
-      pixi[type][element.id][src] = PIXI.Sprite.from(src);
-      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
-      pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
-      pixi[type][element.id][src].width = dim * dimFactor;
-      pixi[type][element.id][src].height = dim * dimFactor;
-      pixi[type][element.id][src].visible = frame === currentFrame;
-      container.addChild(pixi[type][element.id][src]);
-    });
-    params[type][element.id][`interval-blood`] = setInterval(function () {
-      if (!params[type][element.id]) return clearInterval(this);
-      pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = false;
-      currentFrame++;
-      if (currentFrame > maxFrames) currentFrame = 0;
-      pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
-    }, 50);
   }
 
   if (typeModels()[type].components().includes('red-power')) {
@@ -432,7 +424,33 @@ const renderPixiEventElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('bar-life')) {
-    pixi[type][element.id].barLife.width = dim * (element.life / element.maxLife);
+    const newLife = dim * (element.life / element.maxLife);
+    if (
+      typeModels()[type].components().includes('blood') &&
+      newLife < pixi[type][element.id].barLife.width &&
+      element.life !== element.maxLife
+    ) {
+      (() => {
+        const maxFrames = 6;
+        let currentFrame = 0;
+        pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
+        params[type][element.id][`interval-blood`] = setInterval(function () {
+          pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = false;
+          currentFrame++;
+          if (currentFrame > maxFrames) currentFrame = 0;
+          pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
+        }, 100);
+        setTimeout(() => {
+          clearInterval(params[type][element.id][`interval-blood`]);
+          range(0, maxFrames).map((frame) => {
+            if (!pixi[type][element.id]) return;
+            const src = `/sprites/blood/08/${frame}.png`;
+            pixi[type][element.id][src].visible = false;
+          });
+        }, 500);
+      })();
+    }
+    pixi[type][element.id].barLife.width = newLife;
   }
 
   if (direction !== undefined) params[type][element.id].direction = direction;

@@ -88,7 +88,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
-      components: () => ['sprites', 'bar-life', 'id'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood'],
       render: () => {
         return {
           dim: () => 1,
@@ -97,7 +97,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['sprites', 'bar-life', 'id'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood'],
       render: () => {
         return {
           dim: () => 1,
@@ -106,7 +106,7 @@ const typeModels = () => {
     },
     bullet: {
       color: () => 'venetian red',
-      components: () => ['red-power' /*'blood'*/],
+      components: () => ['red-power'],
       render: () => {
         return {
           dim: () => 1,
@@ -419,8 +419,8 @@ const wsServer = () => {
           type,
           color,
           map,
-          life: 100,
-          maxLife: 100,
+          life: 300,
+          maxLife: 300,
           sprite: 'anon',
           render: {
             x,
