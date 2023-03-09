@@ -2,7 +2,18 @@ import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import fs from 'fs';
 import pathfinding from 'pathfinding';
-import { s4, range, random, JSONmatrix, getRandomPoint, getDistance, merge, ceil10, newInstance } from './common.js';
+import {
+  s4,
+  range,
+  random,
+  JSONmatrix,
+  getRandomPoint,
+  getDistance,
+  merge,
+  ceil10,
+  newInstance,
+  getDirection,
+} from './common.js';
 import { maps } from './maps.js';
 import { JSONweb } from './util.js';
 
@@ -197,6 +208,55 @@ const getAvailablePoints = (type, types, map) => {
   return availablePoints;
 };
 
+const getMissileDirection = (positionType, direction) => {
+  switch (direction) {
+    case 'South East':
+      // ↘
+      if (positionType === 'x') return 1;
+      if (positionType === 'y') return 1;
+      break;
+    case 'East':
+      // →
+      if (positionType === 'x') return 1;
+      if (positionType === 'y') return 0;
+      break;
+    case 'North East':
+      // ↗
+      if (positionType === 'x') return 1;
+      if (positionType === 'y') return -1;
+      break;
+    case 'South':
+      // ↓
+      if (positionType === 'x') return 0;
+      if (positionType === 'y') return 1;
+      break;
+    case 'North':
+      // ↑
+      if (positionType === 'x') return 0;
+      if (positionType === 'y') return -1;
+      break;
+    case 'South West':
+      // ↙
+      if (positionType === 'x') return -1;
+      if (positionType === 'y') return 1;
+      break;
+    case 'West':
+      // ←
+      if (positionType === 'x') return -1;
+      if (positionType === 'y') return 0;
+      break;
+    case 'North West':
+      // ↖
+      if (positionType === 'x') return -1;
+      if (positionType === 'y') return -1;
+      break;
+    default:
+      if (positionType === 'x') return 0;
+      if (positionType === 'y') return 1;
+      break;
+  }
+};
+
 (() => {
   const type = 'building';
   const { color, render } = getParamsType(type);
@@ -258,7 +318,70 @@ const ssrWS = `
     const spriteDirs = ${JSONweb(spriteDirs)};
     const directions = ${JSONweb(directions)};
     const getParamsType = ${getParamsType};
+    const getMissileDirection = ${getMissileDirection};
 `;
+
+const attack = (clients, eventElement, map, targets) => {
+  (() => {
+    const type = 'bullet';
+    const { color, render } = getParamsType(type);
+    const { dim } = render;
+    const lifeTime = 500;
+    const bullet = {
+      id: id(),
+      type,
+      color,
+      map,
+      lifeTime,
+      render: {
+        dim,
+        x: eventElement.element.render.x, //+ dim / 2,
+        y: eventElement.element.render.y, //+ dim / 2,
+      },
+    };
+    elements[type].push(bullet);
+    clients.map((client) => {
+      const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+      if (clientIndex > -1 && elements['user'][clientIndex].map === map) client.emit('update', JSON.stringify(bullet));
+    });
+
+    targets.map((type) =>
+      elements[type].map((element) => {
+        if (
+          validateCollision(element.render, {
+            dim: ceil10(bullet.render.dim),
+            x: parseInt(bullet.render.x),
+            y: parseInt(bullet.render.y),
+          })
+        ) {
+          element.life = element.life - 20;
+          if (element.life <= 0) {
+            element.life = 0;
+            setTimeout(() => {
+              element.life = newInstance(element.maxLife);
+              clients.map((client) => {
+                const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                  client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
+              });
+            }, 3000);
+          }
+          clients.map((client) => {
+            const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+            if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+              client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
+          });
+        }
+      })
+    );
+    setTimeout(() => {
+      elements[type] = elements[type].filter((element) => element.id !== bullet.id);
+    }, lifeTime);
+  })();
+};
+
+const params = { bot: [] };
+const botAttackInterval = 500;
 
 const wsServer = () => {
   const io = new Server(process.env.IO_PORT, { cors: { origins: [`http://localhost:${process.env.CLIENT_PORT}`] } });
@@ -340,69 +463,7 @@ const wsServer = () => {
         const { map } = clientElement;
         switch (eventElement.event) {
           case 'attack':
-            (() => {
-              const type = 'bullet';
-              const { color, render } = getParamsType(type);
-              const { dim } = render;
-              const lifeTime = 500;
-              const bullet = {
-                id: id(),
-                type,
-                color,
-                map,
-                lifeTime,
-                render: {
-                  dim,
-                  x: eventElement.element.render.x, //+ dim / 2,
-                  y: eventElement.element.render.y, //+ dim / 2,
-                },
-              };
-              elements[type].push(bullet);
-              clients.map((client) => {
-                const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
-                if (clientIndex > -1 && elements['user'][clientIndex].map === map)
-                  client.emit('update', JSON.stringify(bullet));
-              });
-
-              ['bot', 'user'].map((type) =>
-                elements[type].map((element) => {
-                  if (
-                    validateCollision(element.render, {
-                      dim: ceil10(bullet.render.dim),
-                      x: parseInt(bullet.render.x),
-                      y: parseInt(bullet.render.y),
-                    })
-                  ) {
-                    element.life = element.life - 20;
-                    if (element.life <= 0) {
-                      element.life = 0;
-                      setTimeout(() => {
-                        element.life = newInstance(element.maxLife);
-                        clients.map((client) => {
-                          const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
-                          if (clientIndex > -1 && elements['user'][clientIndex].map === map)
-                            client.emit(
-                              'update',
-                              JSON.stringify({ id: element.id, type: element.type, life: element.life })
-                            );
-                        });
-                      }, 3000);
-                    }
-                    clients.map((client) => {
-                      const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
-                      if (clientIndex > -1 && elements['user'][clientIndex].map === map)
-                        client.emit(
-                          'update',
-                          JSON.stringify({ id: element.id, type: element.type, life: element.life })
-                        );
-                    });
-                  }
-                })
-              );
-              setTimeout(() => {
-                elements[type] = elements[type].filter((element) => element.id !== bullet.id);
-              }, lifeTime);
-            })();
+            attack(clients, eventElement, map, ['bot', 'user']);
             break;
 
           default:
@@ -461,7 +522,7 @@ const wsServer = () => {
         elements[type].filter((element) => element.map === map).length < maxBots
       ) {
         const point = botPositionAvailablePoints[random(0, botPositionAvailablePoints.length - 1)];
-        elements[type].push({
+        const bot = {
           id: id(),
           type,
           color,
@@ -474,7 +535,11 @@ const wsServer = () => {
             y: point[1],
             dim,
           },
-        });
+        };
+        elements[type].push(bot);
+        params[type][bot.id] = {
+          activeAttack: true,
+        };
       }
     })();
 
@@ -484,11 +549,10 @@ const wsServer = () => {
         .map((element) => {
           if (!element.path) element.path = [];
           element.path.shift();
-          let targetUser;
+          let targetUser, x2, y2, point;
           while (element.path.length === 0 && !targetUser) {
             // element.path = range(0, maxRangeMap).map(i => [i, i]);
 
-            let x2, y2, point;
             const usersTarget = elements['user'].filter((userElement) => {
               if (userElement.map !== map || userElement.life === 0 || element.life === 0) return false;
               const userDistance = getDistance(
@@ -524,6 +588,28 @@ const wsServer = () => {
           if (element.path[0]) {
             element.render.x = element.path[0][0];
             element.render.y = element.path[0][1];
+          }
+          if (targetUser && params[type][element.id].activeAttack === true) {
+            params[type][element.id].activeAttack = false;
+            const direction = getDirection(element.render.x, element.render.y, x2, y2).direction;
+            if (direction)
+              attack(
+                clients,
+                {
+                  element: {
+                    render: {
+                      x: element.render.x + getMissileDirection('x', direction),
+                      y: element.render.y + getMissileDirection('y', direction),
+                    },
+                  },
+                },
+                map,
+                ['user']
+              );
+
+            setTimeout(() => {
+              params[type][element.id].activeAttack = true;
+            }, botAttackInterval);
           }
           clients.map((client) => {
             const clientIndex = elements['user'].findIndex((element) => element.id === client.id);

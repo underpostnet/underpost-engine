@@ -263,55 +263,6 @@ const clearFramesSprites = (element) => {
   });
 };
 
-const getMissileDirection = (positionType, direction) => {
-  switch (direction) {
-    case 'South East':
-      // ↘
-      if (positionType === 'x') return 1;
-      if (positionType === 'y') return 1;
-      break;
-    case 'East':
-      // →
-      if (positionType === 'x') return 1;
-      if (positionType === 'y') return 0;
-      break;
-    case 'North East':
-      // ↗
-      if (positionType === 'x') return 1;
-      if (positionType === 'y') return -1;
-      break;
-    case 'South':
-      // ↓
-      if (positionType === 'x') return 0;
-      if (positionType === 'y') return 1;
-      break;
-    case 'North':
-      // ↑
-      if (positionType === 'x') return 0;
-      if (positionType === 'y') return -1;
-      break;
-    case 'South West':
-      // ↙
-      if (positionType === 'x') return -1;
-      if (positionType === 'y') return 1;
-      break;
-    case 'West':
-      // ←
-      if (positionType === 'x') return -1;
-      if (positionType === 'y') return 0;
-      break;
-    case 'North West':
-      // ↖
-      if (positionType === 'x') return -1;
-      if (positionType === 'y') return -1;
-      break;
-    default:
-      if (positionType === 'x') return 0;
-      if (positionType === 'y') return 1;
-      break;
-  }
-};
-
 const resetsElements = () => {
   Object.keys(elements).map((type) => {
     elements[type].map((element) => removePixiElement(element));
@@ -367,6 +318,7 @@ const renderPixiEventElement = (element) => {
         const typeFrame = frame % 2;
         if (frame !== frames) {
           clearFramesSprites(element);
+          if (element.life <= 0) return;
           switch (direction) {
             case 'South East':
               // ↘
@@ -410,6 +362,7 @@ const renderPixiEventElement = (element) => {
           setTimeout(() => {
             if (params[type][element.id].spriteIdStop === spriteIdStop) {
               clearFramesSprites(element);
+              if (element.life <= 0) return;
               switch (params[type][element.id].direction) {
                 case 'South East':
                   // ↘
