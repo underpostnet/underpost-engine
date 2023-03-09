@@ -507,11 +507,7 @@ const renderPixiEventElement = (element) => {
   const intervalChangeY = Math.abs(y - container.y) / frames;
   range(0, frames - 1).map((frameTime) => {
     setTimeout(() => {
-      try {
-        container.x;
-      } catch (error) {
-        return;
-      }
+      if (container._destroyed) return;
       if (container.x > x) container.x = container.x - intervalChangeX;
       if (container.x < x) container.x = container.x + intervalChangeX;
       if (container.y > y) container.y = container.y - intervalChangeY;
