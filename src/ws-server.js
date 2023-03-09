@@ -106,7 +106,7 @@ const typeModels = () => {
     },
     bullet: {
       color: () => 'venetian red',
-      components: () => ['blood'],
+      components: () => ['red-power' /*'blood'*/],
       render: () => {
         return {
           dim: () => 1,
@@ -252,7 +252,7 @@ const getMissileDirection = (positionType, direction) => {
       break;
     default:
       if (positionType === 'x') return 0;
-      if (positionType === 'y') return 1;
+      if (positionType === 'y') return 0;
       break;
   }
 };
@@ -344,39 +344,49 @@ const attack = (clients, eventElement, map, targets) => {
       const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
       if (clientIndex > -1 && elements['user'][clientIndex].map === map) client.emit('update', JSON.stringify(bullet));
     });
-
-    targets.map((type) =>
-      elements[type].map((element) => {
-        if (
-          validateCollision(element.render, {
-            dim: ceil10(bullet.render.dim),
-            x: parseInt(bullet.render.x),
-            y: parseInt(bullet.render.y),
-          })
-        ) {
-          element.life = element.life - 20;
-          if (element.life <= 0) {
-            element.life = 0;
-            setTimeout(() => {
-              element.life = newInstance(element.maxLife);
-              clients.map((client) => {
-                const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
-                if (clientIndex > -1 && elements['user'][clientIndex].map === map)
-                  client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
-              });
-            }, 3000);
-          }
-          clients.map((client) => {
-            const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
-            if (clientIndex > -1 && elements['user'][clientIndex].map === map)
-              client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
-          });
-        }
-      })
-    );
     setTimeout(() => {
-      elements[type] = elements[type].filter((element) => element.id !== bullet.id);
-    }, lifeTime);
+      const render = {
+        x: eventElement.element.render.x + getMissileDirection('x', eventElement.direction),
+        y: eventElement.element.render.y + getMissileDirection('y', eventElement.direction),
+      };
+      clients.map((client) => {
+        const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+        if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+          client.emit('update', JSON.stringify({ id: bullet.id, type: bullet.type, render }));
+      });
+      targets.map((type) =>
+        elements[type].map((element) => {
+          if (
+            validateCollision(element.render, {
+              dim: ceil10(bullet.render.dim),
+              x: parseInt(render.x),
+              y: parseInt(render.y),
+            })
+          ) {
+            element.life = element.life - 20;
+            if (element.life <= 0) {
+              element.life = 0;
+              setTimeout(() => {
+                element.life = newInstance(element.maxLife);
+                clients.map((client) => {
+                  const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                  if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                    client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
+                });
+              }, 3000);
+            }
+            clients.map((client) => {
+              const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+              if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
+            });
+          }
+        })
+      );
+      setTimeout(() => {
+        elements[type] = elements[type].filter((element) => element.id !== bullet.id);
+      }, lifeTime);
+    }, botAttackInterval * 0.1);
   })();
 };
 
@@ -592,20 +602,20 @@ const wsServer = () => {
           if (targetUser && params[type][element.id].activeAttack === true) {
             params[type][element.id].activeAttack = false;
             const direction = getDirection(element.render.x, element.render.y, x2, y2).direction;
-            if (direction)
-              attack(
-                clients,
-                {
-                  element: {
-                    render: {
-                      x: element.render.x + getMissileDirection('x', direction),
-                      y: element.render.y + getMissileDirection('y', direction),
-                    },
+            attack(
+              clients,
+              {
+                element: {
+                  render: {
+                    x: element.render.x,
+                    y: element.render.y,
                   },
                 },
-                map,
-                ['user']
-              );
+                direction,
+              },
+              map,
+              ['user']
+            );
 
             setTimeout(() => {
               params[type][element.id].activeAttack = true;

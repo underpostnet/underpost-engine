@@ -230,6 +230,29 @@ const renderPixiInitElement = (element) => {
     }, 50);
   }
 
+  if (typeModels()[type].components().includes('red-power')) {
+    const maxFrames = 2;
+    let currentFrame = 0;
+    range(0, maxFrames).map((frame) => {
+      const src = `/sprites/red-power/08/${frame}.png`;
+      const dimFactor = 0.5;
+      pixi[type][element.id][src] = PIXI.Sprite.from(src);
+      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].width = dim * dimFactor;
+      pixi[type][element.id][src].height = dim * dimFactor;
+      pixi[type][element.id][src].visible = frame === currentFrame;
+      container.addChild(pixi[type][element.id][src]);
+    });
+    params[type][element.id][`interval-red-power`] = setInterval(function () {
+      if (!params[type][element.id]) return clearInterval(this);
+      pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = false;
+      currentFrame++;
+      if (currentFrame > maxFrames) currentFrame = 0;
+      pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = true;
+    }, 50);
+  }
+
   //  = new PIXI.Graphics();
   // .clear();
 
@@ -784,10 +807,11 @@ setInterval(() => {
           event: 'attack',
           element: {
             render: {
-              x: element.render.x + getMissileDirection('x', params[element.type][element.id].direction),
-              y: element.render.y + getMissileDirection('y', params[element.type][element.id].direction),
+              x: element.render.x,
+              y: element.render.y,
             },
           },
+          direction: params[element.type][element.id].direction,
         })
       );
 
