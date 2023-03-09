@@ -487,10 +487,11 @@ const renderPixiEventElement = (element) => {
           pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
         }, 100);
         setTimeout(() => {
+          if (!pixi[type][element.id]) return;
           if (params[type][element.id][`interval-blood`]) clearInterval(params[type][element.id][`interval-blood`]);
           range(0, maxFrames).map((frame) => {
             const src = `/sprites/blood/08/${frame}.png`;
-            if (!pixi[type][element.id] || !pixi[type][element.id][src]) return;
+            if (!pixi[type][element.id][src]) return;
             pixi[type][element.id][src].visible = false;
           });
         }, 500);
