@@ -332,6 +332,10 @@ const renderPixiEventElement = (element) => {
   if (!container) return;
   // change sprite animation
   let direction = getDirection(container.x, container.y, x, y).direction;
+  if (element.direction) {
+    direction = newInstance(element.direction);
+    element.direction = undefined;
+  }
   let rebird = false;
   if (
     typeModels()[type].components().includes('sprites') &&

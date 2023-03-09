@@ -13,6 +13,7 @@ import {
   ceil10,
   newInstance,
   getDirection,
+  reOrderIntArray,
 } from './common.js';
 import { maps } from './maps.js';
 import { JSONweb } from './util.js';
@@ -345,9 +346,11 @@ const attack = (clients, eventElement, map, targets) => {
       if (clientIndex > -1 && elements['user'][clientIndex].map === map) client.emit('update', JSON.stringify(bullet));
     });
     setTimeout(() => {
+      const missileY = getMissileDirection('x', eventElement.direction);
+      const missileX = getMissileDirection('y', eventElement.direction);
       const render = {
-        x: eventElement.element.render.x + getMissileDirection('x', eventElement.direction),
-        y: eventElement.element.render.y + getMissileDirection('y', eventElement.direction),
+        x: eventElement.element.render.x + missileY,
+        y: eventElement.element.render.y + missileX,
       };
       clients.map((client) => {
         const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
@@ -383,6 +386,57 @@ const attack = (clients, eventElement, map, targets) => {
           }
         })
       );
+      if (missileX === 0 && missileY === 0 && eventElement.matrixCollision) {
+        const cordDistances = [
+          [0, 1],
+          [0, -1],
+          [1, 0],
+          [-1, 0],
+          [1, 1],
+          [-1, -1],
+        ];
+        const newRender = {};
+        const onDistance = (() => {
+          for (const arrTestDistance of reOrderIntArray(range(0, cordDistances.length - 1))) {
+            if (
+              eventElement.matrixCollision[render.y + cordDistances[arrTestDistance][1]] &&
+              eventElement.matrixCollision[render.y + cordDistances[arrTestDistance][1]][
+                render.x + cordDistances[arrTestDistance][0]
+              ] === 0
+            ) {
+              newRender.x = render.x + cordDistances[arrTestDistance][0];
+              newRender.y = render.y + cordDistances[arrTestDistance][1];
+              return true;
+            }
+          }
+          return false;
+        })();
+
+        if (onDistance === true) {
+          const elementFromIndex = elements[eventElement.element.type].findIndex(
+            (element) => eventElement.element.id === element.id
+          );
+          if (elementFromIndex > -1) {
+            elements[eventElement.element.type][elementFromIndex].render = merge(
+              elements[eventElement.element.type][elementFromIndex].render,
+              newRender
+            );
+            clients.map((client) => {
+              const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+              if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                client.emit(
+                  'update',
+                  JSON.stringify({
+                    direction: getDirection(newRender.x, newRender.y, render.x, render.y).direction,
+                    id: eventElement.element.id,
+                    type: eventElement.element.type,
+                    render: newRender,
+                  })
+                );
+            });
+          }
+        }
+      }
       setTimeout(() => {
         elements[type] = elements[type].filter((element) => element.id !== bullet.id);
       }, lifeTime);
@@ -419,8 +473,8 @@ const wsServer = () => {
           type,
           color,
           map,
-          life: 300,
-          maxLife: 300,
+          life: 3000,
+          maxLife: 3000,
           sprite: 'anon',
           render: {
             x,
@@ -595,7 +649,9 @@ const wsServer = () => {
               targetUser = true;
             }
           }
-          if (element.path[0]) {
+          const newPosValidator =
+            element.path[0] && (element.render.x !== element.path[0][0] || element.render.y !== element.path[0][1]);
+          if (newPosValidator) {
             element.render.x = element.path[0][0];
             element.render.y = element.path[0][1];
           }
@@ -605,13 +661,9 @@ const wsServer = () => {
             attack(
               clients,
               {
-                element: {
-                  render: {
-                    x: element.render.x,
-                    y: element.render.y,
-                  },
-                },
+                element,
                 direction,
+                matrixCollision: botMatrixCollision,
               },
               map,
               ['user']
@@ -624,17 +676,18 @@ const wsServer = () => {
           clients.map((client) => {
             const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
             if (elements['user'][clientIndex].map !== map) return;
-            client.emit(
-              'update',
-              JSON.stringify({
-                id: element.id,
-                type: element.type,
-                render: {
-                  x: element.render.x,
-                  y: element.render.y,
-                },
-              })
-            );
+            if (newPosValidator)
+              client.emit(
+                'update',
+                JSON.stringify({
+                  id: element.id,
+                  type: element.type,
+                  render: {
+                    x: element.render.x,
+                    y: element.render.y,
+                  },
+                })
+              );
           });
         });
     }, updateTimeInterval);
