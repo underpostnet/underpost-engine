@@ -666,7 +666,7 @@ const removePixiElement = (element) => {
   delete pixi[type][element.id];
 };
 
-const socket = io('ws://localhost:5501');
+const socket = io(ioWsServerHost);
 
 socket.on('connect', () => {
   console.log(`socket.io event: connect | session id: ${socket.id}`);

@@ -29,6 +29,9 @@ const dontCrossCorners = true;
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 
+const ioWsServerHost =
+  process.env.NODE_ENV === 'prod' ? process.env.WS_PROD_HOST : 'ws://localhost:' + process.env.IO_PORT;
+
 const changeMapsPoints = [];
 maps.map((dataMap) => {
   const fromMap = dataMap.name_map;
@@ -320,6 +323,7 @@ const ssrWS = `
     const directions = ${JSONweb(directions)};
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
+    const ioWsServerHost = '${ioWsServerHost}';
 `;
 
 const attack = (clients, eventElement, map, targets) => {
@@ -452,8 +456,11 @@ const params = { bot: [] };
 const botAttackInterval = 500;
 
 const wsServer = () => {
-  // const origins = [`http://localhost:${process.env.CLIENT_PORT}`];
-  const origins = [`https://www.cyberiaonline.com/ws`];
+  const origins = [
+    process.env.NODE_ENV === 'prod' ? process.env.HTTP_PROD_HOST : `http://localhost:${process.env.CLIENT_PORT}`,
+  ];
+  console.log('ioWsServerHost', ioWsServerHost);
+  console.log('ws origins', origins);
   const io = new Server(process.env.IO_PORT, { cors: { origins } });
   const clients = [];
   io.on('connection', (socket) => {
