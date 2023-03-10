@@ -9,6 +9,4 @@ console.log(process.argv);
 console.log(`version: `, process.env.npm_package_version);
 console.log(`env: `, process.env.NODE_ENV);
 
-httpServer();
-
-wsServer();
+wsServer(httpServer());

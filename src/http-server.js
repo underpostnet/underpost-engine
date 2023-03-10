@@ -64,9 +64,7 @@ const httpServer = () => {
   // server.use('/', express.static('./builds/www'));
   server.use('/', express.static(dir));
 
-  server.listen(process.env.CLIENT_PORT, () => {
-    console.log(`Client Server is running on port ${process.env.CLIENT_PORT}`);
-  });
+  return server;
 };
 
 export { httpServer };

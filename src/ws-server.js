@@ -29,8 +29,7 @@ const dontCrossCorners = true;
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 
-const ioWsServerHost =
-  process.env.NODE_ENV === 'prod' ? process.env.WS_PROD_HOST : 'ws://localhost:' + process.env.IO_PORT;
+const ioWsServerHost = process.env.NODE_ENV === 'prod' ? process.env.HOST : 'ws://localhost:' + process.env.PORT;
 
 const changeMapsPoints = [];
 maps.map((dataMap) => {
@@ -455,14 +454,12 @@ const attack = (clients, eventElement, map, targets) => {
 const params = { bot: [] };
 const botAttackInterval = 500;
 
-const wsServer = () => {
-  const origins = [
-    process.env.NODE_ENV === 'prod' ? process.env.HTTP_PROD_HOST : `http://localhost:${process.env.CLIENT_PORT}`,
-  ];
+const wsServer = (server) => {
+  const origins = [process.env.NODE_ENV === 'prod' ? process.env.HOST : `http://localhost:${process.env.PORT}`];
   console.log('ioWsServerHost', ioWsServerHost);
   console.log('ws origins', origins);
 
-  const httpServer = createServer();
+  const httpServer = createServer({}, server);
   /**/
   const io = new Server(httpServer, {
     cors: {
@@ -484,9 +481,10 @@ const wsServer = () => {
     },
   });
 
-  httpServer.listen(process.env.IO_PORT);
+  httpServer.listen(process.env.PORT, () => {
+    console.log(`Client Server is running on port ${process.env.PORT}`);
+  });
 
-  // const io = new Server(process.env.IO_PORT, { cors: { origins } });
   const clients = [];
   io.on('connection', (socket) => {
     console.log(`socket.io | user connect ${socket.id}`);
@@ -602,8 +600,6 @@ const wsServer = () => {
       removeEvent();
     });
   });
-
-  console.log(`Io Server is running on port ${process.env.IO_PORT}`);
 
   const finder = new pathfinding.AStarFinder({
     allowDiagonal, // enable diagonal
