@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
-import fs from 'fs';
+import { createServer } from 'http';
 import pathfinding from 'pathfinding';
 import {
   s4,
@@ -461,7 +461,32 @@ const wsServer = () => {
   ];
   console.log('ioWsServerHost', ioWsServerHost);
   console.log('ws origins', origins);
-  const io = new Server(process.env.IO_PORT, { cors: { origins } });
+
+  const httpServer = createServer();
+  /**/
+  const io = new Server(httpServer, {
+    cors: {
+      // origin: `http://localhost:${process.env.PORT}`,
+      origins,
+      methods: ['GET', 'POST', 'DELETE', 'PUT'],
+      allowedHeaders: [
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Origin',
+        'X-Requested-With',
+        'X-Access-Token',
+        'Content-Type',
+        'Host',
+        'Accept',
+        'Connection',
+        'Cache-Control',
+      ],
+      credentials: true,
+    },
+  });
+
+  httpServer.listen(process.env.IO_PORT);
+
+  // const io = new Server(process.env.IO_PORT, { cors: { origins } });
   const clients = [];
   io.on('connection', (socket) => {
     console.log(`socket.io | user connect ${socket.id}`);
