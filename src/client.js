@@ -13,16 +13,19 @@ append(
         margin: auto;
         display: block;
         position: relative;
-        cursor: url('/cursors/black-pointer.png') -30 -30, auto !important;
       }
       @font-face {      
         font-family: 'retro-font';      
         src: URL('/fonts/PressStart2P.ttf') 
         format('truetype');     
       }
+      touch-layer {
+        cursor: url('/cursors/black-pointer.png') -30 -30, auto !important;
+      }
     </style>
     <style class='canvas-dim'></style>
     <pixi-container class='in'></pixi-container>
+    <touch-layer class='abs'></touch-layer>
 
 `
 );
@@ -758,11 +761,13 @@ socket.onAny((event, ...args) => {
 });
 
 // canvas dim controller
-let lastScreenDim;
+let lastScreenDimMin;
+let lastScreenDimMax;
 setInterval(() => {
   const screenDim = dimState();
-  if (lastScreenDim !== screenDim.minValue) {
-    lastScreenDim = newInstance(screenDim.minValue);
+  if (lastScreenDimMin !== screenDim.minValue || lastScreenDimMax !== screenDim.maxValue) {
+    lastScreenDimMin = newInstance(screenDim.minValue);
+    lastScreenDimMax = newInstance(screenDim.maxValue);
     htmls(
       '.canvas-dim',
       /*css*/ `
@@ -770,6 +775,12 @@ setInterval(() => {
         width: ${screenDim.minValue}px;
         height: ${screenDim.minValue}px;
         top: ${screenDim.maxType === 'height' ? (screenDim.maxValue - screenDim.minValue) / 2 : 0}px;
+      }
+      touch-layer {
+        width: ${screenDim.minValue}px;
+        height: ${screenDim.minValue}px;
+        top: ${screenDim.maxType === 'height' ? (screenDim.maxValue - screenDim.minValue) / 2 : 0}px;
+        left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
       }
     `
     );
@@ -809,7 +820,7 @@ const finder = new pathfinding.AStarFinder({
 });
 
 let currenTimeAttack = 0;
-s('canvas').onclick = (e, subPath) => {
+const onClickCanvas = (e, subPath) => {
   let x2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetX / dimState().minValue)) : e.offsetX;
   let y2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetY / dimState().minValue)) : e.offsetY;
 
@@ -949,7 +960,7 @@ s('canvas').onclick = (e, subPath) => {
         const newPoint = wArray[random(0, wArray.length - 1)];
         console.log('newPoint', newPoint);
         const { x, y, path } = newPoint;
-        s('canvas').onclick(
+        s('touch-layer').onclick(
           {
             offsetX: x,
             offsetY: y,
@@ -960,6 +971,8 @@ s('canvas').onclick = (e, subPath) => {
     }
   }
 };
+
+s('touch-layer').onclick = onClickCanvas;
 
 window.activeKey = {};
 window.onkeydown = (e) => (window.activeKey[e.key] = true);
@@ -1027,8 +1040,3 @@ setInterval(() => {
     // }
   }
 }, updateTimeInterval);
-
-if (!dev) {
-  console.log = () => null;
-  console.warn = () => null;
-}

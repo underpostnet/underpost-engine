@@ -52,6 +52,10 @@ const httpServer = () => {
                   const renderInstanceTitle = ${renderInstanceTitle};
                   ${ssrColor}
                   ${ssrWS}
+                  if (!dev) {
+                    console.log = () => null;
+                    console.warn = () => null;
+                  }
                   ${fs.readFileSync('./src/client.js', 'utf8')}
                 </script>
             </body>
