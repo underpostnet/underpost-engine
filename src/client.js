@@ -162,7 +162,7 @@ const renderPixiInitElement = (element) => {
 
   if (typeModels()[type].components().includes('id')) {
     if (socket.id === element.id) {
-      const src = `/icons/200x200/green-down-arrow.png`;
+      const src = `/icons/200x200/yellow-down-arrow.png`;
       const dimFactor = 0.65;
       let currentHfactor = 0.7;
       pixi[type][element.id][src] = PIXI.Sprite.from(src);
