@@ -363,10 +363,10 @@ const renderPixiInitElement = (element) => {
     let currentFrame = 0;
     range(0, maxFrames).map((frame) => {
       const src = `/sprites/red-power/08/${frame}.png`;
-      const dimFactor = 0.5;
+      const dimFactor = 0.35;
       pixi[type][element.id][src] = PIXI.Sprite.from(src);
       pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
-      pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].y = ((dim - dim * dimFactor) / 2) * 1.7;
       pixi[type][element.id][src].width = dim * dimFactor;
       pixi[type][element.id][src].height = dim * dimFactor;
       pixi[type][element.id][src].visible = frame === currentFrame;

@@ -370,7 +370,7 @@ const attack = (clients, eventElement, map, targets) => {
               y: parseInt(render.y),
             })
           ) {
-            element.life = element.life - 5;
+            element.life = element.life - eventElement.element.attackValue;
             if (element.life <= 0) {
               element.life = 0;
               setTimeout(() => {
@@ -479,6 +479,8 @@ const wsServer = () => {
           map,
           life: 100,
           maxLife: 100,
+          attackValue: 20,
+          passiveHealValue: 10,
           sprite: 'anon',
           render: {
             x,
@@ -528,8 +530,8 @@ const wsServer = () => {
       const eventElement = JSON.parse(args);
       const clientElement = elements[type].find((element) => element.id === socket.id);
       if (clientElement) {
-        const { map, id, type } = clientElement;
-        eventElement.element = { id, type, ...eventElement.element };
+        const { map } = clientElement;
+        eventElement.element = merge(clientElement, eventElement.element);
         switch (eventElement.event) {
           case 'attack':
             attack(clients, eventElement, map, ['bot', 'user']);
@@ -583,7 +585,7 @@ const wsServer = () => {
     const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
 
     (() => {
-      const maxBots = map === 'zax-shop' ? 0 : 10; // random(1, 3);
+      const maxBots = map === 'iop-house' ? 0 : random(1, 8);
       const { color, render } = getParamsType(type);
       const { dim } = render;
       while (
@@ -599,6 +601,8 @@ const wsServer = () => {
           sprite: 'purple',
           life: 100,
           maxLife: 100,
+          attackValue: 5,
+          passiveHealValue: 10,
           render: {
             x: point[0],
             y: point[1],
@@ -697,6 +701,20 @@ const wsServer = () => {
         });
     }, updateTimeInterval);
   });
+
+  setInterval(() => {
+    ['bot', 'user'].map((type) => {
+      elements[type].map((element) => {
+        if (element.life > 0 && element.life < element.maxLife) {
+          element.life = element.life + element.passiveHealValue;
+          if (element.life > element.maxLife) element.life = newInstance(element.maxLife);
+          clients.map((client) => {
+            client.emit('update', JSON.stringify({ id: element.id, type, life: element.life }));
+          });
+        }
+      });
+    });
+  }, 1000);
 };
 
 export { wsServer, ssrWS };
