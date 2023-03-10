@@ -452,7 +452,9 @@ const params = { bot: [] };
 const botAttackInterval = 500;
 
 const wsServer = () => {
-  const io = new Server(process.env.IO_PORT, { cors: { origins: [`http://localhost:${process.env.CLIENT_PORT}`] } });
+  // const origins = [`http://localhost:${process.env.CLIENT_PORT}`];
+  const origins = [`https://www.cyberiaonline.com`];
+  const io = new Server(process.env.IO_PORT, { cors: { origins } });
   const clients = [];
   io.on('connection', (socket) => {
     console.log(`socket.io | user connect ${socket.id}`);
