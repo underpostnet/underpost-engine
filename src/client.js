@@ -31,6 +31,7 @@ const amplitudeRender = 50;
 const elements = {};
 const pixi = {};
 const params = {};
+const hashIntervals = {};
 let changeMapsPoints = [];
 
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
@@ -79,6 +80,7 @@ const renderPixiInitElement = (element) => {
     mapChangeActive: true,
     mapChangeTimeBlock: 500,
   };
+  if (!hashIntervals[element.id]) hashIntervals[element.id] = {};
 
   pixi[type][element.id].container = new PIXI.Container();
   const container = pixi[type][element.id].container;
@@ -159,18 +161,39 @@ const renderPixiInitElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('id')) {
+    if (socket.id === element.id) {
+      const src = `/icons/200x200/green-down-arrow.png`;
+      const dimFactor = 0.65;
+      let currentHfactor = 0.7;
+      pixi[type][element.id][src] = PIXI.Sprite.from(src);
+      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].y = -1 * dim * currentHfactor;
+      pixi[type][element.id][src].width = dim * dimFactor;
+      pixi[type][element.id][src].height = dim * dimFactor * 0.7;
+      pixi[type][element.id][src].visible = true;
+      container.addChild(pixi[type][element.id][src]);
+
+      if (hashIntervals[element.id][`blink-green-down-arrow`])
+        clearInterval(hashIntervals[element.id][`blink-green-down-arrow`]);
+      hashIntervals[element.id][`blink-green-down-arrow`] = setInterval(() => {
+        if (!params[type][element.id] || !pixi[type][element.id][src]) return;
+        currentHfactor === 0.7 ? (currentHfactor = 0.8) : (currentHfactor = 0.7);
+        pixi[type][element.id][src].y = -1 * dim * currentHfactor;
+      }, 250);
+    }
+
     range(0, 10).map((timeAttemp) =>
       setTimeout(() => {
         if (!pixi[type][element.id]) return;
         pixi[type][element.id].nick = new PIXI.Text(
-          id.slice(0, 3).toUpperCase(),
+          id.slice(0, 5).toUpperCase(),
           new PIXI.TextStyle({
             dropShadow: true,
             dropShadowAngle: 6.8,
             dropShadowBlur: 3,
             dropShadowDistance: 2,
             dropShadowColor: '#000000',
-            fill: id === socket.id ? 'yellow' : 'white',
+            fill: 'white',
             fontFamily: 'retro-font', // Impact
             fontSize: 10,
             align: 'center',
@@ -206,8 +229,10 @@ const renderPixiInitElement = (element) => {
       pixi[type][element.id][src].height = dim * dimFactor;
       pixi[type][element.id][src].visible = true;
       container.addChild(pixi[type][element.id][src]);
-      params[type][element.id][`blink-arrow-${dataMapArrow.arrow}`] = setInterval(function () {
-        if (!params[type][element.id] || !pixi[type][element.id][src]) return clearInterval(this);
+      if (hashIntervals[element.id][`blink-arrow-${dataMapArrow.arrow}`])
+        clearInterval(hashIntervals[element.id][`blink-arrow-${dataMapArrow.arrow}`]);
+      hashIntervals[element.id][`blink-arrow-${dataMapArrow.arrow}`] = setInterval(() => {
+        if (!params[type][element.id] || !pixi[type][element.id][src]) return;
         dimFactor === 0.7 ? (dimFactor = 0.6) : (dimFactor = 0.7);
         pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
         pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
@@ -250,18 +275,13 @@ const renderPixiInitElement = (element) => {
       pixi[type][element.id][src].visible = frame === currentFrame;
       container.addChild(pixi[type][element.id][src]);
     });
-    params[type][element.id][`interval-red-power`] = setInterval(function () {
-      if (
-        !params[type][element.id] ||
-        !params[type][element.id][`interval-red-power`] ||
-        !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`]
-      )
-        return clearInterval(this);
+    if (hashIntervals[element.id][`interval-red-power`]) clearInterval(hashIntervals[element.id][`interval-red-power`]);
+    hashIntervals[element.id][`interval-red-power`] = setInterval(function () {
+      if (!params[type][element.id] || !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`]) return;
       pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = false;
       currentFrame++;
       if (currentFrame > maxFrames) currentFrame = 0;
-      if (!params[type][element.id] || !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`])
-        return clearInterval(this);
+      if (!params[type][element.id] || !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`]) return;
       pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = true;
     }, 50);
   }
@@ -476,18 +496,13 @@ const renderPixiEventElement = (element) => {
         const maxFrames = 6;
         let currentFrame = 0;
         pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
-        params[type][element.id][`interval-blood`] = setInterval(function () {
-          if (
-            !params[type][element.id] ||
-            !params[type][element.id][`interval-blood`] ||
-            !pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`]
-          )
-            return clearInterval(this);
+        if (hashIntervals[element.id][`interval-blood`]) clearInterval(hashIntervals[element.id][`interval-blood`]);
+        hashIntervals[element.id][`interval-blood`] = setInterval(() => {
+          if (!params[type][element.id] || !pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`]) return;
           pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = false;
           currentFrame++;
           if (currentFrame > maxFrames) currentFrame = 0;
-          if (!params[type][element.id] || !pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`])
-            return clearInterval(this);
+          if (!params[type][element.id] || !pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`]) return;
           pixi[type][element.id][`/sprites/blood/08/${currentFrame}.png`].visible = true;
         }, 100);
         setTimeout(() => {
@@ -663,6 +678,31 @@ setInterval(() => {
   }
 }, updateTimeInterval);
 
+const attack = (element) => {
+  if (element.life > 0 && params[element.type][element.id].shootActive === true) {
+    params[element.type][element.id].shootActive = false;
+
+    socket.emit(
+      'event',
+      JSON.stringify({
+        event: 'attack',
+        element: {
+          render: {
+            x: element.render.x,
+            y: element.render.y,
+          },
+        },
+        direction: params[element.type][element.id].direction,
+      })
+    );
+
+    setTimeout(() => {
+      if (!params[element.type][element.id]) return;
+      params[element.type][element.id].shootActive = true;
+    }, 500);
+  }
+};
+
 window.pathfinding = PF;
 const finder = new pathfinding.AStarFinder({
   allowDiagonal, // enable diagonal
@@ -670,6 +710,7 @@ const finder = new pathfinding.AStarFinder({
   heuristic: pathfinding.Heuristic.chebyshev,
 });
 
+let currenTimeAttack = 0;
 s('canvas').onclick = (e, subPath) => {
   let x2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetX / dimState().minValue)) : e.offsetX;
   let y2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetY / dimState().minValue)) : e.offsetY;
@@ -695,6 +736,17 @@ s('canvas').onclick = (e, subPath) => {
 
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
+    const newTimeAttack = +new Date();
+    let validateAttack = false;
+    if (newTimeAttack - currenTimeAttack <= 500) {
+      validateAttack = true;
+      element.direction = getDirection(element.render.x, element.render.y, x2, y2).direction;
+      attack(element);
+      renderPixiEventElement(element);
+    }
+    currenTimeAttack = newTimeAttack;
+    if (validateAttack) return;
+
     if (x2 > maxRangeMap(element.render.dim)) x2 = maxRangeMap(element.render.dim);
     if (y2 > maxRangeMap(element.render.dim)) y2 = maxRangeMap(element.render.dim);
     const x1 = element.render.x;
@@ -862,35 +914,18 @@ setInterval(() => {
       update = true;
       element.path.shift();
     }
-    if (
-      element.life > 0 &&
-      (window.activeKey['Q'] || window.activeKey['q']) &&
-      params[element.type][element.id].shootActive === true
-    ) {
-      params[element.type][element.id].shootActive = false;
-
-      socket.emit(
-        'event',
-        JSON.stringify({
-          event: 'attack',
-          element: {
-            render: {
-              x: element.render.x,
-              y: element.render.y,
-            },
-          },
-          direction: params[element.type][element.id].direction,
-        })
-      );
-
-      setTimeout(() => {
-        if (!params[element.type][element.id]) return;
-        params[element.type][element.id].shootActive = true;
-      }, 500);
+    if (window.activeKey['Q'] || window.activeKey['q']) {
+      attack(element);
     }
     if (update) {
       renderPixiEventElement(element);
       socket.emit('update', JSON.stringify(emitElement));
+    }
+    if (location.pathname.replaceAll(`\\`, '').replaceAll('/', '') === 'undefined') {
+      history.back();
+      resetsElements();
+      socket.emit('close');
+      socket.emit('init', getURI());
     }
   }
 }, updateTimeInterval);
