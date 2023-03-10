@@ -57,6 +57,35 @@ console.log('typeModels', typeModels());
 console.log('elements', elements);
 console.log('pixi', pixi);
 
+const renderIndicatorLife = (container, element, dim, type) => {
+  pixi[type][element.id].lifeIndicator = new PIXI.Text(
+    `${element.life}/${element.maxLife}`,
+    new PIXI.TextStyle({
+      dropShadow: true,
+      dropShadowAngle: 6.8,
+      dropShadowBlur: 3,
+      dropShadowDistance: 2,
+      dropShadowColor: '#000000',
+      fill: 'white',
+      fontFamily: 'retro-font', // Impact
+      fontSize: 8,
+      align: 'center',
+    })
+  );
+  // if (timeAttemp > 0) return;
+  const lifeIndicator = pixi[type][element.id].lifeIndicator;
+  if (pixi[type][element.id].containerLifeIndicator) pixi[type][element.id].containerLifeIndicator.destroy();
+  pixi[type][element.id].containerLifeIndicator = new PIXI.Container();
+  const containerLifeIndicator = pixi[type][element.id].containerLifeIndicator;
+  containerLifeIndicator.x = 0;
+  containerLifeIndicator.y = (-1 * dim) / 5;
+  containerLifeIndicator.width = dim;
+  containerLifeIndicator.height = dim / 5;
+  containerLifeIndicator.addChild(lifeIndicator);
+
+  container.addChild(containerLifeIndicator);
+};
+
 const renderPixiInitElement = (element) => {
   // https://pixijs.io/examples
   // https://pixijs.download/release/docs/index.html
@@ -160,11 +189,22 @@ const renderPixiInitElement = (element) => {
     container.addChild(barLife);
   }
 
+  if (typeModels()[type].components().includes('life-indicator')) {
+    range(0, 10).map((timeAttemp) =>
+      setTimeout(() => {
+        if (!pixi[type][element.id]) return;
+        renderIndicatorLife(container, element, dim, type);
+      }, timeAttemp * 100)
+    );
+  }
+
   if (typeModels()[type].components().includes('id')) {
     if (socket.id === element.id) {
       const src = `/icons/200x200/yellow-down-arrow.png`;
       const dimFactor = 0.65;
-      let currentHfactor = 0.7;
+      const posFactorA = typeModels()[type].components().includes('life-indicator') ? 0.9 : 0.7;
+      const posFactorB = typeModels()[type].components().includes('life-indicator') ? 1 : 0.8;
+      let currentHfactor = posFactorA;
       pixi[type][element.id][src] = PIXI.Sprite.from(src);
       pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
       pixi[type][element.id][src].y = -1 * dim * currentHfactor;
@@ -177,7 +217,7 @@ const renderPixiInitElement = (element) => {
         clearInterval(hashIntervals[element.id][`blink-green-down-arrow`]);
       hashIntervals[element.id][`blink-green-down-arrow`] = setInterval(() => {
         if (!params[type][element.id] || !pixi[type][element.id][src]) return;
-        currentHfactor === 0.7 ? (currentHfactor = 0.8) : (currentHfactor = 0.7);
+        currentHfactor === posFactorA ? (currentHfactor = posFactorB) : (currentHfactor = posFactorA);
         pixi[type][element.id][src].y = -1 * dim * currentHfactor;
       }, 250);
     }
@@ -205,7 +245,7 @@ const renderPixiInitElement = (element) => {
         pixi[type][element.id].containerText = new PIXI.Container();
         const containerText = pixi[type][element.id].containerText;
         containerText.x = 0;
-        containerText.y = (-1 * dim) / 5;
+        containerText.y = (-1 * dim) / (typeModels()[type].components().includes('life-indicator') ? 2 : 5);
         containerText.width = dim;
         containerText.height = dim / 5;
         containerText.addChild(nick);
@@ -507,7 +547,6 @@ const renderPixiEventElement = (element) => {
         }, 100);
         setTimeout(() => {
           if (!pixi[type][element.id]) return;
-          if (params[type][element.id][`interval-blood`]) clearInterval(params[type][element.id][`interval-blood`]);
           range(0, maxFrames).map((frame) => {
             const src = `/sprites/blood/08/${frame}.png`;
             if (!pixi[type][element.id][src]) return;
@@ -520,7 +559,7 @@ const renderPixiEventElement = (element) => {
   }
 
   if (direction !== undefined) params[type][element.id].direction = direction;
-
+  if (typeModels()[type].components().includes('life-indicator')) renderIndicatorLife(container, element, dim, type); // .text = 'new text';
   // change position animation
   const frames = 6;
   const intervalChangeX = Math.abs(x - container.x) / frames;

@@ -89,7 +89,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
-      components: () => ['sprites', 'bar-life', 'id', 'blood'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator'],
       render: () => {
         return {
           dim: () => 1,
@@ -98,7 +98,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['sprites', 'bar-life', 'id', 'blood'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator'],
       render: () => {
         return {
           dim: () => 1,
@@ -366,7 +366,7 @@ const attack = (clients, eventElement, map, targets) => {
               y: parseInt(render.y),
             })
           ) {
-            element.life = element.life - 20;
+            element.life = element.life - 5;
             if (element.life <= 0) {
               element.life = 0;
               setTimeout(() => {
@@ -473,8 +473,8 @@ const wsServer = () => {
           type,
           color,
           map,
-          life: 3000,
-          maxLife: 3000,
+          life: 100,
+          maxLife: 100,
           sprite: 'anon',
           render: {
             x,
