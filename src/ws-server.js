@@ -89,7 +89,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
-      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator', 'life-indicator'],
       render: () => {
         return {
           dim: () => 1,
@@ -98,7 +98,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator', 'life-indicator'],
       render: () => {
         return {
           dim: () => 1,
@@ -343,7 +343,11 @@ const attack = (clients, eventElement, map, targets) => {
     elements[type].push(bullet);
     clients.map((client) => {
       const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
-      if (clientIndex > -1 && elements['user'][clientIndex].map === map) client.emit('update', JSON.stringify(bullet));
+      if (clientIndex > -1 && elements['user'][clientIndex].map === map) {
+        client.emit('update', JSON.stringify(bullet));
+        if (client.id !== eventElement.element.id)
+          client.emit('update', JSON.stringify({ ...eventElement.element, direction: eventElement.direction }));
+      }
     });
     setTimeout(() => {
       const missileY = getMissileDirection('x', eventElement.direction);
@@ -524,7 +528,8 @@ const wsServer = () => {
       const eventElement = JSON.parse(args);
       const clientElement = elements[type].find((element) => element.id === socket.id);
       if (clientElement) {
-        const { map } = clientElement;
+        const { map, id, type } = clientElement;
+        eventElement.element = { id, type, ...eventElement.element };
         switch (eventElement.event) {
           case 'attack':
             attack(clients, eventElement, map, ['bot', 'user']);
@@ -578,7 +583,7 @@ const wsServer = () => {
     const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
 
     (() => {
-      const maxBots = random(1, 3);
+      const maxBots = map === 'zax-shop' ? 0 : 10; // random(1, 3);
       const { color, render } = getParamsType(type);
       const { dim } = render;
       while (

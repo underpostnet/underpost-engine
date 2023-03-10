@@ -86,6 +86,51 @@ const renderIndicatorLife = (container, element, dim, type) => {
   container.addChild(containerLifeIndicator);
 };
 
+const renderIndicatorDiffLife = (container, element, dim, type) => {
+  if (!params[type][element.id]) return;
+  const diffLife = element.life - params[type][element.id].lastLife;
+  if (diffLife === 0) return;
+  pixi[type][element.id].diffLifeIndicator = new PIXI.Text(
+    `${diffLife}`,
+    new PIXI.TextStyle({
+      // dropShadow: true,
+      // dropShadowAngle: 6.8,
+      // dropShadowBlur: 3,
+      // dropShadowDistance: 2,
+      // dropShadowColor: 'black',
+      fill: diffLife < 0 ? '#FE2712' : '#7FFF00',
+      fontFamily: 'retro-font', // Impact
+      fontSize: 12,
+      align: 'center',
+    })
+  );
+
+  const diffLifeIndicator = pixi[type][element.id].diffLifeIndicator;
+
+  pixi[type][element.id].diffTextBackground = new PIXI.Sprite(PIXI.Texture.WHITE);
+  const diffTextBackground = pixi[type][element.id].diffTextBackground;
+  const padding = 8;
+  diffTextBackground.x = (-1 * dim) / padding;
+  diffTextBackground.y = (-1 * dim) / padding;
+  diffTextBackground.width = (dim / 3) * `${diffLife}`.length + dim / padding;
+  diffTextBackground.height = dim / 3 + dim / padding;
+  diffTextBackground.tint = numberColors['black'];
+
+  pixi[type][element.id].containerDiffLifeIndicator = new PIXI.Container();
+  const containerDiffLifeIndicator = pixi[type][element.id].containerDiffLifeIndicator;
+  containerDiffLifeIndicator.x = random(-1 * parseInt(dim * 0.2), 1 * parseInt(dim * 1.2));
+  containerDiffLifeIndicator.y = random(-1 * parseInt(dim * 0.2), 1 * parseInt(dim * 1.2));
+  containerDiffLifeIndicator.width = dim;
+  containerDiffLifeIndicator.height = dim / 5;
+  containerDiffLifeIndicator.addChild(diffTextBackground);
+  containerDiffLifeIndicator.addChild(diffLifeIndicator);
+
+  container.addChild(containerDiffLifeIndicator);
+  setTimeout(() => {
+    if (containerDiffLifeIndicator) containerDiffLifeIndicator.visible = false;
+  }, params[type][element.id].intervalDiffLifeDisplay * 0.8);
+};
+
 const renderPixiInitElement = (element) => {
   // https://pixijs.io/examples
   // https://pixijs.download/release/docs/index.html
@@ -222,6 +267,18 @@ const renderPixiInitElement = (element) => {
       }, 250);
     }
 
+    if (typeModels()[type].components().includes('life-indicator') && element.life) {
+      params[type][element.id].lastLife = newInstance(element.life);
+      params[type][element.id].intervalDiffLifeDisplay = 500;
+      if (hashIntervals[element.id][`diff-life-indicator`])
+        clearInterval(hashIntervals[element.id][`diff-life-indicator`]);
+      hashIntervals[element.id][`diff-life-indicator`] = setInterval(() => {
+        if (!params[type][element.id] || params[type][element.id].lastLife === undefined) return;
+        renderIndicatorDiffLife(container, element, dim, type);
+        params[type][element.id].lastLife = newInstance(element.life);
+      }, params[type][element.id].intervalDiffLifeDisplay);
+    }
+
     range(0, 10).map((timeAttemp) =>
       setTimeout(() => {
         if (!pixi[type][element.id]) return;
@@ -337,7 +394,7 @@ const renderPixiInitElement = (element) => {
   // .pivot.x = .width / 2;
   // .pivot.y = .width / 2;
 
-  // .beginFill(pixiColors['black'], 1);
+  // .beginFill(numberColors['black'], 1);
   // .lineStyle(0, randomNumberColor(), 1);
 
   // .moveTo(0, 0);
@@ -400,6 +457,7 @@ const renderPixiEventElement = (element) => {
   if (
     typeModels()[type].components().includes('sprites') &&
     element.life > 0 &&
+    pixi[type][element.id][`/sprites/ghost/08/0.png`] &&
     pixi[type][element.id][`/sprites/ghost/08/0.png`].visible === true
   ) {
     pixi[type][element.id][`/sprites/ghost/08/0.png`].visible = false;
@@ -411,6 +469,7 @@ const renderPixiEventElement = (element) => {
   if (
     typeModels()[type].components().includes('sprites') &&
     element.life <= 0 &&
+    pixi[type][element.id][`/sprites/ghost/08/0.png`] &&
     pixi[type][element.id][`/sprites/ghost/08/0.png`].visible === false
   ) {
     clearFramesSprites(element);
@@ -646,7 +705,7 @@ socket.on('update', (...args) => {
     return renderPixiEventElement(elements[type][elementIndex]);
   }
   elements[type].push(eventElement);
-  if (eventElement.id === socket.id) {
+  if (eventElement.id === socket.id && eventElement.map) {
     userPositionAvailablePoints = getAvailablePoints('user', ['building'], eventElement.map);
     userMatrixCollision = getMatrixCollision('user', ['building'], eventElement.map);
     console.log('userMatrixCollision', JSONmatrix(userMatrixCollision));
@@ -960,11 +1019,11 @@ setInterval(() => {
       renderPixiEventElement(element);
       socket.emit('update', JSON.stringify(emitElement));
     }
-    if (location.pathname.replaceAll(`\\`, '').replaceAll('/', '') === 'undefined') {
-      history.back();
-      resetsElements();
-      socket.emit('close');
-      socket.emit('init', getURI());
-    }
+    // if (location.pathname.replaceAll(`\\`, '').replaceAll('/', '') === 'undefined') {
+    //   history.back();
+    //   resetsElements();
+    //   socket.emit('close');
+    //   socket.emit('init', getURI());
+    // }
   }
 }, updateTimeInterval);
