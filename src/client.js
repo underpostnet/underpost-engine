@@ -760,16 +760,16 @@ socket.onAny((event, ...args) => {
 // canvas dim controller
 let lastScreenDim;
 setInterval(() => {
-  const screnDim = dimState();
-  if (lastScreenDim !== screnDim.minValue) {
-    lastScreenDim = newInstance(screnDim.minValue);
+  const screenDim = dimState();
+  if (lastScreenDim !== screenDim.minValue) {
+    lastScreenDim = newInstance(screenDim.minValue);
     htmls(
       '.canvas-dim',
       /*css*/ `
       canvas {
-        width: ${screnDim.minValue}px;
-        height: ${screnDim.minValue}px;
-        top: ${screnDim.maxType === 'height' ? (screnDim.maxValue - screnDim.minValue) / 2 : 0}px;
+        width: ${screenDim.minValue}px;
+        height: ${screenDim.minValue}px;
+        top: ${screenDim.maxType === 'height' ? (screenDim.maxValue - screenDim.minValue) / 2 : 0}px;
       }
     `
     );
@@ -1027,3 +1027,8 @@ setInterval(() => {
     // }
   }
 }, updateTimeInterval);
+
+if (!dev) {
+  console.log = () => null;
+  console.warn = () => null;
+}

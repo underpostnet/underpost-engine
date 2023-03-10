@@ -39,7 +39,7 @@ const httpServer = () => {
                 <meta charset="UTF-8">
                 <title>${renderInstanceTitle(pathObj)}</title>
                 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
-                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
                 <script src="/socket.io/socket.io.js"></script>
                 <script src="/pixi.js/pixi.js"></script>
                 <script src="/pathfinding/pathfinding-browser.min.js"></script>

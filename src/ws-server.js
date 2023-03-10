@@ -323,6 +323,7 @@ const ssrWS = `
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
     const ioWsServerHost = '${ioWsServerHost}';
+    const dev = ${process.env.NODE_ENV === 'dev'};
 `;
 
 const attack = (clients, eventElement, map, targets) => {
