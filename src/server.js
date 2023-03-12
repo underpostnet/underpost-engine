@@ -10,3 +10,8 @@ console.log(`version: `, process.env.npm_package_version);
 console.log(`env: `, process.env.NODE_ENV);
 
 wsServer(httpServer());
+
+if (process.env.NODE_ENV === 'prod') {
+  console.log = () => null;
+  console.warn = () => null;
+}
