@@ -91,7 +91,7 @@ const typeModels = () => {
     },
     bot: {
       color: () => 'yellow',
-      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator', 'life-indicator'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator'],
       render: () => {
         return {
           dim: () => 1,
@@ -100,7 +100,7 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator', 'life-indicator'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator'],
       render: () => {
         return {
           dim: () => 1,
@@ -616,7 +616,7 @@ const wsServer = (server) => {
     const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
 
     (() => {
-      const maxBots = map === 'iop-house' ? 0 : random(1, 8);
+      const maxBots = map === 'iop-house' ? 0 : 3;
       const { color, render } = getParamsType(type);
       const { dim } = render;
       while (

@@ -707,7 +707,6 @@ socket.on('update', (...args) => {
     elements[type][elementIndex] = merge(elements[type][elementIndex], eventElement);
     return renderPixiEventElement(elements[type][elementIndex]);
   }
-  elements[type].push(eventElement);
   if (eventElement.id === socket.id && eventElement.map) {
     userPositionAvailablePoints = getAvailablePoints('user', ['building'], eventElement.map);
     userMatrixCollision = getMatrixCollision('user', ['building'], eventElement.map);
@@ -715,7 +714,10 @@ socket.on('update', (...args) => {
     setURI('/' + eventElement.map);
     htmls('title', renderInstanceTitle({ name_map: eventElement.map }));
   }
-  return renderPixiInitElement(eventElement);
+  if (eventElement.map && eventElement.render && eventElement.id && eventElement.type) {
+    elements[type].push(eventElement);
+    renderPixiInitElement(eventElement);
+  }
 });
 
 socket.on('init-data', (...args) => {
@@ -820,7 +822,8 @@ const finder = new pathfinding.AStarFinder({
 });
 
 let currenTimeAttack = 0;
-const onClickCanvas = (e, subPath) => {
+s('touch-layer').onclick = (e, subPath) => {
+  // console.log('onClickCanvas', e, subPath);
   let x2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetX / dimState().minValue)) : e.offsetX;
   let y2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetY / dimState().minValue)) : e.offsetY;
 
@@ -845,16 +848,19 @@ const onClickCanvas = (e, subPath) => {
 
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
-    const newTimeAttack = +new Date();
-    let validateAttack = false;
-    if (newTimeAttack - currenTimeAttack <= 500) {
-      validateAttack = true;
-      element.direction = getDirection(element.render.x, element.render.y, x2, y2).direction;
-      attack(element);
-      renderPixiEventElement(element);
+    if (subPath === undefined) {
+      const newTimeAttack = +new Date();
+      let validateAttack = false;
+      if (newTimeAttack - currenTimeAttack <= 500) {
+        validateAttack = true;
+        element.direction = getDirection(element.render.x, element.render.y, x2, y2).direction;
+        attack(element);
+        renderPixiEventElement(element);
+      }
+      currenTimeAttack = newTimeAttack;
+      console.log('validateAttack', validateAttack);
+      if (validateAttack) return;
     }
-    currenTimeAttack = newTimeAttack;
-    if (validateAttack) return;
 
     if (x2 > maxRangeMap(element.render.dim)) x2 = maxRangeMap(element.render.dim);
     if (y2 > maxRangeMap(element.render.dim)) y2 = maxRangeMap(element.render.dim);
@@ -971,8 +977,6 @@ const onClickCanvas = (e, subPath) => {
     }
   }
 };
-
-s('touch-layer').onclick = onClickCanvas;
 
 window.activeKey = {};
 window.onkeydown = (e) => (window.activeKey[e.key] = true);
