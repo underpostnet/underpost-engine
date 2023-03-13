@@ -26,10 +26,11 @@ append(
       touch-layer {
         overflow: hidden;
       }
+      gui-layer {
+        background: rgba(0,0,0,0.5);
+      }
 
       main-menu {
-        top: 10px;
-        left: 10px;
         background: black; 
         border: 4px solid yellow;
         width: 300px;
@@ -58,16 +59,20 @@ append(
         background: black;
       }
 
-      .close-menu, .open-menu {
+      .close-menu, .open-menu, .close-gui {
         border: 4px solid yellow; 
-        top: 10px;
-        left: 10px;
         width: 40px;
         height: 40px;
         background: black;
       }
 
-      .close-menu:hover, .open-menu:hover {
+      .close-gui {
+        top: 10px;
+        right: 10px;
+        left: auto;
+      }
+
+      .hover-button:hover {
         border: 4px solid white; 
       }
 
@@ -89,8 +94,18 @@ append(
         </div>
       </loader>
     </touch-layer>
+
+    <gui-layer class='abs' style='display: none'>
+
+      <div class='abs close-gui custom-cursor hover-button'>
+          <div class='abs center'>
+              <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
+          </div>
+      </div>
+
+    </gui-layer>
     
-    <div class='abs open-menu custom-cursor' style='display: none'>
+    <div class='abs open-menu custom-cursor hover-button' style='display: none'>
         <div class='abs center'>
             <img class='inl icons-menu' src='/icons/200x200/menu-boxs.png'>
         </div>
@@ -98,7 +113,7 @@ append(
 
     <main-menu class='abs'>
 
-      <div class='abs close-menu custom-cursor'>
+      <div class='abs close-menu custom-cursor hover-button'>
           <div class='abs center'>
               <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
           </div>
@@ -109,7 +124,7 @@ append(
           ${renderLang({ es: 'Ingresar', en: 'Login' })}
         </div>
       </menu-button>
-      <menu-button class='inl custom-cursor'>
+      <menu-button class='inl custom-cursor btn-create-account'>
         <div class='abs center'>
           ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
         </div>
@@ -127,7 +142,17 @@ s('.close-menu').onclick = () => {
 };
 s('.open-menu').onclick = () => {
   s('.open-menu').style.display = 'none';
+  s('.close-gui').click();
   s('main-menu').style.display = 'block';
+};
+
+s('.btn-create-account').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+};
+
+s('.close-gui').onclick = () => {
+  s('gui-layer').style.display = 'none';
 };
 
 const amplitudeRender = 50;
@@ -885,6 +910,16 @@ setInterval(() => {
         height: ${screenDim.minValue}px;
         top: ${screenDim.maxType === 'height' ? (screenDim.maxValue - screenDim.minValue) / 2 : 0}px;
         left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
+      }
+      gui-layer {
+        width: ${screenDim.minValue}px;
+        height: 100%;
+        top: 0px;
+        left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
+      }
+      main-menu, .open-menu {
+        top: 10px;
+        left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2 + 10}px;
       }
     `
     );
