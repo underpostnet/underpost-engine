@@ -15,6 +15,22 @@ append(
         cursor: url('/cursors/black-default.png') -30 -30, auto;
         font-family: 'retro-font';
       }
+
+      input {
+        outline: none !important;
+        border: none;
+        padding: 10px;
+        font-size: 13px;
+        font-family: 'retro-font';
+        margin-top: 10px;
+      }
+      hr {
+        border: 5px solid white;
+      }
+      sub-content-gui {
+        padding: 10px;
+      }
+      
       canvas {
         margin: auto;
         display: block;
@@ -81,6 +97,18 @@ append(
         height: 20px;
       }
 
+      button {
+        background: black;
+        border: 4px solid yellow;
+        padding: 10px;
+        color: yellow;
+        margin-top: 10px;
+        font-family: 'retro-font';
+      }
+      button:hover {
+        border: 4px solid white;
+        color: white;
+      }
 
     </style>
     <style class='canvas-dim'></style>
@@ -97,11 +125,50 @@ append(
 
     <gui-layer class='abs' style='display: none'>
 
+     <create-account style='display: none'>
+      <sub-content-gui class='in'>
+        <form>
+        <!--
+            autocomplete="new-password"
+            autocomplete="username"
+        -->
+          <br><br>
+          <br><br>
+            ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
+          <hr>
+          <input type='text' class='create-account-input-nick' placeholder='${renderLang({ es: 'Nick', en: 'Nick' })}'>
+          <br>
+          <input type='email' class='create-account-input-email' placeholder='${renderLang({
+            es: 'Email',
+            en: 'Email',
+          })}'>
+          <br>
+          <input type='password'  class='create-account-input-password' autocomplete="new-password" placeholder='${renderLang(
+            {
+              es: 'Password',
+              en: 'Contraseña',
+            }
+          )}'>
+          <br>
+          <input type='password'  class='create-account-input-repeate-password' autocomplete="new-password" placeholder='${renderLang(
+            {
+              es: 'Repeat Password',
+              en: 'Repetir Contraseña',
+            }
+          )}'>
+          <br>
+          <button type='submit' class='inl btn-submit-create-account custom-cursor'>
+            ${renderLang({ es: 'Registrar', en: 'Register' })}
+          </button>
+        </form>
+      </sub-content-gui>
       <div class='abs close-gui custom-cursor hover-button'>
           <div class='abs center'>
               <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
           </div>
       </div>
+
+     </create-account>
 
     </gui-layer>
     
@@ -149,10 +216,25 @@ s('.open-menu').onclick = () => {
 s('.btn-create-account').onclick = () => {
   s('.close-menu').click();
   s('gui-layer').style.display = 'block';
+  s('create-account').style.display = 'block';
 };
 
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
+  s('create-account').style.display = 'none';
+};
+
+s('.btn-submit-create-account').onclick = (e) => {
+  e.preventDefault();
+  console.log(e);
+
+  const values = {
+    nick: s('.create-account-input-nick').value,
+    email: s('.create-account-input-email').value,
+    password: s('.create-account-input-password').value,
+    repeate_password: s('.create-account-input-repeate-password').value,
+  };
+  console.log('.submit-create-account values', values);
 };
 
 const amplitudeRender = 50;
