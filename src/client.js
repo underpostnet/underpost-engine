@@ -22,7 +22,6 @@ append(
         padding: 10px;
         font-size: 13px;
         font-family: 'retro-font';
-        margin-top: 10px;
       }
       hr {
         border: 5px solid white;
@@ -43,7 +42,7 @@ append(
         overflow: hidden;
       }
       gui-layer {
-        background: rgba(0,0,0,0.5);
+        background: rgba(0,0,0,0.7);
       }
 
       main-menu {
@@ -102,12 +101,30 @@ append(
         border: 4px solid yellow;
         padding: 10px;
         color: yellow;
-        margin-top: 10px;
         font-family: 'retro-font';
       }
       button:hover {
         border: 4px solid white;
         color: white;
+      }
+
+      form {
+        margin-top: 70px;
+      }
+
+      input-warn {
+        color: red;
+        font-size: 10px;
+        padding: 4px;
+        height: 12px;
+        ${borderChar(1, 'black')}
+      }
+      label {
+        color: yellow;
+        font-size: 10px;
+        padding: 4px;
+        height: 12px;
+        ${borderChar(1, 'black')}
       }
 
     </style>
@@ -132,34 +149,44 @@ append(
             autocomplete="new-password"
             autocomplete="username"
         -->
-          <br><br>
-          <br><br>
+    
             ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
           <hr>
-          <input type='text' class='create-account-input-nick' placeholder='${renderLang({ es: 'Nick', en: 'Nick' })}'>
-          <br>
+          <label class='in create-account-label-username'></label>
+          <input type='text' class='create-account-input-username' placeholder='${renderLang({
+            es: 'Nombre de usuario',
+            en: 'Username',
+          })}'>
+          <input-warn class='in create-account-warn-username'></input-warn>
+        
+          <label class='in create-account-label-email'></label>
           <input type='email' class='create-account-input-email' placeholder='${renderLang({
             es: 'Email',
             en: 'Email',
           })}'>
-          <br>
+          <input-warn class='in create-account-warn-email'></input-warn>
+          <label class='in create-account-label-password'></label>
           <input type='password'  class='create-account-input-password' autocomplete="new-password" placeholder='${renderLang(
             {
-              es: 'Password',
-              en: 'Contraseña',
+              en: 'Password',
+              es: 'Contraseña',
             }
           )}'>
-          <br>
-          <input type='password'  class='create-account-input-repeate-password' autocomplete="new-password" placeholder='${renderLang(
+          <input-warn class='in create-account-warn-password'></input-warn>
+          <label class='in create-account-label-repeat-password'></label>
+          <input type='password'  class='create-account-input-repeat-password' autocomplete="new-password" placeholder='${renderLang(
             {
-              es: 'Repeat Password',
-              en: 'Repetir Contraseña',
+              en: 'Repeat Password',
+              es: 'Repetir Contraseña',
             }
           )}'>
-          <br>
-          <button type='submit' class='inl btn-submit-create-account custom-cursor'>
-            ${renderLang({ es: 'Registrar', en: 'Register' })}
-          </button>
+          <input-warn class='in create-account-warn-repeat-password'></input-warn>
+        
+          <div class='in' style='margin-top: 15px;'>
+            <button type='submit' class='inl btn-submit-create-account custom-cursor'>
+              ${renderLang({ es: 'Registrar', en: 'Register' })}
+            </button>
+          </div>
         </form>
       </sub-content-gui>
       <div class='abs close-gui custom-cursor hover-button'>
@@ -224,15 +251,62 @@ s('.close-gui').onclick = () => {
   s('create-account').style.display = 'none';
 };
 
+let validEmail = false;
+const checkEmail = () => {
+  const value = s('.create-account-input-email').value;
+  const result = emailValidator(value);
+  console.log('checkEmail', result);
+  if (!result.validate && value !== '') {
+    htmls('.create-account-warn-email', result.msg);
+    validEmail = false;
+  } else {
+    htmls('.create-account-warn-email', '');
+    if (value !== '') validEmail = true;
+    else validEmail = false;
+  }
+  if (value !== '') htmls('.create-account-label-email', 'Email');
+  else htmls('.create-account-label-email', '');
+};
+s('.create-account-input-email').onblur = checkEmail;
+s('.create-account-input-email').oninput = checkEmail;
+
+let validUsername = false;
+const checkUsername = () => {
+  const value = s('.create-account-input-username').value;
+  const result = value.length > 4;
+  console.log('checkEmail', result);
+  if (!result && value !== '') {
+    htmls('.create-account-warn-username', ` > ${renderLang({ en: '4 char Length', es: '4 caracteres' })}`);
+    validUsername = false;
+  } else {
+    htmls('.create-account-warn-username', '');
+    if (value !== '') validUsername = true;
+    else validUsername = false;
+  }
+  if (value !== '')
+    htmls(
+      '.create-account-label-username',
+      renderLang({
+        es: 'Nombre de usuario',
+        en: 'Username',
+      })
+    );
+  else htmls('.create-account-label-username', '');
+};
+s('.create-account-input-username').onblur = checkUsername;
+s('.create-account-input-username').oninput = checkUsername;
+
 s('.btn-submit-create-account').onclick = (e) => {
   e.preventDefault();
   console.log(e);
+  console.log('validEmail', validEmail);
+  console.log('validUsername', validUsername);
 
   const values = {
-    nick: s('.create-account-input-nick').value,
+    nick: s('.create-account-input-username').value,
     email: s('.create-account-input-email').value,
     password: s('.create-account-input-password').value,
-    repeate_password: s('.create-account-input-repeate-password').value,
+    repeat_password: s('.create-account-input-repeat-password').value,
   };
   console.log('.submit-create-account values', values);
 };
