@@ -2,30 +2,81 @@ append(
   'body',
   /*html*/ `
     <style>
+      @font-face {      
+        font-family: 'retro-font';      
+        src: URL('/fonts/PressStart2P.ttf') 
+        format('truetype');     
+      }
       body {
         background: black;
         color: white;
         padding: 0px;
         margin: 0px;
         cursor: url('/cursors/black-default.png') -30 -30, auto;
+        font-family: 'retro-font';
       }
       canvas {
         margin: auto;
         display: block;
         position: relative;
       }
-      @font-face {      
-        font-family: 'retro-font';      
-        src: URL('/fonts/PressStart2P.ttf') 
-        format('truetype');     
-      }
       touch-layer {
         cursor: url('/cursors/black-pointer.png') -30 -30, auto !important;
+        overflow: hidden;
       }
+
+      menu {
+        bottom: 5px;
+        right: 5px;
+       /* background: gray; */
+        width: 300px;
+        height: 80px;
+        padding: 5px;
+        text-align: right;
+      }
+      menu-button {
+        width: 60px;
+        height: 40px;
+        background: black; 
+        font-size: 8px;  
+        border: 4px solid yellow;
+        color: yellow;
+      }
+      menu-button:hover {
+        border: 4px solid white;
+        color: white;
+      }
+
+      loader {
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        background: black;
+      }
+
     </style>
     <style class='canvas-dim'></style>
     <pixi-container class='in'></pixi-container>
-    <touch-layer class='abs'></touch-layer>
+    <touch-layer class='abs'>
+      <menu class='abs'>
+        <menu-button class='inl'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Ingresar', en: 'Login' })}
+          </div>
+        </menu-button>
+        <menu-button class='inl'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
+          </div>
+        </menu-button>
+      </menu>
+      <loader class='abs'>
+        <div class='abs center'>
+            ${renderLang({ es: 'cargando...', en: 'loading...' })}
+        </div>
+      </loader>
+    </touch-layer>
 
 `
 );
@@ -648,6 +699,7 @@ const renderPixiEventElement = (element) => {
           (!element.path || element.path.length === 0)
         ) {
           console.log('newMapObj', newMapObj);
+          s('loader').style.display = 'block';
           params[type][id].mapChangeActive = false;
           const eventElement = newInstance(element);
           eventElement.render.x = newMapObj.toX;
@@ -745,6 +797,7 @@ socket.on('init-data', (...args) => {
       renderPixiInitElement(toMapElement);
     })();
   });
+  s('loader').style.display = 'none';
 });
 
 socket.on('close', (...args) => {
