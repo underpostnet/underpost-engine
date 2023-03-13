@@ -20,15 +20,18 @@ append(
         display: block;
         position: relative;
       }
-      touch-layer {
+      .custom-cursor {
         cursor: url('/cursors/black-pointer.png') -30 -30, auto !important;
+      }
+      touch-layer {
         overflow: hidden;
       }
 
-      menu {
-        bottom: 5px;
-        right: 5px;
-       /* background: gray; */
+      main-menu {
+        top: 10px;
+        left: 10px;
+        background: black; 
+        border: 4px solid yellow;
         width: 300px;
         height: 80px;
         padding: 5px;
@@ -55,31 +58,77 @@ append(
         background: black;
       }
 
+      .close-menu, .open-menu {
+        border: 4px solid yellow; 
+        top: 10px;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+        background: black;
+      }
+
+      .close-menu:hover, .open-menu:hover {
+        border: 4px solid white; 
+      }
+
+      .icons-menu {
+        width: 20px;
+        height: 20px;
+      }
+
+
     </style>
     <style class='canvas-dim'></style>
+
     <pixi-container class='in'></pixi-container>
-    <touch-layer class='abs'>
-      <menu class='abs'>
-        <menu-button class='inl'>
-          <div class='abs center'>
-            ${renderLang({ es: 'Ingresar', en: 'Login' })}
-          </div>
-        </menu-button>
-        <menu-button class='inl'>
-          <div class='abs center'>
-            ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
-          </div>
-        </menu-button>
-      </menu>
+
+    <touch-layer class='abs custom-cursor'>
       <loader class='abs'>
         <div class='abs center'>
             ${renderLang({ es: 'cargando...', en: 'loading...' })}
         </div>
       </loader>
     </touch-layer>
+    
+    <div class='abs open-menu custom-cursor' style='display: none'>
+        <div class='abs center'>
+            <img class='inl icons-menu' src='/icons/200x200/menu-boxs.png'>
+        </div>
+    </div>
+
+    <main-menu class='abs'>
+
+      <div class='abs close-menu custom-cursor'>
+          <div class='abs center'>
+              <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
+          </div>
+      </div>
+
+      <menu-button class='inl custom-cursor'>
+        <div class='abs center'>
+          ${renderLang({ es: 'Ingresar', en: 'Login' })}
+        </div>
+      </menu-button>
+      <menu-button class='inl custom-cursor'>
+        <div class='abs center'>
+          ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
+        </div>
+      </menu-button>
+
+    </main-menu>
+ 
 
 `
 );
+
+s('.close-menu').onclick = () => {
+  s('main-menu').style.display = 'none';
+  s('.open-menu').style.display = 'block';
+};
+s('.open-menu').onclick = () => {
+  s('.open-menu').style.display = 'none';
+  s('main-menu').style.display = 'block';
+};
 
 const amplitudeRender = 50;
 const elements = {};
