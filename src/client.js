@@ -274,7 +274,7 @@ let validUsername = false;
 const checkUsername = () => {
   const value = s('.create-account-input-username').value;
   const result = value.length >= 4;
-  console.log('checkEmail', result);
+  console.log('checkUsername', result);
   if (!result && value !== '') {
     htmls('.create-account-warn-username', ` > ${renderLang({ en: '4 char Length', es: '4 caracteres' })}`);
     validUsername = false;
@@ -301,7 +301,7 @@ const checkPassword = () => {
   const value = s('.create-account-input-password').value;
   if (value !== '') checkRepeatPassword();
   const result = passwordValidator(value);
-  console.log('checkEmail', result);
+  console.log('checkPassword', result);
   if (!result.validate && value !== '') {
     htmls('.create-account-warn-password', result.msg);
     validPassword = false;
@@ -327,7 +327,7 @@ let validRepeatPassword = false;
 const checkRepeatPassword = () => {
   const value = s('.create-account-input-repeat-password').value;
   const result = value === s('.create-account-input-password').value;
-  console.log('checkEmail', result);
+  console.log('checkRepeatPassword', result);
   if (!result && value !== '') {
     htmls(
       '.create-account-warn-repeat-password',
@@ -352,19 +352,35 @@ const checkRepeatPassword = () => {
 s('.create-account-input-repeat-password').onblur = checkRepeatPassword;
 s('.create-account-input-repeat-password').oninput = checkRepeatPassword;
 
-s('.btn-submit-create-account').onclick = (e) => {
+s('.btn-submit-create-account').onclick = async (e) => {
   e.preventDefault();
   console.log(e);
   console.log('validEmail', validEmail);
   console.log('validUsername', validUsername);
+  console.log('validPassword', validPassword);
+  console.log('validRepeatPassword', validRepeatPassword);
 
-  const values = {
-    nick: s('.create-account-input-username').value,
+  const body = JSON.stringify({
+    username: s('.create-account-input-username').value,
     email: s('.create-account-input-email').value,
     password: s('.create-account-input-password').value,
     repeat_password: s('.create-account-input-repeat-password').value,
+  });
+  const headers = {
+    // 'Authorization': renderAuthBearer(),
+    'Content-Type': 'application/json',
+    // 'content-type': 'application/octet-stream'
+    //  'content-length': CHUNK.length,
   };
-  console.log('.submit-create-account values', values);
+  console.log('.submit-create-account body', body);
+  if (validEmail && validUsername && validPassword && validRepeatPassword) {
+    const result = await serviceRequest('/api/v1/auth/register', {
+      method: 'POST',
+      headers,
+      body,
+      log: true,
+    });
+  }
 };
 
 const amplitudeRender = 50;

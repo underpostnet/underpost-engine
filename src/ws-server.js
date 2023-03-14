@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
-import { createServer } from 'http';
 import pathfinding from 'pathfinding';
 import {
   s4,
@@ -455,12 +454,11 @@ const attack = (clients, eventElement, map, targets) => {
 const params = { bot: [] };
 const botAttackInterval = 500;
 
-const wsServer = (server) => {
+const wsServer = (httpServer) => {
   const origins = [process.env.NODE_ENV === 'prod' ? process.env.HOST : `http://localhost:${process.env.PORT}`];
   console.log('ioWsServerHost', ioWsServerHost);
   console.log('ws origins', origins);
 
-  const httpServer = createServer({}, server);
   /**/
   const io = new Server(httpServer, {
     cors: {
@@ -480,10 +478,6 @@ const wsServer = (server) => {
       ],
       credentials: true,
     },
-  });
-
-  httpServer.listen(process.env.PORT, () => {
-    console.log(`Client Server is running on port ${process.env.PORT}`);
   });
 
   const clients = [];

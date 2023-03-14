@@ -14,8 +14,7 @@ dotenv.config();
 const renderInstanceTitle = (pathObj) =>
   `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${pathObj.name_map === '' ? '' : ' | '}CYBERIA`;
 
-const httpServer = () => {
-  const server = express();
+const httpClient = (app) => {
   const dir = './public';
 
   deleteFolderRecursive(`${dir}`);
@@ -65,10 +64,8 @@ const httpServer = () => {
     );
   });
 
-  // server.use('/', express.static('./builds/www'));
-  server.use('/', express.static(dir));
-
-  return server;
+  // app.use('/', express.static('./builds/www'));
+  app.use('/', express.static(dir));
 };
 
-export { httpServer };
+export { httpClient };
