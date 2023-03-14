@@ -273,7 +273,7 @@ s('.create-account-input-email').oninput = checkEmail;
 let validUsername = false;
 const checkUsername = () => {
   const value = s('.create-account-input-username').value;
-  const result = value.length > 4;
+  const result = value.length >= 4;
   console.log('checkEmail', result);
   if (!result && value !== '') {
     htmls('.create-account-warn-username', ` > ${renderLang({ en: '4 char Length', es: '4 caracteres' })}`);
@@ -295,6 +295,62 @@ const checkUsername = () => {
 };
 s('.create-account-input-username').onblur = checkUsername;
 s('.create-account-input-username').oninput = checkUsername;
+
+let validPassword = false;
+const checkPassword = () => {
+  const value = s('.create-account-input-password').value;
+  if (value !== '') checkRepeatPassword();
+  const result = passwordValidator(value);
+  console.log('checkEmail', result);
+  if (!result.validate && value !== '') {
+    htmls('.create-account-warn-password', result.msg);
+    validPassword = false;
+  } else {
+    htmls('.create-account-warn-password', '');
+    if (value !== '') validPassword = true;
+    else validPassword = false;
+  }
+  if (value !== '')
+    htmls(
+      '.create-account-label-password',
+      renderLang({
+        en: 'Password',
+        es: 'Contraseña',
+      })
+    );
+  else htmls('.create-account-label-password', '');
+};
+s('.create-account-input-password').onblur = checkPassword;
+s('.create-account-input-password').oninput = checkPassword;
+
+let validRepeatPassword = false;
+const checkRepeatPassword = () => {
+  const value = s('.create-account-input-repeat-password').value;
+  const result = value === s('.create-account-input-password').value;
+  console.log('checkEmail', result);
+  if (!result && value !== '') {
+    htmls(
+      '.create-account-warn-repeat-password',
+      renderLang({ en: 'Password does not match', es: 'Las contraseñas no coinciden' })
+    );
+    validRepeatPassword = false;
+  } else {
+    htmls('.create-account-warn-repeat-password', '');
+    if (value !== '') validRepeatPassword = true;
+    else validRepeatPassword = false;
+  }
+  if (value !== '')
+    htmls(
+      '.create-account-label-repeat-password',
+      renderLang({
+        en: 'Repeat Password',
+        es: 'Repetir Contraseña',
+      })
+    );
+  else htmls('.create-account-label-repeat-password', '');
+};
+s('.create-account-input-repeat-password').onblur = checkRepeatPassword;
+s('.create-account-input-repeat-password').oninput = checkRepeatPassword;
 
 s('.btn-submit-create-account').onclick = (e) => {
   e.preventDefault();
