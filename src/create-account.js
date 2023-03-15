@@ -5,13 +5,12 @@ const createAccount = () => {
       const value = s('.create-account-input-email').value;
       const result = emailValidator(value);
       console.log('checkEmail', result);
-      if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
+      if (!result.validate) {
         htmls('.create-account-warn-email', result.msg);
         validEmail = false;
       } else {
         htmls('.create-account-warn-email', '');
-        if (value !== '') validEmail = true;
-        else validEmail = false;
+        validEmail = true;
       }
       if (value !== '') htmls('.create-account-label-email', 'Email');
       else htmls('.create-account-label-email', '');
@@ -33,13 +32,12 @@ const createAccount = () => {
       const value = s('.create-account-input-username').value;
       const result = usernameValidator(value);
       console.log('checkUsername', result);
-      if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
+      if (!result.validate) {
         htmls('.create-account-warn-username', result.msg);
         validUsername = false;
       } else {
         htmls('.create-account-warn-username', '');
-        if (value !== '') validUsername = true;
-        else validUsername = false;
+        validUsername = true;
       }
       if (value !== '')
         htmls(
@@ -69,13 +67,12 @@ const createAccount = () => {
       if (value !== '') checkRepeatPassword();
       const result = passwordValidator(value);
       console.log('checkPassword', result);
-      if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
+      if (!result.validate) {
         htmls('.create-account-warn-password', result.msg);
         validPassword = false;
       } else {
         htmls('.create-account-warn-password', '');
-        if (value !== '') validPassword = true;
-        else validPassword = false;
+        validPassword = true;
       }
       if (value !== '')
         htmls(
@@ -95,13 +92,12 @@ const createAccount = () => {
       const value = s('.create-account-input-repeat-password').value;
       const result = passwordMatchValidator(s('.create-account-input-password').value, value);
       console.log('checkRepeatPassword', result);
-      if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
+      if (!result.validate) {
         htmls('.create-account-warn-repeat-password', result.msg);
         validRepeatPassword = false;
       } else {
         htmls('.create-account-warn-repeat-password', '');
-        if (value !== '') validRepeatPassword = true;
-        else validRepeatPassword = false;
+        validRepeatPassword = true;
       }
       if (value !== '')
         htmls(
@@ -120,11 +116,10 @@ const createAccount = () => {
       s('.btn-submit-create-account').style.display = 'none';
       s('.create-account-loading').style.display = 'block';
       e.preventDefault();
-      const validatorOptions = { type: 'submit' };
-      await checkEmail(validatorOptions);
-      await checkUsername(validatorOptions);
-      await checkPassword(validatorOptions);
-      await checkRepeatPassword(validatorOptions);
+      await checkEmail();
+      await checkUsername();
+      await checkPassword();
+      await checkRepeatPassword();
       console.log(e);
       console.log('validEmail', validEmail);
       console.log('validUsername', validUsername);

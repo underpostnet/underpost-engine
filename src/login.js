@@ -5,13 +5,12 @@ const logIn = () => {
       const value = s('.login-input-email').value;
       const result = emailValidator(value);
       console.log('checkEmail', result);
-      if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
+      if (!result.validate) {
         htmls('.login-warn-email', result.msg);
         validEmail = false;
       } else {
         htmls('.login-warn-email', '');
-        if (value !== '') validEmail = true;
-        else validEmail = false;
+        validEmail = true;
       }
       if (value !== '') htmls('.login-label-email', 'Email');
       else htmls('.login-label-email', '');
