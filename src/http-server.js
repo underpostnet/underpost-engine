@@ -61,6 +61,7 @@ const httpClient = (app) => {
                     console.warn = () => null;
                   }
                   ${fs.readFileSync('./src/create-account.js', 'utf8')}
+                  ${fs.readFileSync('./src/login.js', 'utf8')}
                   ${fs.readFileSync('./src/client.js', 'utf8')}
                 </script>
             </body>

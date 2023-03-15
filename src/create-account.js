@@ -218,12 +218,6 @@ const createAccount = () => {
         </div>
       </form>
     </sub-content-gui>
-    <div class='abs close-gui custom-cursor hover-button'>
-        <div class='abs center'>
-            <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
-        </div>
-    </div>
-
    </create-account>
     `;
 };

@@ -193,6 +193,12 @@ append(
 
     <gui-layer class='abs' style='display: none'>
         ${createAccount()}
+        ${logIn()}
+        <div class='abs close-gui custom-cursor hover-button'>
+            <div class='abs center'>
+                <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
+            </div>
+        </div>
     </gui-layer>
     
     <div class='abs open-menu custom-cursor hover-button' style='display: none'>
@@ -209,7 +215,7 @@ append(
           </div>
       </div>
 
-      <menu-button class='inl custom-cursor'>
+      <menu-button class='inl custom-cursor btn-login'>
         <div class='abs center'>
           ${renderLang({ es: 'Ingresar', en: 'Login' })}
         </div>
@@ -242,9 +248,16 @@ s('.btn-create-account').onclick = () => {
   s('create-account').style.display = 'block';
 };
 
+s('.btn-login').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('login').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
+  s('login').style.display = 'none';
 };
 
 const amplitudeRender = 50;
