@@ -15,46 +15,65 @@ if (!fs.existsSync(collectionFolder)) fs.mkdirSync(collectionFolder, { recursive
 if (!fs.existsSync(collectionPath)) writeUsers([]);
 const saltRounds = 10;
 
+const dbValidateUsername = (username, req) => {
+  const validate = getUsers().find((user) => user.username.toLowerCase() === username.toLowerCase());
+  return {
+    msg: validate ? ` > ${renderLang({ es: 'usuario existente', en: 'username already exist' }, req)}` : '',
+    validate: validate ? false : true,
+  };
+};
+
+const dbValidateEmail = (email, req) => {
+  const validate = getUsers().find((user) => user.email === email);
+  return {
+    msg: validate ? ` > ${renderLang({ es: 'email existente', en: 'email already exist' }, req)}` : '',
+    validate: validate ? false : true,
+  };
+};
+
 const register = async (req, res) => {
   try {
     // throw {
     //   message: 'test',
     // };
-    console.log('register', req.body);
-
+    console.log('register body', req.body);
     let { username, email, password, repeat_password } = req.body;
-
     email = email.toLowerCase().trim();
     username = username.trim();
 
-    if (
-      !emailValidator(email, req).validate ||
-      !passwordValidator(password, req).validate ||
-      !usernameValidator(username, req).validate ||
-      !passwordMatchValidator(password, repeat_password, req).validate
-    )
+    const validators = [
+      { type: 'email', result: emailValidator(email, req) },
+      { type: 'password', result: passwordValidator(password, req) },
+      { type: 'username', result: usernameValidator(username, req) },
+      { type: 'repeat-password', result: passwordMatchValidator(password, repeat_password, req) },
+    ];
+
+    const errors = validators.filter((validator) => !validator.result.validate);
+
+    console.log('errors', errors);
+
+    if (errors.length > 0)
       return res.status(400).json({
         status: 'error',
         data: {
-          message: 'common validate error',
+          errors,
         },
       });
 
-    if (getUsers().find((user) => user.email === email))
-      return res.status(400).json({
-        status: 'error',
-        data: {
-          message: renderLang({ es: 'email existente', en: 'email already exist' }, req),
-          type: 'email',
-        },
-      });
+    const validatorsDB = [
+      { type: 'username', result: dbValidateUsername(username, req) },
+      { type: 'email', result: dbValidateEmail(email, req) },
+    ];
 
-    if (getUsers().find((user) => user.username.toLowerCase() === username.toLowerCase()))
+    const errorsDB = validatorsDB.filter((validator) => !validator.result.validate);
+
+    console.log('errorsDB', errorsDB);
+
+    if (errorsDB.length > 0)
       return res.status(400).json({
         status: 'error',
         data: {
-          message: renderLang({ es: 'username existente', en: 'username already exist' }, req),
-          type: 'username',
+          errors: errorsDB,
         },
       });
 
@@ -93,7 +112,6 @@ const register = async (req, res) => {
       status: 'error',
       data: {
         message: error.message,
-        type: 'server',
       },
     });
   }

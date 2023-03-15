@@ -400,7 +400,11 @@ s('.btn-submit-create-account').onclick = async (e) => {
       log: true,
     });
     if (result.status === 'error') {
-      htmls('.create-account-warn-' + result.data.type, result.data.message);
+      if (result.data.errors)
+        result.data.errors.map((error) => {
+          htmls('.create-account-warn-' + error.type, error.result.msg);
+        });
+      else htmls('.create-account-warn-server', result.data.message);
     }
   }
   s('.create-account-loading').style.display = 'none';
