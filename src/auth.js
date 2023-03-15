@@ -17,6 +17,9 @@ const saltRounds = 10;
 
 const register = async (req, res) => {
   try {
+    // throw {
+    //   message: 'test',
+    // };
     console.log('register', req.body);
 
     let { username, email, password, repeat_password } = req.body;
@@ -42,6 +45,7 @@ const register = async (req, res) => {
         status: 'error',
         data: {
           message: renderLang({ es: 'email existente', en: 'email already exist' }, req),
+          type: 'email',
         },
       });
 
@@ -50,6 +54,7 @@ const register = async (req, res) => {
         status: 'error',
         data: {
           message: renderLang({ es: 'username existente', en: 'username already exist' }, req),
+          type: 'username',
         },
       });
 
@@ -88,6 +93,7 @@ const register = async (req, res) => {
       status: 'error',
       data: {
         message: error.message,
+        type: 'server',
       },
     });
   }

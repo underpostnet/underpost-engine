@@ -1,3 +1,10 @@
+const renderSpinner = () => /*html*/ `
+        <div class='abs center' style='${borderChar(1, 'black')}'>
+            ${renderLang({ es: 'cargando', en: 'loading' })}
+            <img src='/gifs/points-loading.gif' class='inl points-gif-loading'>
+        </div>
+`;
+
 append(
   'body',
   /*html*/ `
@@ -127,6 +134,17 @@ append(
         ${borderChar(1, 'black')}
       }
 
+      .points-gif-loading {
+        width: 30px;
+        height: 30px;
+        top: 14px;
+        left: -15px;
+      }
+      .content-loading-btn {
+        height: 10px;
+        width: 200px;
+      }
+
     </style>
     <style class='canvas-dim'></style>
 
@@ -134,9 +152,7 @@ append(
 
     <touch-layer class='abs custom-cursor'>
       <loader class='abs'>
-        <div class='abs center'>
-            ${renderLang({ es: 'cargando...', en: 'loading...' })}
-        </div>
+        ${renderSpinner()}
       </loader>
     </touch-layer>
 
@@ -186,6 +202,10 @@ append(
             <button type='submit' class='inl btn-submit-create-account custom-cursor'>
               ${renderLang({ es: 'Registrar', en: 'Register' })}
             </button>
+            <div class='in content-loading-btn create-account-loading' style='display: none'>
+                ${renderSpinner()}
+            </div>
+            <input-warn class='in create-account-warn-server'></input-warn>
           </div>
         </form>
       </sub-content-gui>
@@ -350,6 +370,8 @@ s('.create-account-input-repeat-password').onblur = checkRepeatPassword;
 s('.create-account-input-repeat-password').oninput = checkRepeatPassword;
 
 s('.btn-submit-create-account').onclick = async (e) => {
+  s('.btn-submit-create-account').style.display = 'none';
+  s('.create-account-loading').style.display = 'block';
   e.preventDefault();
   console.log(e);
   console.log('validEmail', validEmail);
@@ -377,7 +399,12 @@ s('.btn-submit-create-account').onclick = async (e) => {
       body,
       log: true,
     });
+    if (result.status === 'error') {
+      htmls('.create-account-warn-' + result.data.type, result.data.message);
+    }
   }
+  s('.create-account-loading').style.display = 'none';
+  s('.btn-submit-create-account').style.display = 'block';
 };
 
 const amplitudeRender = 50;
