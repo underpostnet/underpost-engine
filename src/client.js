@@ -176,8 +176,12 @@ append(
         left: -15px;
       }
       .content-loading-btn {
-        height: 10px;
+        height: 50px;
         width: 200px;
+      }
+      .content-warn-server {
+        padding: 5px;
+        margin: 5px;
       }
 
     </style>

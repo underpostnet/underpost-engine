@@ -137,6 +137,57 @@ const register = async (req, res, internalApi) => {
   }
 };
 
+const login = async (req, res, internalApi) => {
+  try {
+    const user = getUsers().find((user) => user.email == req.body.email.toLowerCase());
+    if (!user)
+      return res.status(400).json({
+        status: 'error',
+        data: {
+          message: renderLang({ en: 'user not found', es: 'usuario no encontrado' }, req),
+        },
+      });
+    // To check a password:
+    // Load hash from your password DB.
+    const validate = await new Promise((resolve) => {
+      bcrypt.compare(`${req.body.password}`, user.password, function (err, result) {
+        resolve(result);
+      });
+    });
+    if (validate === true) {
+      const token = jwt.sign(
+        {
+          user,
+        },
+        process.env.SECRET,
+        { expiresIn: `${process.env.EXPIRE}h` }
+      );
+      const { email, username } = user;
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          token,
+          element: { ...user.element, email, username },
+          message: renderLang({ es: 'Ingreso exitosos', en: 'Success Login' }, req),
+        },
+      });
+    }
+    return res.status(400).json({
+      status: 'error',
+      data: {
+        message: renderLang({ en: 'User not found', es: 'Usuario no encontrado' }, req),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
 const validateEmail = (req, res, internalApi) => {
   try {
     const { email } = req.params;
@@ -205,6 +256,7 @@ const validateUsername = (req, res, internalApi) => {
 
 const authApi = (app, internalApi) => {
   app.post(process.env.API_BASE + '/auth/register', (req, res) => register(req, res, internalApi));
+  app.post(process.env.API_BASE + '/auth/login', (req, res) => login(req, res, internalApi));
   app.get(process.env.API_BASE + '/auth/validate/email/:email', (req, res) => validateEmail(req, res, internalApi));
   app.get(process.env.API_BASE + '/auth/validate/username/:username', (req, res) =>
     validateUsername(req, res, internalApi)

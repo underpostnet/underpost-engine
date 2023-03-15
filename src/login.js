@@ -66,19 +66,22 @@ const logIn = () => {
       };
       console.log('.submit-login body', body);
       if (validEmail && validPassword) {
-        const result = { status: 'success', data: { message: 'test' } };
-        // await serviceRequest(API_BASE + '/auth/register', {
-        //   method: 'POST',
-        //   headers,
-        //   body,
-        //   log: true,
-        // });
+        // const result = { status: 'success', data: { message: 'test' } };
+        const result = await serviceRequest(API_BASE + '/auth/login', {
+          method: 'POST',
+          headers,
+          body,
+          log: true,
+        });
         if (result.status === 'error') {
           if (result.data.errors)
             result.data.errors.map((error) => {
               htmls('.login-warn-' + error.type, error.result.msg);
             });
           else htmls('.login-warn-server', result.data.message);
+        } else {
+          htmls('.login-warn-server', '');
+          localStorage.setItem('_b', result.data.token);
         }
         renderNotification(result.status, result.data.message);
       } else {
@@ -124,7 +127,7 @@ const logIn = () => {
                     <div class='in content-loading-btn login-loading' style='display: none'>
                         ${renderSpinner()}
                     </div>
-                    <input-warn class='in login-warn-server'></input-warn>
+                    <input-warn class='in content-warn-server login-warn-server'></input-warn>
                 </div>
                 </form>
             </sub-content-gui>

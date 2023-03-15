@@ -153,6 +153,8 @@ const createAccount = () => {
               htmls('.create-account-warn-' + error.type, error.result.msg);
             });
           else htmls('.create-account-warn-server', result.data.message);
+        } else {
+          htmls('.create-account-warn-server', '');
         }
         renderNotification(result.status, result.data.message);
       } else {
@@ -210,7 +212,7 @@ const createAccount = () => {
           <div class='in content-loading-btn create-account-loading' style='display: none'>
               ${renderSpinner()}
           </div>
-          <input-warn class='in create-account-warn-server'></input-warn>
+          <input-warn class='in content-warn-server create-account-warn-server'></input-warn>
         </div>
       </form>
     </sub-content-gui>
