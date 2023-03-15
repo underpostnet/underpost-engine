@@ -391,4 +391,5 @@ export {
   usernameValidator,
   merge,
   passwordMatchValidator,
+  renderLang,
 };
