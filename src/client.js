@@ -272,11 +272,11 @@ s('.close-gui').onclick = () => {
 };
 
 let validEmail = false;
-const checkEmail = async () => {
+const checkEmail = async (options) => {
   const value = s('.create-account-input-email').value;
   const result = emailValidator(value);
   console.log('checkEmail', result);
-  if (!result.validate && value !== '') {
+  if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
     htmls('.create-account-warn-email', result.msg);
     validEmail = false;
   } else {
@@ -300,11 +300,11 @@ s('.create-account-input-email').onblur = checkEmail;
 s('.create-account-input-email').oninput = checkEmail;
 
 let validUsername = false;
-const checkUsername = async () => {
+const checkUsername = async (options) => {
   const value = s('.create-account-input-username').value;
   const result = usernameValidator(value);
   console.log('checkUsername', result);
-  if (!result.validate && value !== '') {
+  if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
     htmls('.create-account-warn-username', result.msg);
     validUsername = false;
   } else {
@@ -335,12 +335,12 @@ s('.create-account-input-username').onblur = checkUsername;
 s('.create-account-input-username').oninput = checkUsername;
 
 let validPassword = false;
-const checkPassword = () => {
+const checkPassword = (options) => {
   const value = s('.create-account-input-password').value;
   if (value !== '') checkRepeatPassword();
   const result = passwordValidator(value);
   console.log('checkPassword', result);
-  if (!result.validate && value !== '') {
+  if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
     htmls('.create-account-warn-password', result.msg);
     validPassword = false;
   } else {
@@ -362,11 +362,11 @@ s('.create-account-input-password').onblur = checkPassword;
 s('.create-account-input-password').oninput = checkPassword;
 
 let validRepeatPassword = false;
-const checkRepeatPassword = () => {
+const checkRepeatPassword = (options) => {
   const value = s('.create-account-input-repeat-password').value;
-  const result = passwordMatchValidator(value, s('.create-account-input-password').value);
+  const result = passwordMatchValidator(s('.create-account-input-password').value, value);
   console.log('checkRepeatPassword', result);
-  if (!result.validate && value !== '') {
+  if (!result.validate && (value !== '' || (options && options.type === 'submit'))) {
     htmls('.create-account-warn-repeat-password', result.msg);
     validRepeatPassword = false;
   } else {
@@ -391,6 +391,11 @@ s('.btn-submit-create-account').onclick = async (e) => {
   s('.btn-submit-create-account').style.display = 'none';
   s('.create-account-loading').style.display = 'block';
   e.preventDefault();
+  const validatorOptions = { type: 'submit' };
+  await checkEmail(validatorOptions);
+  await checkUsername(validatorOptions);
+  await checkPassword(validatorOptions);
+  await checkRepeatPassword(validatorOptions);
   console.log(e);
   console.log('validEmail', validEmail);
   console.log('validUsername', validUsername);

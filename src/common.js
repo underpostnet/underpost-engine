@@ -42,6 +42,13 @@ const passwordValidator = (str, req) => {
   let validate = true;
   let regex;
 
+  if (str === '') {
+    return {
+      msg: renderLang({ en: 'Empty field', es: 'Campo vacío' }, req),
+      validate: false,
+    };
+  }
+
   if (str.length < 8) {
     validate = false;
     msg += ` > ${renderLang({ en: '8 char Length', es: '8 caracteres' }, req)}`;
@@ -72,6 +79,12 @@ const passwordValidator = (str, req) => {
 };
 
 const emailValidator = (str, req) => {
+  if (str === '') {
+    return {
+      msg: renderLang({ en: 'Empty field', es: 'Campo vacío' }, req),
+      validate: false,
+    };
+  }
   const validate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,8})+$/.test(str);
   return {
     msg: validate ? '' : ` > ${renderLang({ en: 'invalid email', es: 'email invalido' }, req)}`,
@@ -80,6 +93,12 @@ const emailValidator = (str, req) => {
 };
 
 const usernameValidator = (str, req) => {
+  if (str === '') {
+    return {
+      msg: renderLang({ en: 'Empty field', es: 'Campo vacío' }, req),
+      validate: false,
+    };
+  }
   const minChars = 4;
   const validate = str.length >= minChars;
   return {
@@ -89,6 +108,12 @@ const usernameValidator = (str, req) => {
 };
 
 const passwordMatchValidator = (str1, str2, req) => {
+  if (str2 === '') {
+    return {
+      msg: renderLang({ en: 'Empty field', es: 'Campo vacío' }, req),
+      validate: false,
+    };
+  }
   const validate = str1 === str2;
   return {
     msg: validate ? '' : ` > ${renderLang({ en: 'Password does not match', es: 'Las contraseñas no coinciden' }, req)}`,
