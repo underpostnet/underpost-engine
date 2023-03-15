@@ -120,13 +120,7 @@ const register = async (req, res, internalApi) => {
     users.push(user);
     writeUsers(users);
 
-    return res.status(200).json({
-      status: 'success',
-      data: {
-        message: renderLang({ es: 'usuario creado', en: 'username created' }, req),
-        user,
-      },
-    });
+    return await login(req, res, internalApi);
   } catch (error) {
     return res.status(500).json({
       status: 'error',
