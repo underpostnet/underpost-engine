@@ -1,5 +1,3 @@
-import { renderLang } from './util.js';
-
 const s4 = () => (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
 
 const getHash = () => s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
@@ -12,6 +10,16 @@ const random = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
+};
+
+const renderLang = (langs, req) => {
+  if (req) {
+    const getLang = `${req.acceptsLanguages()[0].split('-')[0]}`.toLowerCase();
+    if (Object.keys(langs).includes(getLang)) return langs[getLang];
+    return langs['en'];
+  }
+  if (langs[s('html').lang]) return langs[s('html').lang];
+  return langs['en'];
 };
 
 const getRawCsvFromArray = (array) =>
@@ -70,6 +78,25 @@ const emailValidator = (str, req) => {
     validate,
   };
 };
+
+const usernameValidator = (str, req) => {
+  const minChars = 4;
+  const validate = str.length >= minChars;
+  return {
+    msg: validate ? '' : ` > ${renderLang({ en: minChars + ' char Length', es: minChars + ' caracteres' }, req)}`,
+    validate,
+  };
+};
+
+const passwordMatchValidator = (str1, str2, req) => {
+  const validate = str1 === str2;
+  return {
+    msg: validate ? '' : ` > ${renderLang({ en: 'Password does not match', es: 'Las contraseñas no coinciden' }, req)}`,
+    validate,
+  };
+};
+
+// s('html').lang = 'en';
 
 const newInstance = (obj) => JSON.parse(JSON.stringify(obj));
 
@@ -327,6 +354,9 @@ const commonFunctions = () => `
     const ceil10 = ${ceil10};
     const JSONmatrix = ${JSONmatrix};
     const getRandomPoint = ${getRandomPoint};
+    const usernameValidator = ${usernameValidator};
+    const renderLang = ${renderLang};
+    const passwordMatchValidator = ${passwordMatchValidator};
     ${merge};
 `;
 
@@ -358,5 +388,7 @@ export {
   ceil10,
   JSONmatrix,
   getRandomPoint,
+  usernameValidator,
   merge,
+  passwordMatchValidator,
 };

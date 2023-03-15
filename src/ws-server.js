@@ -5,7 +5,6 @@ import {
   s4,
   range,
   random,
-  JSONmatrix,
   getRandomPoint,
   getDistance,
   merge,
@@ -15,7 +14,6 @@ import {
   reOrderIntArray,
 } from './common.js';
 import { maps } from './maps.js';
-import { JSONweb } from './util.js';
 
 dotenv.config();
 
@@ -303,7 +301,7 @@ const getMissileDirection = (positionType, direction) => {
   });
 })();
 
-const ssrWS = `
+const ssrWS = (util) => `
     const typeModels = ${typeModels};
     const maxRangeMapParam = ${maxRangeMapParam};
     const maxRangeMap = ${maxRangeMap};
@@ -317,8 +315,8 @@ const ssrWS = `
     const allowDiagonal = ${allowDiagonal};
     const dontCrossCorners = ${dontCrossCorners};
     const updateTimeInterval = ${updateTimeInterval};
-    const spriteDirs = ${JSONweb(spriteDirs)};
-    const directions = ${JSONweb(directions)};
+    const spriteDirs = ${util.JSONweb(spriteDirs)};
+    const directions = ${util.JSONweb(directions)};
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
     const ioWsServerHost = '${ioWsServerHost}';

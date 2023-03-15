@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { emailValidator, passwordValidator } from './common.js';
+import { emailValidator, passwordValidator, usernameValidator, passwordMatchValidator } from './common.js';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -18,29 +18,34 @@ const register = (req, res) => {
   try {
     console.log('register', req.body);
 
+    const { username, email, password, repeat_password } = req.body;
+    if (
+      !emailValidator(email, req).validate ||
+      !passwordValidator(password, req).validate ||
+      !usernameValidator(username, req).validate ||
+      !passwordMatchValidator(password, repeat_password, req).validate
+    )
+      return res.status(400).json({
+        status: 'error',
+        data: {
+          message: 'common validate error',
+        },
+      });
+
     return res.status(200).json({
       status: 'success',
-      data: { body: req.body },
+      data: {
+        message: 'ok',
+      },
     });
   } catch (error) {
     return res.status(500).json({
       status: 'error',
-      data: error.message,
+      data: {
+        message: error.message,
+      },
     });
   }
-
-  // return res.status(400).json({
-  //     status: 'error',
-  //     data: 'invalid passphrase'
-  // });
-  // return res.status(200).json({
-  //     status: 'success',
-  //     data: { privateKey, publicKey }
-  // });
-  // return res.status(500).json({
-  //     status: 'error',
-  //     data: error.message,
-  // });
 };
 
 const authApi = (app) => {

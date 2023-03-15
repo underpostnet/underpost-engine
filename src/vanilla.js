@@ -15,12 +15,6 @@ text-shadow: ${px}px -${px}px ${px}px ${color},
                          ${px}px ${px}px ${px}px ${color};
 `;
 
-const renderLang = (langs) => {
-  if (langs[s('html').lang]) return langs[s('html').lang];
-  return langs['en'];
-};
-// s('html').lang = 'en';
-
 const renderTable = (data, options) =>
   data[0]
     ? /*html*/ `

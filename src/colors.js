@@ -1,5 +1,4 @@
 import { random } from './common.js';
-import { JSONweb } from './util.js';
 
 const colors = [
   {
@@ -5227,9 +5226,9 @@ colors.map((dataColor) => {
 const getRandomNumberColors = () =>
   numberColors[Object.keys(numberColors)[random(0, Object.keys(numberColors).length - 1)]];
 
-const ssrColor = `
-    const colors = ${JSONweb(colors)};
-    const numberColors = ${JSONweb(numberColors)};
+const ssrColor = (util) => `
+    const colors = ${util.JSONweb(colors)};
+    const numberColors = ${util.JSONweb(numberColors)};
     const getRandomNumberColors = ${getRandomNumberColors};
     const randomColor = ${randomColor};
     const numberHexColor = ${numberHexColor};

@@ -11,8 +11,12 @@ import { maps } from './maps.js';
 
 dotenv.config();
 
+const appName = 'CYBERIA';
+
+const JSONweb = (data) => 'JSON.parse(`' + JSON.stringify(data) + '`)';
+
 const renderInstanceTitle = (pathObj) =>
-  `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${pathObj.name_map === '' ? '' : ' | '}CYBERIA`;
+  `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${pathObj.name_map === '' ? '' : ' | '}${appName}`;
 
 const httpClient = (app) => {
   const dir = './public';
@@ -46,11 +50,12 @@ const httpClient = (app) => {
             </head>
             <body>
                 <script>
+                  const appName = '${appName}';
                   ${commonFunctions()}
                   ${fs.readFileSync('./src/vanilla.js', 'utf8')}
                   const renderInstanceTitle = ${renderInstanceTitle};
-                  ${ssrColor}
-                  ${ssrWS}
+                  ${ssrColor({ JSONweb: JSONweb })}
+                  ${ssrWS({ JSONweb: JSONweb })}
                   if (!dev) {
                     console.log = () => null;
                     console.warn = () => null;
@@ -68,4 +73,4 @@ const httpClient = (app) => {
   app.use('/', express.static(dir));
 };
 
-export { httpClient };
+export { httpClient, JSONweb };

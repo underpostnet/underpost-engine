@@ -273,10 +273,10 @@ s('.create-account-input-email').oninput = checkEmail;
 let validUsername = false;
 const checkUsername = () => {
   const value = s('.create-account-input-username').value;
-  const result = value.length >= 4;
+  const result = usernameValidator(value);
   console.log('checkUsername', result);
-  if (!result && value !== '') {
-    htmls('.create-account-warn-username', ` > ${renderLang({ en: '4 char Length', es: '4 caracteres' })}`);
+  if (!result.validate && value !== '') {
+    htmls('.create-account-warn-username', result.msg);
     validUsername = false;
   } else {
     htmls('.create-account-warn-username', '');
@@ -326,13 +326,10 @@ s('.create-account-input-password').oninput = checkPassword;
 let validRepeatPassword = false;
 const checkRepeatPassword = () => {
   const value = s('.create-account-input-repeat-password').value;
-  const result = value === s('.create-account-input-password').value;
+  const result = passwordMatchValidator(value, s('.create-account-input-password').value);
   console.log('checkRepeatPassword', result);
-  if (!result && value !== '') {
-    htmls(
-      '.create-account-warn-repeat-password',
-      renderLang({ en: 'Password does not match', es: 'Las contraseñas no coinciden' })
-    );
+  if (!result.validate && value !== '') {
+    htmls('.create-account-warn-repeat-password', result.msg);
     validRepeatPassword = false;
   } else {
     htmls('.create-account-warn-repeat-password', '');
