@@ -50,7 +50,7 @@ const register = async (req, res) => {
 
     const errors = validators.filter((validator) => !validator.result.validate);
 
-    console.log('errors', errors);
+    // console.log('errors', errors);
 
     if (errors.length > 0)
       return res.status(400).json({
@@ -67,7 +67,7 @@ const register = async (req, res) => {
 
     const errorsDB = validatorsDB.filter((validator) => !validator.result.validate);
 
-    console.log('errorsDB', errorsDB);
+    // console.log('errorsDB', errorsDB);
 
     if (errorsDB.length > 0)
       return res.status(400).json({
@@ -125,7 +125,7 @@ const validateEmail = (req, res) => {
       { type: 'email', result: dbValidateEmail(email, req) },
     ];
     const errors = validators.filter((validator) => !validator.result.validate);
-    console.log('errors', errors);
+    // console.log('errors', errors);
     if (errors.length > 0)
       return res.status(400).json({
         status: 'error',
@@ -158,7 +158,7 @@ const validateUsername = (req, res) => {
       { type: 'username', result: dbValidateUsername(username, req) },
     ];
     const errors = validators.filter((validator) => !validator.result.validate);
-    console.log('errors', errors);
+    // console.log('errors', errors);
     if (errors.length > 0)
       return res.status(400).json({
         status: 'error',
