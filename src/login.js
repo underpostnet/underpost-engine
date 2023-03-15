@@ -1,5 +1,14 @@
 const logIn = () => {
   setTimeout(() => {
+    const cleanForm = () => {
+      s('.login-input-email').value = '';
+      s('.login-input-password').value = '';
+      htmls('.login-label-email', '');
+      htmls('.login-label-password', '');
+      htmls('.login-warn-email', '');
+      htmls('.login-warn-password', '');
+      htmls('.login-warn-server', '');
+    };
     let validEmail = false;
     const checkEmail = async (options) => {
       const value = s('.login-input-email').value;
@@ -80,8 +89,9 @@ const logIn = () => {
             });
           else htmls('.login-warn-server', result.data.message);
         } else {
-          htmls('.login-warn-server', '');
+          cleanForm();
           localStorage.setItem('_b', result.data.token);
+          newMainUserInstance(result.data.element);
         }
         renderNotification(result.status, result.data.message);
       } else {

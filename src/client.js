@@ -368,6 +368,16 @@ const renderIndicatorDiffLife = (container, element, dim, type) => {
   }, params[type][element.id].intervalDiffLifeDisplay * 0.8);
 };
 
+const newMainUserInstance = (element) => {
+  s('.close-gui').click();
+  s('loader').style.display = 'block';
+  element.id = socket.id;
+  params[element.type][element.id].mapChangeActive = false;
+  resetsElements();
+  socket.emit('close');
+  socket.emit('init', JSON.stringify(element));
+};
+
 const renderPixiInitElement = (element) => {
   // https://pixijs.io/examples
   // https://pixijs.download/release/docs/index.html
@@ -882,15 +892,11 @@ const renderPixiEventElement = (element) => {
           (!element.path || element.path.length === 0)
         ) {
           console.log('newMapObj', newMapObj);
-          s('loader').style.display = 'block';
-          params[type][id].mapChangeActive = false;
           const eventElement = newInstance(element);
           eventElement.render.x = newMapObj.toX;
           eventElement.render.y = newMapObj.toY;
           eventElement.map = newMapObj.toMap;
-          resetsElements();
-          socket.emit('close');
-          socket.emit('init', JSON.stringify(eventElement));
+          newMainUserInstance(eventElement);
         }
       }
     }, frameTime * (updateTimeInterval / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3

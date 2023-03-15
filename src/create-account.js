@@ -1,5 +1,20 @@
 const createAccount = () => {
   setTimeout(() => {
+    const cleanForm = () => {
+      s('.create-account-input-username').value = '';
+      s('.create-account-input-email').value = '';
+      s('.create-account-input-password').value = '';
+      s('.create-account-input-repeat-password').value = '';
+      htmls('.create-account-label-username', '');
+      htmls('.create-account-label-email', '');
+      htmls('.create-account-label-password', '');
+      htmls('.create-account-label-repeat-password', '');
+      htmls('.create-account-warn-username', '');
+      htmls('.create-account-warn-email', '');
+      htmls('.create-account-warn-password', '');
+      htmls('.create-account-warn-repeat-password', '');
+      htmls('.create-account-warn-server', '');
+    };
     let validEmail = false;
     const checkEmail = async (options) => {
       const value = s('.create-account-input-email').value;
@@ -154,7 +169,9 @@ const createAccount = () => {
             });
           else htmls('.create-account-warn-server', result.data.message);
         } else {
-          htmls('.create-account-warn-server', '');
+          cleanForm();
+          localStorage.setItem('_b', result.data.token);
+          newMainUserInstance(result.data.element);
         }
         renderNotification(result.status, result.data.message);
       } else {

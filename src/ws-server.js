@@ -524,6 +524,7 @@ const wsServer = (httpServer, app, internalApi) => {
       let element;
       if (args[0] === '{' || args[0] === '[') {
         element = JSON.parse(args);
+        element.id = socket.id;
       } else {
         let map;
         map = args.replaceAll('/', '');
