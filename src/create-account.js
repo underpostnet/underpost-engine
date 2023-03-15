@@ -15,7 +15,7 @@ const createAccount = () => {
       if (value !== '') htmls('.create-account-label-email', 'Email');
       else htmls('.create-account-label-email', '');
       if (validEmail === true) {
-        const result = await serviceRequest('/api/v1/auth/validate/email/' + value);
+        const result = await serviceRequest(API_BASE + '/auth/validate/email/' + value);
         if (result.status === 'error' && result.data.errors) {
           validEmail = false;
           result.data.errors.map((error) => {
@@ -49,7 +49,7 @@ const createAccount = () => {
         );
       else htmls('.create-account-label-username', '');
       if (validUsername === true) {
-        const result = await serviceRequest('/api/v1/auth/validate/username/' + value);
+        const result = await serviceRequest(API_BASE + '/auth/validate/username/' + value);
         if (result.status === 'error' && result.data.errors) {
           validUsername = false;
           result.data.errors.map((error) => {
@@ -131,6 +131,7 @@ const createAccount = () => {
         email: s('.create-account-input-email').value,
         password: s('.create-account-input-password').value,
         repeat_password: s('.create-account-input-repeat-password').value,
+        id: socket.id,
       });
       const headers = {
         // 'Authorization': renderAuthBearer(),
@@ -140,7 +141,7 @@ const createAccount = () => {
       };
       console.log('.submit-create-account body', body);
       if (validEmail && validUsername && validPassword && validRepeatPassword) {
-        const result = await serviceRequest('/api/v1/auth/register', {
+        const result = await serviceRequest(API_BASE + '/auth/register', {
           method: 'POST',
           headers,
           body,

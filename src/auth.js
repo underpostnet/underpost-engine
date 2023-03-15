@@ -3,6 +3,7 @@ import { emailValidator, passwordValidator, usernameValidator, passwordMatchVali
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -31,7 +32,7 @@ const dbValidateEmail = (email, req) => {
   };
 };
 
-const register = async (req, res) => {
+const register = async (req, res, internalApi) => {
   try {
     // throw {
     //   message: 'test',
@@ -95,7 +96,26 @@ const register = async (req, res) => {
       }
     });
 
-    const user = { username, email, password };
+    const time = new Date();
+    const createdAt = time.toISOString();
+    const timestamp = time.getTime();
+    const idConfig = `crypto.createHash('sha256').update(''+timestamp).digest('hex')`;
+    // const id = crypto.createHash('sha256').update(timestamp).digest('base64');
+    const id = crypto
+      .createHash('sha256')
+      .update('' + timestamp)
+      .digest('hex');
+    const elementData = await new Promise((resolve) => {
+      internalApi.findUserElementById(req, {
+        status: () => {
+          return { json: (response) => resolve(response) };
+        },
+      });
+    });
+    console.log('elementData', elementData);
+    const { element } = elementData.data;
+
+    const user = { username, email, password, createdAt, timestamp, id, idConfig, element };
     const users = getUsers();
     users.push(user);
     writeUsers(users);
@@ -117,7 +137,7 @@ const register = async (req, res) => {
   }
 };
 
-const validateEmail = (req, res) => {
+const validateEmail = (req, res, internalApi) => {
   try {
     const { email } = req.params;
     const validators = [
@@ -150,7 +170,7 @@ const validateEmail = (req, res) => {
   }
 };
 
-const validateUsername = (req, res) => {
+const validateUsername = (req, res, internalApi) => {
   try {
     const { username } = req.params;
     const validators = [
@@ -183,10 +203,12 @@ const validateUsername = (req, res) => {
   }
 };
 
-const authApi = (app) => {
-  app.post('/api/v1/auth/register', register);
-  app.get('/api/v1/auth/validate/email/:email', validateEmail);
-  app.get('/api/v1/auth/validate/username/:username', validateUsername);
+const authApi = (app, internalApi) => {
+  app.post(process.env.API_BASE + '/auth/register', (req, res) => register(req, res, internalApi));
+  app.get(process.env.API_BASE + '/auth/validate/email/:email', (req, res) => validateEmail(req, res, internalApi));
+  app.get(process.env.API_BASE + '/auth/validate/username/:username', (req, res) =>
+    validateUsername(req, res, internalApi)
+  );
 };
 
 export { authApi };

@@ -67,7 +67,7 @@ const logIn = () => {
       console.log('.submit-login body', body);
       if (validEmail && validPassword) {
         const result = { status: 'success', data: { message: 'test' } };
-        // await serviceRequest('/api/v1/auth/register', {
+        // await serviceRequest(API_BASE + '/auth/register', {
         //   method: 'POST',
         //   headers,
         //   body,

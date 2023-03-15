@@ -51,6 +51,7 @@ const httpClient = (app) => {
             <body>
                 <script>
                   const appName = '${appName}';
+                  const API_BASE = '${process.env.API_BASE}';
                   ${commonFunctions()}
                   ${fs.readFileSync('./src/vanilla.js', 'utf8')}
                   const renderInstanceTitle = ${renderInstanceTitle};

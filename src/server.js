@@ -20,13 +20,15 @@ app.use(express.json({ limit: '20MB' }));
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true, limit: '20MB' }));
 
+const internalApi = {};
+
 httpClient(app);
 
-authApi(app);
+authApi(app, internalApi);
 
 const server = createServer({}, app);
 
-wsServer(server);
+wsServer(server, app, internalApi);
 
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);

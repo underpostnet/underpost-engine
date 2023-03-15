@@ -452,10 +452,44 @@ const attack = (clients, eventElement, map, targets) => {
 const params = { bot: [] };
 const botAttackInterval = 500;
 
-const wsServer = (httpServer) => {
+const findUserElementById = (req, res) => {
+  try {
+    const element = elements['user'].find((element) => element.id === req.body.id);
+    if (element)
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'ok',
+          element,
+        },
+      });
+    return res.status(400).json({
+      status: 'error',
+      data: {
+        message: 'user element not found',
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
+const wsApi = (app, internalApi) => {
+  app.post(process.env.API_BASE + '/ws/element/user', findUserElementById);
+  internalApi.findUserElementById = findUserElementById;
+};
+
+const wsServer = (httpServer, app, internalApi) => {
   const origins = [process.env.NODE_ENV === 'prod' ? process.env.HOST : `http://localhost:${process.env.PORT}`];
   console.log('ioWsServerHost', ioWsServerHost);
   console.log('ws origins', origins);
+
+  wsApi(app, internalApi);
 
   /**/
   const io = new Server(httpServer, {
