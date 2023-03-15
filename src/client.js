@@ -5,6 +5,41 @@ const renderSpinner = () => /*html*/ `
         </div>
 `;
 
+const renderNotification = (status, message) => {
+  const hash = 'notification-' + s4() + s4();
+  append(
+    'body',
+    /*html*/ `
+  <style>
+    .${hash} {
+      width: 200px;
+      height: 100px;
+      background: rgba(0,0,0,0.8);
+      color: ${status === 'success' ? 'green' : 'red'};
+      ${borderChar(1, 'black')}
+      border: 3px solid ${status === 'success' ? 'green' : 'red'};
+    }
+  </style>
+  <div class='fix center ${hash}'>
+      <div class='abs center'>
+          <span style='font-size: 20px'>
+            ${status === 'success' ? '&check;' : '&#215;'}
+          </span>
+          <br>
+          <br>
+          <span style='font-size: 10px'>
+            ${message}
+          </span>
+      </div>
+  </div>
+  
+  `
+  );
+  setTimeout(() => {
+    s(`.${hash}`).remove();
+  }, 1500);
+};
+
 append(
   'body',
   /*html*/ `

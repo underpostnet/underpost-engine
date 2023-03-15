@@ -158,6 +158,9 @@ const createAccount = () => {
             });
           else htmls('.create-account-warn-server', result.data.message);
         }
+        renderNotification(result.status, result.data.message);
+      } else {
+        renderNotification('error', renderLang({ es: 'Campo inválido existente', en: 'Invalid fields' }));
       }
       s('.create-account-loading').style.display = 'none';
       s('.btn-submit-create-account').style.display = 'block';
