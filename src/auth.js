@@ -117,8 +117,76 @@ const register = async (req, res) => {
   }
 };
 
+const validateEmail = (req, res) => {
+  try {
+    const { email } = req.params;
+    const validators = [
+      { type: 'email', result: emailValidator(email, req) },
+      { type: 'email', result: dbValidateEmail(email, req) },
+    ];
+    const errors = validators.filter((validator) => !validator.result.validate);
+    console.log('errors', errors);
+    if (errors.length > 0)
+      return res.status(400).json({
+        status: 'error',
+        data: {
+          errors,
+        },
+      });
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        message: 'ok',
+        email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
+const validateUsername = (req, res) => {
+  try {
+    const { username } = req.params;
+    const validators = [
+      { type: 'username', result: usernameValidator(username, req) },
+      { type: 'username', result: dbValidateUsername(username, req) },
+    ];
+    const errors = validators.filter((validator) => !validator.result.validate);
+    console.log('errors', errors);
+    if (errors.length > 0)
+      return res.status(400).json({
+        status: 'error',
+        data: {
+          errors,
+        },
+      });
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        message: 'ok',
+        username,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
 const authApi = (app) => {
   app.post('/api/v1/auth/register', register);
+  app.get('/api/v1/auth/validate/email/:email', validateEmail);
+  app.get('/api/v1/auth/validate/username/:username', validateUsername);
 };
 
 export { authApi };
