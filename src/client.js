@@ -272,7 +272,7 @@ s('.close-gui').onclick = () => {
 };
 
 let validEmail = false;
-const checkEmail = () => {
+const checkEmail = async () => {
   const value = s('.create-account-input-email').value;
   const result = emailValidator(value);
   console.log('checkEmail', result);
@@ -286,12 +286,21 @@ const checkEmail = () => {
   }
   if (value !== '') htmls('.create-account-label-email', 'Email');
   else htmls('.create-account-label-email', '');
+  if (validEmail === true) {
+    const result = await serviceRequest('/api/v1/auth/validate/email/' + value);
+    if (result.status === 'error' && result.data.errors) {
+      validEmail = false;
+      result.data.errors.map((error) => {
+        htmls('.create-account-warn-' + error.type, error.result.msg);
+      });
+    }
+  }
 };
 s('.create-account-input-email').onblur = checkEmail;
 s('.create-account-input-email').oninput = checkEmail;
 
 let validUsername = false;
-const checkUsername = () => {
+const checkUsername = async () => {
   const value = s('.create-account-input-username').value;
   const result = usernameValidator(value);
   console.log('checkUsername', result);
@@ -312,6 +321,15 @@ const checkUsername = () => {
       })
     );
   else htmls('.create-account-label-username', '');
+  if (validUsername === true) {
+    const result = await serviceRequest('/api/v1/auth/validate/username/' + value);
+    if (result.status === 'error' && result.data.errors) {
+      validUsername = false;
+      result.data.errors.map((error) => {
+        htmls('.create-account-warn-' + error.type, error.result.msg);
+      });
+    }
+  }
 };
 s('.create-account-input-username').onblur = checkUsername;
 s('.create-account-input-username').oninput = checkUsername;
