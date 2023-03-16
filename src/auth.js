@@ -168,7 +168,7 @@ const login = async (req, res, internalApi) => {
         data: {
           token,
           element: instanceInitElementByUser(user),
-          message: renderLang({ es: 'Ingreso exitosos', en: 'Success Login' }, req),
+          message: renderLang({ es: 'Ingreso exitoso', en: 'Success Login' }, req),
         },
       });
     }
