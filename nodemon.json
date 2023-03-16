@@ -2,5 +2,7 @@
   "watch": [],
   "ext": "js",
   "delay": "0",
-  "ignore": ["./public"]
+  "ignore": [
+    "./public"
+  ]
 }
