@@ -2,11 +2,3 @@
 /package-lock.json
 /public
 /data
-/logs
-/underpost_modules
-/private-engine
-/builds
-/coverage
-/.env.private.dev
-/www
-/_.js
