@@ -216,7 +216,7 @@ append(
         </div>
     </div>
 
-    <main-menu class='abs'>
+    <main-menu class='abs' style='display: none'>
 
       <div class='abs close-menu custom-cursor hover-button'>
           <div class='abs center'>
@@ -224,16 +224,26 @@ append(
           </div>
       </div>
 
-      <menu-button class='inl custom-cursor btn-login'>
-        <div class='abs center'>
-          ${renderLang({ es: 'Ingresar', en: 'Login' })}
-        </div>
-      </menu-button>
-      <menu-button class='inl custom-cursor btn-create-account'>
-        <div class='abs center'>
-          ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
-        </div>
-      </menu-button>
+      <no-session-menu style='display: none'>
+        <menu-button class='inl custom-cursor btn-login'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Ingresar', en: 'Login' })}
+          </div>
+        </menu-button>
+        <menu-button class='inl custom-cursor btn-create-account'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
+          </div>
+        </menu-button>
+      </no-session-menu>
+
+      <session-menu style='display: none'>
+        <menu-button class='inl custom-cursor btn-logout'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Cerrar Sesión', en: 'Logout' })}
+          </div>
+        </menu-button>
+      </session-menu>
 
     </main-menu>
  
@@ -267,6 +277,11 @@ s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
   s('login').style.display = 'none';
+};
+
+s('.btn-logout').onclick = () => {
+  localStorage.removeItem('_b');
+  newMainUserInstance();
 };
 
 const amplitudeRender = 50;
@@ -376,11 +391,17 @@ const renderIndicatorDiffLife = (container, element, dim, type) => {
 const newMainUserInstance = (element) => {
   s('.close-gui').click();
   s('loader').style.display = 'block';
-  element.id = socket.id;
-  params[element.type][element.id].mapChangeActive = false;
+  const initObj = {};
+  if (element) {
+    element.id = socket.id;
+    params[element.type][element.id].mapChangeActive = false;
+    initObj.element = element;
+  } else {
+    initObj.path = getURI();
+  }
   resetsElements();
   socket.emit('close');
-  socket.emit('init', JSON.stringify({ element }));
+  socket.emit('init', JSON.stringify(initObj));
 };
 
 const renderPixiInitElement = (element) => {
@@ -915,6 +936,7 @@ const removePixiElement = (element) => {
   delete pixi[type][element.id];
 };
 
+let firstLoad = true;
 const socket = io(ioWsServerHost);
 
 socket.on('connect', () => {
@@ -964,6 +986,15 @@ socket.on('update', (...args) => {
     htmls('title', renderInstanceTitle({ name_map: eventElement.map }));
   }
   if (eventElement.map && eventElement.render && eventElement.id && eventElement.type) {
+    if (socket.id === eventElement.id) {
+      if (eventElement._id) {
+        s('no-session-menu').style.display = 'none';
+        s('session-menu').style.display = 'block';
+      } else {
+        s('session-menu').style.display = 'none';
+        s('no-session-menu').style.display = 'block';
+      }
+    }
     elements[type].push(eventElement);
     renderPixiInitElement(eventElement);
   }
@@ -995,6 +1026,11 @@ socket.on('init-data', (...args) => {
     })();
   });
   s('loader').style.display = 'none';
+  if (firstLoad) {
+    if (localStorage.getItem('_b')) s('.close-menu').click();
+    else s('main-menu').style.display = 'block';
+    firstLoad = false;
+  }
 });
 
 socket.on('close', (...args) => {
