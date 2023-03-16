@@ -528,7 +528,12 @@ const wsServer = (httpServer, app, internalApi) => {
       console.log(`socket.io | init ${socket.id} due to data: ${args}`);
       clients.push(socket);
       console.log(`socket.io | currents clients: ${clients.length}`);
-      const eventObj = JSON.parse(args);
+      let eventObj = {};
+      try {
+        eventObj = JSON.parse(args);
+      } catch (error) {
+        console.error(error);
+      }
       let element = undefined;
       if (eventObj.element) {
         element = eventObj.element;
@@ -536,14 +541,14 @@ const wsServer = (httpServer, app, internalApi) => {
         const user = await internalApi.getUserByToken(eventObj.token);
         // console.log('set user token', user);
         if (user) element = internalApi.instanceInitElementByUser(user);
-        else eventObj.path = '';
       }
 
       if (element) {
         element.id = socket.id;
         if (element.life === 0) rebirdElement(clients, element, internalApi);
         internalApi.updateElementUser(element);
-      }
+      } else eventObj.path = '';
+
       if (eventObj.path || eventObj.path === '') {
         let map;
         map = eventObj.path.replaceAll('/', '');
