@@ -76,4 +76,4 @@ const httpClient = (app) => {
   app.use('/', express.static(dir));
 };
 
-export { httpClient, JSONweb };
+export { httpClient };
