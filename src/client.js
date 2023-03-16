@@ -184,6 +184,11 @@ append(
         margin: 5px;
       }
 
+      .cyberia-logo {
+        width: 35px;
+        height: 35px;
+      }
+
     </style>
     <style class='canvas-dim'></style>
 
@@ -207,7 +212,7 @@ append(
     
     <div class='abs open-menu custom-cursor hover-button' style='display: none'>
         <div class='abs center'>
-            <img class='inl icons-menu' src='/icons/200x200/menu-boxs.png'>
+            <img class='inl cyberia-logo' src='/icons/144x144/cyberia.png'>
         </div>
     </div>
 
