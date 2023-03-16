@@ -517,17 +517,38 @@ const wsServer = (httpServer, app, internalApi) => {
     console.log(`socket.io | user connect ${socket.id}`);
     const type = 'user';
 
-    socket.on('init', (args) => {
+    socket.on('init', async (args) => {
       console.log(`socket.io | init ${socket.id} due to data: ${args}`);
       clients.push(socket);
       console.log(`socket.io | currents clients: ${clients.length}`);
-      let element;
-      if (args[0] === '{' || args[0] === '[') {
-        element = JSON.parse(args);
-        element.id = socket.id;
-      } else {
+      const eventObj = JSON.parse(args);
+      let element = undefined;
+      if (eventObj.element) {
+        element = eventObj.element;
+      } else if (eventObj.token) {
+        const req = {};
+        await new Promise((resolve) =>
+          internalApi.verifyToken(
+            req,
+            {
+              status: () => {
+                return { json: () => resolve() };
+              },
+            },
+            eventObj.token,
+            () => resolve()
+          )
+        );
+        if (req.user) {
+          element = req.user.element;
+        } else eventObj.path = '';
+      }
+
+      if (element) element.id = socket.id;
+
+      if (eventObj.path) {
         let map;
-        map = args.replaceAll('/', '');
+        map = eventObj.path.replaceAll('/', '');
         if (map === '') map = maps[random(0, maps.length - 1)].name_map;
         const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
         const { color, render } = getParamsType(type);

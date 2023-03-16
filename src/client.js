@@ -375,7 +375,7 @@ const newMainUserInstance = (element) => {
   params[element.type][element.id].mapChangeActive = false;
   resetsElements();
   socket.emit('close');
-  socket.emit('init', JSON.stringify(element));
+  socket.emit('init', JSON.stringify({ element }));
 };
 
 const renderPixiInitElement = (element) => {
@@ -914,7 +914,10 @@ const socket = io(ioWsServerHost);
 
 socket.on('connect', () => {
   console.log(`socket.io event: connect | session id: ${socket.id}`);
-  socket.emit('init', getURI());
+  socket.emit(
+    'init',
+    JSON.stringify(localStorage.getItem('_b') ? { token: localStorage.getItem('_b') } : { path: getURI() })
+  );
 });
 
 socket.on('connect_error', (err) => {

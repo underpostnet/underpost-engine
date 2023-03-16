@@ -248,13 +248,91 @@ const validateUsername = (req, res, internalApi) => {
   }
 };
 
+const verifyToken = (req, res, token, next) => {
+  const response = jwt.verify(token, process.env.SECRET);
+  // console.log('verifyToken response', response);
+  if (typeof response == 'object') {
+    if (response.exp * 1000 <= +new Date())
+      return res.status(401).json({
+        status: 'error',
+        data: {
+          message: 'expire unauthorized',
+        },
+      });
+    const user = getUsers().find((user) => user.email == response.user.email && user.pass == response.user.pass);
+    if (user) {
+      req.user = user;
+      return next();
+    }
+  }
+  return res.status(401).json({
+    status: 'error',
+    data: {
+      message: 'unauthorized',
+    },
+  });
+};
+
+const verifySession = (req, res) => {
+  try {
+    if (req.user) {
+      delete req.user.password;
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'ok',
+          user: req.user,
+        },
+      });
+    }
+    return res.status(401).json({
+      status: 'error',
+      data: {
+        message: 'user not found',
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
+const authValidator = (req, res, next) => {
+  try {
+    const authHeader = String(req.headers['authorization'] || req.headers['Authorization'] || '');
+    if (authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7, authHeader.length);
+      return verifyToken(req, res, token, next);
+    }
+    return res.status(401).json({
+      status: 'error',
+      data: {
+        message: 'invalid token',
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
 const authApi = (app, internalApi) => {
+  internalApi.verifyToken = verifyToken;
   app.post(process.env.API_BASE + '/auth/register', (req, res) => register(req, res, internalApi));
   app.post(process.env.API_BASE + '/auth/login', (req, res) => login(req, res, internalApi));
   app.get(process.env.API_BASE + '/auth/validate/email/:email', (req, res) => validateEmail(req, res, internalApi));
   app.get(process.env.API_BASE + '/auth/validate/username/:username', (req, res) =>
     validateUsername(req, res, internalApi)
   );
+  app.post(process.env.API_BASE + '/auth/validate/session', authValidator, verifySession);
 };
 
 export { authApi };
