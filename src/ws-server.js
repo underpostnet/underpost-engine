@@ -323,7 +323,20 @@ const ssrWS = (util) => `
     const dev = ${process.env.NODE_ENV === 'dev'};
 `;
 
-const attack = (clients, eventElement, map, targets) => {
+const rebirdElement = (clients, element, internalApi) => {
+  setTimeout(() => {
+    if (!elements[element.type].find((_element) => _element.id === element.id)) return;
+    element.life = newInstance(element.maxLife);
+    clients.map((client) => {
+      const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+      if (clientIndex > -1 && elements['user'][clientIndex].map === element.map)
+        client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
+    });
+    if (element._id) internalApi.updateElementUser(element);
+  }, 3000);
+};
+
+const attack = (clients, eventElement, map, targets, internalApi) => {
   (() => {
     const type = 'bullet';
     const { color, render } = getParamsType(type);
@@ -374,20 +387,14 @@ const attack = (clients, eventElement, map, targets) => {
             element.life = element.life - eventElement.element.attackValue;
             if (element.life <= 0) {
               element.life = 0;
-              setTimeout(() => {
-                element.life = newInstance(element.maxLife);
-                clients.map((client) => {
-                  const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
-                  if (clientIndex > -1 && elements['user'][clientIndex].map === map)
-                    client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
-                });
-              }, 3000);
+              rebirdElement(clients, element, internalApi);
             }
             clients.map((client) => {
               const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
               if (clientIndex > -1 && elements['user'][clientIndex].map === map)
                 client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
             });
+            if (element.type === 'user' && element._id) internalApi.updateElementUser(element);
           }
         })
       );
@@ -526,27 +533,18 @@ const wsServer = (httpServer, app, internalApi) => {
       if (eventObj.element) {
         element = eventObj.element;
       } else if (eventObj.token) {
-        const req = {};
-        await new Promise((resolve) =>
-          internalApi.verifyToken(
-            req,
-            {
-              status: () => {
-                return { json: () => resolve() };
-              },
-            },
-            eventObj.token,
-            () => resolve()
-          )
-        );
-        if (req.user) {
-          element = req.user.element;
-        } else eventObj.path = '';
+        const user = await internalApi.getUserByToken(eventObj.token);
+        // console.log('set user token', user);
+        if (user) element = internalApi.instanceInitElementByUser(user);
+        else eventObj.path = '';
       }
 
-      if (element) element.id = socket.id;
-
-      if (eventObj.path) {
+      if (element) {
+        element.id = socket.id;
+        if (element.life === 0) rebirdElement(clients, element, internalApi);
+        internalApi.updateElementUser(element);
+      }
+      if (eventObj.path || eventObj.path === '') {
         let map;
         map = eventObj.path.replaceAll('/', '');
         if (map === '') map = maps[random(0, maps.length - 1)].name_map;
@@ -590,11 +588,17 @@ const wsServer = (httpServer, app, internalApi) => {
     socket.on('update', (args) => {
       // console.log(`socket.io | update ${socket.id} due to data: ${args}`);
       const elementEvent = JSON.parse(args);
+      const time = new Date();
+      elementEvent.updateTimestamp = time.getTime();
+      elementEvent.updateAt = time.toISOString();
       let elementIndex = elements[type].findIndex((element) => element.id === socket.id);
       if (elementIndex === -1) {
         elementIndex = elements[type].length;
         elements[type].push(elementEvent);
-      } else elements[type][elementIndex] = merge(elements[type][elementIndex], elementEvent);
+      } else {
+        elements[type][elementIndex] = merge(elements[type][elementIndex], elementEvent);
+        if (elements[type][elementIndex]._id) internalApi.updateElementUser(elements[type][elementIndex]);
+      }
       clients.map((client) => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
         if (
@@ -615,7 +619,7 @@ const wsServer = (httpServer, app, internalApi) => {
         eventElement.element = merge(clientElement, eventElement.element);
         switch (eventElement.event) {
           case 'attack':
-            attack(clients, eventElement, map, ['bot', 'user']);
+            attack(clients, eventElement, map, ['bot', 'user'], internalApi);
             break;
 
           default:
@@ -754,7 +758,8 @@ const wsServer = (httpServer, app, internalApi) => {
                 matrixCollision: botMatrixCollision,
               },
               map,
-              ['user']
+              ['user'],
+              internalApi
             );
 
             setTimeout(() => {
@@ -790,6 +795,7 @@ const wsServer = (httpServer, app, internalApi) => {
           clients.map((client) => {
             client.emit('update', JSON.stringify({ id: element.id, type, life: element.life }));
           });
+          if (type === 'user' && element._id) internalApi.updateElementUser(element);
         }
       });
     });

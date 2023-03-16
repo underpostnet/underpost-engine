@@ -1,5 +1,12 @@
 import fs from 'fs';
-import { emailValidator, passwordValidator, usernameValidator, passwordMatchValidator, renderLang } from './common.js';
+import {
+  emailValidator,
+  passwordValidator,
+  usernameValidator,
+  passwordMatchValidator,
+  renderLang,
+  merge,
+} from './common.js';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -156,12 +163,11 @@ const login = async (req, res, internalApi) => {
         process.env.SECRET,
         { expiresIn: `${process.env.EXPIRE}h` }
       );
-      const { email, username } = user;
       return res.status(200).json({
         status: 'success',
         data: {
           token,
-          element: { ...user.element, email, username },
+          element: instanceInitElementByUser(user),
           message: renderLang({ es: 'Ingreso exitosos', en: 'Success Login' }, req),
         },
       });
@@ -324,8 +330,71 @@ const authValidator = (req, res, next) => {
   }
 };
 
+const instanceInitElementByUser = (user) => {
+  const { username, email, element } = user;
+  return { ...element, _id: user.id, email, username };
+};
+
+const updateUser = (user) => {
+  const users = getUsers();
+  const indexUser = users.findIndex((_user) => _user.id === user.id);
+  if (indexUser > -1) {
+    users[indexUser] = merge(users[indexUser], user);
+    writeUsers(users);
+    return {
+      status: 'success',
+      data: {
+        message: 'user updated',
+        user: users[indexUser],
+      },
+    };
+  }
+  return {
+    status: 'error',
+    data: {
+      message: 'user not found',
+      user,
+    },
+  };
+};
+
+const getUserByToken = async (token) => {
+  const req = {};
+  await new Promise((resolve) =>
+    verifyToken(
+      req,
+      {
+        status: () => {
+          return { json: () => resolve() };
+        },
+      },
+      token,
+      () => resolve()
+    )
+  );
+  if (req.user) return req.user;
+  return false;
+};
+
+const getUserById = (id) => getUsers().find((user) => user.id === id);
+
+const updateElementUser = async (element) => {
+  const user = await getUserById(element._id);
+  if (user) {
+    user.element = element;
+    updateUser(user);
+    return true;
+  }
+  return false;
+};
+
 const authApi = (app, internalApi) => {
   internalApi.verifyToken = verifyToken;
+  internalApi.updateUser = updateUser;
+  internalApi.getUserByToken = getUserByToken;
+  internalApi.getUserById = getUserById;
+  internalApi.updateElementUser = updateElementUser;
+  internalApi.instanceInitElementByUser = instanceInitElementByUser;
   app.post(process.env.API_BASE + '/auth/register', (req, res) => register(req, res, internalApi));
   app.post(process.env.API_BASE + '/auth/login', (req, res) => login(req, res, internalApi));
   app.get(process.env.API_BASE + '/auth/validate/email/:email', (req, res) => validateEmail(req, res, internalApi));

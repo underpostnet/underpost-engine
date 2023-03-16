@@ -530,7 +530,7 @@ const renderPixiInitElement = (element) => {
       setTimeout(() => {
         if (!pixi[type][element.id]) return;
         pixi[type][element.id].nick = new PIXI.Text(
-          id.slice(0, 5).toUpperCase(),
+          element.username ? element.username : id.slice(0, 5).toUpperCase(),
           new PIXI.TextStyle({
             dropShadow: true,
             dropShadowAngle: 6.8,
