@@ -941,10 +941,7 @@ const socket = io(ioWsServerHost);
 
 socket.on('connect', () => {
   console.log(`socket.io event: connect | session id: ${socket.id}`);
-  socket.emit(
-    'init',
-    JSON.stringify(localStorage.getItem('_b') ? { token: localStorage.getItem('_b') } : { path: getURI() })
-  );
+  socket.emit('init', JSON.stringify({ token: localStorage.getItem('_b'), path: getURI() }));
 });
 
 socket.on('connect_error', (err) => {
@@ -993,6 +990,7 @@ socket.on('update', (...args) => {
       } else {
         s('session-menu').style.display = 'none';
         s('no-session-menu').style.display = 'block';
+        if (localStorage.getItem('_b')) localStorage.removeItem('_b');
       }
     }
     elements[type].push(eventElement);

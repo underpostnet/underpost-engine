@@ -547,6 +547,7 @@ const wsServer = (httpServer, app, internalApi) => {
         element.id = socket.id;
         if (element.life === 0) rebirdElement(clients, element, internalApi);
         internalApi.updateElementUser(element);
+        delete eventObj.path;
       } else if (!eventObj.path) eventObj.path = '';
 
       if (eventObj.path || eventObj.path === '') {
