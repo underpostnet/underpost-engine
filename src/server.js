@@ -32,9 +32,8 @@ wsServer(server, app, internalApi);
 
 server.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
+  if (process.env.NODE_ENV === 'prod') {
+    console.log = () => null;
+    console.warn = () => null;
+  }
 });
-
-if (process.env.NODE_ENV === 'prod') {
-  console.log = () => null;
-  console.warn = () => null;
-}
