@@ -2,30 +2,31 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import express from 'express';
 
-import { commonFunctions } from './common.js';
-import { copyDir, deleteFolderRecursive } from './files.js';
-import { baseCss } from './css.js';
-import { ssrColor } from './colors.js';
+import { commonFunctions, JSONweb } from '../../core/modules/common.js';
+import { copyDir, deleteFolderRecursive } from '../../core/modules/files.js';
+import { baseCss } from '../../core/modules/css.js';
+import { ssrColor } from '../../core/modules/colors.js';
+
 import { ssrWS } from './ws-server.js';
 import { maps } from './maps.js';
 
 dotenv.config();
 
-const appName = 'CYBERIA';
-
-const JSONweb = (data) => 'JSON.parse(`' + JSON.stringify(data) + '`)';
+const NAME_APP = 'cyberia';
 
 const renderInstanceTitle = (pathObj) =>
-  `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${pathObj.name_map === '' ? '' : ' | '}${appName}`;
+  `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${
+    pathObj.name_map === '' ? '' : ' | '
+  }${NAME_APP.toUpperCase()}`;
 
 const httpClient = (app) => {
-  const dir = './public';
+  const dir = './public/' + NAME_APP;
 
   deleteFolderRecursive(`${dir}`);
   copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
   copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
   copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
-  copyDir('./src/assets', `${dir}`);
+  copyDir(`./src/${NAME_APP}/assets`, `${dir}`);
 
   maps.map((pathObj) => {
     let path = pathObj.name_map;
@@ -50,10 +51,10 @@ const httpClient = (app) => {
             </head>
             <body>
                 <script>
-                  const appName = '${appName}';
+                  const NAME_APP = '${NAME_APP}';
                   const API_BASE = '${process.env.API_BASE}';
                   ${commonFunctions()}
-                  ${fs.readFileSync('./src/vanilla.js', 'utf8')}
+                  ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
                   const renderInstanceTitle = ${renderInstanceTitle};
                   ${ssrColor({ JSONweb: JSONweb })}
                   ${ssrWS({ JSONweb: JSONweb })}
@@ -61,9 +62,9 @@ const httpClient = (app) => {
                     console.log = () => null;
                     console.warn = () => null;
                   }
-                  ${fs.readFileSync('./src/create-account.js', 'utf8')}
-                  ${fs.readFileSync('./src/login.js', 'utf8')}
-                  ${fs.readFileSync('./src/client.js', 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/create-account.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/login.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/client.js`, 'utf8')}
                 </script>
             </body>
             </html>  

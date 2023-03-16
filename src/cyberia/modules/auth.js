@@ -6,7 +6,7 @@ import {
   passwordMatchValidator,
   renderLang,
   merge,
-} from './common.js';
+} from '../../core/modules/common.js';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';

@@ -12,7 +12,7 @@ import {
   newInstance,
   getDirection,
   reOrderIntArray,
-} from './common.js';
+} from '../../core/modules/common.js';
 import { maps } from './maps.js';
 
 dotenv.config();

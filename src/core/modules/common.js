@@ -350,6 +350,8 @@ const ceil10 = (value, exp) => {
 // ceil10(-55.59, -1);   // -55.5
 // ceil10(-59, 1);       // -50
 
+const JSONweb = (data) => 'JSON.parse(`' + JSON.stringify(data) + '`)';
+
 const commonFunctions = () => `
     const getHash = ${getHash};
     const s4 = ${s4};
@@ -382,6 +384,7 @@ const commonFunctions = () => `
     const usernameValidator = ${usernameValidator};
     const renderLang = ${renderLang};
     const passwordMatchValidator = ${passwordMatchValidator};
+    const JSONweb = ${JSONweb};
     ${merge};
 `;
 
@@ -417,4 +420,5 @@ export {
   merge,
   passwordMatchValidator,
   renderLang,
+  JSONweb,
 };
