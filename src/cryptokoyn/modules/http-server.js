@@ -15,7 +15,6 @@ const httpClient = (app) => {
   const path = '';
 
   deleteFolderRecursive(`${dir}`);
-  copyDir(`./bower_components/crypto-js`, `${dir}/crypto-js`);
   copyDir(`./src/${NAME_APP}/assets`, `${dir}`);
 
   // let path = pathObj.name_map;
@@ -33,7 +32,6 @@ const httpClient = (app) => {
               <title>${NAME_APP}</title>
               <link rel='icon' type='image/x-icon' href='/favicon.ico'>
               <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-              <script type="text/javascript" src="/crypto-js/crypto-js.js"></script>
               <style>${baseCss}</style>
           </head>
           <body>

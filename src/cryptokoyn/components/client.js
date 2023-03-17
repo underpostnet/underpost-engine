@@ -45,8 +45,25 @@ append(
 
             ${banner()}
             <div class='in container'>
-                test
+                <form>
+                    
+                    <label class='create-key-label-password'></label>
+                    <input type='password' class='create-key-input-password'>
+                    <div class='create-key-warn-password'></div>
+
+                    <button type='submit' class='create-key-submit-btn'>${renderLang({
+                      es: 'Crear Llaves',
+                      en: 'Create key',
+                    })}</button>
+
+                </form>
+                <pre class='in public-key-display'></pre>
+                <pre class='in private-key-display'></pre>
             </div>
 
 `
 );
+
+s('.create-key-submit-btn').onclick = (e) => {
+  e.preventDefault();
+};
