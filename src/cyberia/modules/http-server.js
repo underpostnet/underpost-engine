@@ -47,7 +47,10 @@ const httpClient = (app) => {
                 <script src="/socket.io/socket.io.js"></script>
                 <script src="/pixi.js/pixi.js"></script>
                 <script src="/pathfinding/pathfinding-browser.min.js"></script>
-                <style>${baseCss}</style>
+                <style>
+                  ${baseCss}
+                  ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
+                </style>
             </head>
             <body>
                 <script>
@@ -56,8 +59,8 @@ const httpClient = (app) => {
                   ${commonFunctions()}
                   ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
                   const renderInstanceTitle = ${renderInstanceTitle};
-                  ${ssrColor({ JSONweb: JSONweb })}
-                  ${ssrWS({ JSONweb: JSONweb })}
+                  ${ssrColor}
+                  ${ssrWS}
                   if (!dev) {
                     console.log = () => null;
                     console.warn = () => null;

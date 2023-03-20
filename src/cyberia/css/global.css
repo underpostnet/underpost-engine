@@ -1,0 +1,155 @@
+@font-face {
+    font-family: 'retro-font';
+    src: URL('/fonts/PressStart2P.ttf') format('truetype');
+}
+
+body {
+    background: black;
+    color: white;
+    padding: 0px;
+    margin: 0px;
+    cursor: url('/cursors/black-default.png') -30 -30, auto;
+    font-family: 'retro-font';
+}
+
+input {
+    outline: none !important;
+    border: none;
+    padding: 10px;
+    font-size: 13px;
+    font-family: 'retro-font';
+}
+
+hr {
+    border: 5px solid white;
+}
+
+sub-content-gui {
+    padding: 10px;
+}
+
+canvas {
+    margin: auto;
+    display: block;
+    position: relative;
+}
+
+.custom-cursor {
+    cursor: url('/cursors/black-pointer.png') -30 -30, auto !important;
+}
+
+touch-layer {
+    overflow: hidden;
+}
+
+gui-layer {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+main-menu {
+    background: black;
+    border: 4px solid yellow;
+    width: 300px;
+    height: 80px;
+    padding: 5px;
+    text-align: right;
+}
+
+menu-button {
+    width: 60px;
+    height: 40px;
+    background: black;
+    font-size: 8px;
+    border: 4px solid yellow;
+    color: yellow;
+}
+
+menu-button:hover {
+    border: 4px solid white;
+    color: white;
+}
+
+loader {
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background: black;
+}
+
+.close-menu,
+.open-menu,
+.close-gui {
+    border: 4px solid yellow;
+    width: 40px;
+    height: 40px;
+    background: black;
+}
+
+.close-gui {
+    top: 10px;
+    right: 10px;
+    left: auto;
+}
+
+.hover-button:hover {
+    border: 4px solid white;
+}
+
+.icons-menu {
+    width: 20px;
+    height: 20px;
+}
+
+button {
+    background: black;
+    border: 4px solid yellow;
+    padding: 10px;
+    color: yellow;
+    font-family: 'retro-font';
+}
+
+button:hover {
+    border: 4px solid white;
+    color: white;
+}
+
+form {
+    margin-top: 70px;
+}
+
+input-warn {
+    color: red;
+    font-size: 10px;
+    padding: 4px;
+    height: 12px;
+}
+
+label {
+    color: yellow;
+    font-size: 10px;
+    padding: 4px;
+    height: 12px;
+}
+
+.points-gif-loading {
+    width: 30px;
+    height: 30px;
+    top: 14px;
+    left: -15px;
+}
+
+.content-loading-btn {
+    height: 50px;
+    width: 200px;
+}
+
+.content-warn-server {
+    padding: 5px;
+    margin: 5px;
+}
+
+.cyberia-logo {
+    width: 35px;
+    height: 35px;
+}

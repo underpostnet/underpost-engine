@@ -12,6 +12,7 @@ import {
   newInstance,
   getDirection,
   reOrderIntArray,
+  JSONweb,
 } from '../../core/modules/common.js';
 import { maps } from './maps.js';
 
@@ -301,7 +302,7 @@ const getMissileDirection = (positionType, direction) => {
   });
 })();
 
-const ssrWS = (util) => `
+const ssrWS = `
     const typeModels = ${typeModels};
     const maxRangeMapParam = ${maxRangeMapParam};
     const maxRangeMap = ${maxRangeMap};
@@ -315,8 +316,8 @@ const ssrWS = (util) => `
     const allowDiagonal = ${allowDiagonal};
     const dontCrossCorners = ${dontCrossCorners};
     const updateTimeInterval = ${updateTimeInterval};
-    const spriteDirs = ${util.JSONweb(spriteDirs)};
-    const directions = ${util.JSONweb(directions)};
+    const spriteDirs = ${JSONweb(spriteDirs)};
+    const directions = ${JSONweb(directions)};
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
     const ioWsServerHost = '${ioWsServerHost}';
