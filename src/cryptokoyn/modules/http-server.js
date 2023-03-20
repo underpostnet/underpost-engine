@@ -33,7 +33,10 @@ const httpClient = (app) => {
               <title>${NAME_APP}</title>
               <link rel='icon' type='image/x-icon' href='/favicon.ico'>
               <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-              <style>${baseCss}</style>
+              <style>
+                ${baseCss}
+                ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
+              </style>
           </head>
           <body>
               <script>
