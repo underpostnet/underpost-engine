@@ -16,7 +16,7 @@ const createAccount = () => {
       htmls('.create-account-warn-server', '');
     };
     let validEmail = false;
-    const checkEmail = async (options) => {
+    const checkEmail = async () => {
       const value = s('.create-account-input-email').value;
       const result = emailValidator(value);
       console.log('checkEmail', result);
@@ -43,7 +43,7 @@ const createAccount = () => {
     s('.create-account-input-email').oninput = checkEmail;
 
     let validUsername = false;
-    const checkUsername = async (options) => {
+    const checkUsername = async () => {
       const value = s('.create-account-input-username').value;
       const result = usernameValidator(value);
       console.log('checkUsername', result);

@@ -2,9 +2,10 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import express from 'express';
 
-import { commonFunctions } from '../../core/modules/common.js';
+import { commonFunctions, JSONweb } from '../../core/modules/common.js';
 import { copyDir, deleteFolderRecursive } from '../../core/modules/files.js';
 import { baseCss } from '../../core/modules/css.js';
+import { keyConfig, keyType } from './keys.js';
 
 dotenv.config();
 
@@ -37,6 +38,9 @@ const httpClient = (app) => {
           <body>
               <script>
                 ${commonFunctions()}
+                const keyType = ${JSONweb(keyType)};
+                const keyConfig = ${JSONweb(keyConfig(''))};
+                const API_BASE = '${process.env.API_BASE}';
                 ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
                 ${fs.readFileSync(`./src/${NAME_APP}/components/client.js`, 'utf8')}
               </script>
