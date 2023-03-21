@@ -36,13 +36,14 @@ const httpClient = (app) => {
               <style>
                 ${baseCss}
                 ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
+                ${fs.readFileSync(`./src/${NAME_APP}/css/spinner.css`, 'utf8')}
               </style>
           </head>
           <body>
               <script>
                 ${commonFunctions()}
                 const keyType = ${JSONweb(keyType)};
-                const keyConfig = ${JSONweb(keyConfig(''))};
+                const keyConfig = ${keyConfig};
                 const API_BASE = '${process.env.API_BASE}';
                 ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
                 ${fs.readFileSync(`./src/${NAME_APP}/components/client.js`, 'utf8')}
