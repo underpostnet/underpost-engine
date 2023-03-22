@@ -67,6 +67,7 @@ append(
     <gui-layer class='abs' style='display: none'>
         ${createAccount()}
         ${logIn()}
+        ${bag()}
         <div class='abs close-gui custom-cursor hover-button'>
             <div class='abs center'>
                 <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -109,6 +110,14 @@ append(
         </menu-button>
       </session-menu>
 
+      <common-menu>            
+          <menu-button class='inl custom-cursor btn-bag'>
+            <div class='abs center'>
+              ${renderLang({ es: 'Mochila', en: 'Bag' })}
+            </div>
+          </menu-button>
+      </common-menu>
+
     </main-menu>
  
 
@@ -137,10 +146,17 @@ s('.btn-login').onclick = () => {
   s('login').style.display = 'block';
 };
 
+s('.btn-bag').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('bag').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
   s('login').style.display = 'none';
+  s('bag').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {
