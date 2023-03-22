@@ -4,7 +4,6 @@ import express from 'express';
 
 import { commonFunctions, JSONweb } from '../../core/modules/common.js';
 import { copyDir, deleteFolderRecursive } from '../../core/modules/files.js';
-import { baseCss } from '../../core/modules/css.js';
 import { keyConfig, keyType } from './keys.js';
 
 dotenv.config();
@@ -34,7 +33,7 @@ const httpClient = (app) => {
               <link rel='icon' type='image/x-icon' href='/favicon.ico'>
               <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
               <style>
-                ${baseCss}
+                ${fs.readFileSync(`./src/core/css/base.css`, 'utf8')}
                 ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
                 ${fs.readFileSync(`./src/${NAME_APP}/css/spinner.css`, 'utf8')}
               </style>

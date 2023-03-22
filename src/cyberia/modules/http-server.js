@@ -4,7 +4,6 @@ import express from 'express';
 
 import { commonFunctions, JSONweb } from '../../core/modules/common.js';
 import { copyDir, deleteFolderRecursive } from '../../core/modules/files.js';
-import { baseCss } from '../../core/modules/css.js';
 import { ssrColor } from '../../core/modules/colors.js';
 
 import { ssrWS } from './ws-server.js';
@@ -48,7 +47,7 @@ const httpClient = (app) => {
                 <script src="/pixi.js/pixi.js"></script>
                 <script src="/pathfinding/pathfinding-browser.min.js"></script>
                 <style>
-                  ${baseCss}
+                  ${fs.readFileSync(`./src/core/css/base.css`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
                 </style>
             </head>
