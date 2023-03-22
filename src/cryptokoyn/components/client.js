@@ -36,7 +36,7 @@ const renderNotification = (status, message) => {
           </span>
           <br>
           <br>
-          <span style='font-size: 10px'>
+          <span style='font-size: 20px'>
             ${message}
           </span>
       </div>
@@ -56,7 +56,14 @@ append(
             ${banner()}
 
             <div class='in container'>
-                <h1> ${renderLang({ es: 'Crear Llaves', en: 'Create Keys' })} </h1>
+                ${renderLang({
+                  en: 'Cyberia On-Line Asymmetric Key Manager',
+                  es: 'Gestor de Llaves asimetrícas de Cyberia On-Line',
+                })}
+            </div>
+
+            <div class='in container'>
+                <span class='section-title'> ${renderLang({ es: 'Crear Llaves RSA', en: 'Create RSA Keys' })} </span>
                 <form>
                   <div class='in spinner-content' style='display: none'>
                           ${renderSpinner()}
@@ -84,13 +91,30 @@ append(
 
                     <div class='in warn-input create-key-warn-server'></div>
 
-                    <div class='in'>
-                        <pre class='view-config-content'></pre> 
+                    <div class='in view-config-content' style='display: none'>
+                      <span class='section-title'>
+                        ${renderLang({ es: 'Configuración:', en: 'Configuration:' })}
+                      </span>
+                      <br><br>
+                        <pre class='in code-background'>
+                           ${keyType.toUpperCase() + ' - ' + JSON.stringify(keyConfig(), null, 4)}
+                        </pre> 
                     </div>
 
                 </form>
                 <create-keys-result></create-keys-result>
             </div>
+            <footer class="fl container">
+                <div class="in flr">
+                    <a target="_top" href="https://github.com/underpostnet/underpost-engine"> 
+                    <img src="/icons/github.png" class="inl" style="width: 20px; top: 5px"> 
+                    </a>                      
+                </div>   
+                <div class="in fll">
+                    <img class="inl" style="width: 20px; top: 3px" src="/icons/dogmadual.ico" alt="DOGMADUAL">
+                    <a target="_top" href="https://www.dogmadual.com/">DOGMADUAL.com</a>
+                </div>     
+            </footer>
 
 `
 );
@@ -127,6 +151,8 @@ s('.create-key-input-password').oninput = checkPassword;
 
 s('.create-key-submit-btn').onclick = async (e) => {
   htmls('create-keys-result', '');
+  openConfig = true;
+  s('.config-key-btn').click();
   s('.create-keys-form-btns').style.display = 'none';
   s('.spinner-content').style.display = 'block';
   e.preventDefault();
@@ -154,13 +180,16 @@ s('.create-key-submit-btn').onclick = async (e) => {
       htmls(
         'create-keys-result',
         `
-        <b style='color: yellow'> SHA256_HEX_PUBLIC_KEY: </b>
+        <br>
+        <span class='section-title'> SHA256_HEX_PUBLIC_KEY: </span>
         <br><br>
-          ${SHA256_HEX_PUBLIC_KEY} 
+        <pre class='in code-background'>
+            ${SHA256_HEX_PUBLIC_KEY}
+        </pre> 
+        <br>
+        <span class='section-title'> PUBLIC PEM: </span>
         <br><br>
-        <b style='color: yellow'> PUBLIC PEM: </b>
-        <br><br>
-        <pre>
+        <pre class='in code-background'>
           ${publicKey}
         </pre>
     `
@@ -178,7 +207,7 @@ s('.config-key-btn').onclick = (e) => {
   e.preventDefault();
   if (!openConfig) {
     openConfig = true;
-    htmls('.view-config-content', ' type: ' + keyType + '\n\n' + JSON.stringify(keyConfig(), null, 4));
+    s('.view-config-content').style.display = 'block';
     htmls(
       '.config-key-btn',
       renderLang({
@@ -188,7 +217,7 @@ s('.config-key-btn').onclick = (e) => {
     );
   } else {
     openConfig = false;
-    htmls('.view-config-content', '');
+    s('.view-config-content').style.display = 'none';
     htmls(
       '.config-key-btn',
       renderLang({
