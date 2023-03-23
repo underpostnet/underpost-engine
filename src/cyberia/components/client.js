@@ -882,6 +882,7 @@ socket.on('update', (...args) => {
     return renderPixiEventElement(elements[type][elementIndex]);
   }
   if (eventElement.id === socket.id && eventElement.map) {
+    // console.log('init main user', JSON.stringify(eventElement, null, 4));
     userPositionAvailablePoints = getAvailablePoints('user', ['building'], eventElement.map);
     userMatrixCollision = getMatrixCollision('user', ['building'], eventElement.map);
     console.log('userMatrixCollision', JSONmatrix(userMatrixCollision));

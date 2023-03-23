@@ -570,7 +570,7 @@ const wsServer = (httpServer, app, internalApi) => {
       }
       let element = undefined;
       if (eventObj.element) {
-        element = eventObj.element;
+        element = validateSchemeElement(eventObj.element);
       } else if (eventObj.token) {
         const user = await internalApi.getUserByToken(eventObj.token);
         // console.log('set user token', user);
