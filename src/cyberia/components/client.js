@@ -789,6 +789,10 @@ const renderPixiEventElement = (element) => {
         }, 500);
       })();
     }
+    const porLife = (element.life / element.maxLife) * 100;
+    if (porLife <= 20) pixi[type][element.id].barLife.tint = numberColors['crimson red'];
+    else if (porLife <= 50) pixi[type][element.id].barLife.tint = numberColors['citrine'];
+    else pixi[type][element.id].barLife.tint = numberColors['green-yellow'];
     pixi[type][element.id].barLife.width = newLife;
   }
 
