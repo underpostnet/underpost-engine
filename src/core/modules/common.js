@@ -352,6 +352,15 @@ const ceil10 = (value, exp) => {
 
 const JSONweb = (data) => 'JSON.parse(`' + JSON.stringify(data) + '`)';
 
+function objectEquals(x, y) {
+  const ok = Object.keys,
+    tx = typeof x,
+    ty = typeof y;
+  return x && y && tx === 'object' && tx === ty
+    ? ok(x).length === ok(y).length && ok(x).every((key) => objectEquals(x[key], y[key]))
+    : x === y;
+}
+
 const commonFunctions = () => `
     const getHash = ${getHash};
     const s4 = ${s4};
@@ -386,6 +395,7 @@ const commonFunctions = () => `
     const passwordMatchValidator = ${passwordMatchValidator};
     const JSONweb = ${JSONweb};
     ${merge};
+    ${objectEquals};
 `;
 
 export {
@@ -421,4 +431,5 @@ export {
   passwordMatchValidator,
   renderLang,
   JSONweb,
+  objectEquals,
 };

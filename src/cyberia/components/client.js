@@ -225,8 +225,10 @@ const renderIndicatorLife = (container, element, dim, type) => {
 
 const renderIndicatorDiffLife = (container, element, dim, type) => {
   if (!params[type][element.id]) return;
-  const diffLife = element.life - params[type][element.id].lastLife;
+  let diffLife = element.life - params[type][element.id].lastLife;
   if (diffLife === 0) return;
+  if (diffLife > 0) diffLife = '+' + diffLife;
+  diffLife = diffLife + ' ♥';
   pixi[type][element.id].diffLifeIndicator = new PIXI.Text(
     `${diffLife}`,
     new PIXI.TextStyle({
@@ -235,7 +237,7 @@ const renderIndicatorDiffLife = (container, element, dim, type) => {
       // dropShadowBlur: 3,
       // dropShadowDistance: 2,
       // dropShadowColor: 'black',
-      fill: diffLife < 0 ? '#FE2712' : '#7FFF00',
+      fill: diffLife[0] !== '+' ? '#FE2712' : '#7FFF00',
       fontFamily: 'retro-font', // Impact
       fontSize: 12,
       align: 'center',
@@ -249,8 +251,8 @@ const renderIndicatorDiffLife = (container, element, dim, type) => {
   const padding = 8;
   diffTextBackground.x = (-1 * dim) / padding;
   diffTextBackground.y = (-1 * dim) / padding;
-  diffTextBackground.width = (dim / 3) * `${diffLife}`.length + dim / padding;
-  diffTextBackground.height = dim / 3 + dim / padding;
+  diffTextBackground.width = (dim / 4) * `${diffLife}`.length + dim / padding + 10;
+  diffTextBackground.height = dim / 4 + dim / padding;
   diffTextBackground.tint = numberColors['black'];
 
   pixi[type][element.id].containerDiffLifeIndicator = new PIXI.Container();
@@ -430,6 +432,26 @@ const renderPixiInitElement = (element) => {
         renderIndicatorDiffLife(container, element, dim, type);
         params[type][element.id].lastLife = newInstance(element.life);
       }, params[type][element.id].intervalDiffLifeDisplay);
+    }
+
+    if (
+      typeModels()[type].components().includes('koyn-indicator') &&
+      element.koyn !== undefined &&
+      element.id === socket.id
+    ) {
+      params[type][element.id].lastKoyn = newInstance(element.koyn);
+      params[type][element.id].intervalDiffKoynDisplay = 500;
+      htmls('.bag-koyn-indicator', element.koyn);
+      if (hashIntervals[element.id][`diff-koyn-indicator`])
+        clearInterval(hashIntervals[element.id][`diff-koyn-indicator`]);
+      hashIntervals[element.id][`diff-koyn-indicator`] = setInterval(() => {
+        if (!params[type][element.id] || params[type][element.id].lastKoyn === undefined) return;
+        if (element.koyn !== params[type][element.id].lastKoyn) {
+          renderKoynNotification(`+${element.koyn - params[type][element.id].lastKoyn}`);
+          htmls('.bag-koyn-indicator', element.koyn);
+          params[type][element.id].lastKoyn = newInstance(element.koyn);
+        }
+      }, params[type][element.id].intervalDiffKoynDisplay);
     }
 
     range(0, 10).map((timeAttemp) =>

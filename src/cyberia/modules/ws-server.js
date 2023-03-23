@@ -98,12 +98,18 @@ const typeModels = () => {
     },
     user: {
       color: () => 'cornell red',
-      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator'],
+      components: () => ['sprites', 'bar-life', 'id', 'blood', 'life-indicator', 'koyn-indicator'],
       render: () => {
         return {
           dim: () => 1,
         };
       },
+      life: () => 100,
+      maxLife: () => 100,
+      attackValue: () => 20,
+      passiveHealValue: () => 10,
+      sprite: () => 'anon',
+      koyn: () => 0,
     },
     bullet: {
       color: () => 'venetian red',
@@ -324,6 +330,14 @@ const ssrWS = `
     const dev = ${process.env.NODE_ENV === 'dev'};
 `;
 
+const validateSchemeElement = (element) => {
+  const forcesAttr = ['components'];
+  Object.keys(typeModels()[element.type]).map((key) => {
+    if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
+  });
+  return element;
+};
+
 const rebirdElement = (clients, element, internalApi) => {
   setTimeout(() => {
     if (!elements[element.type].find((_element) => _element.id === element.id)) return;
@@ -333,7 +347,6 @@ const rebirdElement = (clients, element, internalApi) => {
       if (clientIndex > -1 && elements['user'][clientIndex].map === element.map)
         client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
     });
-    if (element._id) internalApi.updateElementUser(element);
   }, 3000);
 };
 
@@ -388,6 +401,27 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
             element.life = element.life - eventElement.element.attackValue;
             if (element.life <= 0) {
               element.life = 0;
+              if (element.dropKoyn !== undefined && eventElement.element.koyn !== undefined) {
+                const elementFromIndex = elements[eventElement.element.type].findIndex(
+                  (element) => eventElement.element.id === element.id
+                );
+                if (elementFromIndex > -1) {
+                  elements[eventElement.element.type][elementFromIndex].koyn += element.dropKoyn;
+
+                  const emitKoyn = {
+                    id: eventElement.element.id,
+                    type: eventElement.element.type,
+                    koyn: elements[eventElement.element.type][elementFromIndex].koyn,
+                  };
+
+                  clients.map((client) => {
+                    const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                    if (clientIndex > -1 && elements['user'][clientIndex].map === map) {
+                      client.emit('update', JSON.stringify(emitKoyn));
+                    }
+                  });
+                }
+              }
               rebirdElement(clients, element, internalApi);
             }
             clients.map((client) => {
@@ -395,7 +429,6 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
               if (clientIndex > -1 && elements['user'][clientIndex].map === map)
                 client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
             });
-            if (element.type === 'user' && element._id) internalApi.updateElementUser(element);
           }
         })
       );
@@ -541,13 +574,12 @@ const wsServer = (httpServer, app, internalApi) => {
       } else if (eventObj.token) {
         const user = await internalApi.getUserByToken(eventObj.token);
         // console.log('set user token', user);
-        if (user) element = internalApi.instanceInitElementByUser(user);
+        if (user) element = validateSchemeElement(internalApi.instanceInitElementByUser(user));
       }
 
       if (element) {
         element.id = socket.id;
         if (element.life === 0) rebirdElement(clients, element, internalApi);
-        internalApi.updateElementUser(element);
         delete eventObj.path;
       } else if (!eventObj.path) eventObj.path = '';
 
@@ -558,22 +590,17 @@ const wsServer = (httpServer, app, internalApi) => {
         const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
         const { color, render } = getParamsType(type);
         const { dim } = render;
-        element = {
+        element = validateSchemeElement({
           id: socket.id,
           type,
           color,
           map,
-          life: 100,
-          maxLife: 100,
-          attackValue: 20,
-          passiveHealValue: 10,
-          sprite: 'anon',
           render: {
             x,
             y,
             dim,
           },
-        };
+        });
       }
       const map = element.map;
       getAllElements().map((element) => {
@@ -604,7 +631,6 @@ const wsServer = (httpServer, app, internalApi) => {
         elements[type].push(elementEvent);
       } else {
         elements[type][elementIndex] = merge(elements[type][elementIndex], elementEvent);
-        if (elements[type][elementIndex]._id) internalApi.updateElementUser(elements[type][elementIndex]);
       }
       clients.map((client) => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
@@ -693,6 +719,7 @@ const wsServer = (httpServer, app, internalApi) => {
           maxLife: 100,
           attackValue: 5,
           passiveHealValue: 10,
+          dropKoyn: random(1, 10),
           render: {
             x: point[0],
             y: point[1],
@@ -802,11 +829,18 @@ const wsServer = (httpServer, app, internalApi) => {
           clients.map((client) => {
             client.emit('update', JSON.stringify({ id: element.id, type, life: element.life }));
           });
-          if (type === 'user' && element._id) internalApi.updateElementUser(element);
         }
       });
     });
   }, 1000);
+
+  setInterval(() => {
+    ['user'].map((type) => {
+      elements[type].map((element) => {
+        if (element._id) internalApi.updateElementUser(element);
+      });
+    });
+  }, 500);
 };
 
 export { wsServer, ssrWS };
