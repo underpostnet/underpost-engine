@@ -53,6 +53,10 @@ append(
         ${borderChar(1, 'black')}
       }
 
+      .title-section {
+        ${borderChar(2, 'yellow')}
+      }
+
     </style>
     <style class='canvas-dim'></style>
 
@@ -985,6 +989,14 @@ setInterval(() => {
         top: 10px;
         left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2 + 10}px;
       }
+      .grid-content {
+        height: ${window.innerHeight * 0.5}px;
+      }
+      
+      .grid-cell {
+        width: ${(screenDim.minValue * 0.8) / 6}px;
+        height:  ${(screenDim.minValue * 0.8) / 6}px;
+      }
     `
     );
   }
@@ -1245,3 +1257,5 @@ setInterval(() => {
     // }
   }
 }, updateTimeInterval);
+
+disableOptionsClick('html', ['menu', 'drag', 'select']);

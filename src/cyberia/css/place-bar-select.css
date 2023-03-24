@@ -1,0 +1,77 @@
+/*
+
+  placeholder
+
+*/
+
+::placeholder {
+    color: black;
+    opacity: 1;
+    /* Firefox */
+    background: none;
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: black;
+    background: none;
+}
+
+::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: black;
+    background: none;
+}
+
+/*
+  
+    selection
+  
+  */
+
+::-moz-selection {
+    /* Code for Firefox */
+    color: black;
+    background: yellow;
+}
+
+::selection {
+    color: black;
+    background: yellow;
+}
+
+
+/*
+  
+    scrollbar
+  
+  Hide scrollbar for Chrome, Safari and Opera
+  [TAG]::-webkit-scrollbar {
+    display: none;
+  }
+  Hide scrollbar for IE, Edge and Firefox
+  [TAG] {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+  }
+  
+  */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

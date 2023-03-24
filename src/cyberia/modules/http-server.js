@@ -49,6 +49,7 @@ const httpClient = (app) => {
                 <style>
                   ${fs.readFileSync(`./src/core/css/base.css`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/css/place-bar-select.css`, 'utf8')}
                 </style>
             </head>
             <body>

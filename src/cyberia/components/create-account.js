@@ -190,8 +190,8 @@ const createAccount = () => {
           autocomplete="username"
       -->
   
-          ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
-        <hr>
+      <div class='in title-section'> ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })} </div>
+       
         <label class='in create-account-label-username'></label>
         <input type='text' class='create-account-input-username' placeholder='${renderLang({
           es: 'Nombre de usuario',

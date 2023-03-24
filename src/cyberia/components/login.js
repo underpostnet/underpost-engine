@@ -111,9 +111,7 @@ const logIn = () => {
                     autocomplete="username"
                 -->
 
-                    ${renderLang({ es: 'Ingresar', en: 'Login' })}
-                <hr>
-            
+                <div class='in title-section'>   ${renderLang({ es: 'Ingresar', en: 'Login' })} </div>
                 
                 <label class='in login-label-email'></label>
                 <input type='email' class='login-input-email' placeholder='${renderLang({
