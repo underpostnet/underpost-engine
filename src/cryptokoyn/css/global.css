@@ -45,8 +45,6 @@ button:hover {
 }
 
 input {
-    outline: none !important;
-    border: none;
     padding: 10px;
     font-size: 20px;
 }

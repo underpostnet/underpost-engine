@@ -69,3 +69,8 @@ row {
 .g-sb {
     justify-content: space-between;
 }
+
+input {
+    outline: none !important;
+    border: none;
+}

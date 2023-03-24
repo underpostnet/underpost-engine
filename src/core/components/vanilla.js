@@ -50,6 +50,7 @@ const copyData = (data) =>
 const pasteData = () => new Promise((resolve) => navigator.clipboard.readText().then((clipText) => resolve(clipText)));
 
 const renderMediaQuery = (mediaData) => {
+  //  first limit should be '0'
   return /*html*/ `
     <style>
         ${mediaData
