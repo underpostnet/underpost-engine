@@ -4,19 +4,25 @@ const bag = () => {
     () => renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
   ];
   setTimeout(() => {
-    range(1, 8).map((i) => {
+    let indexCell = 0;
+    range(0, 2).map((iRow) => {
       append(
         '.grid-bag',
         /*html*/ `
-        <div class='inl grid-cell custom-cursor'>
-             ${i}
-            <div class='abs center'>
-                ${defaultContent[i - 1] ? defaultContent[i - 1]() : ''}
-            </div>
-        </div>   
-        ${i % 4 === 0 && i - 1 !== 0 ? '<br>' : ''}   
+       <div class='in grid-row-${iRow}'></div>    
       `
       );
+      range(0, 3).map((iCell) => {
+        append(
+          `.grid-row-${iRow}`,
+          /*html*/ `
+        <div class="inl grid-cell custom-cursor">
+          <div class="abs center">${defaultContent[indexCell] ? defaultContent[indexCell]() : ''}</div>
+        </div>
+        `
+        );
+        indexCell++;
+      });
     });
   });
   return /*html*/ `
