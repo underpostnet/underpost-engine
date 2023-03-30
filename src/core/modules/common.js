@@ -51,25 +51,25 @@ const passwordValidator = (str, req) => {
 
   if (str.length < 8) {
     validate = false;
-    msg += ` > ${renderLang({ en: '8 char Length', es: '8 caracteres' }, req)}`;
+    msg += ` - ${renderLang({ en: '8 char Length', es: '8 caracteres' }, req)}`;
   }
 
   regex = /^(?=.*[a-z]).+$/;
   if (!regex.test(str)) {
     validate = false;
-    msg += ` > ${renderLang({ en: 'lowercase', es: 'una minuscula' }, req)}`;
+    msg += ` - ${renderLang({ en: 'lowercase', es: 'una minuscula' }, req)}`;
   }
 
   regex = /^(?=.*[A-Z]).+$/;
   if (!regex.test(str)) {
     validate = false;
-    msg += ` > ${renderLang({ en: 'uppercase', es: 'una mayuscula' }, req)}`;
+    msg += ` - ${renderLang({ en: 'uppercase', es: 'una mayuscula' }, req)}`;
   }
 
   regex = /^(?=.*[0-9_\W]).+$/;
   if (!regex.test(str)) {
     validate = false;
-    msg += ` > ${renderLang({ en: 'number or special', es: 'numero o caracter especial' }, req)}`;
+    msg += ` - ${renderLang({ en: 'number or special', es: 'numero o caracter especial' }, req)}`;
   }
 
   return {
@@ -87,7 +87,7 @@ const emailValidator = (str, req) => {
   }
   const validate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,8})+$/.test(str);
   return {
-    msg: validate ? '' : ` > ${renderLang({ en: 'invalid email', es: 'email invalido' }, req)}`,
+    msg: validate ? '' : ` - ${renderLang({ en: 'invalid email', es: 'email invalido' }, req)}`,
     validate,
   };
 };
@@ -102,7 +102,7 @@ const usernameValidator = (str, req) => {
   const minChars = 4;
   const validate = str.length >= minChars;
   return {
-    msg: validate ? '' : ` > ${renderLang({ en: minChars + ' char Length', es: minChars + ' caracteres' }, req)}`,
+    msg: validate ? '' : ` - ${renderLang({ en: minChars + ' char Length', es: minChars + ' caracteres' }, req)}`,
     validate,
   };
 };
@@ -116,7 +116,7 @@ const passwordMatchValidator = (str1, str2, req) => {
   }
   const validate = str1 === str2;
   return {
-    msg: validate ? '' : ` > ${renderLang({ en: 'Password does not match', es: 'Las contraseñas no coinciden' }, req)}`,
+    msg: validate ? '' : ` - ${renderLang({ en: 'Password does not match', es: 'Las contraseñas no coinciden' }, req)}`,
     validate,
   };
 };

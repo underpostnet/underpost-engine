@@ -803,7 +803,10 @@ const renderPixiEventElement = (element) => {
   if (direction !== undefined) params[type][element.id].direction = direction;
   if (typeModels()[type].components().includes('life-indicator')) renderIndicatorLife(container, element, dim, type); // .text = 'new text';
   // change position animation
-  const frames = 6;
+  // 100 -> 6
+  // 100*vel -> x
+  const intervalFrameTimeAnimation = updateTimeInterval * (element.velFactor ? element.velFactor : 1);
+  const frames = parseInt((intervalFrameTimeAnimation * 6) / 100);
   const intervalChangeX = Math.abs(x - container.x) / frames;
   const intervalChangeY = Math.abs(y - container.y) / frames;
   range(0, frames - 1).map((frameTime) => {
@@ -835,7 +838,7 @@ const renderPixiEventElement = (element) => {
           newMainUserInstance(eventElement);
         }
       }
-    }, frameTime * (updateTimeInterval / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
+    }, frameTime * (intervalFrameTimeAnimation / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
   });
 };
 const removePixiElement = (element) => {

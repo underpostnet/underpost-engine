@@ -694,20 +694,38 @@ const wsServer = (httpServer, app, internalApi) => {
   });
 
   // bots controller
+  const mapBots = [
+    {
+      map: 'zax-shop',
+      maxBots: 2,
+      bots: [
+        { sprite: 'ayleen', hostile: false, velFactor: 3 },
+        { sprite: 'dog', hostile: false, velFactor: 3 },
+      ],
+    },
+    {
+      map: 'orange-over-purple',
+      maxBots: 2,
+      bots: [{ sprite: 'kishins', attackValue: 20 }, { sprite: 'punk' }],
+    },
+  ];
   maps.map((dataMap) => {
     const map = dataMap.name_map;
     const type = 'bot';
     const botMatrixCollision = getMatrixCollision(type, ['building'], map);
     const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
-
+    const configBot = mapBots.find((x) => x.map === map);
     (() => {
-      const maxBots = map === 'iop-house' ? 0 : 3;
+      const maxBots = configBot && configBot.maxBots !== undefined ? configBot.maxBots : 3;
       const { color, render } = getParamsType(type);
       const { dim } = render;
       while (
         botPositionAvailablePoints.length > 0 &&
         elements[type].filter((element) => element.map === map).length < maxBots
       ) {
+        let customBot = {};
+        if (configBot) customBot = configBot.bots[elements[type].filter((element) => element.map === map).length];
+
         const point = botPositionAvailablePoints[random(0, botPositionAvailablePoints.length - 1)];
         const bot = {
           id: id(),
@@ -725,6 +743,8 @@ const wsServer = (httpServer, app, internalApi) => {
             y: point[1],
             dim,
           },
+          hostile: true,
+          ...customBot,
         };
         elements[type].push(bot);
         params[type][bot.id] = {
@@ -733,26 +753,28 @@ const wsServer = (httpServer, app, internalApi) => {
       }
     })();
 
-    setInterval(() => {
-      elements[type]
-        .filter((element) => element.map === map)
-        .map((element) => {
+    elements[type]
+      .filter((element) => element.map === map)
+      .map((element) => {
+        setInterval(() => {
           if (!element.path) element.path = [];
           element.path.shift();
           let targetUser, x2, y2, point;
           while (element.path.length === 0 && !targetUser) {
             // element.path = range(0, maxRangeMap).map(i => [i, i]);
 
-            const usersTarget = elements['user'].filter((userElement) => {
-              if (userElement.map !== map || userElement.life === 0 || element.life === 0) return false;
-              const userDistance = getDistance(
-                element.render.x + parseInt(element.render.dim / 2),
-                element.render.y + parseInt(element.render.dim / 2),
-                userElement.render.x + parseInt(userElement.render.dim / 2),
-                userElement.render.y + parseInt(userElement.render.dim / 2)
-              );
-              return userDistance < maxRangeMap() * 0.3;
-            });
+            const usersTarget = element.hostile
+              ? elements['user'].filter((userElement) => {
+                  if (userElement.map !== map || userElement.life === 0 || element.life === 0) return false;
+                  const userDistance = getDistance(
+                    element.render.x + parseInt(element.render.dim / 2),
+                    element.render.y + parseInt(element.render.dim / 2),
+                    userElement.render.x + parseInt(userElement.render.dim / 2),
+                    userElement.render.y + parseInt(userElement.render.dim / 2)
+                  );
+                  return userDistance < maxRangeMap() * 0.3;
+                })
+              : [];
             if (usersTarget.length > 0) {
               point = usersTarget[random(0, usersTarget.length - 1)].render;
               x2 = point.x;
@@ -816,8 +838,8 @@ const wsServer = (httpServer, app, internalApi) => {
                 })
               );
           });
-        });
-    }, updateTimeInterval);
+        }, updateTimeInterval * (element.velFactor ? element.velFactor : 1));
+      });
   });
 
   setInterval(() => {
