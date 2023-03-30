@@ -255,28 +255,37 @@ const validateUsername = (req, res, internalApi) => {
 };
 
 const verifyToken = (req, res, token, next) => {
-  const response = jwt.verify(token, process.env.SECRET);
-  // console.log('verifyToken response', response);
-  if (typeof response == 'object') {
-    if (response.exp * 1000 <= +new Date())
-      return res.status(401).json({
-        status: 'error',
-        data: {
-          message: 'expire unauthorized',
-        },
-      });
-    const user = getUsers().find((user) => user.email == response.user.email && user.pass == response.user.pass);
-    if (user) {
-      req.user = user;
-      return next();
+  try {
+    const response = jwt.verify(token, process.env.SECRET);
+    // console.log('verifyToken response', response);
+    if (typeof response == 'object') {
+      if (response.exp * 1000 <= +new Date())
+        return res.status(401).json({
+          status: 'error',
+          data: {
+            message: 'expire unauthorized',
+          },
+        });
+      const user = getUsers().find((user) => user.email == response.user.email && user.pass == response.user.pass);
+      if (user) {
+        req.user = user;
+        return next();
+      }
     }
+    return res.status(401).json({
+      status: 'error',
+      data: {
+        message: 'unauthorized',
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: 'verify token | ' + error.message,
+      },
+    });
   }
-  return res.status(401).json({
-    status: 'error',
-    data: {
-      message: 'unauthorized',
-    },
-  });
 };
 
 const verifySession = (req, res) => {
