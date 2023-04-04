@@ -72,6 +72,7 @@ append(
         ${createAccount()}
         ${logIn()}
         ${bag()}
+        ${chat()}
         <div class='abs close-gui custom-cursor hover-button'>
             <div class='abs center'>
                 <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -120,6 +121,11 @@ append(
               ${renderLang({ es: 'Mochila', en: 'Bag' })}
             </div>
           </menu-button>
+          <menu-button class='inl custom-cursor btn-chat'>
+            <div class='abs center'>
+              ${renderLang({ es: 'Chat', en: 'Chat' })}
+            </div>
+          </menu-button>
       </common-menu>
 
     </main-menu>
@@ -156,11 +162,18 @@ s('.btn-bag').onclick = () => {
   s('bag').style.display = 'block';
 };
 
+s('.btn-chat').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('chat').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
   s('login').style.display = 'none';
   s('bag').style.display = 'none';
+  s('chat').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {
@@ -582,6 +595,8 @@ const renderPixiInitElement = (element) => {
 
   // .endFill();
 
+  if (element.id === socket.id) initMainUserJoy(element);
+
   return element;
 };
 
@@ -806,7 +821,7 @@ const renderPixiEventElement = (element) => {
   // 100 -> 6
   // 100*vel -> x
   const intervalFrameTimeAnimation = updateTimeInterval * (element.velFactor ? element.velFactor : 1);
-  const frames = parseInt((intervalFrameTimeAnimation * 6) / 100);
+  const frames = parseInt((intervalFrameTimeAnimation * 4) / 100);
   const intervalChangeX = Math.abs(x - container.x) / frames;
   const intervalChangeY = Math.abs(y - container.y) / frames;
   range(0, frames - 1).map((frameTime) => {
@@ -817,8 +832,8 @@ const renderPixiEventElement = (element) => {
       if (container.y > y) container.y = container.y - intervalChangeY;
       if (container.y < y) container.y = container.y + intervalChangeY;
       if (frameTime === frames - 1) {
-        container.x = x;
-        container.y = y;
+        // container.x = x;
+        // container.y = y;
         const newMapObj = changeMapsPoints.find(
           (mapData) =>
             mapData.fromMap === element.map && mapData.fromX === element.render.x && mapData.fromY === element.render.y
@@ -1198,67 +1213,70 @@ window.activeKey = {};
 window.onkeydown = (e) => (window.activeKey[e.key] = true);
 window.onkeyup = (e) => (window.activeKey[e.key] = undefined);
 
-setInterval(() => {
-  const element = elements.user.find((element) => element.id === socket.id);
-  if (element) {
-    const emitElement = {
-      render: {},
-    };
-    let update = false;
-    if (
-      window.activeKey['ArrowLeft'] &&
-      userPositionAvailablePoints.find((point) => point[0] === element.render.x - 1 && point[1] === element.render.y)
-    ) {
-      element.render.x -= 1;
-      emitElement.render.x = element.render.x;
-      update = true;
+const initMainUserJoy = (userElement) => {
+  if (hashIntervals[userElement.id][`joy`]) clearInterval(hashIntervals[userElement.id][`joy`]);
+  hashIntervals[userElement.id][`joy`] = setInterval(() => {
+    const element = elements.user.find((element) => element.id === socket.id);
+    if (element) {
+      const emitElement = {
+        render: {},
+      };
+      let update = false;
+      if (
+        window.activeKey['ArrowLeft'] &&
+        userPositionAvailablePoints.find((point) => point[0] === element.render.x - 1 && point[1] === element.render.y)
+      ) {
+        element.render.x -= 1;
+        emitElement.render.x = element.render.x;
+        update = true;
+      }
+      if (
+        window.activeKey['ArrowRight'] &&
+        userPositionAvailablePoints.find((point) => point[0] === element.render.x + 1 && point[1] === element.render.y)
+      ) {
+        element.render.x += 1;
+        emitElement.render.x = element.render.x;
+        update = true;
+      }
+      if (
+        window.activeKey['ArrowDown'] &&
+        userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y + 1)
+      ) {
+        element.render.y += 1;
+        emitElement.render.y = element.render.y;
+        update = true;
+      }
+      if (
+        window.activeKey['ArrowUp'] &&
+        userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y - 1)
+      ) {
+        element.render.y -= 1;
+        emitElement.render.y = element.render.y;
+        update = true;
+      }
+      if (element.path && element.path.length > 0) {
+        element.render.x = element.path[0][0];
+        element.render.y = element.path[0][1];
+        emitElement.render.y = element.render.y;
+        emitElement.render.x = element.render.x;
+        update = true;
+        element.path.shift();
+      }
+      if (window.activeKey['Q'] || window.activeKey['q']) {
+        attack(element);
+      }
+      if (update) {
+        renderPixiEventElement(element);
+        socket.emit('update', JSON.stringify(emitElement));
+      }
+      // if (location.pathname.replaceAll(`\\`, '').replaceAll('/', '') === 'undefined') {
+      //   history.back();
+      //   resetsElements();
+      //   socket.emit('close');
+      //   socket.emit('init', getURI());
+      // }
     }
-    if (
-      window.activeKey['ArrowRight'] &&
-      userPositionAvailablePoints.find((point) => point[0] === element.render.x + 1 && point[1] === element.render.y)
-    ) {
-      element.render.x += 1;
-      emitElement.render.x = element.render.x;
-      update = true;
-    }
-    if (
-      window.activeKey['ArrowDown'] &&
-      userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y + 1)
-    ) {
-      element.render.y += 1;
-      emitElement.render.y = element.render.y;
-      update = true;
-    }
-    if (
-      window.activeKey['ArrowUp'] &&
-      userPositionAvailablePoints.find((point) => point[0] === element.render.x && point[1] === element.render.y - 1)
-    ) {
-      element.render.y -= 1;
-      emitElement.render.y = element.render.y;
-      update = true;
-    }
-    if (element.path && element.path.length > 0) {
-      element.render.x = element.path[0][0];
-      element.render.y = element.path[0][1];
-      emitElement.render.y = element.render.y;
-      emitElement.render.x = element.render.x;
-      update = true;
-      element.path.shift();
-    }
-    if (window.activeKey['Q'] || window.activeKey['q']) {
-      attack(element);
-    }
-    if (update) {
-      renderPixiEventElement(element);
-      socket.emit('update', JSON.stringify(emitElement));
-    }
-    // if (location.pathname.replaceAll(`\\`, '').replaceAll('/', '') === 'undefined') {
-    //   history.back();
-    //   resetsElements();
-    //   socket.emit('close');
-    //   socket.emit('init', getURI());
-    // }
-  }
-}, updateTimeInterval);
+  }, updateTimeInterval * (userElement.velFactor ? userElement.velFactor : 1));
+};
 
 disableOptionsClick('html', ['menu', 'drag', 'select']);

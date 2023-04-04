@@ -110,6 +110,7 @@ const typeModels = () => {
       passiveHealValue: () => 10,
       sprite: () => 'anon',
       koyn: () => 0,
+      velFactor: () => 1,
     },
     bullet: {
       color: () => 'venetian red',
@@ -331,7 +332,7 @@ const ssrWS = `
 `;
 
 const validateSchemeElement = (element) => {
-  const forcesAttr = ['components'];
+  const forcesAttr = ['components', 'velFactor'];
   Object.keys(typeModels()[element.type]).map((key) => {
     if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
   });
@@ -699,8 +700,8 @@ const wsServer = (httpServer, app, internalApi) => {
       map: 'zax-shop',
       maxBots: 2,
       bots: [
-        { sprite: 'ayleen', hostile: false, velFactor: 3 },
-        { sprite: 'dog', hostile: false, velFactor: 3 },
+        { sprite: 'ayleen', username: 'Ayleen', hostile: false, velFactor: 3 },
+        { sprite: 'dog', username: 'Floki', hostile: false, velFactor: 3 },
       ],
     },
     {
