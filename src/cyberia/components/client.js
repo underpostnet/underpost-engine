@@ -902,9 +902,10 @@ socket.on('update', (...args) => {
           1
         );
     }, eventElement.lifeTime);
+
+  if (eventElement.msg !== undefined) return renderChatMsg(eventElement, eventElement.msg);
   if (elementIndex > -1) {
     elements[type][elementIndex] = merge(elements[type][elementIndex], eventElement);
-    if (eventElement.msg !== undefined) return renderChatMsg(elements[type][elementIndex], eventElement.msg);
     return renderPixiEventElement(elements[type][elementIndex]);
   }
   if (eventElement.id === socket.id && eventElement.map) {

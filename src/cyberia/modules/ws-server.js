@@ -659,7 +659,12 @@ const wsServer = (httpServer, app, internalApi) => {
             clients.map((client) => {
               const clientIndex = elements[type].findIndex((element) => element.id === client.id);
               if (clientIndex > -1 && socket.id !== client.id) {
-                const chatEmit = JSON.stringify({ id: socket.id, type, msg: eventElement.msg });
+                const chatEmit = JSON.stringify({
+                  id: socket.id,
+                  type,
+                  username: clientElement.username,
+                  msg: eventElement.msg,
+                });
                 // console.log('send chat msg', chatEmit);
                 client.emit('update', chatEmit);
               }
