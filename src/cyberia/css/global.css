@@ -194,3 +194,17 @@ label {
     width: 250px;
     margin-bottom: 15px;
 }
+
+history-chat {
+    overflow: auto;
+    border: 2px solid yellow;
+    margin: 3px;
+}
+
+.chat-msg-content {
+    margin: 5px;
+}
+
+.chat-input {
+    width: 50%;
+}

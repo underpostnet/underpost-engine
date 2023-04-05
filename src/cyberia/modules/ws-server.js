@@ -650,12 +650,21 @@ const wsServer = (httpServer, app, internalApi) => {
       const clientElement = elements[type].find((element) => element.id === socket.id);
       if (clientElement) {
         const { map } = clientElement;
-        eventElement.element = merge(clientElement, eventElement.element);
+        if (eventElement.element) eventElement.element = merge(clientElement, eventElement.element);
         switch (eventElement.event) {
           case 'attack':
             attack(clients, eventElement, map, ['bot', 'user'], internalApi);
             break;
-
+          case 'chat':
+            clients.map((client) => {
+              const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+              if (clientIndex > -1 && socket.id !== client.id) {
+                const chatEmit = JSON.stringify({ id: socket.id, type, msg: eventElement.msg });
+                // console.log('send chat msg', chatEmit);
+                client.emit('update', chatEmit);
+              }
+            });
+            break;
           default:
             break;
         }

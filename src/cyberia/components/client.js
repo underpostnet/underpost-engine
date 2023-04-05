@@ -40,6 +40,8 @@ const renderNotification = (status, message) => {
   }, 1500);
 };
 
+const getDisplayName = (element) => (element.username ? element.username : element.id.slice(0, 5).toUpperCase());
+
 append(
   'body',
   /*html*/ `
@@ -166,6 +168,7 @@ s('.btn-chat').onclick = () => {
   s('.close-menu').click();
   s('gui-layer').style.display = 'block';
   s('chat').style.display = 'block';
+  setTimeout(() => s('.chat-input').focus());
 };
 
 s('.close-gui').onclick = () => {
@@ -475,7 +478,7 @@ const renderPixiInitElement = (element) => {
       setTimeout(() => {
         if (!pixi[type][element.id]) return;
         pixi[type][element.id].nick = new PIXI.Text(
-          element.username ? element.username : id.slice(0, 5).toUpperCase(),
+          getDisplayName(element),
           new PIXI.TextStyle({
             dropShadow: true,
             dropShadowAngle: 6.8,
@@ -901,6 +904,7 @@ socket.on('update', (...args) => {
     }, eventElement.lifeTime);
   if (elementIndex > -1) {
     elements[type][elementIndex] = merge(elements[type][elementIndex], eventElement);
+    if (eventElement.msg !== undefined) return renderChatMsg(elements[type][elementIndex], eventElement.msg);
     return renderPixiEventElement(elements[type][elementIndex]);
   }
   if (eventElement.id === socket.id && eventElement.map) {
@@ -1014,6 +1018,9 @@ setInterval(() => {
       .grid-cell {
         width: ${(screenDim.minValue * 0.8) / 6}px;
         height:  ${(screenDim.minValue * 0.8) / 6}px;
+      }
+      history-chat {
+        height:  ${screenDim.maxType === 'height' ? screenDim.maxValue * 0.65 : screenDim.minValue * 0.65}px;
       }
     `
     );
