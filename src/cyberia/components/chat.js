@@ -4,10 +4,14 @@ const renderChatMsg = (element, msg) => {
     'history-chat',
     /*html*/ `
   
-  <div class='in chat-msg-content'>
+  <div class='in chat-msg-content' ${element.id === socket.id ? `style='text-align: right'` : ''}>
       <span style='font-size: 8px'>${new Date().toISOString().replace('T', ' ').slice(0, -8)}</span>
       <br>
-      <span style='color: yellow'>${getDisplayName(element)}:</span>${msg}
+      <img class='inl chat-avatar-icon' src='/sprites/${
+        element.sprite
+      }/08/0.png'><span style='color: yellow'>${getDisplayName(element)}</span>
+      <br>
+      ${msg}
   </div>
   
   `

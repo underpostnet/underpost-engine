@@ -205,6 +205,11 @@ history-chat {
     margin: 5px;
 }
 
+.chat-avatar-icon {
+    width: 20px;
+    height: 20px;
+}
+
 .chat-input {
     width: 50%;
 }

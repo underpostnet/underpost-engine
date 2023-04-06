@@ -664,6 +664,7 @@ const wsServer = (httpServer, app, internalApi) => {
                   type,
                   username: clientElement.username,
                   msg: eventElement.msg,
+                  sprite: clientElement.sprite,
                 });
                 // console.log('send chat msg', chatEmit);
                 client.emit('update', chatEmit);
