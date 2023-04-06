@@ -208,3 +208,14 @@ history-chat {
 .chat-input {
     width: 50%;
 }
+
+.noti-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: red;
+    top: -10px;
+    right: -10px;
+    font-size: 8px;
+    color: white;
+}

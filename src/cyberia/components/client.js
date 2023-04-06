@@ -86,6 +86,11 @@ append(
         <div class='abs center'>
             <img class='inl cyberia-logo' src='/icons/144x144/cyberia.png'>
         </div>
+        <div class='abs noti-circle noti-circle-total' style='display: none'>
+            <div class='abs center noti-count-total'>
+              
+            </div>
+        </div>
     </div>
 
     <main-menu class='abs' style='display: none'>
@@ -126,6 +131,11 @@ append(
           <menu-button class='inl custom-cursor btn-chat'>
             <div class='abs center'>
               ${renderLang({ es: 'Chat', en: 'Chat' })}
+            </div>
+            <div class='abs noti-circle noti-circle-chat' style='display: none'>
+              <div class='abs center noti-count-chat'>
+                
+              </div>
             </div>
           </menu-button>
       </common-menu>
@@ -169,6 +179,7 @@ s('.btn-chat').onclick = () => {
   s('gui-layer').style.display = 'block';
   s('chat').style.display = 'block';
   setTimeout(() => s('.chat-input').focus());
+  resetNotiCircleChat();
 };
 
 s('.close-gui').onclick = () => {

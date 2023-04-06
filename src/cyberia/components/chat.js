@@ -1,4 +1,5 @@
 const renderChatMsg = (element, msg) => {
+  if (element.id !== socket.id && s('chat').style.display === 'none') renderNotiCircleChat();
   append(
     'history-chat',
     /*html*/ `
