@@ -40,6 +40,21 @@ const renderNotification = (status, message) => {
   }, 1500);
 };
 
+const renderEventBoard = (render) => {
+  const eventBoardId = 'x' + s4();
+  append(
+    'event-board-content',
+    /*html*/ `
+    <event-board class='abs ${eventBoardId}'>
+      ${render}
+    </event-board>
+  `
+  );
+  setTimeout(() => {
+    s(`.${eventBoardId}`).remove();
+  }, 1000);
+};
+
 const getDisplayName = (element) => (element.username ? element.username : element.id.slice(0, 5).toUpperCase());
 
 append(
@@ -63,6 +78,10 @@ append(
     <style class='canvas-dim'></style>
 
     <pixi-container class='in'></pixi-container>
+
+    <event-board-content>
+
+    </event-board-content>
 
     <touch-layer class='abs custom-cursor'>
       <loader class='abs'>
@@ -1033,6 +1052,12 @@ setInterval(() => {
       }
       history-chat {
         height:  ${screenDim.maxType === 'height' ? screenDim.maxValue * 0.65 : screenDim.minValue * 0.65}px;
+      }
+      event-board {
+        width: ${screenDim.minValue * 0.7}px;
+        height: 80px;
+        top: 10px;
+        left: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) + 70}px;
       }
     `
     );

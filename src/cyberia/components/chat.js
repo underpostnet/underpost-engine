@@ -1,8 +1,6 @@
 const renderChatMsg = (element, msg) => {
   if (element.id !== socket.id && s('chat').style.display === 'none') renderNotiCircleChat();
-  append(
-    'history-chat',
-    /*html*/ `
+  const render = /*html*/ `
   
   <div class='in chat-msg-content' ${element.id === socket.id ? `style='text-align: right'` : ''}>
       <span style='font-size: 8px'>${new Date().toISOString().replace('T', ' ').slice(0, -8)}</span>
@@ -14,8 +12,9 @@ const renderChatMsg = (element, msg) => {
       ${msg}
   </div>
   
-  `
-  );
+  `;
+  append('history-chat', render);
+  if (element.id !== socket.id) renderEventBoard(render);
   setTimeout(() => {
     s('history-chat').scrollTop = s('history-chat').scrollHeight;
     // s('history-chat').scrollTop = s('history-chat').offsetTop;
