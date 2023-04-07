@@ -1229,8 +1229,8 @@ s('touch-layer').onclick = (e, subPath) => {
 };
 
 window.activeKey = {};
-window.onkeydown = (e) => (window.activeKey[e.key] = true);
-window.onkeyup = (e) => (window.activeKey[e.key] = undefined);
+window.onkeydown = (e) => (console.log('onkeydown', e.key), (window.activeKey[e.key] = true));
+window.onkeyup = (e) => (console.log('onkeyup', e.key), (window.activeKey[e.key] = undefined));
 
 const initMainUserJoy = (userElement) => {
   if (hashIntervals[userElement.id][`joy`]) clearInterval(hashIntervals[userElement.id][`joy`]);
@@ -1297,5 +1297,11 @@ const initMainUserJoy = (userElement) => {
     }
   }, updateTimeInterval * (userElement.velFactor ? userElement.velFactor : 1));
 };
+
+setInterval(() => {
+  if (window.activeKey['Enter'] && s('gui-layer').style.display === 'none') s('.btn-chat').click();
+  if (window.activeKey['Escape'] && s('main-menu').style.display === 'block') s('.close-menu').click();
+  if (window.activeKey['Escape'] && s('gui-layer').style.display === 'block') s('.close-gui').click();
+}, 10);
 
 disableOptionsClick('html', ['menu', 'drag', 'select']);
