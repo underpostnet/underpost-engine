@@ -497,7 +497,7 @@ const renderPixiInitElement = (element) => {
       hashIntervals[element.id][`diff-koyn-indicator`] = setInterval(() => {
         if (!params[type][element.id] || params[type][element.id].lastKoyn === undefined) return;
         if (element.koyn !== params[type][element.id].lastKoyn) {
-          renderKoynNotification(`+${element.koyn - params[type][element.id].lastKoyn}`);
+          renderEventBoard(renderKoynLogo(`+${element.koyn - params[type][element.id].lastKoyn}`));
           htmls('.bag-koyn-indicator', element.koyn);
           params[type][element.id].lastKoyn = newInstance(element.koyn);
         }

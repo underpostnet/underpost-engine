@@ -9,15 +9,15 @@ const bag = () => {
       append(
         '.grid-bag',
         /*html*/ `
-       <div class='in grid-row-${iRow}'></div>    
+       <div class='fl grid-row-${iRow}'></div>    
       `
       );
       range(0, 3).map((iCell) => {
         append(
           `.grid-row-${iRow}`,
           /*html*/ `
-        <div class="inl grid-cell custom-cursor">
-          <div class="abs center">${defaultContent[indexCell] ? defaultContent[indexCell]() : ''}</div>
+        <div class="in fll grid-cell custom-cursor">
+             ${defaultContent[indexCell] ? defaultContent[indexCell]() : ''}
         </div>
         `
         );
