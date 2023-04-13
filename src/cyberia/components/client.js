@@ -223,7 +223,7 @@ const pixi = {};
 const params = {};
 const hashIntervals = {};
 let changeMapsPoints = [];
-let currenMapType = ['pve', 'pvp'];
+let currentMapType = ['pve', 'pvp'];
 
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
@@ -967,19 +967,19 @@ socket.on('update', (...args) => {
 });
 
 const instanceMapTypeStatus = () => {
-  currenMapType = newInstance(changeMapsPoints[0].type);
+  currentMapType = newInstance(changeMapsPoints[0].type);
   htmls(
     'map-type-status',
     /*html*/ `
     <div class='fix map-type-status-content'>
           <div class='abs center'>
-          ${currenMapType
+          ${currentMapType
             .map(
               (t, i) => /*html*/ `
                <span class='map-type-${t}'> 
                 ${t.toUpperCase()}
                </span>
-               ${i !== currenMapType.length - 1 ? `` : ''}
+               ${i !== currentMapType.length - 1 ? `` : ''}
           `
             )
             .join('')} 
