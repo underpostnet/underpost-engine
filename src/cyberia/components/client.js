@@ -83,6 +83,9 @@ append(
 
     </event-board-content>
 
+    <map-type-status>
+    </map-type-status>
+
     <touch-layer class='abs custom-cursor'>
       <loader class='abs'>
         ${renderSpinner()}
@@ -220,6 +223,7 @@ const pixi = {};
 const params = {};
 const hashIntervals = {};
 let changeMapsPoints = [];
+let currenMapType = ['pve', 'pvp'];
 
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
@@ -962,10 +966,36 @@ socket.on('update', (...args) => {
   }
 });
 
+const instanceMapTypeStatus = () => {
+  currenMapType = newInstance(changeMapsPoints[0].type);
+  htmls(
+    'map-type-status',
+    /*html*/ `
+    <div class='fix map-type-status-content'>
+          <div class='abs center'>
+          ${currenMapType
+            .map(
+              (t, i) => /*html*/ `
+               <span class='map-type-${t}'> 
+                ${t.toUpperCase()}
+               </span>
+               ${i !== currenMapType.length - 1 ? `` : ''}
+          `
+            )
+            .join('')} 
+                <br> <br>    
+                zone
+          </div>
+    </div>
+  `
+  );
+};
+
 socket.on('init-data', (...args) => {
   const initData = JSON.parse(args);
   console.log('initData', initData);
   changeMapsPoints = initData.changeMapsPoints;
+  instanceMapTypeStatus();
   changeMapsPoints.map((mapData) => {
     (() => {
       const type = 'to-map';
@@ -1058,6 +1088,12 @@ setInterval(() => {
         height: 80px;
         top: 10px;
         left: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) + 70}px;
+      }
+      .map-type-status-content {
+        width: 70px;
+        height: 40px;
+        top: 10px;
+        right: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) + 10}px;
       }
     `
     );

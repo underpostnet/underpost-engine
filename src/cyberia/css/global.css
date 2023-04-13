@@ -226,8 +226,27 @@ history-chat {
     color: white;
 }
 
-event-board {
+event-board,
+.map-type-status-content {
     border: 2px solid yellow;
     background: rgba(0, 0, 0, 0.7);
     overflow: hidden;
+}
+
+.map-type-status-content {
+    font-size: 8px;
+    color: yellow;
+    /* font-weight: bold; */
+}
+
+.map-type-pve {
+    color: #2be8e2;
+}
+
+.map-type-pvp {
+    color: #ff2727;
+}
+
+.map-type-safe {
+    color: #00cb00;
 }

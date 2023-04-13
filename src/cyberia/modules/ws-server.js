@@ -59,6 +59,7 @@ maps.map((dataMap) => {
           toX: toMapData.x,
           toY: toMapData.y,
           arrow: cellFrom[2],
+          type: dataMap.type,
         });
       }
     })

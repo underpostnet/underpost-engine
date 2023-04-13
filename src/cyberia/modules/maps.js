@@ -2,6 +2,7 @@ const maps = [
   { name_map: '', matrix: [] },
   {
     name_map: 'orange-over-purple',
+    type: ['pvp', 'pve'],
     matrix: [
       [
         1,
@@ -71,10 +72,10 @@ const maps = [
         ['to-map', 'zax-shop', 'right', 5],
       ],
     ],
-    name_src_tile: 'tile1.PNG',
   },
   {
     name_map: 'zax-shop',
+    type: ['safe'],
     matrix: [
       [
         1,
@@ -161,10 +162,10 @@ const maps = [
         ['to-map', 'mont', 'right', 4],
       ],
     ],
-    name_src_tile: 'tile2.PNG',
   },
   {
     name_map: 'iop-house',
+    type: ['pvp', 'pve'],
     matrix: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -183,10 +184,10 @@ const maps = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ],
-    name_src_tile: 'tile3.PNG',
   },
   {
     name_map: 'cy03-station',
+    type: ['pvp', 'pve'],
     matrix: [
       [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
       [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -273,10 +274,10 @@ const maps = [
         1,
       ],
     ],
-    name_src_tile: 'tile4.PNG',
   },
   {
     name_map: 'buro',
+    type: ['pvp', 'pve'],
     matrix: [
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -312,10 +313,10 @@ const maps = [
         1,
       ],
     ],
-    name_src_tile: 'tile5.PNG',
   },
   {
     name_map: 'todarp',
+    type: ['pvp', 'pve'],
     matrix: [
       [
         0,
@@ -351,10 +352,10 @@ const maps = [
       [0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1],
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1],
     ],
-    name_src_tile: 'tile6.PNG',
   },
   {
     name_map: 'yupark',
+    type: ['pvp', 'pve'],
     matrix: [
       [
         0,
@@ -390,10 +391,10 @@ const maps = [
       [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
     ],
-    name_src_tile: 'tile7.PNG',
   },
   {
     name_map: 'redpark',
+    type: ['pvp', 'pve'],
     matrix: [
       [
         ['to-map', 'yupark', 'left', 8],
@@ -429,10 +430,10 @@ const maps = [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
     ],
-    name_src_tile: 'tile8.PNG',
   },
   {
     name_map: 'mont',
+    type: ['pvp', 'pve'],
     matrix: [
       [
         1,
@@ -485,10 +486,10 @@ const maps = [
         0,
       ],
     ],
-    name_src_tile: 'tile9.PNG',
   },
   {
     name_map: 'ubrig',
+    type: ['pvp', 'pve'],
     matrix: [
       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1],
@@ -524,7 +525,6 @@ const maps = [
         1,
       ],
     ],
-    name_src_tile: 'tile10.PNG',
   },
 ];
 
