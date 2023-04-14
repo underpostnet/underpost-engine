@@ -97,6 +97,7 @@ append(
         ${logIn()}
         ${bag()}
         ${chat()}
+        ${characterStats()}
         <div class='abs close-gui custom-cursor hover-button'>
             <div class='abs center'>
                 <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -159,6 +160,11 @@ append(
                 
               </div>
             </div>
+          </menu-button>          
+          <menu-button class='inl custom-cursor btn-character-stats'>
+            <div class='abs center'>
+              ${renderLang({ es: 'Estadistica de Personaje', en: 'Character Stats' })}
+            </div>
           </menu-button>
       </common-menu>
 
@@ -204,12 +210,19 @@ s('.btn-chat').onclick = () => {
   resetNotiCircleChat();
 };
 
+s('.btn-character-stats').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('character-stats').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
   s('login').style.display = 'none';
   s('bag').style.display = 'none';
   s('chat').style.display = 'none';
+  s('character-stats').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {
