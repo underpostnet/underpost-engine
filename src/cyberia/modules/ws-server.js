@@ -177,6 +177,24 @@ const id = () => {
 const matrixIterator = (fn, maxMapArg) =>
   range(0, maxRangeMap(maxMapArg)).map((y) => range(0, maxRangeMap(maxMapArg)).map((x) => fn(x, y)));
 
+const attackValidator = (element, maps) => {
+  let mapData;
+  switch (element.type) {
+    case 'bot':
+      mapData = maps.find((mapData) => mapData.fromMap === element.map && mapData.type.includes('pve'));
+      break;
+    case 'user':
+      mapData = maps.find(
+        (mapData) => mapData.fromMap === element.map && (mapData.type.includes('pvp') || mapData.type.includes('pve'))
+      );
+      break;
+    default:
+      break;
+  }
+  if (mapData) return true;
+  return false;
+};
+
 const validateCollision = (A, B) => {
   for (const yA of range(0, A.dim - 1)) {
     for (const xA of range(0, A.dim - 1)) {
@@ -330,6 +348,7 @@ const ssrWS = `
     const getMissileDirection = ${getMissileDirection};
     const ioWsServerHost = '${ioWsServerHost}';
     const dev = ${process.env.NODE_ENV === 'dev'};
+    const attackValidator =  ${attackValidator};
 `;
 
 const validateSchemeElement = (element) => {
