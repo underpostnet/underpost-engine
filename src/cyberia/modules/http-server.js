@@ -27,6 +27,8 @@ const httpClient = (app) => {
   copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
   copyDir(`./src/${NAME_APP}/assets`, `${dir}`);
 
+  fs.mkdirSync(`${dir}/.well-known`);
+
   maps.map((pathObj) => {
     let path = pathObj.name_map;
     if (path !== '') path += '/';
