@@ -11,12 +11,14 @@ const config = () => {
                 <div class='inl toggle-switch-content'>
                   ${renderToggleSwitch({
                     factor: 30,
-                    id: 'x' + s4(),
+                    id: 'full-screen-toggle',
                     checked: false,
                     label: ['', ''],
                     activeColor: 'yellow',
                     onChange: (state) => {
                       console.log('renderToggleSwitch onChange', state);
+                      if (state) return fullScreenIn();
+                      fullScreenOut();
                     },
                   })}
                 </div>

@@ -1332,10 +1332,23 @@ const initMainUserJoy = (userElement) => {
   }, updateTimeInterval * (userElement.velFactor ? userElement.velFactor : 1));
 };
 
+window._fullscreen = newInstance(checkFullScreen());
+
 setInterval(() => {
   if (window.activeKey['Enter'] && s('gui-layer').style.display === 'none') s('.btn-chat').click();
   if (window.activeKey['Escape'] && s('main-menu').style.display === 'block') s('.close-menu').click();
   if (window.activeKey['Escape'] && s('gui-layer').style.display === 'block') s('.close-gui').click();
+  if (window.activeKey['Tab'] && s('gui-layer').style.display === 'block' && _fullscreen === true) s('.close-gui').click();
+  if (_fullscreen !== checkFullScreen()) {
+    window._fullscreen = newInstance(checkFullScreen());
+    if (_fullscreen === true) {
+      if (s(`.full-screen-toggle`).checked === false) s(`.ts-container-full-screen-toggle`).click();
+      else fullScreenIn();
+    } else {
+      if (s(`.full-screen-toggle`).checked === true) s(`.ts-container-full-screen-toggle`).click();
+      else fullScreenOut();
+    }
+  }
 }, 10);
 
 disableOptionsClick('html', ['menu', 'drag', 'select']);
