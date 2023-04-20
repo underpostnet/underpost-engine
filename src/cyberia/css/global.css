@@ -46,7 +46,7 @@ main-menu {
     background: rgba(0, 0, 0, 0.7);
     border: 4px solid yellow;
     width: 260px;
-    height: 135px;
+    height: 185px;
     padding: 5px;
     text-align: right;
 }
@@ -271,4 +271,18 @@ event-board,
     height: auto;
     border: 2px solid yellow;
     margin: 3%;
+}
+
+.toggle-switch-content {
+    width: 69px;
+    height: 30px;
+    top: 7px;
+    border: 2px solid yellow;
+}
+
+.config-row {
+    margin: 2px;
+    padding: 15px;
+    border-bottom: 2px solid yellow;
+    font-size: 12px;
 }
