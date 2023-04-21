@@ -13,13 +13,35 @@ const random = (min, max) => {
 };
 
 const renderLang = (langs, req) => {
+  let translateHash;
   if (req) {
     const getLang = `${req.acceptsLanguages()[0].split('-')[0]}`.toLowerCase();
     if (Object.keys(langs).includes(getLang)) return langs[getLang];
     return langs['en'];
+  } else {
+    translateHash = 'translate-' + s4() + s4();
+    if (!window._translate) {
+      window._translate = {};
+      window._execTranslate = (lang) => {
+        s('html').lang = lang;
+        Object.keys(window._translate).map((translateHash) => {
+          if (window._translate[translateHash] && window._translate[translateHash][lang]) {
+            if (!window._translate[translateHash].placeholder && s(`.${translateHash}`))
+              htmls(`.${translateHash}`, window._translate[translateHash][lang]);
+            else if (s(window._translate[translateHash].placeholder))
+              s(window._translate[translateHash].placeholder).placeholder = window._translate[translateHash][lang];
+          }
+        });
+      };
+    }
+    window._translate[translateHash] = newInstance(langs);
   }
-  if (langs[s('html').lang]) return langs[s('html').lang];
-  return langs['en'];
+  if (langs.placeholder) {
+    if (langs[s('html').lang]) return langs[s('html').lang];
+    return langs['en'];
+  }
+  if (langs[s('html').lang]) return `<span class='${translateHash}'>${langs[s('html').lang]}</span>`;
+  return `<span class='${translateHash}'>${langs['en']}</span>`;
 };
 
 const getRawCsvFromArray = (array) =>

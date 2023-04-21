@@ -52,11 +52,14 @@ const config = () => {
                         data: [
                           {
                             display: renderLang({ es: 'Español', en: 'Spanish' }),
+                            value: 'es',
                           },
                           {
                             display: renderLang({ es: 'Ingles', en: 'English' }),
+                            value: 'en',
                           },
                         ],
+                        onClick: (value) => window._execTranslate(value),
                       })}
                     </div>
                 </div>

@@ -42,6 +42,7 @@ const renderDropDown = (options) => {
                 setTimeout(() => {
                   s('.' + hashOption).onclick = () => {
                     htmls(`.dropdown-option-label-${options.id}`, iconDpOp + ' ' + optionData.display);
+                    options.onClick(optionData.value);
                   };
                 });
                 return /*html*/ `

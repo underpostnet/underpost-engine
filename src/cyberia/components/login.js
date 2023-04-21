@@ -117,6 +117,7 @@ const logIn = () => {
                 <input type='email' class='login-input-email' placeholder='${renderLang({
                   es: 'Email',
                   en: 'Email',
+                  placeholder: '.login-input-email',
                 })}'>
                 <input-warn class='in login-warn-email'></input-warn>
                 <label class='in login-label-password'></label>
@@ -124,6 +125,7 @@ const logIn = () => {
                   {
                     en: 'Password',
                     es: 'Contraseña',
+                    placeholder: '.login-input-password',
                   }
                 )}'>
                 <input-warn class='in login-warn-password'></input-warn>

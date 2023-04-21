@@ -196,6 +196,7 @@ const createAccount = () => {
         <input type='text' class='create-account-input-username' placeholder='${renderLang({
           es: 'Nombre de usuario',
           en: 'Username',
+          placeholder: '.create-account-input-username',
         })}'>
         <input-warn class='in create-account-warn-username'></input-warn>
       
@@ -203,6 +204,7 @@ const createAccount = () => {
         <input type='email' class='create-account-input-email' placeholder='${renderLang({
           es: 'Email',
           en: 'Email',
+          placeholder: '.create-account-input-email',
         })}'>
         <input-warn class='in create-account-warn-email'></input-warn>
         <label class='in create-account-label-password'></label>
@@ -210,6 +212,7 @@ const createAccount = () => {
           {
             en: 'Password',
             es: 'Contraseña',
+            placeholder: '.create-account-input-password',
           }
         )}'>
         <input-warn class='in create-account-warn-password'></input-warn>
@@ -218,6 +221,7 @@ const createAccount = () => {
           {
             en: 'Repeat Password',
             es: 'Repetir Contraseña',
+            placeholder: '.create-account-input-repeat-password',
           }
         )}'>
         <input-warn class='in create-account-warn-repeat-password'></input-warn>
