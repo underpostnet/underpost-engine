@@ -56,6 +56,9 @@ setInterval(() => {
       .character-stats-section {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
       }
+      .config-col {
+        width: ${screenDim.minValue >= 430 ? 50 : 100}%;
+      }
     `
     );
   }

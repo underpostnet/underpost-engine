@@ -274,9 +274,8 @@ event-board,
 }
 
 .toggle-switch-content {
-    width: 69px;
-    height: 30px;
-    top: 7px;
+    width: 55px;
+    height: 24px;
     border: 2px solid yellow;
 }
 
@@ -285,4 +284,8 @@ event-board,
     padding: 15px;
     border-bottom: 2px solid yellow;
     font-size: 12px;
+}
+
+.config-col-content {
+    padding: 5px;
 }
