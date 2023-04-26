@@ -1382,12 +1382,8 @@ const initMainUserJoy = (userElement) => {
 
 window._fullscreen = newInstance(checkFullScreen());
 
+let blockKey = false;
 setInterval(() => {
-  if (window.activeKey['Enter'] && s('gui-layer').style.display === 'none') s('.btn-chat').click();
-  if (window.activeKey['Escape'] && s('main-menu').style.display === 'block') s('.close-menu').click();
-  if (window.activeKey['Escape'] && s('gui-layer').style.display === 'block') s('.close-gui').click();
-  if (window.activeKey['Home'] && s('gui-layer').style.display === 'block' && _fullscreen === true)
-    s('.close-gui').click();
   if (_fullscreen !== checkFullScreen()) {
     window._fullscreen = newInstance(checkFullScreen());
     if (_fullscreen === true) {
@@ -1396,6 +1392,29 @@ setInterval(() => {
       if (s(`.full-screen-toggle`).checked === true) s(`.ts-container-full-screen-toggle`).click();
     }
   }
+  if (blockKey) return;
+  if (window.activeKey['Enter'] && s('gui-layer').style.display === 'none') {
+    blockKey = true;
+    s('.btn-chat').click();
+  }
+  if (window.activeKey['Home'] && s('main-menu').style.display === 'block') {
+    blockKey = true;
+    s('.close-menu').click();
+  } else if (window.activeKey['Home'] && s('gui-layer').style.display === 'block') {
+    blockKey = true;
+    s('.close-gui').click();
+  } else if (
+    window.activeKey['Home'] &&
+    s('gui-layer').style.display === 'none' &&
+    s('main-menu').style.display === 'none'
+  ) {
+    blockKey = true;
+    s('.open-menu').click();
+  }
+  if (blockKey)
+    setTimeout(() => {
+      blockKey = false;
+    }, 600);
 }, 10);
 
 disableOptionsClick('html', ['menu', 'drag', 'select']);

@@ -73,6 +73,43 @@ const wiki = () => {
                 </div>
                </div>
             </div>
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+                <div class='in wiki-cell'>
+                   ${renderLang({ en: '[Q] key:', es: 'tecla [Q]:' })}
+                </div>
+              </div>
+              <div class='in fll wiki-value'>
+                <div class='in wiki-cell'>
+                    ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+                </div>
+              </div>
+            </div>
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+                <div class='in wiki-cell'>
+                   ${renderLang({ en: '[Enter] key:', es: 'tecla [Enter]:' })}
+                </div>
+              </div>
+              <div class='in fll wiki-value'>
+                <div class='in wiki-cell'>
+                    ${renderLang({ en: 'Open chat', es: 'Abrir chat' })}
+                </div>
+              </div>
+            </div>
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+                <div class='in wiki-cell'>
+                   ${renderLang({ en: '[Home] key:', es: 'tecla [Inicio]:' })}
+                </div>
+              </div>
+              <div class='in fll wiki-value'>
+                <div class='in wiki-cell'>
+                    ${renderLang({ en: 'Close/Open Menu/GUI', es: 'Cerrar Menu/GUI' })}
+                </div>
+              </div>
+            </div>
+            
         `;
       },
     },
