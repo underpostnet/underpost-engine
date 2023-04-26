@@ -122,6 +122,7 @@ append(
         ${chat()}
         ${characterStats()}
         ${config()}
+        ${wiki()}
         <div class='abs close-gui custom-cursor hover-button'>
             <div class='abs center'>
                 <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -195,6 +196,11 @@ append(
               ${renderLang({ en: 'Settings', es: 'Configuraciones' })}
             </div>
           </menu-button>
+          <menu-button class='inl custom-cursor btn-wiki'>
+            <div class='abs center'>
+              ${renderLang({ en: '?', es: '?' })}
+            </div>
+          </menu-button>
       </common-menu>
 
     </main-menu>
@@ -251,6 +257,12 @@ s('.btn-config').onclick = () => {
   s('config').style.display = 'block';
 };
 
+s('.btn-wiki').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('wiki').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
@@ -259,6 +271,7 @@ s('.close-gui').onclick = () => {
   s('chat').style.display = 'none';
   s('character-stats').style.display = 'none';
   s('config').style.display = 'none';
+  s('wiki').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {
