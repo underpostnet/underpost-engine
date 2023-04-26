@@ -25,7 +25,7 @@ const renderStatsGrid = (element) => {
         <span class='character-stats-grid-label'>
           ${renderLang({ en: 'life regeneration', es: 'regeneración de vida' }).toUpperCase()} 
         </span>
-        ${element.passiveHealValue}
+        ${element.passiveHealValue} / s
     </div>
 
     <!--

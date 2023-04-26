@@ -55,6 +55,27 @@ const renderEventBoard = (render) => {
   }, 1000);
 };
 
+const renderDeadCount = (data) => {
+  const hashRender = 'x' + s4();
+
+  append(
+    'dead-count',
+    /*html*/ `
+    <div class='abs center dead-content ${hashRender}'>
+        <div class='abs center'>
+            <img class='inl dead-icon' src='/icons/dead.png'>
+              <br>
+            <span class='dead-count' style='${borderChar(2, 'red')}'>${data.deadTime}</span>
+        </div>
+    </div>
+  
+  `
+  );
+  setTimeout(() => {
+    s(`.${hashRender}`).remove();
+  }, 1050);
+};
+
 const getDisplayName = (element) => (element.username ? element.username : element.id.slice(0, 5).toUpperCase());
 
 append(
@@ -85,6 +106,8 @@ append(
 
     <map-type-status>
     </map-type-status>
+
+    <dead-count></dead-count>
 
     <touch-layer class='abs custom-cursor'>
       <loader class='abs'>
@@ -1065,6 +1088,18 @@ socket.on('close', (...args) => {
   console.log('close', type, elements[type]);
 });
 
+socket.on('event', (...args) => {
+  const eventElement = JSON.parse(args);
+  switch (eventElement.type) {
+    case 'dead-count':
+      renderDeadCount(eventElement);
+      break;
+
+    default:
+      break;
+  }
+});
+
 socket.onAny((event, ...args) => {
   // console.log(`socket.io onAny event: ${event} | arguments: ${args}`);
 });
@@ -1338,7 +1373,7 @@ setInterval(() => {
   if (window.activeKey['Enter'] && s('gui-layer').style.display === 'none') s('.btn-chat').click();
   if (window.activeKey['Escape'] && s('main-menu').style.display === 'block') s('.close-menu').click();
   if (window.activeKey['Escape'] && s('gui-layer').style.display === 'block') s('.close-gui').click();
-  if (window.activeKey['Tab'] && s('gui-layer').style.display === 'block' && _fullscreen === true)
+  if (window.activeKey['Home'] && s('gui-layer').style.display === 'block' && _fullscreen === true)
     s('.close-gui').click();
   if (_fullscreen !== checkFullScreen()) {
     window._fullscreen = newInstance(checkFullScreen());

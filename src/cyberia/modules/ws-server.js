@@ -112,6 +112,7 @@ const typeModels = () => {
       sprite: () => 'anon',
       koyn: () => 0,
       velFactor: () => 1,
+      deadTime: () => 3,
     },
     bullet: {
       color: () => 'venetian red',
@@ -360,6 +361,18 @@ const validateSchemeElement = (element) => {
 };
 
 const rebirdElement = (clients, element, internalApi) => {
+  const deadTime = element.deadTime !== undefined ? element.deadTime : 3;
+  const client = clients.find((x) => x.id === element.id);
+  if (client)
+    range(0, deadTime).map((at) => {
+      setTimeout(() => {
+        const emitEvent = JSON.stringify({
+          type: 'dead-count',
+          deadTime: deadTime - at,
+        });
+        if (client.emit) client.emit('event', emitEvent);
+      }, at * 1000);
+    });
   setTimeout(() => {
     if (!elements[element.type].find((_element) => _element.id === element.id)) return;
     element.life = newInstance(element.maxLife);
@@ -368,7 +381,7 @@ const rebirdElement = (clients, element, internalApi) => {
       if (clientIndex > -1 && elements['user'][clientIndex].map === element.map)
         client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
     });
-  }, 3000);
+  }, deadTime * 1000);
 };
 
 const attack = (clients, eventElement, map, targets, internalApi) => {

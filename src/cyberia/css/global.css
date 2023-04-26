@@ -289,3 +289,21 @@ event-board,
 .config-col-content {
     padding: 5px;
 }
+
+.dead-content {
+    border: 2px solid red;
+    background: rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    width: 100px;
+    height: 80px;
+}
+
+.dead-icon {
+    width: 70px;
+    height: auto;
+}
+
+.dead-count {
+    color: black;
+    font-size: 10px;
+}
