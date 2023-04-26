@@ -7,26 +7,34 @@ const wiki = () => {
         return /*html*/ `
             <div class='fl wiki-row'>
               <div class='in fll wiki-key'>
+              <div class='in wiki-cell'>
                 ${renderLang({ en: 'Double tap:', es: 'Doble toque:' })}
+                </div>
               </div>
               <div class='in fll wiki-value'>
+              <div class='in wiki-cell'>
                 ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+              </div>
               </div>
             </div>
             <div class='fl wiki-row'>
               <div class='in fll wiki-key'>
+              <div class='in wiki-cell'>
                 ${renderLang({
                   en: 'Single tap:',
                   es: 'Unico toque:',
                 })}
+                </div>
               </div>
               <div class='in fll wiki-value'>
+              <div class='in wiki-cell'>
                 ${renderLang({
                   en: 'Movement to location',
                   es: 'Movimiento hacia la ubicación',
                 })}
-              </div>
+                </div>
             </div>
+          </div>
         `;
       },
     },
@@ -37,24 +45,32 @@ const wiki = () => {
         return /*html*/ `
             <div class='fl wiki-row'>
               <div class='in fll wiki-key'>
+              <div class='in wiki-cell'>
                ${renderLang({ en: 'Double click:', es: 'Doble click:' })}
+               </div>
               </div> 
               <div class='in fll wiki-value'>
+              <div class='in wiki-cell'>
                 ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+                </div>
               </div>
             </div>
             <div class='fl wiki-row'>
               <div class='in fll wiki-key'>
+              <div class='in wiki-cell'>
                 ${renderLang({
                   en: 'Single click:',
                   es: 'Unico click:',
                 })}
+                </div>
                </div>
                <div class='in fll wiki-value'>
+               <div class='in wiki-cell'>
                 ${renderLang({
                   en: 'Movement to location',
                   es: 'Movimiento hacia la ubicación',
                 })}
+                </div>
                </div>
             </div>
         `;
