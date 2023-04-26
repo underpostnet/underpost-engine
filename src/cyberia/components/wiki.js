@@ -1,11 +1,62 @@
 const wiki = () => {
   const wikiMetaData = [
     {
-      name: renderLang({ es: 'Controles', en: 'Controls' }),
+      name: renderLang({ es: 'Controles para el Movil', en: 'Mobile Controls' }),
       open: true,
       render: () => {
         return /*html*/ `
-            test
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+                ${renderLang({ en: 'Double tap:', es: 'Doble toque:' })}
+              </div>
+              <div class='in fll wiki-value'>
+                ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+              </div>
+            </div>
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+                ${renderLang({
+                  en: 'Single tap:',
+                  es: 'Unico toque:',
+                })}
+              </div>
+              <div class='in fll wiki-value'>
+                ${renderLang({
+                  en: 'Movement to location',
+                  es: 'Movimiento hacia la ubicación',
+                })}
+              </div>
+            </div>
+        `;
+      },
+    },
+    {
+      name: renderLang({ es: 'Controles de Escritorio', en: 'Desktop Controls' }),
+      open: true,
+      render: () => {
+        return /*html*/ `
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+               ${renderLang({ en: 'Double click:', es: 'Doble click:' })}
+              </div> 
+              <div class='in fll wiki-value'>
+                ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+              </div>
+            </div>
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+                ${renderLang({
+                  en: 'Single click:',
+                  es: 'Unico click:',
+                })}
+               </div>
+               <div class='in fll wiki-value'>
+                ${renderLang({
+                  en: 'Movement to location',
+                  es: 'Movimiento hacia la ubicación',
+                })}
+               </div>
+            </div>
         `;
       },
     },

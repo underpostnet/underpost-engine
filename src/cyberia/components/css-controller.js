@@ -56,7 +56,7 @@ setInterval(() => {
       .character-stats-section {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
       }
-      .config-col {
+      .config-col, .wiki-key, .wiki-value {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
       }
     `

@@ -327,3 +327,11 @@ event-board,
     color: yellow;
     min-height: 120px;
 }
+
+.wiki-row {
+    font-size: 10px;
+}
+
+.wiki-value {
+    color: white;
+}
