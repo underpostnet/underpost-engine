@@ -307,3 +307,23 @@ event-board,
     color: black;
     font-size: 10px;
 }
+
+.wiki-section-header {
+    padding: 10px;
+    margin: 5px 5px 0px 5px;
+    border: 3px solid yellow;
+    color: yellow;
+}
+
+.wiki-section-header:hover {
+    border: 3px solid white;
+    color: white;
+}
+
+.wiki-section {
+    padding: 10px;
+    margin: 0px 5px 5px 5px;
+    border: 3px solid yellow;
+    color: yellow;
+    min-height: 120px;
+}
