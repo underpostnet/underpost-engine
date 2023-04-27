@@ -2,6 +2,8 @@ const maps = [
   { name_map: '', matrix: [] },
   {
     name_map: 'orange-over-purple',
+    position: 3,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [
@@ -75,6 +77,8 @@ const maps = [
   },
   {
     name_map: 'zax-shop',
+    position: 4,
+    instance: 'cyberia',
     type: ['safe'],
     matrix: [
       [
@@ -187,6 +191,8 @@ const maps = [
   },
   {
     name_map: 'cy03-station',
+    position: 1,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -277,6 +283,8 @@ const maps = [
   },
   {
     name_map: 'buro',
+    position: 0,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -316,6 +324,8 @@ const maps = [
   },
   {
     name_map: 'todarp',
+    position: 6,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [
@@ -355,6 +365,8 @@ const maps = [
   },
   {
     name_map: 'yupark',
+    position: 7,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [
@@ -394,6 +406,8 @@ const maps = [
   },
   {
     name_map: 'redpark',
+    position: 8,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [
@@ -433,6 +447,8 @@ const maps = [
   },
   {
     name_map: 'mont',
+    position: 5,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [
@@ -489,6 +505,8 @@ const maps = [
   },
   {
     name_map: 'ubrig',
+    position: 2,
+    instance: 'cyberia',
     type: ['pvp', 'pve'],
     matrix: [
       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],

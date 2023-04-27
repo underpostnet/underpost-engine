@@ -66,6 +66,17 @@ maps.map((dataMap) => {
   );
 });
 
+const globalInstancesMapData = {
+  cyberia: maps
+    .filter((x) => x.position !== undefined && x.instance === 'cyberia')
+    .map((mapData) => {
+      return {
+        name: mapData.name_map,
+        position: mapData.position,
+      };
+    }),
+};
+
 // console.log('changeMapsPoints', changeMapsPoints);
 
 const typeModels = () => {
@@ -350,6 +361,7 @@ const ssrWS = `
     const ioWsServerHost = '${ioWsServerHost}';
     const dev = ${process.env.NODE_ENV === 'dev'};
     const attackValidator =  ${attackValidator};
+    const globalInstancesMapData = ${JSONweb(globalInstancesMapData['cyberia'])}
 `;
 
 const validateSchemeElement = (element) => {

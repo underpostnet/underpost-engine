@@ -341,3 +341,19 @@ event-board,
     margin: 3px;
     /* border: 2px solid yellow; */
 }
+
+.map-img {
+    width: 100%;
+    height: auto;
+}
+
+.map-hover-gfx {
+    width: 90%;
+    height: 90%;
+    color: yellow;
+    font-size: 10px;
+}
+
+.map-hover-gfx:hover {
+    border: 3px solid yellow;
+}

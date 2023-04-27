@@ -59,6 +59,9 @@ setInterval(() => {
       .config-col, .wiki-key, .wiki-value {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
       }
+      .map-cell {
+        width: ${screenDim.maxType === 'height' ? 33 : 25}%;
+      }
     `
     );
   }

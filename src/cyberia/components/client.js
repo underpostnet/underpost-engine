@@ -123,6 +123,7 @@ append(
         ${characterStats()}
         ${config()}
         ${wiki()}
+        ${map()}
         <div class='abs close-gui custom-cursor hover-button'>
             <div class='abs center'>
                 <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -201,6 +202,11 @@ append(
               ${renderLang({ en: '?', es: '?' })}
             </div>
           </menu-button>
+          <menu-button class='inl custom-cursor btn-map'>
+            <div class='abs center'>
+              ${renderLang({ en: 'Map', es: 'Mapa' })}
+            </div>
+          </menu-button>
       </common-menu>
 
     </main-menu>
@@ -263,6 +269,12 @@ s('.btn-wiki').onclick = () => {
   s('wiki').style.display = 'block';
 };
 
+s('.btn-map').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('map').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
@@ -272,6 +284,7 @@ s('.close-gui').onclick = () => {
   s('character-stats').style.display = 'none';
   s('config').style.display = 'none';
   s('wiki').style.display = 'none';
+  s('map').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {
@@ -1315,8 +1328,8 @@ window.onkeydown = (e) => (console.log('onkeydown', e.key), (window.activeKey[e.
 window.onkeyup = (e) => (console.log('onkeyup', e.key), (window.activeKey[e.key] = undefined));
 
 const initMainUserJoy = (userElement) => {
-  if (hashIntervals[userElement.id][`joy`]) clearInterval(hashIntervals[userElement.id][`joy`]);
-  hashIntervals[userElement.id][`joy`] = setInterval(() => {
+  if (hashIntervals[`joy`]) clearInterval(hashIntervals[`joy`]);
+  hashIntervals[`joy`] = setInterval(() => {
     const element = elements.user.find((element) => element.id === socket.id);
     if (element) {
       const emitElement = {
