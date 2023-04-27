@@ -151,39 +151,23 @@ append(
           </div>
       </div>
 
-      <no-session-menu style='display: none'>
-        <menu-button class='inl custom-cursor btn-login'>
-          <div class='abs center'>
-            ${renderLang({ es: 'Ingresar', en: 'Login' })}
-          </div>
-        </menu-button>
-        <menu-button class='inl custom-cursor btn-create-account'>
-          <div class='abs center'>
-            ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
-          </div>
-        </menu-button>
-      </no-session-menu>
-
-      <session-menu style='display: none'>
-        <menu-button class='inl custom-cursor btn-account'>
+      <div class='abs content-cyberia-logo-menu'>
             <div class='abs center'>
-              ${renderLang({ en: 'Account', es: 'Cuenta' })}
+                
+                  <img class='inl cyberia-logo-open-menu' src='/icons/144x144/cyberia.png'> C Y B E R I A
+                  <br>
+                  <span class='online-cyberia-logo-text'>o n l i n e</span>        
+              
             </div>
-        </menu-button>
-        <menu-button class='inl custom-cursor btn-logout'>
-          <div class='abs center'>
-            ${renderLang({ es: 'Cerrar Sesión', en: 'Logout' })}
-          </div>
-        </menu-button>
-      </session-menu>
+      </div>
 
-      <common-menu>            
-          <menu-button class='inl custom-cursor btn-bag'>
+      <common-menu class='in'>            
+          <menu-button class='in custom-cursor btn-bag'>
             <div class='abs center'>
               ${renderLang({ es: 'Mochila', en: 'Bag' })}
             </div>
           </menu-button>
-          <menu-button class='inl custom-cursor btn-chat'>
+          <menu-button class='in custom-cursor btn-chat'>
             <div class='abs center'>
               ${renderLang({ es: 'Chat', en: 'Chat' })}
             </div>
@@ -193,27 +177,53 @@ append(
               </div>
             </div>
           </menu-button>          
-          <menu-button class='inl custom-cursor btn-character-stats'>
+          <menu-button class='in custom-cursor btn-character-stats'>
             <div class='abs center'>
               ${renderLang({ es: 'Estadistica de Personaje', en: 'Character Stats' })}
             </div>
           </menu-button>
-          <menu-button class='inl custom-cursor btn-config'>
+          <menu-button class='in custom-cursor btn-config'>
             <div class='abs center'>
               ${renderLang({ en: 'Settings', es: 'Configuraciones' })}
             </div>
           </menu-button>
-          <menu-button class='inl custom-cursor btn-wiki'>
+          <menu-button class='in custom-cursor btn-wiki'>
             <div class='abs center'>
               ${renderLang({ en: 'Wiki', es: 'Wiki' })}
             </div>
           </menu-button>
-          <menu-button class='inl custom-cursor btn-map'>
+          <menu-button class='in custom-cursor btn-map'>
             <div class='abs center'>
               ${renderLang({ en: 'Map', es: 'Mapa' })}
             </div>
           </menu-button>
       </common-menu>
+
+      <no-session-menu  class='in' style='display: none'>
+        <menu-button class='in custom-cursor btn-login'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Ingresar', en: 'Login' })}
+          </div>
+        </menu-button>
+        <menu-button class='in custom-cursor btn-create-account'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Crear cuenta', en: 'Create Account' })}
+          </div>
+        </menu-button>
+      </no-session-menu>
+
+      <session-menu  class='in' style='display: none'>
+        <menu-button class='in custom-cursor btn-account'>
+            <div class='abs center'>
+              ${renderLang({ en: 'Account', es: 'Cuenta' })}
+            </div>
+        </menu-button>
+        <menu-button class='in custom-cursor btn-logout'>
+          <div class='abs center'>
+            ${renderLang({ es: 'Cerrar Sesión', en: 'Logout' })}
+          </div>
+        </menu-button>
+      </session-menu>
 
     </main-menu>
  

@@ -46,18 +46,17 @@ main-menu {
     background: rgba(0, 0, 0, 0.7);
     border: 4px solid yellow;
     width: 260px;
-    height: 185px;
+    height: 340px;
     padding: 5px;
     text-align: right;
 }
 
 menu-button {
-    width: 60px;
-    height: 40px;
     /* background: black; */
-    font-size: 8px;
+    font-size: 10px;
     border: 4px solid yellow;
     color: yellow;
+    height: 25px;
 }
 
 menu-button:hover {
@@ -381,4 +380,26 @@ input:disabled {
     font-size: 8px;
     margin: 3px;
     padding: 3px;
+}
+
+common-menu {
+    margin-top: 55px;
+}
+
+.cyberia-logo-open-menu {
+    width: 20px;
+    height: 20px;
+    top: 5px;
+}
+
+.online-cyberia-logo-text {
+    font-size: 8px;
+}
+
+.content-cyberia-logo-menu {
+    right: 5px;
+    top: 0px;
+    width: 200px;
+    height: 50px;
+    font-size: 10px;
 }
