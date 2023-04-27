@@ -124,6 +124,7 @@ append(
         ${config()}
         ${wiki()}
         ${map()}
+        ${account()}
         <div class='abs close-gui custom-cursor hover-button'>
             <div class='abs center'>
                 <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -164,6 +165,11 @@ append(
       </no-session-menu>
 
       <session-menu style='display: none'>
+        <menu-button class='inl custom-cursor btn-account'>
+            <div class='abs center'>
+              ${renderLang({ en: 'Account', es: 'Cuenta' })}
+            </div>
+        </menu-button>
         <menu-button class='inl custom-cursor btn-logout'>
           <div class='abs center'>
             ${renderLang({ es: 'Cerrar Sesión', en: 'Logout' })}
@@ -275,6 +281,12 @@ s('.btn-map').onclick = () => {
   s('map').style.display = 'block';
 };
 
+s('.btn-account').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('account').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
@@ -285,6 +297,7 @@ s('.close-gui').onclick = () => {
   s('config').style.display = 'none';
   s('wiki').style.display = 'none';
   s('map').style.display = 'none';
+  s('account').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {

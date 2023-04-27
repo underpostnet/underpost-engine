@@ -80,6 +80,7 @@ const httpClient = (app) => {
                   ${fs.readFileSync(`./src/${NAME_APP}/components/config.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/wiki.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/map.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/account.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/client.js`, 'utf8')}
                 </script>
             </body>
