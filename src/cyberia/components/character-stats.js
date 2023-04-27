@@ -5,9 +5,9 @@ const renderStatsGrid = (element) => {
 
     <div class='in  character-stats-grid-row'>
         <span class='character-stats-grid-label'>
-          ${renderLang({ es: 'nombre', en: 'username' }).toUpperCase()} 
+          ${renderLang({ es: 'skin', en: 'skin' }).toUpperCase()} 
         </span>
-        ${getDisplayName(element)}
+        ${element.sprite}
     </div>
     <div class='in  character-stats-grid-row'>
         <span class='character-stats-grid-label'>

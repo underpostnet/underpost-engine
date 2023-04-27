@@ -357,3 +357,28 @@ event-board,
 .map-hover-gfx:hover {
     border: 3px solid yellow;
 }
+
+input:disabled {
+
+    border-color: none !important;
+    background-color: none;
+    background: none !important;
+    width: 90%;
+    color: white;
+    /* 
+    background-color: -internal-light-dark(rgba(239, 239, 239, 0.3), rgba(59, 59, 59, 0.3));
+    color: -internal-light-dark(rgb(84, 84, 84), rgb(170, 170, 170));
+    border-color: rgba(118, 118, 118, 0.3); 
+    */
+}
+
+.footer-account-section {
+    padding: 5px;
+    border-bottom: 2px solid yellow;
+}
+
+.btn-account-section {
+    font-size: 8px;
+    margin: 3px;
+    padding: 3px;
+}

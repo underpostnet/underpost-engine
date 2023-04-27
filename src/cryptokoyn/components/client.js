@@ -74,6 +74,7 @@ append(
                     <input type='password' autocomplete='new-password' placeholder='${renderLang({
                       es: 'Contraseña',
                       en: 'Password',
+                      placeholder: '.create-key-input-password',
                     })}' class='in create-key-input-password'>
                     <div class='in warn-input create-key-warn-password'></div>
 

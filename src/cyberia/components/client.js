@@ -205,7 +205,7 @@ append(
           </menu-button>
           <menu-button class='inl custom-cursor btn-wiki'>
             <div class='abs center'>
-              ${renderLang({ en: '?', es: '?' })}
+              ${renderLang({ en: 'Wiki', es: 'Wiki' })}
             </div>
           </menu-button>
           <menu-button class='inl custom-cursor btn-map'>
@@ -506,7 +506,13 @@ const renderPixiInitElement = (element) => {
     container.addChild(pixi[type][element.id][src]);
   }
 
-  if (socket.id === id) renderStatsGrid(element);
+  if (socket.id === id) {
+    renderStatsGrid(element);
+    if (localStorage.getItem('_b')) {
+      s('.session-account-input-email').value = element.email;
+      s('.session-account-input-email').oninput();
+    }
+  }
 
   if (typeModels()[type].components().includes('blood')) {
     const maxFrames = 2;
