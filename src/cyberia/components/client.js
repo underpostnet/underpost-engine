@@ -1,8 +1,19 @@
 const renderSpinner = () => /*html*/ `
-        <div class='abs center' style='${borderChar(1, 'black')}'>
-            ${renderLang({ es: 'cargando', en: 'loading' })}
+        <div class='abs center loading-content' style='${borderChar(1, 'white')}'>
+            ${renderLang({ es: 'cargando', en: 'loading' }).toUpperCase()}
+            <br>
             <img src='/gifs/points-loading.gif' class='inl points-gif-loading'>
         </div>
+`;
+
+const renderCyberiaLogo = () => /*html*/ `
+      <div class='abs center'>
+                      
+          <img class='inl cyberia-logo-open-menu' src='/icons/144x144/cyberia.png'> C Y B E R I A
+          <br>
+          <span class='online-cyberia-logo-text'>o n l i n e</span>        
+
+      </div>
 `;
 
 const renderNotification = (status, message) => {
@@ -10,7 +21,7 @@ const renderNotification = (status, message) => {
   append(
     'body',
     /*html*/ `
-  <style>
+  <style class='style-${hash}'>
     .${hash} {
       width: 200px;
       height: 100px;
@@ -37,6 +48,7 @@ const renderNotification = (status, message) => {
   );
   setTimeout(() => {
     s(`.${hash}`).remove();
+    s(`.style-${hash}`).remove();
   }, 1500);
 };
 
@@ -151,14 +163,8 @@ append(
           </div>
       </div>
 
-      <div class='abs content-cyberia-logo-menu'>
-            <div class='abs center'>
-                
-                  <img class='inl cyberia-logo-open-menu' src='/icons/144x144/cyberia.png'> C Y B E R I A
-                  <br>
-                  <span class='online-cyberia-logo-text'>o n l i n e</span>        
-              
-            </div>
+      <div class='abs content-cyberia-logo'>
+            ${renderCyberiaLogo()}
       </div>
 
       <common-menu class='in'>            
@@ -182,9 +188,9 @@ append(
               ${renderLang({ es: 'Estadistica de Personaje', en: 'Character Stats' })}
             </div>
           </menu-button>
-          <menu-button class='in custom-cursor btn-config'>
+          <menu-button class='in custom-cursor btn-map'>
             <div class='abs center'>
-              ${renderLang({ en: 'Settings', es: 'Configuraciones' })}
+              ${renderLang({ en: 'Map', es: 'Mapa' })}
             </div>
           </menu-button>
           <menu-button class='in custom-cursor btn-wiki'>
@@ -192,9 +198,9 @@ append(
               ${renderLang({ en: 'Wiki', es: 'Wiki' })}
             </div>
           </menu-button>
-          <menu-button class='in custom-cursor btn-map'>
+          <menu-button class='in custom-cursor btn-config'>
             <div class='abs center'>
-              ${renderLang({ en: 'Map', es: 'Mapa' })}
+              ${renderLang({ en: 'Settings', es: 'Configuraciones' })}
             </div>
           </menu-button>
       </common-menu>

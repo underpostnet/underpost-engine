@@ -221,6 +221,27 @@ const validateEmail = (req, res, internalApi) => {
   }
 };
 
+const confirmEmailTokens = [];
+const confirmEmail = async (req, res, internalApi) => {
+  try {
+    // console.log('confirmEmail', req.user);
+
+    return res.status(400).json({
+      status: 'error',
+      data: {
+        message: renderLang({ en: 'Email not found', es: 'Email no encontrado' }, req),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
 const validateUsername = (req, res, internalApi) => {
   try {
     const { username } = req.params;
@@ -411,6 +432,9 @@ const authApi = (app, internalApi) => {
     validateUsername(req, res, internalApi)
   );
   app.post(process.env.API_BASE + '/auth/validate/session', authValidator, verifySession);
+  app.post(process.env.API_BASE + '/auth/confirm/email', authValidator, (req, res) =>
+    confirmEmail(req, res, internalApi)
+  );
 };
 
 export { authApi };

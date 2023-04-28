@@ -19,7 +19,7 @@ const renderNotification = (status, message) => {
   append(
     'body',
     /*html*/ `
-  <style>
+  <style class='style-${hash}'>
     .${hash} {
       width: 200px;
       height: 100px;
@@ -46,6 +46,7 @@ const renderNotification = (status, message) => {
   );
   setTimeout(() => {
     s(`.${hash}`).remove();
+    s(`.style-${hash}`).remove();
   }, 1500);
 };
 

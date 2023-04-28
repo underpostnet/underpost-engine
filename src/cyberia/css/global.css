@@ -126,8 +126,6 @@ label {
 .points-gif-loading {
     width: 30px;
     height: 30px;
-    top: 14px;
-    left: -15px;
 }
 
 .content-loading-btn {
@@ -371,9 +369,18 @@ input:disabled {
     */
 }
 
-.footer-account-section {
-    padding: 5px;
+.account-section {
+    padding: 5px 5px 10px 5px;
     border-bottom: 2px solid yellow;
+}
+
+.account-email-loading {
+    height: 70px;
+}
+
+.loading-content {
+    font-size: 10px;
+    color: black;
 }
 
 .btn-account-section {
@@ -396,7 +403,9 @@ common-menu {
     font-size: 8px;
 }
 
-.content-cyberia-logo-menu {
+
+
+.content-cyberia-logo {
     right: 5px;
     top: 0px;
     width: 200px;
