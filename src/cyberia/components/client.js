@@ -1076,12 +1076,13 @@ socket.on('update', (...args) => {
       if (eventElement._id) {
         s('no-session-menu').style.display = 'none';
         s('session-menu').style.display = 'block';
-        if (eventElement.confirmEmail) s('.btn-account-confirm-email').style.display = 'none';
       } else {
         s('session-menu').style.display = 'none';
         s('no-session-menu').style.display = 'block';
         if (localStorage.getItem('_b')) localStorage.removeItem('_b');
       }
+      if (eventElement.confirmEmail === true) s('.btn-account-confirm-email').style.display = 'none';
+      else s('.btn-account-confirm-email').style.display = 'inline-table';
     }
     elements[type].push(eventElement);
     renderPixiInitElement(eventElement);
@@ -1164,7 +1165,22 @@ socket.on('event', (...args) => {
     case 'dead-count':
       renderDeadCount(eventElement);
       break;
-
+    case 'duplicate-user-delete':
+      socket.disconnect();
+      htmls(
+        'body',
+        /*html*/ `
+     <div class='abs center'>
+        <img class='inl' src='/icons/144x144/cyberia.png'>
+        <br><br>
+        ${renderLang({
+          en: 'The platform is open <br> in another tab',
+          es: 'La plataforma ha sido abierta <br> en otra pestaña',
+        })}
+    </div>
+      `
+      );
+      break;
     default:
       break;
   }
