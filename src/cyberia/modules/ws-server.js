@@ -777,6 +777,14 @@ const wsServer = (httpServer, app, internalApi) => {
       maxBots: 2,
       bots: [{ sprite: 'kishins', attackValue: 20 }, { sprite: 'punk' }],
     },
+    {
+      map: 'todarp',
+      maxBots: 2,
+      bots: [
+        { sprite: 'scp-2040', username: 'SCP-2040', maxLife: 200, life: 200, attackValue: 30, velFactor: 2 },
+        { sprite: 'agent', username: 'Kinoshita', hostile: false, velFactor: 4 },
+      ],
+    },
   ];
   maps.map((dataMap) => {
     const map = dataMap.name_map;
