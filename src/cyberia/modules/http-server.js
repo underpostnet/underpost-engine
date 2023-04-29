@@ -56,8 +56,12 @@ const httpClient = (app) => {
             </head>
             <body>
                 <script>
+                  const dev = ${process.env.NODE_ENV === 'dev'};
                   const NAME_APP = '${NAME_APP}';
                   const API_BASE = '${process.env.API_BASE}';
+                  const IO_HOST = '${
+                    process.env.NODE_ENV === 'prod' ? process.env.HOST : 'ws://localhost:' + process.env.PORT
+                  }';
                   ${commonFunctions()}
                   ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
                   const renderInstanceTitle = ${renderInstanceTitle};

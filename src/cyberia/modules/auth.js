@@ -6,6 +6,7 @@ import {
   passwordMatchValidator,
   renderLang,
   merge,
+  s4,
 } from '../../core/modules/common.js';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
@@ -221,15 +222,72 @@ const validateEmail = (req, res, internalApi) => {
   }
 };
 
-const confirmEmailTokens = [];
+let confirmEmailTokens = [];
 const confirmEmail = async (req, res, internalApi) => {
   try {
     // console.log('confirmEmail', req.user);
+    const confirmEmailToken = s4() + s4();
+    confirmEmailTokens.push({
+      token: confirmEmailToken,
+      id: req.user.id,
+    });
+    setTimeout(() => {
+      confirmEmailTokens = confirmEmailTokens.filter((dataToken) => dataToken.token !== confirmEmailToken);
+    }, 1000 * 60 * 15); // 15 min
 
+    await internalApi.sendMail(req, {
+      type: 'confirm-email',
+      email: req.user.email,
+      username: req.user.username,
+      token: confirmEmailToken,
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        message: 'ok',
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
+const confirmEmailToken = (req, res, internalApi) => {
+  try {
+    const userData = confirmEmailTokens.find((x) => x.token === req.params.token);
+    if (userData) {
+      const user = getUsers().find((user) => user.id === userData.id);
+      if (user) {
+        user.confirmEmail = true;
+        const result = updateUser(user);
+        if (result.status === 'success') {
+          return res.redirect(internalApi.getHost('/?confirmemail=true'));
+        }
+        return res.status(400).json({
+          status: 'error',
+          data: {
+            error: result.data.message,
+          },
+        });
+      }
+      return res.status(400).json({
+        status: 'error',
+        data: {
+          error: renderLang({ es: 'usuario no encontrado', en: 'user not found' }, req),
+        },
+      });
+    }
     return res.status(400).json({
       status: 'error',
       data: {
-        message: renderLang({ en: 'Email not found', es: 'Email no encontrado' }, req),
+        error: renderLang({ es: 'token invalido', en: 'invalid token' }, req),
       },
     });
   } catch (error) {
@@ -361,8 +419,8 @@ const authValidator = (req, res, next) => {
 };
 
 const instanceInitElementByUser = (user) => {
-  const { username, email, element } = user;
-  return { ...element, _id: user.id, email, username };
+  const { username, email, element, confirmEmail } = user;
+  return { ...element, _id: user.id, email, username, confirmEmail };
 };
 
 const updateUser = (user) => {
@@ -435,6 +493,7 @@ const authApi = (app, internalApi) => {
   app.post(process.env.API_BASE + '/auth/confirm/email', authValidator, (req, res) =>
     confirmEmail(req, res, internalApi)
   );
+  app.get(process.env.API_BASE + '/auth/confirm/email/:token', (req, res) => confirmEmailToken(req, res, internalApi));
 };
 
 export { authApi };

@@ -55,12 +55,15 @@ const account = () => {
       s('.session-account-input-email').style.display = 'block';
       s('.session-account-warn-email').style.display = 'block';
 
-      const msg = renderLang({
-        es: 'Email de confirmacion enviado',
-        en: 'Confirmation email has been sent to your inbox',
-      });
-      // renderNotification('success', msg);
-      htmls('.session-account-warn-email', `<span style='color: green'>${msg}</span>`);
+      if (result.status === 'success') {
+        const msg = renderLang({
+          es: 'Email de confirmacion enviado',
+          en: 'Confirmation email has been sent to your inbox',
+        });
+        // renderNotification('success', msg);
+        return htmls('.session-account-warn-email', `<span style='color: green'>${msg}</span>`);
+      }
+      return htmls('.session-account-warn-email', result.data.message);
     };
   });
   return /*html*/ `

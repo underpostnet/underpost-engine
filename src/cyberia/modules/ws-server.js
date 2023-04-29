@@ -27,8 +27,6 @@ const dontCrossCorners = true;
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 
-const ioWsServerHost = process.env.NODE_ENV === 'prod' ? process.env.HOST : 'ws://localhost:' + process.env.PORT;
-
 const changeMapsPoints = [];
 maps.map((dataMap) => {
   const fromMap = dataMap.name_map;
@@ -358,8 +356,6 @@ const ssrWS = `
     const directions = ${JSONweb(directions)};
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
-    const ioWsServerHost = '${ioWsServerHost}';
-    const dev = ${process.env.NODE_ENV === 'dev'};
     const attackValidator =  ${attackValidator};
     const globalInstancesMapData = ${JSONweb(globalInstancesMapData['cyberia'])}
 `;
@@ -572,8 +568,8 @@ const wsApi = (app, internalApi) => {
 };
 
 const wsServer = (httpServer, app, internalApi) => {
-  const origins = [process.env.NODE_ENV === 'prod' ? process.env.HOST : `http://localhost:${process.env.PORT}`];
-  console.log('ioWsServerHost', ioWsServerHost);
+  const origins = [internalApi.getHost('/')];
+  console.log('host', internalApi.getHost());
   console.log('ws origins', origins);
 
   wsApi(app, internalApi);

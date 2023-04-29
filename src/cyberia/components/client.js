@@ -1015,7 +1015,7 @@ const removePixiElement = (element) => {
 };
 
 let firstLoad = true;
-const socket = io(ioWsServerHost);
+const socket = io(IO_HOST);
 
 socket.on('connect', () => {
   console.log(`socket.io event: connect | session id: ${socket.id}`);
@@ -1060,6 +1060,14 @@ socket.on('update', (...args) => {
     userPositionAvailablePoints = getAvailablePoints('user', ['building'], eventElement.map);
     userMatrixCollision = getMatrixCollision('user', ['building'], eventElement.map);
     console.log('userMatrixCollision', JSONmatrix(userMatrixCollision));
+    const queryParams = getQueryParams();
+    console.warn('queryParams', JSON.stringify(queryParams, null, 4));
+    if (queryParams.confirmemail) {
+      renderNotification(
+        'success',
+        renderLang({ es: 'Email confirmado con exito', en: 'Email confirmed successfully' })
+      );
+    }
     setURI('/' + eventElement.map);
     htmls('title', renderInstanceTitle({ name_map: eventElement.map }));
   }
@@ -1068,6 +1076,7 @@ socket.on('update', (...args) => {
       if (eventElement._id) {
         s('no-session-menu').style.display = 'none';
         s('session-menu').style.display = 'block';
+        if (eventElement.confirmEmail) s('.btn-account-confirm-email').style.display = 'none';
       } else {
         s('session-menu').style.display = 'none';
         s('no-session-menu').style.display = 'block';

@@ -6,6 +6,7 @@ import { wsServer } from './ws-server.js';
 import express from 'express';
 import { authApi } from './auth.js';
 import { createServer } from 'http';
+import { mailerApi } from './mailer.js';
 
 dotenv.config();
 console.log(process.argv);
@@ -20,9 +21,14 @@ app.use(express.json({ limit: '20MB' }));
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true, limit: '20MB' }));
 
-const internalApi = {};
+const internalApi = {
+  getHost: (uri) =>
+    (process.env.NODE_ENV === 'dev' ? `http://localhost:${process.env.PORT}` : process.env.HOST) + (uri ? uri : ''),
+};
 
 httpClient(app);
+
+mailerApi(internalApi);
 
 authApi(app, internalApi);
 
