@@ -7,25 +7,25 @@ const renderStatsGrid = (element) => {
         <span class='character-stats-grid-label'>
           ${renderLang({ es: 'skin', en: 'skin' }).toUpperCase()} 
         </span>
-        ${element.sprite}
+        ${element.sprite.toUpperCase()}
     </div>
     <div class='in  character-stats-grid-row'>
         <span class='character-stats-grid-label'>
           ${renderLang({ es: 'vida maxima', en: 'max life' }).toUpperCase()} 
         </span>
-        ${element.maxLife}
+        ${element.maxLife} PT.
     </div>
     <div class='in  character-stats-grid-row'>
         <span class='character-stats-grid-label'>
           ${renderLang({ en: 'attack points', es: 'puntos de ataque' }).toUpperCase()} 
         </span>
-        ${element.attackValue}
+        ${element.attackValue} PT.
     </div>
     <div class='in  character-stats-grid-row'>
         <span class='character-stats-grid-label'>
           ${renderLang({ en: 'life regeneration', es: 'regeneración de vida' }).toUpperCase()} 
         </span>
-        ${element.passiveHealValue} / s
+        ${element.passiveHealValue} PT. / s
     </div>
 
     <!--
