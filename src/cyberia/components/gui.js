@@ -45,6 +45,7 @@ append(
           ${wiki()}
           ${map()}
           ${account()}
+          ${quests()}
           <div class='abs close-gui custom-cursor hover-button'>
               <div class='abs center'>
                   <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -75,7 +76,12 @@ append(
               ${renderCyberiaLogo()}
         </div>
   
-        <common-menu class='in'>            
+        <common-menu class='in'>    
+            <menu-button class='in custom-cursor btn-quests'>
+              <div class='abs center'>
+                ${renderLang({ es: 'Misiones', en: 'Quests' })}
+              </div>
+            </menu-button>        
             <menu-button class='in custom-cursor btn-bag'>
               <div class='abs center'>
                 ${renderLang({ es: 'Mochila', en: 'Bag' })}
@@ -211,6 +217,12 @@ s('.btn-account').onclick = () => {
   s('account').style.display = 'block';
 };
 
+s('.btn-quests').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('quests').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
@@ -222,6 +234,7 @@ s('.close-gui').onclick = () => {
   s('wiki').style.display = 'none';
   s('map').style.display = 'none';
   s('account').style.display = 'none';
+  s('quests').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {
