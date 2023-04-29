@@ -59,7 +59,10 @@ const config = () => {
                             value: 'en',
                           },
                         ],
-                        onClick: (value) => window._execTranslate(value),
+                        onClick: (value) => {
+                          window._execTranslate(value);
+                          localStorage.setItem('lang', value);
+                        },
                       })}
                     </div>
                 </div>

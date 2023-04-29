@@ -1,3 +1,5 @@
+if (localStorage.getItem('lang')) s('html').lang = localStorage.getItem('lang');
+
 const renderSpinner = () => /*html*/ `
         <div class='abs center loading-content' style='${borderChar(1, 'white')}'>
             ${renderLang({ es: 'cargando', en: 'loading' }).toUpperCase()}
