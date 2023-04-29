@@ -617,25 +617,24 @@ const wsServer = (httpServer, app, internalApi) => {
       } else if (eventObj.token) {
         const user = await internalApi.getUserByToken(eventObj.token);
         // console.log('set user token', user);
-        if (user) {
-          element = validateSchemeElement(internalApi.instanceInitElementByUser(user));
-          const duplicateUser = elements['user'].find((element) => element._id === user.id);
-          if (duplicateUser) {
-            const duplicateUserClient = clients.find((client) => client.id === duplicateUser.id);
-            if (duplicateUserClient) {
-              const emitEvent = JSON.stringify({
-                type: 'duplicate-user-delete',
-              });
-              duplicateUserClient.emit('event', emitEvent);
-            }
-          }
-        }
+        if (user) element = validateSchemeElement(internalApi.instanceInitElementByUser(user));
       }
 
       if (element) {
         element.id = socket.id;
         if (element.life === 0) rebirdElement(clients, element, internalApi);
         delete eventObj.path;
+
+        const duplicateUser = elements['user'].find((_element) => _element._id === element._id);
+        if (duplicateUser) {
+          const duplicateUserClient = clients.find((client) => client.id === duplicateUser.id);
+          if (duplicateUserClient) {
+            const emitEvent = JSON.stringify({
+              type: 'duplicate-user-delete',
+            });
+            duplicateUserClient.emit('event', emitEvent);
+          }
+        }
       } else if (!eventObj.path) eventObj.path = '';
 
       if (eventObj.path || eventObj.path === '') {
