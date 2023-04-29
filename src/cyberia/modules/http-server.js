@@ -65,6 +65,7 @@ const httpClient = (app) => {
                   ${commonFunctions()}
                   ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
                   const renderInstanceTitle = ${renderInstanceTitle};
+                  if (localStorage.getItem('lang')) s('html').lang = localStorage.getItem('lang');
                   ${ssrColor}
                   ${ssrWS}
                   if (!dev) {
@@ -85,7 +86,14 @@ const httpClient = (app) => {
                   ${fs.readFileSync(`./src/${NAME_APP}/components/wiki.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/map.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/account.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/client.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/util.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-init.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-event.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-remove.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/gui.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/ws-client.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/touch.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/screen-keys.js`, 'utf8')}
                 </script>
             </body>
             </html>  
