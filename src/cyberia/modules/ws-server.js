@@ -529,7 +529,7 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
       setTimeout(() => {
         elements[type] = elements[type].filter((element) => element.id !== bullet.id);
       }, lifeTime);
-    }, botAttackInterval * 0.1);
+    }, 50);
   })();
 };
 
@@ -791,6 +791,7 @@ const wsServer = (httpServer, app, internalApi) => {
           life: 100,
           maxLife: 100,
           attackValue: 5,
+          velAttack: 500,
           passiveHealValue: 10,
           dropKoyn: random(1, 10),
           render: {
@@ -802,9 +803,7 @@ const wsServer = (httpServer, app, internalApi) => {
           ...customBot,
         };
         elements[type].push(bot);
-        params[type][bot.id] = {
-          activeAttack: true,
-        };
+        params[type][bot.id] = {};
       }
     })();
 
@@ -814,7 +813,7 @@ const wsServer = (httpServer, app, internalApi) => {
         setInterval(() => {
           if (!element.path) element.path = [];
           element.path.shift();
-          let targetUser, x2, y2, point;
+          let targetUser, x2, y2, point, idTarget;
           while (element.path.length === 0 && !targetUser) {
             // element.path = range(0, maxRangeMap).map(i => [i, i]);
 
@@ -831,9 +830,11 @@ const wsServer = (httpServer, app, internalApi) => {
                 })
               : [];
             if (usersTarget.length > 0) {
-              point = usersTarget[random(0, usersTarget.length - 1)].render;
+              const targetElement = usersTarget[random(0, usersTarget.length - 1)];
+              point = targetElement.render;
               x2 = point.x;
               y2 = point.y;
+              idTarget = targetElement.id;
             } else {
               point = getRandomPoint('', botPositionAvailablePoints);
               x2 = point.x;
@@ -858,24 +859,37 @@ const wsServer = (httpServer, app, internalApi) => {
             element.render.x = element.path[0][0];
             element.render.y = element.path[0][1];
           }
-          if (targetUser && params[type][element.id].activeAttack === true) {
-            params[type][element.id].activeAttack = false;
-            const direction = getDirection(element.render.x, element.render.y, x2, y2).direction;
-            attack(
-              clients,
-              {
-                element,
-                direction,
-                matrixCollision: botMatrixCollision,
-              },
-              map,
-              ['user'],
-              internalApi
-            );
-
-            setTimeout(() => {
-              params[type][element.id].activeAttack = true;
-            }, botAttackInterval);
+          if (targetUser) {
+            if (!params[type][element.id].intervalAttack) {
+              const instanceAttack = () => {
+                const elementInstance = elements[type].find((e) => e.id === element.id);
+                const targetInstance = elements['user'].find((e) => e.id === idTarget);
+                if (elementInstance && targetInstance) {
+                  const direction = getDirection(
+                    elementInstance.render.x,
+                    elementInstance.render.y,
+                    targetInstance.render.x,
+                    targetInstance.render.y
+                  ).direction;
+                  attack(
+                    clients,
+                    {
+                      element: elementInstance,
+                      direction,
+                      matrixCollision: botMatrixCollision,
+                    },
+                    map,
+                    ['user'],
+                    internalApi
+                  );
+                }
+              };
+              instanceAttack();
+              params[type][element.id].intervalAttack = setInterval(() => instanceAttack(), element.velAttack);
+            }
+          } else {
+            if (params[type][element.id].intervalAttack) clearInterval(params[type][element.id].intervalAttack);
+            params[type][element.id].intervalAttack = undefined;
           }
           clients.map((client) => {
             const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
