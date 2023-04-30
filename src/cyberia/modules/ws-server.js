@@ -123,6 +123,7 @@ const typeModels = () => {
       koyn: () => 0,
       velFactor: () => 1,
       deadTime: () => 3,
+      velAttack: () => 500,
     },
     bullet: {
       color: () => 'venetian red',
@@ -362,7 +363,7 @@ const ssrWS = `
 `;
 
 const validateSchemeElement = (element) => {
-  const forcesAttr = ['components', 'velFactor'];
+  const forcesAttr = ['components', 'velFactor', 'velAttack'];
   Object.keys(typeModels()[element.type]).map((key) => {
     if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
   });
@@ -439,7 +440,8 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
               dim: ceil10(bullet.render.dim),
               x: parseInt(render.x),
               y: parseInt(render.y),
-            })
+            }) &&
+            element.life > 0
           ) {
             element.life = element.life - eventElement.element.attackValue;
             if (element.life <= 0) {
@@ -534,7 +536,6 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
 };
 
 const params = { bot: [] };
-const botAttackInterval = 500;
 
 const findUserElementById = (req, res) => {
   try {

@@ -241,10 +241,13 @@ const attack = (element) => {
       })
     );
 
-    setTimeout(() => {
-      if (!params[element.type][element.id]) return;
-      params[element.type][element.id].shootActive = true;
-    }, 500);
+    setTimeout(
+      () => {
+        if (!params[element.type][element.id]) return;
+        params[element.type][element.id].shootActive = true;
+      },
+      element.velAttack !== undefined ? element.velAttack : 500
+    );
   }
 };
 
@@ -274,6 +277,13 @@ const instanceMapTypeStatus = () => {
 };
 
 const initMainUserJoy = (userElement) => {
+  if (hashIntervals[`key-attack`]) clearInterval(hashIntervals[`key-attack`]);
+  hashIntervals[`key-attack`] = setInterval(() => {
+    if (window.activeKey['Q'] || window.activeKey['q']) {
+      const element = elements.user.find((element) => element.id === socket.id);
+      if (element) attack(element);
+    }
+  }, 10);
   if (hashIntervals[`joy`]) clearInterval(hashIntervals[`joy`]);
   hashIntervals[`joy`] = setInterval(() => {
     const element = elements.user.find((element) => element.id === socket.id);
@@ -322,9 +332,7 @@ const initMainUserJoy = (userElement) => {
         update = true;
         element.path.shift();
       }
-      if (window.activeKey['Q'] || window.activeKey['q']) {
-        attack(element);
-      }
+
       if (update) {
         renderPixiEventElement(element);
         socket.emit('update', JSON.stringify(emitElement));
