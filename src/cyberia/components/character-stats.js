@@ -19,7 +19,7 @@ const renderStatsGrid = (element) => {
         <span class='character-stats-grid-label'>
           ${renderLang({ en: 'attack points', es: 'puntos de ataque' }).toUpperCase()} 
         </span>
-        ${element.attackValue} PT.
+        ${element.attackValue} PT. / ${element.velAttack}ms
     </div>
     <div class='in  character-stats-grid-row'>
         <span class='character-stats-grid-label'>

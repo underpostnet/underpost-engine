@@ -76,7 +76,7 @@ const wiki = () => {
             <div class='fl wiki-row'>
               <div class='in fll wiki-key'>
                 <div class='in wiki-cell'>
-                   ${renderLang({ en: '[Q] key:', es: 'tecla [Q]:' })}
+                   ${renderLang({ en: '[ Q ] key:', es: 'tecla [ Q ]:' })}
                 </div>
               </div>
               <div class='in fll wiki-value'>
@@ -88,7 +88,7 @@ const wiki = () => {
             <div class='fl wiki-row'>
               <div class='in fll wiki-key'>
                 <div class='in wiki-cell'>
-                   ${renderLang({ en: '[Enter] key:', es: 'tecla [Enter]:' })}
+                   ${renderLang({ en: '[ Enter ] key:', es: 'tecla [ Enter ]:' })}
                 </div>
               </div>
               <div class='in fll wiki-value'>
@@ -100,12 +100,30 @@ const wiki = () => {
             <div class='fl wiki-row'>
               <div class='in fll wiki-key'>
                 <div class='in wiki-cell'>
-                   ${renderLang({ en: '[Home] key:', es: 'tecla [Inicio]:' })}
+                   ${renderLang({ en: '[ Home ] key:', es: 'tecla [ Inicio ]:' })}
                 </div>
               </div>
               <div class='in fll wiki-value'>
                 <div class='in wiki-cell'>
                     ${renderLang({ en: 'Close/Open Menu/GUI', es: 'Cerrar Menu/GUI' })}
+                </div>
+              </div>
+            </div>
+            <div class='fl wiki-row'>
+              <div class='in fll wiki-key'>
+                <div class='in wiki-cell'>
+                   ${renderLang({
+                     en: '[ &larr; &rarr; &uarr; &darr; ] keys:',
+                     es: ' teclas [ &larr; &rarr; &uarr; &darr; ]:',
+                   })}
+                </div>
+              </div>
+              <div class='in fll wiki-value'>
+                <div class='in wiki-cell'>
+                    ${renderLang({
+                      en: 'Movement to quadrant to the adjacent or diagonal direction',
+                      es: 'Movimiento a cuadrante de dirección adyacente o diagonal',
+                    })}
                 </div>
               </div>
             </div>
