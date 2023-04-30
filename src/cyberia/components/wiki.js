@@ -105,7 +105,7 @@ const wiki = () => {
               </div>
               <div class='in fll wiki-value'>
                 <div class='in wiki-cell'>
-                    ${renderLang({ en: 'Close/Open Menu/GUI', es: 'Cerrar Menu/GUI' })}
+                    ${renderLang({ en: 'Close/Open Menu/GUI', es: 'Cerrar/Abrir Menu/GUI' })}
                 </div>
               </div>
             </div>

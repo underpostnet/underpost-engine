@@ -759,6 +759,12 @@ const wsServer = (httpServer, app, internalApi) => {
     const removeEvent = () => {
       clients.splice(clients.indexOf(socket), 1);
       const elementIndex = elements[type].findIndex((element) => element.id === socket.id);
+      if (params[type][socket.id]) {
+        if (params[type][socket.id][`heal-passive-interval`])
+          clearInterval(params[type][socket.id][`heal-passive-interval`]);
+
+        delete params[type][socket.id];
+      }
       clients.map((client) => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
         if (elements[type][clientIndex].map === elements[type][elementIndex].map)
