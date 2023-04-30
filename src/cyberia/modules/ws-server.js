@@ -24,6 +24,7 @@ const maxRangeMapParam = 16;
 const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
+const minBotsMap = 3;
 
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
@@ -124,6 +125,7 @@ const typeModels = () => {
       velFactor: () => 1,
       deadTime: () => 3,
       velAttack: () => 500,
+      velPassiveHealValue: () => 1000,
     },
     bullet: {
       color: () => 'venetian red',
@@ -363,7 +365,7 @@ const ssrWS = `
 `;
 
 const validateSchemeElement = (element) => {
-  const forcesAttr = ['components', 'velFactor', 'velAttack'];
+  const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
   Object.keys(typeModels()[element.type]).map((key) => {
     if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
   });
@@ -535,7 +537,25 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
   })();
 };
 
-const params = { bot: [] };
+const params = { bot: [], user: [] };
+
+const setIntervalPassiveHeal = (clients, element) => {
+  if (!params[element.type][element.id]) return;
+  if (params[element.type][element.id]['heal-passive-interval'])
+    clearInterval(params[element.type][element.id]['heal-passive-interval']);
+  params[element.type][element.id]['heal-passive-interval'] = setInterval(
+    () => {
+      if (element.life > 0 && element.life < element.maxLife) {
+        element.life = element.life + element.passiveHealValue;
+        if (element.life > element.maxLife) element.life = newInstance(element.maxLife);
+        clients.map((client) => {
+          client.emit('update', JSON.stringify({ id: element.id, type: element.type, life: element.life }));
+        });
+      }
+    },
+    element.velPassiveHealValue !== undefined ? element.velPassiveHealValue : 1000
+  );
+};
 
 const findUserElementById = (req, res) => {
   try {
@@ -662,6 +682,11 @@ const wsServer = (httpServer, app, internalApi) => {
         if (element.map === map) socket.emit('update', JSON.stringify(element));
       });
       elements[type].push(element);
+      if (!params[type][element.id]) params[type][element.id] = {};
+      setIntervalPassiveHeal(
+        clients,
+        elements[type].find((e) => e.id === element.id)
+      );
       clients.map((client) => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
         if (clientIndex > -1 && elements[type][clientIndex].map === map) client.emit('update', JSON.stringify(element));
@@ -772,7 +797,7 @@ const wsServer = (httpServer, app, internalApi) => {
     const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
     const configBot = mapBots.find((x) => x.map === map);
     (() => {
-      const maxBots = configBot && configBot.maxBots !== undefined ? configBot.maxBots : 3;
+      const maxBots = configBot && configBot.maxBots !== undefined ? configBot.maxBots : minBotsMap;
       const { color, render } = getParamsType(type);
       const { dim } = render;
       while (
@@ -801,10 +826,15 @@ const wsServer = (httpServer, app, internalApi) => {
             dim,
           },
           hostile: true,
+          velPassiveHealValue: 1000,
           ...customBot,
         };
         elements[type].push(bot);
         params[type][bot.id] = {};
+        setIntervalPassiveHeal(
+          clients,
+          elements[type].find((e) => e.id === bot.id)
+        );
       }
     })();
 
@@ -911,20 +941,6 @@ const wsServer = (httpServer, app, internalApi) => {
         }, updateTimeInterval * (element.velFactor ? element.velFactor : 1));
       });
   });
-
-  setInterval(() => {
-    ['bot', 'user'].map((type) => {
-      elements[type].map((element) => {
-        if (element.life > 0 && element.life < element.maxLife) {
-          element.life = element.life + element.passiveHealValue;
-          if (element.life > element.maxLife) element.life = newInstance(element.maxLife);
-          clients.map((client) => {
-            client.emit('update', JSON.stringify({ id: element.id, type, life: element.life }));
-          });
-        }
-      });
-    });
-  }, 1000);
 
   setInterval(() => {
     ['user'].map((type) => {
