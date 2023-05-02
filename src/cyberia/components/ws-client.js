@@ -4,7 +4,9 @@ const pixi = {};
 const params = {};
 const hashIntervals = {};
 let changeMapsPoints = [];
-let currentMapType = ['pve', 'pvp'];
+let mapMetaData = {
+  types: ['pve', 'pvp'],
+};
 
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
@@ -99,6 +101,7 @@ socket.on('init-data', (...args) => {
   const initData = JSON.parse(args);
   console.log('initData', initData);
   changeMapsPoints = initData.changeMapsPoints;
+  mapMetaData = initData.mapMetaData;
   instanceMapTypeStatus();
   changeMapsPoints.map((mapData) => {
     (() => {

@@ -252,19 +252,18 @@ const attack = (element) => {
 };
 
 const instanceMapTypeStatus = () => {
-  currentMapType = newInstance(changeMapsPoints[0].type);
   htmls(
     'map-type-status',
     /*html*/ `
     <div class='fix map-type-status-content'>
           <div class='abs center'>
-          ${currentMapType
+          ${mapMetaData.types
             .map(
               (t, i) => /*html*/ `
                <span class='map-type-${t}'> 
                 ${t.toUpperCase()}
                </span>
-               ${i !== currentMapType.length - 1 ? `` : ''}
+               ${i !== mapMetaData.types.length - 1 ? `` : ''}
           `
             )
             .join('')} 

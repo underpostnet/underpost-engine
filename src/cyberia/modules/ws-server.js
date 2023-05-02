@@ -16,6 +16,7 @@ import {
 } from '../../core/modules/common.js';
 import { maps } from './maps.js';
 import { mapBots } from './bots.js';
+import { quests } from './quests.js';
 
 dotenv.config();
 
@@ -59,7 +60,6 @@ maps.map((dataMap) => {
           toX: toMapData.x,
           toY: toMapData.y,
           arrow: cellFrom[2],
-          type: dataMap.type,
         });
       }
     })
@@ -695,6 +695,10 @@ const wsServer = (httpServer, app, internalApi) => {
         'init-data',
         JSON.stringify({
           changeMapsPoints: changeMapsPoints.filter((mapData) => mapData.fromMap === map),
+          mapMetaData: {
+            quests: quests.filter((q) => q.map === map),
+            types: maps.find((m) => m.name_map === map).type,
+          },
         })
       );
     });
