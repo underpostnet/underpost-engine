@@ -457,7 +457,10 @@ common-menu {
     font-size: 10px;
 }
 
-.quest-menut-btn-see-more {
+.quest-menut-btn-see {
     font-size: 10px;
-    padding: 5px;
+}
+
+.quest-btn-see-content {
+    padding: 10px;
 }
