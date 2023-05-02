@@ -191,24 +191,6 @@ const id = () => {
 const matrixIterator = (fn, maxMapArg) =>
   range(0, maxRangeMap(maxMapArg)).map((y) => range(0, maxRangeMap(maxMapArg)).map((x) => fn(x, y)));
 
-const attackValidator = (element, maps) => {
-  let mapData;
-  switch (element.type) {
-    case 'bot':
-      mapData = maps.find((mapData) => mapData.fromMap === element.map && mapData.type.includes('pve'));
-      break;
-    case 'user':
-      mapData = maps.find(
-        (mapData) => mapData.fromMap === element.map && (mapData.type.includes('pvp') || mapData.type.includes('pve'))
-      );
-      break;
-    default:
-      break;
-  }
-  if (mapData) return true;
-  return false;
-};
-
 const validateCollision = (A, B) => {
   for (const yA of range(0, A.dim - 1)) {
     for (const xA of range(0, A.dim - 1)) {
@@ -360,7 +342,6 @@ const ssrWS = `
     const directions = ${JSONweb(directions)};
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
-    const attackValidator =  ${attackValidator};
     const globalInstancesMapData = ${JSONweb(globalInstancesMapData['cyberia'])}
 `;
 
@@ -696,7 +677,7 @@ const wsServer = (httpServer, app, internalApi) => {
         JSON.stringify({
           changeMapsPoints: changeMapsPoints.filter((mapData) => mapData.fromMap === map),
           mapMetaData: {
-            quests: quests.filter((q) => q.map === map),
+            quests: quests.filter((q) => q.maps === 'all' || q.maps.includes(map)),
             types: maps.find((m) => m.name_map === map).type,
           },
         })

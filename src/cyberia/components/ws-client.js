@@ -103,6 +103,7 @@ socket.on('init-data', (...args) => {
   changeMapsPoints = initData.changeMapsPoints;
   mapMetaData = initData.mapMetaData;
   instanceMapTypeStatus();
+  renderMapsQuests();
   changeMapsPoints.map((mapData) => {
     (() => {
       const type = 'to-map';

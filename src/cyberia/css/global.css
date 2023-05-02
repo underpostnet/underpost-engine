@@ -412,3 +412,52 @@ common-menu {
     height: 50px;
     font-size: 10px;
 }
+
+.quest-menu-btn-content {
+    border: 2px solid yellow;
+    color: yellow;
+    margin: 3px;
+}
+
+.quest-menu-btn-content:hover {
+    border: 2px solid white;
+}
+
+.quest-menu-sprite-img {
+    width: 80px;
+    height: 80px;
+    margin: auto;
+}
+
+.quest-menu-btn-cell {
+    padding: 10px;
+}
+
+.quest-menu-btn-cell-0 {
+    width: 30%;
+}
+
+.quest-menu-btn-cell-1 {
+    width: 70%;
+}
+
+.quest-menu-btn-name-npc {
+    padding: 5px;
+}
+
+.quest-menu-btn-title {
+    font-size: 18px;
+    padding: 5px;
+    color: black;
+}
+
+.quest-menu-btn-dialog {
+    color: white;
+    padding: 5px;
+    font-size: 10px;
+}
+
+.quest-menut-btn-see-more {
+    font-size: 10px;
+    padding: 5px;
+}

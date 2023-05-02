@@ -223,7 +223,7 @@ const attack = (element) => {
   if (
     element.life > 0 &&
     params[element.type][element.id].shootActive === true &&
-    attackValidator(element, changeMapsPoints)
+    !mapMetaData.types.includes('safe')
   ) {
     params[element.type][element.id].shootActive = false;
 
