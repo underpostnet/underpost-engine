@@ -81,6 +81,11 @@ append(
               <div class='abs center'>
                 ${renderLang({ es: 'Misiones', en: 'Quests' })}
               </div>
+              <div class='abs noti-circle noti-circle-quests' style='display: none'>
+                <div class='abs center noti-count-quests'>
+                  
+                </div>
+              </div>
             </menu-button>        
             <menu-button class='in custom-cursor btn-bag'>
               <div class='abs center'>
@@ -221,6 +226,7 @@ s('.btn-quests').onclick = () => {
   s('.close-menu').click();
   s('gui-layer').style.display = 'block';
   s('quests').style.display = 'block';
+  resetNotiCircleQuests();
 };
 
 s('.close-gui').onclick = () => {

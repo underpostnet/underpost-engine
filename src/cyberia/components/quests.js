@@ -1,8 +1,10 @@
 const renderMapsQuests = () => {
+  resetNotiCircleQuests();
   htmls(
     'map-quests-render',
     /*html*/ mapMetaData.quests
       .map((questData) => {
+        renderNotiCircleQuests();
         let openQuest = false;
         const hashQuest = 'quest-' + s4() + s4();
 
@@ -10,7 +12,7 @@ const renderMapsQuests = () => {
           s(`.${hashQuest}`).onclick = () => {
             if (!openQuest) {
               openQuest = true;
-              htmls(`.qmbd-${hashQuest}`, renderLang(questData.dialog));
+              htmls(`.qmbd-${hashQuest}`, renderLang(questData.dialog) + '.');
               s(`.qmbsm-${hashQuest}`).style.display = 'none';
               s(`.qmbsl-${hashQuest}`).style.display = 'inline-table';
             }
