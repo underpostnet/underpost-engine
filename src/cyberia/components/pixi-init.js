@@ -168,7 +168,11 @@ const renderPixiInitElement = (element) => {
       hashIntervals[element.id][`diff-koyn-indicator`] = setInterval(() => {
         if (!params[type][element.id] || params[type][element.id].lastKoyn === undefined) return;
         if (element.koyn !== params[type][element.id].lastKoyn) {
-          renderEventBoard(renderKoynLogo(`+${element.koyn - params[type][element.id].lastKoyn}`));
+          renderEventBoard(/*html*/ `
+              <div class='abs center' style='width: 120px; height: 120px;'>
+                    ${renderKoynLogo(`+${element.koyn - params[type][element.id].lastKoyn}`)}
+              </div>
+          `);
           htmls('.bag-koyn-indicator', element.koyn);
           params[type][element.id].lastKoyn = newInstance(element.koyn);
         }
@@ -300,6 +304,30 @@ const renderPixiInitElement = (element) => {
   // .endFill();
 
   if (element.id === socket.id) initMainUserJoy(element);
+
+  if (element.displayItems)
+    element.displayItems.map((item) => {
+      let currentFrame = 0;
+      range(0, item.frames).map((frame) => {
+        const src = `/items/${item.id}/${frame}.gif`;
+        pixi[type][element.id][src] = PIXI.Sprite.from(src);
+        pixi[type][element.id][src].x = dim * item.renderFactor.x;
+        pixi[type][element.id][src].y = dim * item.renderFactor.y;
+        pixi[type][element.id][src].width = dim * item.renderFactor.width;
+        pixi[type][element.id][src].height = dim * item.renderFactor.height;
+        pixi[type][element.id][src].visible = frame === currentFrame;
+        container.addChild(pixi[type][element.id][src]);
+      });
+      if (hashIntervals[element.id][item.id]) clearInterval(hashIntervals[element.id][item.id]);
+      hashIntervals[element.id][item.id] = setInterval(function () {
+        if (!params[type][element.id] || !pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`]) return;
+        pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = false;
+        currentFrame++;
+        if (currentFrame > item.frames) currentFrame = 0;
+        if (!params[type][element.id] || !pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`]) return;
+        pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = true;
+      }, item.frameTimeInterval);
+    });
 
   return element;
 };

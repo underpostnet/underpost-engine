@@ -1,3 +1,5 @@
+import { items } from './items.js';
+
 const mapBots = [
   {
     map: 'zax-shop',
@@ -10,7 +12,10 @@ const mapBots = [
   {
     map: 'orange-over-purple',
     maxBots: 2,
-    bots: [{ sprite: 'kishins', attackValue: 20 }, { sprite: 'punk' }],
+    bots: [
+      { sprite: 'kishins', attackValue: 20 },
+      { sprite: 'punk', displayItems: items.filter((i) => i.display.includes('punk')), velFactor: 3 },
+    ],
   },
   {
     map: 'todarp',
