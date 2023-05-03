@@ -15,9 +15,9 @@ const config = () => {
                       </div>
                       <div class='in fll config-col'>
                        <div class='in config-col-content'>
-                          <div class='inl toggle-switch-content'>
+                          <div class='inl toggle-switch-content custom-cursor'>
                           ${renderToggleSwitch({
-                            factor: 23,
+                            factor: 35,
                             id: 'full-screen-toggle',
                             checked: false,
                             label: ['', ''],

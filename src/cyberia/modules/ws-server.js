@@ -696,6 +696,7 @@ const wsServer = (httpServer, app, internalApi) => {
           mapMetaData: {
             quests: quests.filter((q) => q.maps === 'all' || q.maps.includes(map)),
             types: maps.find((m) => m.name_map === map).type,
+            map,
           },
         })
       );

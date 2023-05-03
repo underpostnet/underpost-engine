@@ -26,10 +26,7 @@ setInterval(() => {
         top: 0px;
         left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
       }
-      main-menu, .open-menu {
-        top: 10px;
-        left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2 + 10}px;
-      }
+      
       .grid-content {
         height: ${window.innerHeight * 0.5}px;
       }
@@ -43,15 +40,8 @@ setInterval(() => {
       }
       event-board {
         width: ${screenDim.minValue * 0.7}px;
-        top: 10px;
-        left: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) + 70}px;
       }
-      .map-type-status-content {
-        width: 70px;
-        height: 40px;
-        bottom: 10px;
-        right: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) * 1.1}px;
-      }
+
       .character-stats-section {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
       }

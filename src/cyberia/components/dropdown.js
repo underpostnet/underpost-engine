@@ -19,7 +19,7 @@ const renderDropDown = (options) => {
         }
         .dropdown-option-${options.id} {
             border: 2px solid yellow;
-            padding: 5px;
+            padding: 15px;
             color: yellow;
         }
         .dropdown-option-${options.id}:hover {

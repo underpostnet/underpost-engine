@@ -27,7 +27,6 @@ const renderToggleSwitch = (options) => {
             height: ${factor}px;
             background: #121212;
             border-radius: ${factor * 0.1}px;
-            cursor: pointer;
         }
         .ts-round-${options.id} {
             border-radius: 50%;
