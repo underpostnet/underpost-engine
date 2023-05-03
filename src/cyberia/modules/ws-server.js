@@ -642,8 +642,9 @@ const wsServer = (httpServer, app, internalApi) => {
         element.id = socket.id;
         if (element.life === 0) rebirdElement(clients, element, internalApi);
         delete eventObj.path;
-
-        const duplicateUser = elements['user'].find((_element) => _element._id === element._id);
+        const duplicateUser = elements['user'].find(
+          (_element) => _element._id === element._id && _element._id !== undefined
+        );
         if (duplicateUser) {
           const duplicateUserClient = clients.find((client) => client.id === duplicateUser.id);
           if (duplicateUserClient) {
