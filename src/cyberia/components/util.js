@@ -84,7 +84,7 @@ const renderEventBoard = (dataBoard) => {
       s('event-board').style.height = 67.5 * 2 + 'px';
       break;
     default:
-      s('event-board').style.height = 45 * 3 + 'px';
+      // s('event-board').style.height = 45 * 3 + 'px';
       break;
   }
 
