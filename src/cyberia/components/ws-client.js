@@ -176,13 +176,13 @@ socket.onAny((event, ...args) => {
 });
 
 // intervals clear
-setInterval(() => {
-  Object.keys(hashIntervals).map((idElement) => {
-    if (!getAllElements().find((e) => e.id === idElement)) {
-      Object.keys(hashIntervals[idElement]).map((idInterval) => {
-        if (hashIntervals[idElement][idInterval]) clearInterval(hashIntervals[idElement][idInterval]);
-      });
-      delete hashIntervals[idElement];
-    }
-  });
-}, 1000);
+// setInterval(() => {
+//   Object.keys(hashIntervals).map((idElement) => {
+//     if (!getAllElements().find((e) => e.id === idElement)) {
+//       Object.keys(hashIntervals[idElement]).map((idInterval) => {
+//         if (hashIntervals[idElement][idInterval]) clearInterval(hashIntervals[idElement][idInterval]);
+//       });
+//       delete hashIntervals[idElement];
+//     }
+//   });
+// }, 1000);
