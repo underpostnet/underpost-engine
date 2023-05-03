@@ -10,9 +10,10 @@ const items = [
       width: 0.75,
       height: 0.75,
     },
-    drop: [1, 1],
+    probabilityDrop: [1, 1],
     display: ['punk'],
-    drop: [],
+    drop: [{ map: 'orange-over-purple', sprite: 'punk' }],
+    categoryFactor: 1,
   },
 ];
 

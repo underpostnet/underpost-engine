@@ -147,6 +147,33 @@ socket.on('close', (...args) => {
 socket.on('event', (...args) => {
   const eventElement = JSON.parse(args);
   switch (eventElement.type) {
+    case 'drop':
+      const { item, elementFromDrop } = eventElement;
+      renderEventBoard({
+        history: true,
+        tag: 'DROP',
+        msg: /*html*/ `                    
+          ${renderLang({
+            es: /*html*/ `
+              [<span style='color: yellow'> 
+                ${elementFromDrop.username} 
+                  <img src='/sprites/${elementFromDrop.sprite}/08/0.png' class='inl icon-board-img'> 
+                </span>]
+                ha botado un item`,
+            en: /*html*/ `
+              [The <span style='color: yellow'> 
+                ${elementFromDrop.username} 
+                  <img src='/sprites/${elementFromDrop.sprite}/08/0.png' class='inl icon-board-img'> 
+                </span>]
+                has dropped an item`,
+          })}     
+          [<span style='color: yellow'>
+            ${renderLang(item.name)}
+            <img src='/items/${item.id}/animation.gif' class='inl icon-board-img'>    
+          </span>]
+      `,
+      });
+      break;
     case 'dead-count':
       renderDeadCount(eventElement);
       break;

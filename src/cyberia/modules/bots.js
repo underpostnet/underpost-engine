@@ -13,8 +13,8 @@ const mapBots = [
     map: 'orange-over-purple',
     maxBots: 2,
     bots: [
-      { sprite: 'kishins', attackValue: 20 },
-      { sprite: 'punk', displayItems: items.filter((i) => i.display.includes('punk')), velFactor: 3 },
+      { sprite: 'kishins', username: 'Subkishins', attackValue: 20 },
+      { sprite: 'punk', username: 'Tim', displayItems: items.filter((i) => i.display.includes('punk')), velFactor: 3 },
     ],
   },
   {

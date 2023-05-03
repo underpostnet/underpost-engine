@@ -168,11 +168,13 @@ const renderPixiInitElement = (element) => {
       hashIntervals[element.id][`diff-koyn-indicator`] = setInterval(() => {
         if (!params[type][element.id] || params[type][element.id].lastKoyn === undefined) return;
         if (element.koyn !== params[type][element.id].lastKoyn) {
-          renderEventBoard(/*html*/ `
-              <div class='abs center' style='width: 120px; height: 120px;'>
-                    ${renderKoynLogo(`+${element.koyn - params[type][element.id].lastKoyn}`)}
-              </div>
-          `);
+          const msg = /*html*/ `
+          ${renderLang({ en: 'Has obtained', es: 'Has obtenido' })}
+          [ <span style='color: yellow; font-size: 15px'>+${
+            element.koyn - params[type][element.id].lastKoyn
+          }</span><img src='/icons/50x50/koyn.gif' class='inl icon-board-img'> ] koyns.
+          `;
+          renderEventBoard(/*html*/ { tag: 'KOYN', msg, history: true });
           htmls('.bag-koyn-indicator', element.koyn);
           params[type][element.id].lastKoyn = newInstance(element.koyn);
         }
@@ -325,7 +327,7 @@ const renderPixiInitElement = (element) => {
         currentFrame++;
         if (currentFrame > item.frames) currentFrame = 0;
         if (!params[type][element.id] || !pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`]) return;
-        pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = true;
+        if (element.life > 0) pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = true;
       }, item.frameTimeInterval);
     });
 

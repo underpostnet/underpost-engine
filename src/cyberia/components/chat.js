@@ -3,7 +3,7 @@ const renderChatMsg = (element, msg) => {
   const render = /*html*/ `
   
   <div class='in chat-msg-content' ${element.id === socket.id ? `style='text-align: right'` : ''}>
-      <span style='font-size: 8px'>${new Date().toISOString().replace('T', ' ').slice(0, -8)}</span>
+      <span style='font-size: 8px'>${getDateFormat(new Date())}</span>
       <br>
       <img class='inl chat-avatar-icon' src='/sprites/${
         element.sprite
@@ -14,7 +14,22 @@ const renderChatMsg = (element, msg) => {
   
   `;
   append('history-chat', render);
-  if (element.id !== socket.id) renderEventBoard(render);
+  if (element.id !== socket.id)
+    renderEventBoard({
+      tag: 'CHAT',
+      msg: renderLang({
+        es: /*html*/ `
+  [ <span style='color: yellow'>${getDisplayName(element)}  <img src='/sprites/${
+          element.sprite
+        }/08/0.png' class='inl icon-board-img'></span> ] <span style='color: yellow'>Escribe: </span> ${msg}
+  `,
+        en: /*html*/ `
+  [ <span style='color: yellow'>${getDisplayName(element)}  <img src='/sprites/${
+          element.sprite
+        }/08/0.png' class='inl icon-board-img'></span> ] <span style='color: yellow'>Write: </span> ${msg}
+  `,
+      }),
+    });
   setTimeout(() => {
     s('history-chat').scrollTop = s('history-chat').scrollHeight;
     // s('history-chat').scrollTop = s('history-chat').offsetTop;

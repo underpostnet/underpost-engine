@@ -86,6 +86,7 @@ const httpClient = (app) => {
                   ${fs.readFileSync(`./src/${NAME_APP}/components/config.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/wiki.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/map.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/history-board.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/account.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/util.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-init.js`, 'utf8')}

@@ -17,6 +17,7 @@ import {
 import { maps } from './maps.js';
 import { mapBots } from './bots.js';
 import { quests } from './quests.js';
+import { items } from './items.js';
 
 dotenv.config();
 
@@ -450,6 +451,21 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
                   });
                 }
               }
+              const drops = items.filter((i) =>
+                i.drop.find((d) => d.map === element.map && d.sprite === element.sprite)
+              );
+              drops.map((item) => {
+                if (random(1, item.probabilityDrop[1]) <= item.probabilityDrop[0]) {
+                  const client = clients.find((c) => c.id === eventElement.element.id);
+                  const emitDrop = {
+                    type: 'drop',
+                    item,
+                    elementFromDrop: element,
+                  };
+                  // console.log('emitDrop', emitDrop);
+                  if (client) client.emit('event', JSON.stringify(emitDrop));
+                }
+              });
               rebirdElement(clients, element, internalApi);
             }
             clients.map((client) => {

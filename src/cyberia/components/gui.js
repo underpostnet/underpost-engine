@@ -20,9 +20,9 @@ append(
   
       <pixi-container class='in'></pixi-container>
   
-      <event-board-content>
-  
-      </event-board-content>
+      <event-board class='abs' style='display: none'>
+          
+      </event-board>
   
       <map-type-status>
       </map-type-status>
@@ -46,6 +46,7 @@ append(
           ${map()}
           ${account()}
           ${quests()}
+          ${historyBoard()}
           <div class='abs close-gui custom-cursor hover-button'>
               <div class='abs center'>
                   <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
@@ -115,6 +116,11 @@ append(
             <menu-button class='in custom-cursor btn-wiki'>
               <div class='abs center'>
                 ${renderLang({ en: 'Wiki', es: 'Wiki' })}
+              </div>
+            </menu-button>
+            <menu-button class='in custom-cursor btn-history-board'>
+              <div class='abs center'>
+                ${renderLang({ en: 'Event History', es: 'Historial de eventos' })}
               </div>
             </menu-button>
             <menu-button class='in custom-cursor btn-config'>
@@ -229,6 +235,12 @@ s('.btn-quests').onclick = () => {
   resetNotiCircleQuests();
 };
 
+s('.btn-history-board').onclick = () => {
+  s('.close-menu').click();
+  s('gui-layer').style.display = 'block';
+  s('history-board').style.display = 'block';
+};
+
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   s('create-account').style.display = 'none';
@@ -241,6 +253,7 @@ s('.close-gui').onclick = () => {
   s('map').style.display = 'none';
   s('account').style.display = 'none';
   s('quests').style.display = 'none';
+  s('history-board').style.display = 'none';
 };
 
 s('.btn-logout').onclick = () => {

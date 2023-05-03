@@ -43,15 +43,14 @@ setInterval(() => {
       }
       event-board {
         width: ${screenDim.minValue * 0.7}px;
-        height: 80px;
         top: 10px;
         left: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) + 70}px;
       }
       .map-type-status-content {
         width: 70px;
         height: 40px;
-        top: 10px;
-        right: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) + 10}px;
+        bottom: 10px;
+        right: ${(screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) * 1.1}px;
       }
       .character-stats-section {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
