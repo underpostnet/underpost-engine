@@ -127,6 +127,7 @@ const typeModels = () => {
       deadTime: () => 3,
       velAttack: () => 500,
       velPassiveHealValue: () => 1000,
+      items: () => [],
     },
     bullet: {
       color: () => 'venetian red',
@@ -347,9 +348,11 @@ const ssrWS = `
 `;
 
 const validateSchemeElement = (element) => {
+  const arrAttr = ['components', 'items'];
   const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
   Object.keys(typeModels()[element.type]).map((key) => {
     if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
+    if (arrAttr.includes(key)) element[key] = Object.values(element[key]);
   });
   return element;
 };
@@ -459,11 +462,30 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
                   const client = clients.find((c) => c.id === eventElement.element.id);
                   const emitDrop = {
                     type: 'drop',
-                    item,
+                    item: {
+                      name: item.name,
+                      id: item.id,
+                    },
                     elementFromDrop: element,
                   };
+                  const indexItemExist = eventElement.element.items.findIndex((i) => i.id === item.id);
+                  if (indexItemExist > -1) {
+                    eventElement.element.items[indexItemExist].count++;
+                  } else {
+                    eventElement.element.items.push({ id: item.id, count: 1 });
+                  }
                   // console.log('emitDrop', emitDrop);
-                  if (client) client.emit('event', JSON.stringify(emitDrop));
+                  if (client) {
+                    client.emit('event', JSON.stringify(emitDrop));
+                    client.emit(
+                      'update',
+                      JSON.stringify({
+                        id: eventElement.element.id,
+                        type: eventElement.element.type,
+                        items: eventElement.element.items,
+                      })
+                    );
+                  }
                 }
               });
               rebirdElement(clients, element, internalApi);
@@ -836,6 +858,7 @@ const wsServer = (httpServer, app, internalApi) => {
           },
           hostile: true,
           velPassiveHealValue: 1000,
+          velFactor: 3,
           ...customBot,
         };
         elements[type].push(bot);

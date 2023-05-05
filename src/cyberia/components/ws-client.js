@@ -13,7 +13,7 @@ Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}
 const app = new PIXI.Application({
   width: maxRangeMap() * amplitudeRender,
   height: maxRangeMap() * amplitudeRender,
-  background: 'gray',
+  background: 'black',
 });
 
 s('pixi-container').appendChild(app.view);
@@ -59,6 +59,9 @@ socket.on('update', (...args) => {
     }, eventElement.lifeTime);
 
   if (eventElement.msg !== undefined) return renderChatMsg(eventElement, eventElement.msg);
+  if (eventElement.items && socket.id === eventElement.id) {
+    console.error(eventElement);
+  }
   if (elementIndex > -1) {
     elements[type][elementIndex] = merge(elements[type][elementIndex], eventElement);
     return renderPixiEventElement(elements[type][elementIndex]);
