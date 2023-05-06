@@ -56,6 +56,9 @@ const httpClient = (app) => {
             </head>
             <body>
                 <script>
+
+                (function(){  
+                  
                   const dev = ${process.env.NODE_ENV === 'dev'};
                   const NAME_APP = '${NAME_APP}';
                   const API_BASE = '${process.env.API_BASE}';
@@ -96,6 +99,9 @@ const httpClient = (app) => {
                   ${fs.readFileSync(`./src/${NAME_APP}/components/ws-client.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/touch.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/screen-keys.js`, 'utf8')}
+
+                })()
+                
                 </script>
             </body>
             </html>  
