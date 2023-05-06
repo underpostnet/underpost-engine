@@ -58,7 +58,7 @@ append(
           </div>
       </gui-layer>
       
-      <div class='abs open-menu custom-cursor hover-button' style='display: none'>
+      <div class='fix open-menu custom-cursor hover-button' style='display: none'>
           <div class='abs center'>
               <img class='inl cyberia-logo' src='/icons/144x144/cyberia.png'>
           </div>
@@ -69,7 +69,7 @@ append(
           </div>
       </div>
   
-      <main-menu class='abs' style='display: none'>
+      <main-menu class='fix' style='display: none'>
   
         <div class='abs close-menu custom-cursor hover-button'>
             <div class='abs center'>

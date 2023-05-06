@@ -75,7 +75,7 @@ const newInstanceBagItems = async (items) => {
   }
   htmls('.grid-bag', '');
   let indexCell = 0;
-  range(0, mainUserBag.length - 1).map((iRow) => {
+  range(0, 3).map((iRow) => {
     append(
       '.grid-bag',
       /*html*/ `
@@ -103,7 +103,7 @@ const bag = () => {
 
             <div class='in title-section'>${renderLang({ es: 'Mochila', en: 'Bag' })}</div>
             
-            <div class='in grid-content grid-bag'> </div>
+            <div class='in grid-bag'> </div>
 
       </sub-content-gui>
     </bag>

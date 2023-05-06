@@ -27,9 +27,7 @@ setInterval(() => {
         left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
       }
       
-      .grid-content {
-        height: ${window.innerHeight * 0.5}px;
-      }
+
       
       .grid-cell {
         width: ${(screenDim.minValue * 0.8) / 6}px;
