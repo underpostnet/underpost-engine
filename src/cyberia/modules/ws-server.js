@@ -460,6 +460,13 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
               );
               drops.map((item) => {
                 if (random(1, item.probabilityDrop[1]) <= item.probabilityDrop[0]) {
+                  const indexItemExist = eventElement.element.items.findIndex((i) => i.id === item.id);
+                  if (indexItemExist > -1) {
+                    eventElement.element.items[indexItemExist].count++;
+                  } else {
+                    eventElement.element.items.push({ id: item.id, count: 1 });
+                  }
+
                   const client = clients.find((c) => c.id === eventElement.element.id);
                   const emitDrop = {
                     type: 'drop',
@@ -467,14 +474,10 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
                       name: item.name,
                       id: item.id,
                     },
+                    newItemsState: eventElement.element.items,
                     elementFromDrop: element,
                   };
-                  const indexItemExist = eventElement.element.items.findIndex((i) => i.id === item.id);
-                  if (indexItemExist > -1) {
-                    eventElement.element.items[indexItemExist].count++;
-                  } else {
-                    eventElement.element.items.push({ id: item.id, count: 1 });
-                  }
+
                   // console.log('emitDrop', emitDrop);
                   if (client) {
                     client.emit('event', JSON.stringify(emitDrop));

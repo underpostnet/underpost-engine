@@ -150,7 +150,7 @@ socket.on('event', (...args) => {
       renderChatMsg(eventElement.element, eventElement.msg);
       break;
     case 'drop':
-      const { item, elementFromDrop } = eventElement;
+      const { item, elementFromDrop, newItemsState } = eventElement;
       renderEventBoard({
         history: true,
         tag: 'DROP',
@@ -175,6 +175,7 @@ socket.on('event', (...args) => {
           </span>]
       `,
       });
+      newInstanceBagItems(newItemsState);
       break;
     case 'dead-count':
       renderDeadCount(eventElement);

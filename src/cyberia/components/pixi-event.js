@@ -224,6 +224,4 @@ const renderPixiEventElement = (element) => {
       }
     }, frameTime * (intervalFrameTimeAnimation / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
   });
-
-  if (element.items && socket.id === element.id) newInstanceBagItems(element.items);
 };
