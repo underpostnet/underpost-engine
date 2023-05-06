@@ -877,25 +877,28 @@ const wsServer = (httpServer, app, internalApi) => {
     elements[type]
       .filter((element) => element.map === map)
       .map((element) => {
+        let usersTarget;
+        setInterval(() => {
+          usersTarget = element.hostile
+            ? elements['user'].filter((userElement) => {
+                if (userElement.map !== map || userElement.life === 0 || element.life === 0) return false;
+                const userDistance = getDistance(
+                  element.render.x + parseInt(element.render.dim / 2),
+                  element.render.y + parseInt(element.render.dim / 2),
+                  userElement.render.x + parseInt(userElement.render.dim / 2),
+                  userElement.render.y + parseInt(userElement.render.dim / 2)
+                );
+                return userDistance < maxRangeMap() * 0.3;
+              })
+            : [];
+        }, 50);
+
         setInterval(() => {
           if (!element.path) element.path = [];
           element.path.shift();
           let targetUser, x2, y2, point, idTarget;
           while (element.path.length === 0 && !targetUser) {
             // element.path = range(0, maxRangeMap).map(i => [i, i]);
-
-            const usersTarget = element.hostile
-              ? elements['user'].filter((userElement) => {
-                  if (userElement.map !== map || userElement.life === 0 || element.life === 0) return false;
-                  const userDistance = getDistance(
-                    element.render.x + parseInt(element.render.dim / 2),
-                    element.render.y + parseInt(element.render.dim / 2),
-                    userElement.render.x + parseInt(userElement.render.dim / 2),
-                    userElement.render.y + parseInt(userElement.render.dim / 2)
-                  );
-                  return userDistance < maxRangeMap() * 0.3;
-                })
-              : [];
             if (usersTarget.length > 0) {
               const targetElement = usersTarget[random(0, usersTarget.length - 1)];
               point = targetElement.render;
