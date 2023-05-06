@@ -54,55 +54,6 @@ const renderNotification = (status, message) => {
 
 const getDateFormat = (date) => date.toISOString().replace('T', ' ').slice(0, -5); // -8
 
-let hashIdEventBoards = [];
-let contDisplayBoard = 0;
-const renderEventBoard = (dataBoard) => {
-  contDisplayBoard++;
-  const contDisplayBoardInstance = newInstance(contDisplayBoard);
-  const hashId = 'event-board-' + s4();
-  const render = /*html*/ `
-      <div class='fl content-event-board ${hashId}'>
-          [ <span style='color: yellow'>
-            ${dataBoard.tag} 
-          </span> ]
-          ${getDateFormat(new Date())}
-          <br>
-          ${dataBoard.msg}
-      </div>
-  `;
-  if (dataBoard.history) prepend('event-history-render', render);
-
-  hashIdEventBoards.push(hashId);
-
-  prepend('event-board', render);
-
-  switch (hashIdEventBoards.length) {
-    case 1:
-      s('event-board').style.height = 67.5 + 'px';
-      break;
-    case 2:
-      s('event-board').style.height = 67.5 * 2 + 'px';
-      break;
-    default:
-      // s('event-board').style.height = 45 * 3 + 'px';
-      break;
-  }
-
-  if (hashIdEventBoards.length === 3) {
-    s(`.${hashIdEventBoards[0]}`).remove();
-    hashIdEventBoards = hashIdEventBoards.filter((i) => i != hashIdEventBoards[0]);
-    console.log(hashIdEventBoards);
-  }
-
-  s('event-board').style.display = 'block';
-  setTimeout(() => {
-    if (contDisplayBoardInstance === contDisplayBoard) {
-      s('event-board').style.display = 'none';
-      contDisplayBoard = 0;
-    }
-  }, 3000);
-};
-
 const renderDeadCount = (data) => {
   const hashRender = 'x' + s4();
 
