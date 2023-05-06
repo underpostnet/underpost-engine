@@ -49,6 +49,15 @@ setInterval(() => {
       .map-cell {
         width: ${screenDim.maxType === 'height' ? 33 : 25}%;
       }
+      .count-item-text {
+          font-size:  ${screenDim.minValue >= 430 ? 10 : 8}px;
+       }
+       .x-count-item-text {
+          font-size:  ${screenDim.minValue >= 430 ? 8 : 6}px;
+       }
+       .item-bag-style-text {
+          font-size:  ${screenDim.minValue >= 430 ? 10 : 6}px;
+       }
     `
     );
   }

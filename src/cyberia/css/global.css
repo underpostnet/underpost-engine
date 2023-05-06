@@ -157,21 +157,21 @@ label {
 
 .count-item-text {
     color: yellow;
-    font-size: 10px;
     top: 12%;
-    right: 30%;
-    width: 100%;
+    width: 150%;
+
+    right: 0%;
 }
 
 .x-count-item-text {
     color: white;
-    font-size: 8px;
     left: 8px;
 }
 
 .item-bag-style-text {
-    font-size: 10px;
     color: white;
+    top: 90%;
+
 }
 
 .grid-cell {
