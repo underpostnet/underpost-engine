@@ -162,7 +162,6 @@ const renderPixiInitElement = (element) => {
     ) {
       params[type][element.id].lastKoyn = newInstance(element.koyn);
       params[type][element.id].intervalDiffKoynDisplay = 500;
-      htmls('.bag-koyn-indicator', element.koyn);
       if (hashIntervals[element.id][`diff-koyn-indicator`])
         clearInterval(hashIntervals[element.id][`diff-koyn-indicator`]);
       hashIntervals[element.id][`diff-koyn-indicator`] = setInterval(() => {
@@ -175,7 +174,7 @@ const renderPixiInitElement = (element) => {
           }</span><img src='/icons/50x50/koyn.gif' class='inl icon-board-img'> ] koyns.
           `;
           renderEventBoard(/*html*/ { tag: 'KOYN', msg, history: true });
-          htmls('.bag-koyn-indicator', element.koyn);
+          if (s('.bag-koyn-indicator')) htmls('.bag-koyn-indicator', getK(element.koyn));
           params[type][element.id].lastKoyn = newInstance(element.koyn);
         }
       }, params[type][element.id].intervalDiffKoynDisplay);
@@ -330,6 +329,8 @@ const renderPixiInitElement = (element) => {
         if (element.life > 0) pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = true;
       }, item.frameTimeInterval);
     });
+
+  if (element.items && socket.id === element.id) newInstanceBagItems(element.items);
 
   return element;
 };

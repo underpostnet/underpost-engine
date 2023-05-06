@@ -326,6 +326,16 @@ const getMissileDirection = (positionType, direction) => {
   });
 })();
 
+const validateSchemeElement = (element) => {
+  const arrAttr = ['components', 'items'];
+  const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
+  Object.keys(typeModels()[element.type]).map((key) => {
+    if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
+    if (arrAttr.includes(key)) element[key] = Object.values(element[key]);
+  });
+  return element;
+};
+
 const ssrWS = `
     const typeModels = ${typeModels};
     const maxRangeMapParam = ${maxRangeMapParam};
@@ -345,17 +355,8 @@ const ssrWS = `
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
     const globalInstancesMapData = ${JSONweb(globalInstancesMapData['cyberia'])}
+    const validateSchemeElement = ${validateSchemeElement};
 `;
-
-const validateSchemeElement = (element) => {
-  const arrAttr = ['components', 'items'];
-  const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
-  Object.keys(typeModels()[element.type]).map((key) => {
-    if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
-    if (arrAttr.includes(key)) element[key] = Object.values(element[key]);
-  });
-  return element;
-};
 
 const rebirdElement = (clients, element, internalApi) => {
   const deadTime = element.deadTime !== undefined ? element.deadTime : 3;
@@ -764,14 +765,17 @@ const wsServer = (httpServer, app, internalApi) => {
               const clientIndex = elements[type].findIndex((element) => element.id === client.id);
               if (clientIndex > -1 && socket.id !== client.id) {
                 const chatEmit = JSON.stringify({
-                  id: socket.id,
-                  type,
-                  username: clientElement.username,
+                  type: 'chat',
                   msg: eventElement.msg,
-                  sprite: clientElement.sprite,
+                  element: {
+                    id: socket.id,
+                    type,
+                    username: clientElement.username,
+                    sprite: clientElement.sprite,
+                  },
                 });
                 // console.log('send chat msg', chatEmit);
-                client.emit('update', chatEmit);
+                client.emit('event', chatEmit);
               }
             });
             break;

@@ -149,22 +149,29 @@ label {
     height: 35px;
 }
 
-.coin-value-content {
-    width: 50px;
-    /* border: 2px solid yellow; */
-    font-size: 7px;
+
+.item-bag-icon {
+    width: 80%;
+    height: 80%;
 }
 
-.koyn-gif {
-    width: 30px;
-    height: 30px;
-}
-
-.value-koyn-text {
+.count-item-text {
     color: yellow;
-    font-size: 14px;
-    top: 30%;
+    font-size: 10px;
+    top: 12%;
     right: 30%;
+    width: 100%;
+}
+
+.x-count-item-text {
+    color: white;
+    font-size: 8px;
+    left: 8px;
+}
+
+.item-bag-style-text {
+    font-size: 10px;
+    color: white;
 }
 
 .grid-content {

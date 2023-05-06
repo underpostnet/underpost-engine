@@ -7,6 +7,7 @@ import express from 'express';
 import { authApi } from './auth.js';
 import { createServer } from 'http';
 import { mailerApi } from './mailer.js';
+import { itemsApi } from './items.js';
 
 dotenv.config();
 console.log(process.argv);
@@ -21,6 +22,9 @@ app.use(express.json({ limit: '20MB' }));
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true, limit: '20MB' }));
 
+// json formatted response
+app.set('json spaces', 2);
+
 const internalApi = {
   getHost: (uri) =>
     (process.env.NODE_ENV === 'dev' ? `http://localhost:${process.env.PORT}` : process.env.HOST) + (uri ? uri : ''),
@@ -31,6 +35,8 @@ httpClient(app);
 mailerApi(internalApi);
 
 authApi(app, internalApi);
+
+itemsApi(app);
 
 const server = createServer({}, app);
 

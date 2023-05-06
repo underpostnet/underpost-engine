@@ -1,3 +1,8 @@
+import dotenv from 'dotenv';
+import { renderLang } from '../../core/modules/common.js';
+
+dotenv.config();
+
 const items = [
   {
     id: 'tim-knife',
@@ -25,4 +30,34 @@ const items = [
   },
 ];
 
-export { items };
+const getItem = (req, res) => {
+  try {
+    const item = items.find((i) => i.id == req.params.itemId);
+    if (item) {
+      const { id, name, stats } = item;
+      return res.status(200).json({
+        status: 'success',
+        data: { id, name, stats },
+      });
+    }
+    return res.status(400).json({
+      status: 'error',
+      data: {
+        message: renderLang({ en: 'Item not found', es: 'Item no encontrado' }, req),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
+const itemsApi = (app) => {
+  app.get(process.env.API_BASE + '/items/:itemId', (req, res) => getItem(req, res));
+};
+
+export { items, itemsApi };

@@ -36,7 +36,7 @@ setInterval(() => {
   if (blockKey)
     setTimeout(() => {
       blockKey = false;
-    }, 600);
+    }, 150);
 }, 10);
 
 disableOptionsClick('html', ['menu', 'drag', 'select']);

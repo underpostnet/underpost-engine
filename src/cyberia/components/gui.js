@@ -14,6 +14,10 @@ append(
         .title-section {
           ${borderChar(2, 'yellow')}
         }
+
+        .item-bag-style-text {
+          ${borderChar(2, 'black')}
+        }
   
       </style>
       <style class='css-controller'></style>
@@ -258,5 +262,6 @@ s('.close-gui').onclick = () => {
 
 s('.btn-logout').onclick = () => {
   localStorage.removeItem('_b');
+  htmls('event-history-render', '');
   newMainUserInstance();
 };

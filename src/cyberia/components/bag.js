@@ -1,30 +1,102 @@
-const bag = () => {
-  const defaultContent = [
-    () => renderKoynLogo(0, false, 'bag-koyn-indicator'),
+let mainUserBag = [];
+let localItemsStorage = [];
+
+const getK = (koyn) => {
+  /*
+  TOP DEFINITION
+  1kk
+  1kk means million where each K represents 000.
+  1k = 1 000
+  1kk = 1 000 000
+  1kkk =1 000 000 000
+  Mostly used in games.
+  I'm selling this item for 1kk
+  by Aelos03 May 22, 2014
+  */
+  const limitA = 1000;
+  const limitB = 1000000;
+  const limitC = 1000000000;
+  if (koyn >= limitA && koyn < limitB) return round10(koyn / limitA, -1) + 'k';
+  else if (koyn >= limitB && koyn < limitC) return round10(koyn / limitB, -1) + 'kk';
+  else if (koyn >= limitC) return round10(koyn / limitC, -1) + 'kkk';
+  return koyn;
+};
+
+const renderItemCount = (valueID, value) => {
+  return /*html*/ `
+      <div class='abs count-item-text' style='${borderChar(2, 'black')}'>
+         <div class='abs center'>
+              <span class='inl x-count-item-text'>X</span>
+              <span class='${valueID}'>${getK(value)}</span>
+          </div>
+      </div>
+  `;
+};
+
+const newInstanceBagItems = async (items) => {
+  mainUserBag = [
+    () =>
+      renderKoynLogo(
+        elements['user'].find((e) => e.id === socket.id) ? elements['user'].find((e) => e.id === socket.id).koyn : 0,
+        false,
+        'bag-koyn-indicator'
+      ),
     () => renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
   ];
-  setTimeout(() => {
-    let indexCell = 0;
-    range(0, 2).map((iRow) => {
-      append(
-        '.grid-bag',
-        /*html*/ `
+  for (item of items) {
+    let result;
+    const localItem = localItemsStorage.find((i) => i.id === item.id);
+    if (localItem) {
+      result = {
+        status: 'success',
+        data: localItem,
+      };
+    } else {
+      result = await serviceRequest(API_BASE + `/items/${item.id}`);
+      localItemsStorage.push(result.data);
+    }
+    Object.keys(result.data.name).map((langKey) => {
+      result.data.name[langKey] = result.data.name[langKey].replaceAll(' ', '<br>');
+    });
+    console.log('bag renderItem', result);
+    if (result.status === 'success') {
+      mainUserBag.push(
+        () => /*html*/ `
+    <div class='abs center'>
+      <img src='/items/${item.id}/animation.gif' class='inl item-bag-icon'>
+    </div> 
+    <div class='abs center item-bag-style-text'>
+        ${renderLang(result.data.name)}
+    </div>
+    ${renderItemCount(`bag-count-${item.id}`, item.count)}   
+    `
+      );
+    }
+  }
+  htmls('.grid-bag', '');
+  let indexCell = 0;
+  range(0, mainUserBag.length - 1).map((iRow) => {
+    append(
+      '.grid-bag',
+      /*html*/ `
        <div class='fl grid-row-${iRow}'></div>    
       `
-      );
-      range(0, 3).map((iCell) => {
-        append(
-          `.grid-row-${iRow}`,
-          /*html*/ `
+    );
+    range(0, 3).map((iCell) => {
+      append(
+        `.grid-row-${iRow}`,
+        /*html*/ `
         <div class="in fll grid-cell custom-cursor">
-             ${defaultContent[indexCell] ? defaultContent[indexCell]() : ''}
+             ${mainUserBag[indexCell] ? mainUserBag[indexCell]() : ''}
         </div>
         `
-        );
-        indexCell++;
-      });
+      );
+      indexCell++;
     });
   });
+};
+
+const bag = () => {
   return /*html*/ `
     <bag style='display: none'>
       <sub-content-gui class='in'>
