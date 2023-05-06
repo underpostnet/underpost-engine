@@ -40,9 +40,17 @@ const renderItemModal = (item) => {
       /*html*/ `
 
         <div class='abs center fix item-modal item-modal-${item.id}'>
+                <br><br>
                 ${renderLang(item.name)}
-                <br>
-                <button class='close-item-modal-${item.id} custom-cursor'> close </button>
+                <br><br>
+                <img class='inl item-modal-img' src='/items/${item.id}/animation.gif'>
+
+                <div class='abs btn-close-modal-item custom-cursor close-item-modal-${item.id}'>
+                    <div class='abs center'>
+                        <img class='inl icons-close-modal-item' src='/icons/200x200/cross.gif'>
+                    </div>
+                </div>
+                
         </div>
     
     `

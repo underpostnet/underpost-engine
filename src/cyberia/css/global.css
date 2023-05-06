@@ -498,7 +498,31 @@ event-board {
 .item-modal {
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid yellow;
-    width: 300px;
+    width: 245px;
     height: 400px;
-    padding: 5px;
+    padding: 10px;
+}
+
+.item-modal-img {
+    width: 80px;
+    height: auto;
+}
+
+
+.btn-close-modal-item {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid yellow;
+    width: 35px;
+    height: 35px;
+    top: 5px;
+    left: 5px;
+}
+
+.btn-close-modal-item:hover {
+    border: 2px solid white;
+}
+
+.icons-close-modal-item {
+    width: 20px;
+    height: 20px;
 }

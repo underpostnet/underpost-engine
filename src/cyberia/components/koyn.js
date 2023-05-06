@@ -15,7 +15,7 @@ const renderKoynLogo = (value, type, valueID) => {
   return {
     render: () => /*html*/ `
   
-    <img class='abs center item-bag-icon' src='/gifs/koyn.gif'>
+    <img class='abs center item-bag-icon' src='/items/koyn/animation.gif'>
     <div class='abs center item-bag-style-text'>
       ${koynName()}
     </div>
