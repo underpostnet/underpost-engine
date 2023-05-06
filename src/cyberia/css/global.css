@@ -46,9 +46,10 @@ main-menu {
     background: rgba(0, 0, 0, 0.7);
     /* border: 4px solid yellow; */
     width: 260px;
-    height: 500px;
     padding: 5px;
     text-align: right;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 main-menu,

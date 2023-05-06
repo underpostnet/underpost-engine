@@ -58,6 +58,9 @@ setInterval(() => {
        .item-bag-style-text {
           font-size:  ${screenDim.minValue >= 430 ? 10 : 6}px;
        }
+       main-menu {
+        height: ${screenDim.maxType === 'height' ? screenDim.maxValue * 0.9 : screenDim.minValue * 0.9}px;
+       }
     `
     );
   }
