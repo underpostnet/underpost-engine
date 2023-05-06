@@ -35,13 +35,12 @@ const renderItemCount = (valueID, value) => {
 
 const newInstanceBagItems = async (items) => {
   mainUserBag = [
-    () =>
-      renderKoynLogo(
-        elements['user'].find((e) => e.id === socket.id) ? elements['user'].find((e) => e.id === socket.id).koyn : 0,
-        false,
-        'bag-koyn-indicator'
-      ),
-    () => renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
+    renderKoynLogo(
+      elements['user'].find((e) => e.id === socket.id) ? elements['user'].find((e) => e.id === socket.id).koyn : 0,
+      false,
+      'bag-koyn-indicator'
+    ),
+    renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
   ];
   for (item of items) {
     let result;
@@ -60,17 +59,18 @@ const newInstanceBagItems = async (items) => {
     });
     console.log('bag renderItem', result);
     if (result.status === 'success') {
-      mainUserBag.push(
-        () => /*html*/ `
-    <div class='abs center'>
-      <img src='/items/${item.id}/animation.gif' class='inl item-bag-icon'>
-    </div> 
-    <div class='abs center item-bag-style-text'>
-        ${renderLang(result.data.name)}
-    </div>
-    ${renderItemCount(`bag-count-${item.id}`, item.count)}   
-    `
-      );
+      mainUserBag.push({
+        render: () => /*html*/ `
+          <div class='abs center'>
+            <img src='/items/${item.id}/animation.gif' class='inl item-bag-icon'>
+          </div> 
+          <div class='abs center item-bag-style-text'>
+              ${renderLang(result.data.name)}
+          </div>
+          ${renderItemCount(`bag-count-${item.id}`, item.count)}   
+          `,
+        data: result.data,
+      });
     }
   }
   htmls('.grid-bag', '');
@@ -83,11 +83,20 @@ const newInstanceBagItems = async (items) => {
       `
     );
     range(0, 3).map((iCell) => {
+      const currentIndex = newInstance(indexCell);
+      if (mainUserBag[currentIndex])
+        setTimeout(() => {
+          s(`.grid-cell-${mainUserBag[currentIndex].data.id}`).onclick = () => {
+            console.log('item click', mainUserBag[currentIndex].data);
+          };
+        });
       append(
         `.grid-row-${iRow}`,
         /*html*/ `
-        <div class="in fll grid-cell custom-cursor">
-             ${mainUserBag[indexCell] ? mainUserBag[indexCell]() : ''}
+        <div class="in fll grid-cell custom-cursor ${
+          mainUserBag[currentIndex] ? 'grid-cell-' + mainUserBag[currentIndex].data.id : ''
+        }">
+             ${mainUserBag[currentIndex] ? mainUserBag[currentIndex].render() : ''}
         </div>
         `
       );
