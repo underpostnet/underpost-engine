@@ -1,4 +1,5 @@
 const renderKoynLogo = (value, type, valueID) => {
+  const name = type === 'crypto' ? 'Crypto Koyn' : 'Koyn';
   return {
     render: () => /*html*/ `
   
@@ -21,7 +22,7 @@ const renderKoynLogo = (value, type, valueID) => {
 `,
     data: {
       id: type === 'crypto' ? 'crypto-koyn' : 'koyn',
-      name: type === 'crypto' ? 'Crypto Koyn' : 'Koyn',
+      name: { es: name, en: name },
     },
   };
 };

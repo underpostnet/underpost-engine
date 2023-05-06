@@ -33,6 +33,26 @@ const renderItemCount = (valueID, value) => {
   `;
 };
 
+const renderItemModal = (item) => {
+  if (!s(`.item-modal-${item.id}`)) {
+    append(
+      'body',
+      /*html*/ `
+
+        <div class='abs center fix item-modal item-modal-${item.id}'>
+                ${renderLang(item.name)}
+                <br>
+                <button class='close-item-modal-${item.id} custom-cursor'> close </button>
+        </div>
+    
+    `
+    );
+    s(`.close-item-modal-${item.id}`).onclick = () => {
+      s(`.item-modal-${item.id}`).remove();
+    };
+  }
+};
+
 const newInstanceBagItems = async (items) => {
   mainUserBag = [
     renderKoynLogo(
@@ -88,6 +108,7 @@ const newInstanceBagItems = async (items) => {
         setTimeout(() => {
           s(`.grid-cell-${mainUserBag[currentIndex].data.id}`).onclick = () => {
             console.log('item click', mainUserBag[currentIndex].data);
+            renderItemModal(mainUserBag[currentIndex].data);
           };
         });
       append(
