@@ -17,7 +17,7 @@ import {
 import { maps } from './maps.js';
 import { mapBots } from './bots.js';
 import { quests } from './quests.js';
-import { items } from './items.js';
+import { getDisplayBotData, items } from './items.js';
 
 dotenv.config();
 
@@ -868,6 +868,7 @@ const wsServer = (httpServer, app, internalApi) => {
           velFactor: 3,
           ...customBot,
         };
+        bot.displayItems = getDisplayBotData(bot.sprite);
         elements[type].push(bot);
         params[type][bot.id] = {};
         setIntervalPassiveHeal(

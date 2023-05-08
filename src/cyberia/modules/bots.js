@@ -1,5 +1,3 @@
-import { getDisplayBotData } from './items.js';
-
 const mapBots = [
   {
     map: 'zax-shop',
@@ -14,7 +12,7 @@ const mapBots = [
     maxBots: 2,
     bots: [
       { sprite: 'kishins', username: 'Subkishins', attackValue: 20 },
-      { sprite: 'punk', username: 'Tim', displayItems: getDisplayBotData('punk'), velFactor: 3 },
+      { sprite: 'punk', username: 'Tim', velFactor: 3 },
     ],
   },
   {
