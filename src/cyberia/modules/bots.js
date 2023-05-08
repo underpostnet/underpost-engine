@@ -1,4 +1,4 @@
-import { items } from './items.js';
+import { getDisplayBotData } from './items.js';
 
 const mapBots = [
   {
@@ -14,7 +14,7 @@ const mapBots = [
     maxBots: 2,
     bots: [
       { sprite: 'kishins', username: 'Subkishins', attackValue: 20 },
-      { sprite: 'punk', username: 'Tim', displayItems: items.filter((i) => i.display.includes('punk')), velFactor: 3 },
+      { sprite: 'punk', username: 'Tim', displayItems: getDisplayBotData('punk'), velFactor: 3 },
     ],
   },
   {

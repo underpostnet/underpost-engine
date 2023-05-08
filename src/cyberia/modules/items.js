@@ -30,6 +30,19 @@ const items = [
   },
 ];
 
+const getDisplayBotData = (sprite) =>
+  items
+    .filter((i) => i.display.includes(sprite))
+    .map((i) => {
+      const { id, frames, frameTimeInterval, renderFactor } = i;
+      return {
+        id,
+        frames,
+        frameTimeInterval,
+        renderFactor,
+      };
+    });
+
 const getItem = (req, res) => {
   try {
     const item = items.find((i) => i.id == req.params.itemId);
@@ -60,4 +73,4 @@ const itemsApi = (app) => {
   app.get(process.env.API_BASE + '/items/:itemId', (req, res) => getItem(req, res));
 };
 
-export { items, itemsApi };
+export { items, itemsApi, getDisplayBotData };
