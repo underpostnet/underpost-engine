@@ -35,6 +35,7 @@ const renderItemCount = (valueID, value) => {
 
 const renderItemModal = (item) => {
   let statsRender = '';
+  let equipmentBtn = '';
   switch (item.itemType) {
     case 'currency':
       break;
@@ -43,7 +44,19 @@ const renderItemModal = (item) => {
         <div class='in stats-content-item-modal'>
               ${renderStatsGrid(item.stats)}
         </div>
+      `; // btn-item-equip
+      equipmentBtn = /*html*/ `
+          <br>
+          <button class='inl custom-cursor item-equip-${item.id}'>
+              ${renderLang({ es: 'Equipar', en: 'Equip' })}
+          </button>
+      
       `;
+      setTimeout(() => {
+        s(`.item-equip-${item.id}`).onclick = () => {
+          console.log('equip', item);
+        };
+      });
     default:
       break;
   }
@@ -73,6 +86,8 @@ const renderItemModal = (item) => {
                 </div>
 
                 ${statsRender}
+
+                ${equipmentBtn}
                 
         </div>
     
