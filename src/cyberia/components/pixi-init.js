@@ -77,7 +77,7 @@ const renderPixiInitElement = (element) => {
   }
 
   if (socket.id === id) {
-    renderStatsGrid(element);
+    htmls('.character-stats-grid', renderStatsGrid(element));
     if (localStorage.getItem('_b')) {
       s('.session-account-input-email').value = element.email;
       s('.session-account-input-email').oninput();

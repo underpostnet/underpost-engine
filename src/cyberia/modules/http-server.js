@@ -77,6 +77,7 @@ const httpClient = (app) => {
                   }                  
                   ${fs.readFileSync(`./src/${NAME_APP}/components/toggle-switch.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/dropdown.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/drag.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/create-account.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/login.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/koyn.js`, 'utf8')}

@@ -1,43 +1,56 @@
 const renderStatsGrid = (element) => {
-  htmls(
-    '.character-stats-grid',
-    /*html*/ `
-
-    <div class='in  character-stats-grid-row'>
-        <span class='character-stats-grid-label'>
-          ${renderLang({ es: 'skin', en: 'skin' }).toUpperCase()} 
-        </span>
+  if (element.itemType === 'currency') return '';
+  let SKIN_DATA_RENDER = '';
+  let PRE_VALUE_ICON = '+';
+  if (element.type === 'user') {
+    PRE_VALUE_ICON = '';
+    SKIN_DATA_RENDER = /*html*/ `
+    <div class='in character-stats-grid-row'>
+      <div class='in character-stats-grid-label'>
+        ${renderLang({ es: 'skin', en: 'skin' }).toUpperCase()} 
+      </div>
+      <div class='in value-stat-content'>
         ${element.sprite.toUpperCase()}
+      </div>
     </div>
-    <div class='in  character-stats-grid-row'>
-        <span class='character-stats-grid-label'>
+    `;
+  }
+  return /*html*/ `
+       ${SKIN_DATA_RENDER}
+      <div class='in character-stats-grid-row'>
+        <div class='in character-stats-grid-label'>
           ${renderLang({ es: 'vida maxima', en: 'max life' }).toUpperCase()} 
-        </span>
-        ${element.maxLife} PT.
-    </div>
-    <div class='in  character-stats-grid-row'>
-        <span class='character-stats-grid-label'>
+        </div>
+        <div class='in value-stat-content'>
+          ${PRE_VALUE_ICON} ${element.maxLife} PT.
+        </div>
+      </div>
+      <div class='in character-stats-grid-row'>
+        <div class='in character-stats-grid-label'>
           ${renderLang({ en: 'attack points', es: 'puntos de ataque' }).toUpperCase()} 
-        </span>
-        ${element.attackValue} PT. / ${element.velAttack}ms
-    </div>
-    <div class='in  character-stats-grid-row'>
-        <span class='character-stats-grid-label'>
+        </div>
+        <div class='in value-stat-content'>
+          ${PRE_VALUE_ICON} ${element.attackValue} PT. / ${element.velAttack}ms
+        </div>
+      </div>
+      <div class='in character-stats-grid-row'>
+        <div class='in character-stats-grid-label'>
           ${renderLang({ en: 'life regeneration', es: 'regeneración de vida' }).toUpperCase()} 
-        </span>
-        ${element.passiveHealValue} PT. / ${element.velPassiveHealValue}ms
-    </div>
+        </div>
+        <div class='in value-stat-content'>
+          ${PRE_VALUE_ICON} ${element.passiveHealValue} PT. / ${element.velPassiveHealValue}ms
+        </div>
+      </div>
 
-    <!--
-    <br>
+  <!--
+  <br>
+
+  <pre>
+    ${JSON.stringify(element, null, 4)}
+  </pre>    
+   -->
   
-    <pre>
-      ${JSON.stringify(element, null, 4)}
-    </pre>    
-     -->
-    
-    `
-  );
+  `;
 };
 
 const characterStats = () => {

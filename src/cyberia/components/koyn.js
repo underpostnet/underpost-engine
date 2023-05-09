@@ -25,6 +25,13 @@ const renderKoynLogo = (value, type, valueID) => {
     data: {
       id: type === 'crypto' ? 'crypto-koyn' : 'koyn',
       name: { es: koynName(), en: koynName() },
+      itemType: 'currency',
+      count: () =>
+        type === 'crypto'
+          ? 0
+          : elements.user.find((e) => e.id === socket.id)
+          ? elements.user.find((e) => e.id === socket.id).koyn
+          : 0,
     },
   };
 };

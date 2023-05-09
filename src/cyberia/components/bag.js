@@ -34,14 +34,35 @@ const renderItemCount = (valueID, value) => {
 };
 
 const renderItemModal = (item) => {
+  let statsRender = '';
+  switch (item.itemType) {
+    case 'currency':
+      break;
+    case 'equipment':
+      statsRender = /*html*/ `
+        <div class='in stats-content-item-modal'>
+              ${renderStatsGrid(item.stats)}
+        </div>
+      `;
+    default:
+      break;
+  }
   if (!s(`.item-modal-${item.id}`)) {
     append(
       'body',
       /*html*/ `
 
-        <div class='abs center fix item-modal item-modal-${item.id}'>
+        <div class='abs center fix custom-cursor item-modal item-modal-${item.id}'>
                 <br><br>
                 ${renderLang(item.name)}
+                <br>
+                <span style='color: yellow; font-size: 7px'>
+                    [${item.itemType.toUpperCase()}]
+                </span>
+                <br><br>
+                <span style='font-size: 10px'>X</span><span style='color: yellow; font-size: 12px'>${getK(
+                  item.count()
+                )}</span>
                 <br><br>
                 <img class='inl item-modal-img' src='/items/${item.id}/animation.gif'>
 
@@ -50,11 +71,14 @@ const renderItemModal = (item) => {
                         <img class='inl icons-close-modal-item' src='/icons/200x200/cross.gif'>
                     </div>
                 </div>
+
+                ${statsRender}
                 
         </div>
     
     `
     );
+    dragDrop(`.item-modal-${item.id}`);
     s(`.close-item-modal-${item.id}`).onclick = () => {
       s(`.item-modal-${item.id}`).remove();
     };
@@ -97,7 +121,13 @@ const newInstanceBagItems = async (items) => {
           </div>
           ${renderItemCount(`bag-count-${item.id}`, item.count)}   
           `,
-        data: result.data,
+        data: {
+          count: () =>
+            elements.user.find((e) => e.id === socket.id)
+              ? elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id).count
+              : 0,
+          ...result.data,
+        },
       });
     }
   }

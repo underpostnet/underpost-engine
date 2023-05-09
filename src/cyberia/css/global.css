@@ -266,6 +266,7 @@ event-board {
 
 .character-stats-grid-label {
     color: yellow;
+    padding: 5px;
 }
 
 .character-stats-img-avatar {
@@ -496,8 +497,8 @@ event-board {
 }
 
 .item-modal {
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid yellow;
+    background: black;
+    border: 3px solid yellow;
     width: 245px;
     height: 400px;
     padding: 10px;
@@ -511,7 +512,7 @@ event-board {
 
 .btn-close-modal-item {
     background: rgba(0, 0, 0, 0.7);
-    border: 2px solid yellow;
+    border: 3px solid yellow;
     width: 35px;
     height: 35px;
     top: 5px;
@@ -519,10 +520,20 @@ event-board {
 }
 
 .btn-close-modal-item:hover {
-    border: 2px solid white;
+    border: 3px solid white;
 }
 
 .icons-close-modal-item {
     width: 20px;
     height: 20px;
+}
+
+.stats-content-item-modal {
+    font-size: 8px;
+    text-align: left;
+    padding: 8px;
+}
+
+.value-stat-content {
+    padding: 5px;
 }

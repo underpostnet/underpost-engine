@@ -27,6 +27,7 @@ const items = [
       velPassiveHealValue: -20,
       velFactor: -0.1,
     },
+    itemType: 'equipment',
   },
 ];
 
@@ -47,10 +48,10 @@ const getItem = (req, res) => {
   try {
     const item = items.find((i) => i.id == req.params.itemId);
     if (item) {
-      const { id, name, stats } = item;
+      const { id, name, stats, itemType } = item;
       return res.status(200).json({
         status: 'success',
-        data: { id, name, stats },
+        data: { id, name, stats, itemType },
       });
     }
     return res.status(400).json({
