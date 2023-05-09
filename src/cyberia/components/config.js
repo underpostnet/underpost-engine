@@ -10,7 +10,7 @@ const config = () => {
                 <div class='fl'>
                       <div class='in fll config-col'>
                         <div class='in config-col-content'>
-                           ${renderLang({ es: 'Pantalla Completa', en: 'FullScreen' })}
+                           ${renderLang({ es: 'Pantalla Completa', en: 'Full screen' })}
                         </div>
                       </div>
                       <div class='in fll config-col'>
