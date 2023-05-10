@@ -26,6 +26,7 @@ const renderKoynLogo = (value, type, valueID) => {
       id: type === 'crypto' ? 'crypto-koyn' : 'koyn',
       name: { es: koynName(), en: koynName() },
       itemType: 'currency',
+      active: () => false,
       count: () =>
         type === 'crypto'
           ? 0

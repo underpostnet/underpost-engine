@@ -50,11 +50,35 @@ const renderItemModal = (item) => {
           <button class='inl custom-cursor item-equip-${item.id}'>
               ${renderLang({ es: 'Equipar', en: 'Equip' })}
           </button>
+          <button class='inl custom-cursor item-unequip-${item.id}' style='display: none'>
+              ${renderLang({ es: 'Desequipar', en: 'Unequip' })}
+          </button>
       
       `;
       setTimeout(() => {
         s(`.item-equip-${item.id}`).onclick = () => {
           console.log('equip', item);
+          socket.emit(
+            'event',
+            JSON.stringify({
+              event: 'item-equip',
+              item: { id: item.id },
+            })
+          );
+          s(`.item-equip-${item.id}`).style.display = 'none';
+          s(`.item-unequip-${item.id}`).style.display = 'inline-table';
+        };
+        s(`.item-unequip-${item.id}`).onclick = () => {
+          console.log('unequip', item);
+          socket.emit(
+            'event',
+            JSON.stringify({
+              event: 'item-unequip',
+              item: { id: item.id },
+            })
+          );
+          s(`.item-unequip-${item.id}`).style.display = 'none';
+          s(`.item-equip-${item.id}`).style.display = 'inline-table';
         };
       });
     default:
@@ -93,6 +117,10 @@ const renderItemModal = (item) => {
     
     `
     );
+    if (item.active() === true) {
+      s(`.item-equip-${item.id}`).style.display = 'none';
+      s(`.item-unequip-${item.id}`).style.display = 'inline-table';
+    }
     dragDrop(`.item-modal-${item.id}`);
     s(`.close-item-modal-${item.id}`).onclick = () => {
       s(`.item-modal-${item.id}`).remove();
@@ -141,6 +169,10 @@ const newInstanceBagItems = async (items) => {
             elements.user.find((e) => e.id === socket.id)
               ? elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id).count
               : 0,
+          active: () =>
+            elements.user.find((e) => e.id === socket.id)
+              ? elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id).active
+              : false,
           ...result.data,
         },
       });
@@ -219,4 +251,18 @@ const renderDisplayItems = (element) => {
       if (element.life > 0) pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = true;
     }, item.frameTimeInterval);
   });
+};
+
+const removeDisplayItem = (element, itemId) => {
+  const item = element.displayItems.find((i) => i.id === itemId);
+  const { type } = element;
+  if (item) {
+    range(0, item.frames).map((frame) => {
+      const src = `/items/${item.id}/${frame}.gif`;
+      pixi[type][element.id][src].destroy();
+      delete pixi[type][element.id][src];
+    });
+    if (hashIntervals[element.id][item.id]) clearInterval(hashIntervals[element.id][item.id]);
+    delete hashIntervals[element.id][item.id];
+  }
 };

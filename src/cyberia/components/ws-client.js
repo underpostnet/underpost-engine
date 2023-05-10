@@ -196,6 +196,22 @@ socket.on('event', (...args) => {
       `
       );
       break;
+    case 'equip-item':
+      renderDisplayItems({
+        ...elements['user'].find((e) => e.id === eventElement.id),
+        displayItems: eventElement.displayItems,
+      });
+      break;
+    case 'unequip-item':
+      removeDisplayItem(
+        elements['user'].find((e) => e.id === eventElement.id),
+        eventElement.itemId
+      );
+      const indexEventUser = elements['user'].findIndex((e) => e.id === eventElement.id);
+      elements['user'][indexEventUser].displayItems = elements['user'][indexEventUser].displayItems.filter(
+        (i) => i.id !== eventElement.itemId
+      );
+      break;
     default:
       break;
   }

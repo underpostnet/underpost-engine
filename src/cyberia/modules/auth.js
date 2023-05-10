@@ -423,11 +423,14 @@ const instanceInitElementByUser = (user) => {
   return { ...element, _id: user.id, email, username, confirmEmail };
 };
 
-const updateUser = (user) => {
+const updateUser = (user, forceSaveAttrElement) => {
   const users = getUsers();
   const indexUser = users.findIndex((_user) => _user.id === user.id);
   if (indexUser > -1) {
     users[indexUser] = merge(users[indexUser], user);
+    Object.keys(forceSaveAttrElement).map((keyForce) => {
+      users[indexUser].element[keyForce] = forceSaveAttrElement[keyForce];
+    });
     writeUsers(users);
     return {
       status: 'success',
@@ -466,11 +469,11 @@ const getUserByToken = async (token) => {
 
 const getUserById = (id) => getUsers().find((user) => user.id === id);
 
-const updateElementUser = async (element) => {
+const updateElementUser = async (element, forceSaveAttrElement) => {
   const user = await getUserById(element._id);
   if (user) {
     user.element = element;
-    updateUser(user);
+    updateUser(user, forceSaveAttrElement);
     return true;
   }
   return false;

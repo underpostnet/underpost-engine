@@ -17,7 +17,7 @@ import {
 import { maps } from './maps.js';
 import { mapBots } from './bots.js';
 import { quests } from './quests.js';
-import { getDisplayBotData, items } from './items.js';
+import { getDataRenderItem, getDisplayBotData, items } from './items.js';
 
 dotenv.config();
 
@@ -30,6 +30,8 @@ const minBotsMap = 3;
 
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
+
+const forceSaveAttrElement = {};
 
 const changeMapsPoints = [];
 maps.map((dataMap) => {
@@ -128,6 +130,7 @@ const typeModels = () => {
       velAttack: () => 500,
       velPassiveHealValue: () => 1000,
       items: () => [],
+      displayItems: () => [],
     },
     bullet: {
       color: () => 'venetian red',
@@ -327,7 +330,7 @@ const getMissileDirection = (positionType, direction) => {
 })();
 
 const validateSchemeElement = (element) => {
-  const arrAttr = ['components', 'items'];
+  const arrAttr = ['components', 'items', 'displayItems'];
   const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
   Object.keys(typeModels()[element.type]).map((key) => {
     if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
@@ -665,6 +668,7 @@ const wsServer = (httpServer, app, internalApi) => {
       }
 
       if (element) {
+        forceSaveAttrElement[element.id] = {};
         element.id = socket.id;
         if (element.life === 0) rebirdElement(clients, element, internalApi);
         delete eventObj.path;
@@ -756,6 +760,7 @@ const wsServer = (httpServer, app, internalApi) => {
       console.log(`socket.io | event ${socket.id} due to data: ${args}`);
       const eventElement = JSON.parse(args);
       const clientElement = elements[type].find((element) => element.id === socket.id);
+      const clientElementIndex = elements[type].findIndex((element) => element.id === socket.id);
       if (clientElement) {
         const { map } = clientElement;
         if (eventElement.element) eventElement.element = merge(clientElement, eventElement.element);
@@ -781,6 +786,86 @@ const wsServer = (httpServer, app, internalApi) => {
                 client.emit('event', chatEmit);
               }
             });
+            break;
+          case 'item-equip':
+            (() => {
+              const item = items.find((i) => i.id === eventElement.item.id);
+              if (
+                item &&
+                elements['user'][clientElementIndex].items.find((i) => i.id === item.id) &&
+                !elements['user'][clientElementIndex].items.find((i) => i.id === item.id).active &&
+                !elements['user'][clientElementIndex].displayItems.find((i) => i.id === eventElement.item.id)
+              ) {
+                const indexItem = elements['user'][clientElementIndex].items.findIndex((i) => i.id === item.id);
+                elements['user'][clientElementIndex].items[indexItem].active = true;
+                elements['user'][clientElementIndex].displayItems.push(getDataRenderItem(item));
+                clients.map((client) => {
+                  const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+                  if (elements[type][clientIndex].map === elements['user'][clientElementIndex].map) {
+                    client.emit(
+                      'update',
+                      JSON.stringify({
+                        id: elements['user'][clientElementIndex].id,
+                        type,
+                        displayItems: elements['user'][clientElementIndex].displayItems,
+                        items: elements['user'][clientElementIndex].items,
+                      })
+                    );
+                    client.emit(
+                      'event',
+                      JSON.stringify({
+                        id: elements['user'][clientElementIndex].id,
+                        type: 'equip-item',
+                        displayItems: elements['user'][clientElementIndex].displayItems,
+                      })
+                    );
+                  }
+                });
+              }
+            })();
+            break;
+          case 'item-unequip':
+            (() => {
+              const item = items.find((i) => i.id === eventElement.item.id);
+              if (item && elements['user'][clientElementIndex].items.find((i) => i.id === item.id)) {
+                const indexItem = elements['user'][clientElementIndex].items.findIndex((i) => i.id === item.id);
+                if (indexItem > -1) elements['user'][clientElementIndex].items[indexItem].active = false;
+
+                const indexDisplayItem = elements['user'][clientElementIndex].displayItems.findIndex(
+                  (i) => i.id === item.id
+                );
+                if (indexDisplayItem > -1)
+                  elements['user'][clientElementIndex].displayItems.splice(indexDisplayItem, 1);
+
+                forceSaveAttrElement[clientElement.id].displayItems = newInstance(
+                  elements['user'][clientElementIndex].displayItems
+                );
+
+                clients.map((client) => {
+                  const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+                  if (elements[type][clientIndex].map === elements['user'][clientElementIndex].map) {
+                    client.emit(
+                      'update',
+                      JSON.stringify({
+                        id: elements['user'][clientElementIndex].id,
+                        type,
+                        // no sirve eliminar desde cliente
+                        // displayItems: elements['user'][clientElementIndex].displayItems,
+                        items: elements['user'][clientElementIndex].items,
+                      })
+                    );
+                    client.emit(
+                      'event',
+                      JSON.stringify({
+                        id: elements['user'][clientElementIndex].id,
+                        type: 'unequip-item',
+                        itemId: item.id,
+                      })
+                    );
+                  }
+                });
+              }
+            })();
             break;
           default:
             break;
@@ -988,7 +1073,9 @@ const wsServer = (httpServer, app, internalApi) => {
   setInterval(() => {
     ['user'].map((type) => {
       elements[type].map((element) => {
-        if (element._id) internalApi.updateElementUser(element);
+        const forceAttr = forceSaveAttrElement[element.id] ? newInstance(forceSaveAttrElement[element.id]) : {};
+        if (element._id) internalApi.updateElementUser(element, forceAttr);
+        forceSaveAttrElement[element.id] = {};
       });
     });
   }, 500);
