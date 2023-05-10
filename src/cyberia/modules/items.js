@@ -31,18 +31,17 @@ const items = [
   },
 ];
 
-const getDisplayBotData = (sprite) =>
-  items
-    .filter((i) => i.display.includes(sprite))
-    .map((i) => {
-      const { id, frames, frameTimeInterval, renderFactor } = i;
-      return {
-        id,
-        frames,
-        frameTimeInterval,
-        renderFactor,
-      };
-    });
+const getDataRenderItem = (item) => {
+  const { id, frames, frameTimeInterval, renderFactor } = item;
+  return {
+    id,
+    frames,
+    frameTimeInterval,
+    renderFactor,
+  };
+};
+
+const getDisplayBotData = (sprite) => items.filter((i) => i.display.includes(sprite)).map((i) => getDataRenderItem(i));
 
 const getItem = (req, res) => {
   try {
@@ -74,4 +73,4 @@ const itemsApi = (app) => {
   app.get(process.env.API_BASE + '/items/:itemId', (req, res) => getItem(req, res));
 };
 
-export { items, itemsApi, getDisplayBotData };
+export { items, itemsApi, getDisplayBotData, getDataRenderItem };
