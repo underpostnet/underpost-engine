@@ -37,6 +37,17 @@ const renderItemCount = (valueID, value) => {
 const renderItemModal = (item) => {
   let statsRender = '';
   let equipmentBtn = '';
+  const renderTitleCountType = /*html*/ `
+      ${renderLang(item.name)}
+      <br>
+      <span style='color: yellow; font-size: 7px'>
+          [${item.itemType.toUpperCase()}]
+      </span>
+      <br><br>
+      <span style='font-size: 10px'>X</span><span class='modal-count-${
+        item.id
+      }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>  
+  `;
   switch (item.itemType) {
     case 'currency':
       break;
@@ -91,28 +102,27 @@ const renderItemModal = (item) => {
       /*html*/ `
 
         <div class='abs center fix custom-cursor item-modal item-modal-${item.id}'>
-                <br><br>
-                ${renderLang(item.name)}
-                <br>
-                <span style='color: yellow; font-size: 7px'>
-                    [${item.itemType.toUpperCase()}]
-                </span>
-                <br><br>
-                <span style='font-size: 10px'>X</span><span class='modal-count-${
-                  item.id
-                }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>
-                <br><br>
-                <img class='inl item-modal-img' src='/items/${item.id}/animation.gif'>
-
+          <div class='in modal-item-header'>
+            <div class='in fll modal-item-header-col'>
+                <div class='abs center'>
+                    ${renderTitleCountType}
+                </div>
+            </div>
+            <div class='in fll modal-item-header-col'>
+                <img class='abs center item-modal-img' src='/items/${item.id}/animation.gif'>
+            </div>
                 <div class='abs btn-close-modal-item custom-cursor close-item-modal-${item.id}'>
                     <div class='abs center'>
                         <img class='inl icons-close-modal-item' src='/icons/200x200/cross.gif'>
                     </div>
                 </div>
+          </div>
 
+          <div class='in modal-item-stats'>
                 ${statsRender}
 
                 ${equipmentBtn}
+          </div>
                 
         </div>
     

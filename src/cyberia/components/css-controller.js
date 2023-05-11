@@ -32,8 +32,39 @@ setInterval(() => {
           (screenDim.minValue - (48 + 10))
         }px;
       }
-      
 
+      .item-modal {
+        width: ${screenDim.maxType !== 'height' && screenDim.minValue <= 430 ? 400 : 245}px;
+        height:  ${screenDim.maxType !== 'height' && screenDim.minValue <= 430 ? 245 : 400}px;
+      }
+      
+      ${
+        screenDim.maxType !== 'height' && screenDim.minValue <= 430
+          ? /*css*/ `
+        .modal-item-stats {
+          width: 50%;
+          float: left;
+        }
+        .modal-item-header {
+          width: 30%;
+          float: left;
+          height: 100%;
+        }
+        .modal-item-header-col {
+          width: 100%;
+          height: 48%;
+        }
+      `
+          : /*css*/ `
+        .modal-item-header {
+          height: 100px;
+        }
+        .modal-item-header-col {
+          width: 48%;
+          height: 100%;
+        }
+          `
+      }
       
       .grid-cell {
         width: ${(screenDim.minValue * 0.8) / 6}px;

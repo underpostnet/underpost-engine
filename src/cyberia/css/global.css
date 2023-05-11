@@ -497,8 +497,6 @@ event-board {
 .item-modal {
     background: black;
     border: 3px solid yellow;
-    width: 245px;
-    height: 400px;
     padding: 10px;
 }
 
@@ -534,4 +532,9 @@ event-board {
 
 .value-stat-content {
     padding: 5px;
+}
+
+.modal-item-header {
+    margin: 3px;
+    padding-left: 55px;
 }

@@ -476,6 +476,9 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
                     item: {
                       name: item.name,
                       id: item.id,
+                      count: eventElement.element.items[indexItemExist]
+                        ? eventElement.element.items[indexItemExist].count
+                        : undefined,
                     },
                     newItemsState: eventElement.element.items,
                     elementFromDrop: element,
