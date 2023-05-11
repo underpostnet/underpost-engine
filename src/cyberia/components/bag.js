@@ -23,6 +23,15 @@ const getK = (koyn) => {
   return koyn;
 };
 
+const renderInitModalCounts = () => {
+  const element = elements['user'].find((e) => e.id === socket.id);
+  if (s('.modal-count-koyn')) htmls('.modal-count-koyn', getK(element.koyn));
+  if (s('.modal-count-crypto-koyn')) htmls('.modal-count-crypto-koyn', 0);
+  localItemsStorage.map((i) => {
+    if (s('.modal-count-' + i.id)) htmls('.modal-count-' + i.id, i.count());
+  });
+};
+
 const renderItemCount = (valueID, value) => {
   return /*html*/ `
       <div class='abs count-item-text' style='${borderChar(2, 'black')}'>
@@ -158,7 +167,13 @@ const newInstanceBagItems = async (items) => {
       };
     } else {
       result = await serviceRequest(API_BASE + `/items/${item.id}`);
-      localItemsStorage.push(result.data);
+      localItemsStorage.push({
+        ...result.data,
+        count: () =>
+          elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id)
+            ? elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id).count
+            : 0,
+      });
     }
     Object.keys(result.data.name).map((langKey) => {
       result.data.name[langKey] = result.data.name[langKey].replaceAll(' ', '<br>');
@@ -220,6 +235,7 @@ const newInstanceBagItems = async (items) => {
       indexCell++;
     });
   });
+  renderInitModalCounts();
 };
 
 const bag = () => {
