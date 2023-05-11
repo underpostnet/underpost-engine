@@ -20,6 +20,10 @@ append(
         }
   
       </style>
+
+      <style class='custom-css-gui-screen'>
+      </style>
+
       <style class='css-controller'></style>
   
       <pixi-container class='in'></pixi-container>
@@ -51,7 +55,7 @@ append(
           ${account()}
           ${quests()}
           ${historyBoard()}
-          <div class='abs close-gui custom-cursor hover-button'>
+          <div class='fix close-gui custom-cursor hover-button'>
               <div class='abs center'>
                   <img class='inl icons-menu' src='/icons/200x200/cross.gif'>
               </div>
@@ -192,6 +196,14 @@ s('.btn-bag').onclick = () => {
   s('.close-menu').click();
   s('gui-layer').style.display = 'block';
   s('bag').style.display = 'block';
+  htmls(
+    '.custom-css-gui-screen',
+    /*css*/ `
+      html, body {
+        overflow: hidden;
+      }
+  `
+  );
 };
 
 s('.btn-chat').onclick = () => {
@@ -258,6 +270,7 @@ s('.close-gui').onclick = () => {
   s('account').style.display = 'none';
   s('quests').style.display = 'none';
   s('history-board').style.display = 'none';
+  htmls('.custom-css-gui-screen', '');
 };
 
 s('.btn-logout').onclick = () => {

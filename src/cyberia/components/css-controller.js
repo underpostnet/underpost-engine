@@ -26,6 +26,12 @@ setInterval(() => {
         top: 0px;
         left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
       }
+      .close-gui {
+        left: ${
+          (screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2) +
+          (screenDim.minValue - (48 + 10))
+        }px;
+      }
       
 
       

@@ -90,8 +90,6 @@ loader {
 
 .close-gui {
     top: 10px;
-    right: 10px;
-    left: auto;
 }
 
 .hover-button:hover {
