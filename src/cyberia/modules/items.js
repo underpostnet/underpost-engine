@@ -41,9 +41,9 @@ const getDataRenderItem = (item) => {
   };
 };
 
-const getDisplayBotData = (sprite) => items.filter((i) => i.display.includes(sprite)).map((i) => getDataRenderItem(i));
+const getDisplayBotData = (sprite) => items.filter((i) => i.display.includes(sprite)).map((i) => i.id);
 
-const getItem = (req, res) => {
+const getItemService = (req, res) => {
   try {
     const item = items.find((i) => i.id == req.params.itemId);
     if (item) {
@@ -69,8 +69,34 @@ const getItem = (req, res) => {
   }
 };
 
+const getDataRenderItemService = (req, res) => {
+  try {
+    const item = items.find((i) => i.id == req.params.itemId);
+    if (item) {
+      return res.status(200).json({
+        status: 'success',
+        data: getDataRenderItem(item),
+      });
+    }
+    return res.status(400).json({
+      status: 'error',
+      data: {
+        message: renderLang({ en: 'Item not found', es: 'Item no encontrado' }, req),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
 const itemsApi = (app) => {
-  app.get(process.env.API_BASE + '/items/:itemId', (req, res) => getItem(req, res));
+  app.get(process.env.API_BASE + '/items/:itemId', (req, res) => getItemService(req, res));
+  app.get(process.env.API_BASE + '/items/render/:itemId', (req, res) => getDataRenderItemService(req, res));
 };
 
 export { items, itemsApi, getDisplayBotData, getDataRenderItem };

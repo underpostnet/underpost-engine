@@ -17,7 +17,7 @@ import {
 import { maps } from './maps.js';
 import { mapBots } from './bots.js';
 import { quests } from './quests.js';
-import { getDataRenderItem, getDisplayBotData, items } from './items.js';
+import { getDisplayBotData, items } from './items.js';
 
 dotenv.config();
 
@@ -794,11 +794,11 @@ const wsServer = (httpServer, app, internalApi) => {
                 item &&
                 elements['user'][clientElementIndex].items.find((i) => i.id === item.id) &&
                 !elements['user'][clientElementIndex].items.find((i) => i.id === item.id).active &&
-                !elements['user'][clientElementIndex].displayItems.find((i) => i.id === eventElement.item.id)
+                !elements['user'][clientElementIndex].displayItems.find((i) => i === eventElement.item.id)
               ) {
                 const indexItem = elements['user'][clientElementIndex].items.findIndex((i) => i.id === item.id);
                 elements['user'][clientElementIndex].items[indexItem].active = true;
-                elements['user'][clientElementIndex].displayItems.push(getDataRenderItem(item));
+                elements['user'][clientElementIndex].displayItems.push(item.id);
                 clients.map((client) => {
                   const clientIndex = elements[type].findIndex((element) => element.id === client.id);
                   if (elements[type][clientIndex].map === elements['user'][clientElementIndex].map) {
@@ -832,7 +832,7 @@ const wsServer = (httpServer, app, internalApi) => {
                 if (indexItem > -1) elements['user'][clientElementIndex].items[indexItem].active = false;
 
                 const indexDisplayItem = elements['user'][clientElementIndex].displayItems.findIndex(
-                  (i) => i.id === item.id
+                  (i) => i === item.id
                 );
                 if (indexDisplayItem > -1)
                   elements['user'][clientElementIndex].displayItems.splice(indexDisplayItem, 1);

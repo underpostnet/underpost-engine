@@ -209,7 +209,7 @@ socket.on('event', (...args) => {
       );
       const indexEventUser = elements['user'].findIndex((e) => e.id === eventElement.id);
       elements['user'][indexEventUser].displayItems = elements['user'][indexEventUser].displayItems.filter(
-        (i) => i.id !== eventElement.itemId
+        (i) => i !== eventElement.itemId
       );
       break;
     default:

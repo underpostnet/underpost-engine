@@ -1,5 +1,6 @@
 let mainUserBag = [];
 let localItemsStorage = [];
+let localItemsRenderStorage = [];
 
 const getK = (koyn) => {
   /*
@@ -229,7 +230,18 @@ const renderDisplayItems = (element) => {
   const { type } = element;
   const { dim } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
-  element.displayItems.map((item) => {
+  element.displayItems.map(async (itemId) => {
+    let item = localItemsRenderStorage.find((i) => i.id === itemId);
+    if (!item) {
+      const result = await serviceRequest(API_BASE + `/items/render/${itemId}`);
+      if (result.data && result.data.id) {
+        localItemsRenderStorage.push(result.data);
+        item = result.data;
+      } else {
+        console.error(result);
+        return;
+      }
+    }
     let currentFrame = 0;
     range(0, item.frames).map((frame) => {
       const src = `/items/${item.id}/${frame}.gif`;
@@ -254,7 +266,7 @@ const renderDisplayItems = (element) => {
 };
 
 const removeDisplayItem = (element, itemId) => {
-  const item = element.displayItems.find((i) => i.id === itemId);
+  const item = localItemsRenderStorage.find((i) => i.id === itemId);
   const { type } = element;
   if (item) {
     range(0, item.frames).map((frame) => {
