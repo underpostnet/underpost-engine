@@ -98,9 +98,9 @@ const renderItemModal = (item) => {
                     [${item.itemType.toUpperCase()}]
                 </span>
                 <br><br>
-                <span style='font-size: 10px'>X</span><span style='color: yellow; font-size: 12px'>${getK(
-                  item.count()
-                )}</span>
+                <span style='font-size: 10px'>X</span><span class='modal-count-${
+                  item.id
+                }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>
                 <br><br>
                 <img class='inl item-modal-img' src='/items/${item.id}/animation.gif'>
 

@@ -175,6 +175,7 @@ const renderPixiInitElement = (element) => {
           `;
           renderEventBoard(/*html*/ { tag: 'KOYN', msg, history: true });
           if (s('.bag-koyn-indicator')) htmls('.bag-koyn-indicator', getK(element.koyn));
+          if (s('.modal-count-koyn')) htmls('.modal-count-koyn', getK(element.koyn));
           params[type][element.id].lastKoyn = newInstance(element.koyn);
         }
       }, params[type][element.id].intervalDiffKoynDisplay);
