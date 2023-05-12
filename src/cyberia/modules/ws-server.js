@@ -285,6 +285,17 @@ const getMissileDirection = (positionType, direction) => {
   }
 };
 
+const upGradeStatsElements = (clients, clientElementIndex, item, factor) => {
+  const statsEmit = {};
+  Object.keys(item.stats).map((skillKey) => {
+    elements['user'][clientElementIndex][skillKey] =
+      elements['user'][clientElementIndex][skillKey] + item.stats[skillKey] * factor;
+    statsEmit[skillKey] = newInstance(elements['user'][clientElementIndex][skillKey]);
+  });
+  setIntervalPassiveHeal(clients, elements['user'][clientElementIndex]);
+  return statsEmit;
+};
+
 (() => {
   const type = 'building';
   const { color, render } = getParamsType(type);
@@ -331,7 +342,8 @@ const getMissileDirection = (positionType, direction) => {
 
 const validateSchemeElement = (element) => {
   const arrAttr = ['components', 'items', 'displayItems'];
-  const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
+  // const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
+  const forcesAttr = ['components'];
   Object.keys(typeModels()[element.type]).map((key) => {
     if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
     if (arrAttr.includes(key)) element[key] = Object.values(element[key]);
@@ -359,6 +371,7 @@ const ssrWS = `
     const getMissileDirection = ${getMissileDirection};
     const globalInstancesMapData = ${JSONweb(globalInstancesMapData['cyberia'])}
     const validateSchemeElement = ${validateSchemeElement};
+    const statsItems = ${JSONweb(Object.keys(items[0].stats))}
 `;
 
 const rebirdElement = (clients, element, internalApi) => {
@@ -802,26 +815,26 @@ const wsServer = (httpServer, app, internalApi) => {
                 const indexItem = elements['user'][clientElementIndex].items.findIndex((i) => i.id === item.id);
                 elements['user'][clientElementIndex].items[indexItem].active = true;
                 elements['user'][clientElementIndex].displayItems.push(item.id);
+
+                const statsEmit = upGradeStatsElements(clients, clientElementIndex, item, 1);
+                const updateEmit = JSON.stringify({
+                  id: elements['user'][clientElementIndex].id,
+                  type,
+                  displayItems: elements['user'][clientElementIndex].displayItems,
+                  items: elements['user'][clientElementIndex].items,
+                  ...statsEmit,
+                });
+                const eventEmit = JSON.stringify({
+                  id: elements['user'][clientElementIndex].id,
+                  type: 'equip-item',
+                  displayItems: elements['user'][clientElementIndex].displayItems,
+                });
+
                 clients.map((client) => {
                   const clientIndex = elements[type].findIndex((element) => element.id === client.id);
                   if (elements[type][clientIndex].map === elements['user'][clientElementIndex].map) {
-                    client.emit(
-                      'update',
-                      JSON.stringify({
-                        id: elements['user'][clientElementIndex].id,
-                        type,
-                        displayItems: elements['user'][clientElementIndex].displayItems,
-                        items: elements['user'][clientElementIndex].items,
-                      })
-                    );
-                    client.emit(
-                      'event',
-                      JSON.stringify({
-                        id: elements['user'][clientElementIndex].id,
-                        type: 'equip-item',
-                        displayItems: elements['user'][clientElementIndex].displayItems,
-                      })
-                    );
+                    client.emit('update', updateEmit);
+                    client.emit('event', eventEmit);
                   }
                 });
               }
@@ -844,27 +857,26 @@ const wsServer = (httpServer, app, internalApi) => {
                   elements['user'][clientElementIndex].displayItems
                 );
 
+                const statsEmit = upGradeStatsElements(clients, clientElementIndex, item, -1);
+                const updateEmit = JSON.stringify({
+                  id: elements['user'][clientElementIndex].id,
+                  type,
+                  // no sirve eliminar desde cliente
+                  // displayItems: elements['user'][clientElementIndex].displayItems,
+                  items: elements['user'][clientElementIndex].items,
+                  ...statsEmit,
+                });
+                const eventEmit = JSON.stringify({
+                  id: elements['user'][clientElementIndex].id,
+                  type: 'unequip-item',
+                  itemId: item.id,
+                });
+
                 clients.map((client) => {
                   const clientIndex = elements[type].findIndex((element) => element.id === client.id);
                   if (elements[type][clientIndex].map === elements['user'][clientElementIndex].map) {
-                    client.emit(
-                      'update',
-                      JSON.stringify({
-                        id: elements['user'][clientElementIndex].id,
-                        type,
-                        // no sirve eliminar desde cliente
-                        // displayItems: elements['user'][clientElementIndex].displayItems,
-                        items: elements['user'][clientElementIndex].items,
-                      })
-                    );
-                    client.emit(
-                      'event',
-                      JSON.stringify({
-                        id: elements['user'][clientElementIndex].id,
-                        type: 'unequip-item',
-                        itemId: item.id,
-                      })
-                    );
+                    client.emit('update', updateEmit);
+                    client.emit('event', eventEmit);
                   }
                 });
               }

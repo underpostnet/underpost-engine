@@ -60,6 +60,19 @@ socket.on('update', (...args) => {
 
   if (elementIndex > -1) {
     elements[type][elementIndex] = validateSchemeElement(merge(elements[type][elementIndex], eventElement));
+
+    if (eventElement.id === socket.id)
+      setTimeout(() => {
+        let renderNewStats = false;
+        statsItems.map((skillKey) => {
+          if (eventElement[skillKey] !== undefined) renderNewStats = true;
+        });
+        if (renderNewStats) {
+          htmls('.character-stats-grid', renderStatsGrid(elements[type][elementIndex]));
+          initMainUserJoy(elements[type][elementIndex]);
+        }
+      });
+
     return renderPixiEventElement(elements[type][elementIndex]);
   }
   if (eventElement.id === socket.id && eventElement.map) {
