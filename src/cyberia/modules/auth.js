@@ -428,9 +428,10 @@ const updateUser = (user, forceSaveAttrElement) => {
   const indexUser = users.findIndex((_user) => _user.id === user.id);
   if (indexUser > -1) {
     users[indexUser] = merge(users[indexUser], user);
-    Object.keys(forceSaveAttrElement).map((keyForce) => {
-      users[indexUser].element[keyForce] = forceSaveAttrElement[keyForce];
-    });
+    if (forceSaveAttrElement)
+      Object.keys(forceSaveAttrElement).map((keyForce) => {
+        users[indexUser].element[keyForce] = forceSaveAttrElement[keyForce];
+      });
     writeUsers(users);
     return {
       status: 'success',
