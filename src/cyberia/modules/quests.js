@@ -9,14 +9,21 @@ const quests = [
       es: `Estoy buscando su ayuda para localizar el hueso perdido de mi amada mascota. Es importante para mí, y no puedo soportar ver a mi amigo sin él. Por favor, ayúdame a encontrar este hueso`,
       en: `I am seeking your help to locate the lost bone of my beloved pet. It important for me, and I can't bear to see my friend without it. Please assist me in finding this bone`,
     },
-    logic: {
-      card: (input) => `
+    logic: (input) => {
+      setTimeout(() => {
+        if (hashIntervals[input.element.id][input.id]) clearInterval(hashIntervals[input.element.id][input.id]);
+        hashIntervals[input.element.id][input.id] = setInterval(() => {
+          if (!input.maps.includes(mapMetaData.map)) return clearInterval(hashIntervals[input.element.id][input.id]);
+          // console.error(input);
+        }, 1000);
+      });
+      return `
       find floki's bone 
       <br><br>
       <div class='in' style='color: yellow'>
         [ <span class='quest-count-${input.id}'>0</span> / 1 ]
       </div>
-      `,
+      `;
     },
   },
   {

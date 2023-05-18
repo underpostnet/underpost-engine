@@ -812,7 +812,7 @@ const wsServer = (httpServer, app, internalApi) => {
                   return q;
                 }
                 q.eval = `
-              questRenderCard = ${q.logic.card};
+              questRenderCard = ${q.logic};
               `;
                 return q;
               }),

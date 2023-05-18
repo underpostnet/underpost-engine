@@ -24,7 +24,10 @@ const renderMapsQuests = () => {
           };
           let questRenderCard;
           eval(questData.eval);
-          htmls(`.quest-render-${questData.id}`, questRenderCard({ id: questData.id }));
+          htmls(
+            `.quest-render-${questData.id}`,
+            questRenderCard({ id: questData.id, maps: questData.maps, element: { id: socket.id } })
+          );
         });
         return /*html*/ `
         <div class='fl custom-cursor quest-menu-btn-content ${hashQuest}'>
