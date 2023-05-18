@@ -77,8 +77,8 @@ socket.on('update', (...args) => {
   }
   if (eventElement.id === socket.id && eventElement.map) {
     // console.log('init main user', JSON.stringify(eventElement, null, 4));
-    userPositionAvailablePoints = getAvailablePoints('user', ['building'], eventElement.map);
-    userMatrixCollision = getMatrixCollision('user', ['building'], eventElement.map);
+    userPositionAvailablePoints = getAvailablePoints('user', ['building', 'object', 'object-frames'], eventElement.map);
+    userMatrixCollision = getMatrixCollision('user', ['building', 'object', 'object-frames'], eventElement.map);
     console.log('userMatrixCollision', JSONmatrix(userMatrixCollision));
     const queryParams = getQueryParams();
     console.warn('queryParams', JSON.stringify(queryParams, null, 4));

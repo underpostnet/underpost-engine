@@ -13,6 +13,7 @@ import {
   getDirection,
   reOrderIntArray,
   JSONweb,
+  JSONmatrix,
 } from '../../core/modules/common.js';
 import { maps } from './maps.js';
 import { mapBots } from './bots.js';
@@ -34,10 +35,25 @@ const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 const forceSaveAttrElement = {};
 
 const changeMapsPoints = [];
+const objectsMaps = [];
 maps.map((dataMap) => {
+  const objectsMap = {
+    map: dataMap.name_map,
+    objects: [],
+  };
   const fromMap = dataMap.name_map;
   dataMap.matrix.map((rowFrom, y) =>
     rowFrom.map((cellFrom, x) => {
+      if (typeof cellFrom === 'object' && cellFrom[0] === 'object') {
+        objectsMap.objects.push({
+          src: cellFrom[1],
+          render: { dim: cellFrom[2], x, y },
+          collision: cellFrom[3] !== undefined ? cellFrom[3] : undefined,
+          frames: cellFrom[4] !== undefined ? cellFrom[4] : undefined,
+          intervalFrames: cellFrom[5] !== undefined ? cellFrom[5] : undefined,
+        });
+      }
+
       if (typeof cellFrom === 'object' && cellFrom[0] === 'to-map') {
         let toMapData;
 
@@ -67,6 +83,8 @@ maps.map((dataMap) => {
       }
     })
   );
+
+  objectsMaps.push(objectsMap);
 });
 
 const globalInstancesMapData = {
@@ -125,7 +143,7 @@ const typeModels = () => {
       passiveHealValue: () => 10,
       sprite: () => 'anon',
       koyn: () => 0,
-      velFactor: () => 1,
+      velFactor: () => 4,
       deadTime: () => 3,
       velAttack: () => 500,
       velPassiveHealValue: () => 1000,
@@ -153,6 +171,24 @@ const typeModels = () => {
     pointer: {
       color: () => 'lust',
       components: () => ['event-pointer-cross'],
+      render: () => {
+        return {
+          dim: () => 1,
+        };
+      },
+    },
+    object: {
+      color: () => 'old mauve',
+      components: () => ['object'],
+      render: () => {
+        return {
+          dim: () => 1,
+        };
+      },
+    },
+    'object-frames': {
+      color: () => 'old mauve',
+      components: () => ['object-frames'],
       render: () => {
         return {
           dim: () => 1,
@@ -213,7 +249,11 @@ const validateCollision = (A, B) => {
 
 const collision = (render, types, map) => {
   for (const type of types) {
-    if (elements[type].find((element) => element.map === map && validateCollision(element.render, render))) return true;
+    const element = elements[type].find((element) => element.map === map && validateCollision(element.render, render));
+    if (element) {
+      if (type === 'object' || type === 'object-frames') return element.collision;
+      else return true;
+    }
   }
   return false;
 };
@@ -626,6 +666,28 @@ const findUserElementById = (req, res) => {
   }
 };
 
+objectsMaps.map((objectMap) => {
+  objectMap.objects.map((objectData) => {
+    (() => {
+      const type = objectData.frames !== undefined ? 'object-frames' : 'object';
+      const { collision, frames, intervalFrames } = objectData;
+      const { color } = getParamsType(type);
+      const objectElement = {
+        id: objectData.src,
+        type,
+        color,
+        map: objectMap.map,
+        render: objectData.render,
+        collision,
+        frames,
+        intervalFrames,
+      };
+      // console.log('map object push', objectElement);
+      elements[type].push(objectElement);
+    })();
+  });
+});
+
 const wsApi = (app, internalApi) => {
   app.post(process.env.API_BASE + '/ws/element/user', findUserElementById);
   internalApi.findUserElementById = findUserElementById;
@@ -706,7 +768,7 @@ const wsServer = (httpServer, app, internalApi) => {
         let map;
         map = eventObj.path.replaceAll('/', '');
         if (map === '') map = maps[random(0, maps.length - 1)].name_map;
-        const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building'], map));
+        const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building', 'object', 'object-frames'], map));
         const { color, render } = getParamsType(type);
         const { dim } = render;
         element = validateSchemeElement({
@@ -931,8 +993,9 @@ const wsServer = (httpServer, app, internalApi) => {
   maps.map((dataMap) => {
     const map = dataMap.name_map;
     const type = 'bot';
-    const botMatrixCollision = getMatrixCollision(type, ['building'], map);
-    const botPositionAvailablePoints = getAvailablePoints(type, ['building'], map);
+    const botMatrixCollision = getMatrixCollision(type, ['building', 'object', 'object-frames'], map);
+    const botPositionAvailablePoints = getAvailablePoints(type, ['building', 'object', 'object-frames'], map);
+    // if (map === 'zax-shop') console.log('botMatrixCollision', JSONmatrix(botMatrixCollision));
     const configBot = mapBots.find((x) => x.map === map);
     (() => {
       const maxBots = configBot && configBot.maxBots !== undefined ? configBot.maxBots : minBotsMap;

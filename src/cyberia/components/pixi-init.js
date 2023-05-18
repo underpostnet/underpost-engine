@@ -76,6 +76,44 @@ const renderPixiInitElement = (element) => {
     container.addChild(pixi[type][element.id][src]);
   }
 
+  if (typeModels()[type].components().includes('object')) {
+    const src = element.id;
+    pixi[type][element.id][src] = PIXI.Sprite.from(src);
+    pixi[type][element.id][src].x = 0;
+    pixi[type][element.id][src].y = 0;
+    pixi[type][element.id][src].width = dim;
+    pixi[type][element.id][src].height = dim;
+    pixi[type][element.id][src].visible = true;
+    container.addChild(pixi[type][element.id][src]);
+  }
+
+  if (typeModels()[type].components().includes('object-frames')) {
+    range(0, element.frames).map((i) => {
+      const src = element.id + `/${i}.gif`;
+      pixi[type][element.id][src] = PIXI.Sprite.from(src);
+      pixi[type][element.id][src].x = 0;
+      pixi[type][element.id][src].y = 0;
+      pixi[type][element.id][src].width = dim;
+      pixi[type][element.id][src].height = dim;
+      pixi[type][element.id][src].visible = i === 0;
+      container.addChild(pixi[type][element.id][src]);
+    });
+    const idInterval = `interval-${element.id}`;
+    if (hashIntervals[element.id][idInterval]) clearInterval(hashIntervals[element.id][idInterval]);
+    let currentFrame = 0;
+    hashIntervals[element.id][idInterval] = setInterval(() => {
+      currentFrame++;
+      if (!pixi[type][element.id]) return clearInterval(hashIntervals[element.id][idInterval]);
+      if (pixi[type][element.id][`${element.id}/${currentFrame}.gif`]) {
+        range(0, element.frames).map((i) => {
+          const src = element.id + `/${i}.gif`;
+          pixi[type][element.id][src].visible = i === currentFrame;
+        });
+      }
+      if (currentFrame === element.frames) currentFrame = -1;
+    }, element.intervalFrames);
+  }
+
   if (socket.id === id) {
     htmls('.character-stats-grid', renderStatsGrid(element));
     if (localStorage.getItem('_b')) {
