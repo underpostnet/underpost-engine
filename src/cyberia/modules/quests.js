@@ -1,12 +1,26 @@
 const quests = [
   {
+    id: 'floki-bone',
     title: { es: 'Hueso de floki', en: "Floki's bone" },
     maps: ['zax-shop'],
     sprite: 'ayleen',
     name: 'Ayleen',
-    dialog: { en: `Please find floki's bone`, es: 'Porfavor encuentra el hueso de floki' },
+    dialog: {
+      es: `Estoy buscando su ayuda para localizar el hueso perdido de mi amada mascota. Es importante para mí, y no puedo soportar ver a mi amigo sin él. Por favor, ayúdame a encontrar este hueso`,
+      en: `I am seeking your help to locate the lost bone of my beloved pet. It important for me, and I can't bear to see my friend without it. Please assist me in finding this bone`,
+    },
+    logic: {
+      card: (input) => `
+      find floki's bone 
+      <br><br>
+      <div class='in' style='color: yellow'>
+        [ <span class='quest-count-${input.id}'>0</span> / 1 ]
+      </div>
+      `,
+    },
   },
   {
+    id: 'subkishin-prosthesis',
     title: { es: 'Protesis subkishin', en: 'Subkishin Prosthesis' },
     maps: ['orange-over-purple'],
     sprite: 'punk',
@@ -17,6 +31,7 @@ const quests = [
     },
   },
   {
+    id: 'scp-2040',
     title: { en: 'SCP-2040', es: 'SCP-2040' },
     maps: ['todarp'],
     sprite: 'agent',
@@ -27,8 +42,9 @@ const quests = [
     },
   },
   {
+    id: 'anon-a',
     title: { en: 'test-quest-a', es: 'test-quest-a' },
-    maps: ['zax-shop'],
+    maps: [],
     sprite: 'anon',
     name: 'Anon',
     dialog: {
@@ -37,8 +53,9 @@ const quests = [
     },
   },
   {
+    id: 'anon-b',
     title: { en: 'test-quest-b', es: 'test-quest-b' },
-    maps: 'all',
+    maps: [],
     sprite: 'anon',
     name: 'Anon',
     dialog: {

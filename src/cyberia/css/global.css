@@ -468,10 +468,27 @@ common-menu {
 
 .quest-menut-btn-see {
     font-size: 10px;
+    background: none;
+    float: right;
+    border: none;
+    width: 120px;
+    padding: 5px;
 }
 
+.quest-menut-btn-see:hover {
+    font-size: 10px;
+    background: none;
+    float: right;
+    color: white;
+    border: none;
+    padding: 5px;
+    text-decoration: underline;
+}
+
+
 .quest-btn-see-content {
-    padding: 10px;
+    height: 30px;
+    margin: 5px 0px 5px 0px;
 }
 
 .icon-board-img {
@@ -537,4 +554,11 @@ event-board {
 .modal-item-header {
     margin: 3px;
     padding-left: 55px;
+}
+
+.quest-render-logic {
+    color: white;
+    font-size: 10px;
+    padding: 9px;
+    border-top: 2px solid yellow;
 }

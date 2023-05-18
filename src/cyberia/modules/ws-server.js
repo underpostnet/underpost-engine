@@ -802,7 +802,20 @@ const wsServer = (httpServer, app, internalApi) => {
         JSON.stringify({
           changeMapsPoints: changeMapsPoints.filter((mapData) => mapData.fromMap === map),
           mapMetaData: {
-            quests: quests.filter((q) => q.maps === 'all' || q.maps.includes(map)),
+            quests: quests
+              .filter((q) => q.maps === 'all' || q.maps.includes(map))
+              .map((q) => {
+                if (!q.logic) {
+                  q.eval = `
+                  questRenderCard = () => '';
+                  `;
+                  return q;
+                }
+                q.eval = `
+              questRenderCard = ${q.logic.card};
+              `;
+                return q;
+              }),
             types: maps.find((m) => m.name_map === map).type,
             map,
           },

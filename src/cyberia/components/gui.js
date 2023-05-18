@@ -88,7 +88,7 @@ append(
         <common-menu class='in'>    
             <menu-button class='in custom-cursor btn-quests'>
               <div class='abs center'>
-                ${renderLang({ es: 'Misiones', en: 'Quests' })}
+                ${renderLang({ es: 'Logros', en: 'Achievements' })}
               </div>
               <div class='abs noti-circle noti-circle-quests' style='display: none'>
                 <div class='abs center noti-count-quests'>
