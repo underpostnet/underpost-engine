@@ -77,7 +77,7 @@ const renderPixiInitElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('object')) {
-    const src = element.id;
+    const src = element.src;
     pixi[type][element.id][src] = PIXI.Sprite.from(src);
     pixi[type][element.id][src].x = 0;
     pixi[type][element.id][src].y = 0;
@@ -89,7 +89,7 @@ const renderPixiInitElement = (element) => {
 
   if (typeModels()[type].components().includes('object-frames')) {
     range(0, element.frames).map((i) => {
-      const src = element.id + `/${i}.gif`;
+      const src = element.src + `/${i}.gif`;
       pixi[type][element.id][src] = PIXI.Sprite.from(src);
       pixi[type][element.id][src].x = 0;
       pixi[type][element.id][src].y = 0;
@@ -104,9 +104,9 @@ const renderPixiInitElement = (element) => {
     hashIntervals[element.id][idInterval] = setInterval(() => {
       currentFrame++;
       if (!pixi[type][element.id]) return clearInterval(hashIntervals[element.id][idInterval]);
-      if (pixi[type][element.id][`${element.id}/${currentFrame}.gif`]) {
+      if (pixi[type][element.id][`${element.src}/${currentFrame}.gif`]) {
         range(0, element.frames).map((i) => {
-          const src = element.id + `/${i}.gif`;
+          const src = element.src + `/${i}.gif`;
           pixi[type][element.id][src].visible = i === currentFrame;
         });
       }

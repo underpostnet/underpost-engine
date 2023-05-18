@@ -11,13 +11,24 @@ const quests = [
     },
     logic: (input) => {
       setTimeout(() => {
-        if (hashIntervals[input.element.id][input.id]) clearInterval(hashIntervals[input.element.id][input.id]);
-        hashIntervals[input.element.id][input.id] = setInterval(() => {
-          if (!input.maps.includes(mapMetaData.map)) return clearInterval(hashIntervals[input.element.id][input.id]);
-          // console.error(input);
-        }, 1000);
+        if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
+        hashIntervals[socket.id][input.id] = setInterval(() => {
+          if (!input.maps.includes(mapMetaData.map)) return clearInterval(hashIntervals[socket.id][input.id]);
+
+          const userElement = elements['user'].find((e) => e.id === socket.id);
+          const boneElement = elements['object'].find((e) => e.id === input.id);
+
+          if (userElement.render.x === boneElement.render.x && userElement.render.y === boneElement.render.y) {
+            removePixiElement(boneElement);
+            elements[boneElement.type].splice(
+              elements[boneElement.type].findIndex((element) => element.id === boneElement.id),
+              1
+            );
+            return clearInterval(hashIntervals[socket.id][input.id]);
+          }
+        }, 100);
       });
-      return `
+      return /*html*/ `
       find floki's bone 
       <br><br>
       <div class='in' style='color: yellow'>

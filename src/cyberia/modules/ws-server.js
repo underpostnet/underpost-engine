@@ -46,11 +46,12 @@ maps.map((dataMap) => {
     rowFrom.map((cellFrom, x) => {
       if (typeof cellFrom === 'object' && cellFrom[0] === 'object') {
         objectsMap.objects.push({
-          src: cellFrom[1],
-          render: { dim: cellFrom[2], x, y },
-          collision: cellFrom[3] !== undefined ? cellFrom[3] : undefined,
-          frames: cellFrom[4] !== undefined ? cellFrom[4] : undefined,
-          intervalFrames: cellFrom[5] !== undefined ? cellFrom[5] : undefined,
+          id: cellFrom[1],
+          src: cellFrom[2],
+          render: { dim: cellFrom[3], x, y },
+          collision: cellFrom[4] !== undefined ? cellFrom[4] : undefined,
+          frames: cellFrom[5] !== undefined ? cellFrom[5] : undefined,
+          intervalFrames: cellFrom[6] !== undefined ? cellFrom[6] : undefined,
         });
       }
 
@@ -670,10 +671,10 @@ objectsMaps.map((objectMap) => {
   objectMap.objects.map((objectData) => {
     (() => {
       const type = objectData.frames !== undefined ? 'object-frames' : 'object';
-      const { collision, frames, intervalFrames } = objectData;
+      const { id, src, collision, frames, intervalFrames } = objectData;
       const { color } = getParamsType(type);
       const objectElement = {
-        id: objectData.src,
+        id,
         type,
         color,
         map: objectMap.map,
@@ -681,6 +682,7 @@ objectsMaps.map((objectMap) => {
         collision,
         frames,
         intervalFrames,
+        src,
       };
       // console.log('map object push', objectElement);
       elements[type].push(objectElement);
