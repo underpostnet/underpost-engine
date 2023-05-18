@@ -57,7 +57,7 @@ const httpClient = (app) => {
             <body>
                 <script>
 
-                (function(){  
+                ${process.env.NODE_ENV === 'dev' ? '' : `(function(){`}  
                   
                   const dev = ${process.env.NODE_ENV === 'dev'};
                   const NAME_APP = '${NAME_APP}';
@@ -101,7 +101,7 @@ const httpClient = (app) => {
                   ${fs.readFileSync(`./src/${NAME_APP}/components/touch.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/screen-keys.js`, 'utf8')}
 
-                })()
+                ${process.env.NODE_ENV === 'dev' ? '' : `})()`}  
                 
                 </script>
             </body>

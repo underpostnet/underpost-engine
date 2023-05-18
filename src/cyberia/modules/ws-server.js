@@ -143,7 +143,7 @@ const typeModels = () => {
       passiveHealValue: () => 10,
       sprite: () => 'anon',
       koyn: () => 0,
-      velFactor: () => 4,
+      velFactor: () => 2,
       deadTime: () => 3,
       velAttack: () => 500,
       velPassiveHealValue: () => 1000,

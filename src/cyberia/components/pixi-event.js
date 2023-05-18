@@ -201,8 +201,8 @@ const renderPixiEventElement = (element) => {
       if (container.y > y) container.y = container.y - intervalChangeY;
       if (container.y < y) container.y = container.y + intervalChangeY;
       if (frameTime === frames - 1) {
-        container.x = x;
-        container.y = y;
+        container.x = round10(container.x, 0);
+        container.y = round10(container.y, 0);
         const newMapObj = changeMapsPoints.find(
           (mapData) =>
             mapData.fromMap === element.map && mapData.fromX === element.render.x && mapData.fromY === element.render.y
