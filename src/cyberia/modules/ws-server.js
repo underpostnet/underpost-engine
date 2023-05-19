@@ -811,11 +811,20 @@ const wsServer = (httpServer, app, internalApi) => {
                   q.eval = `
                   questRenderCard = () => '';
                   `;
-                  return q;
-                }
-                q.eval = `
+                } else {
+                  q.eval = `
               questRenderCard = ${q.logic};
               `;
+                }
+                if (q.setSuccessQuest) {
+                  q.eval += `
+                  setSuccessQuest = ${q.setSuccessQuest};
+                  `;
+                } else {
+                  q.eval += `
+                  setSuccessQuest = () => '';
+                  `;
+                }
                 return q;
               }),
             types: maps.find((m) => m.name_map === map).type,

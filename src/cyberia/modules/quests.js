@@ -9,7 +9,14 @@ const quests = [
       es: `Estoy buscando su ayuda para localizar el hueso perdido de mi amada mascota. Es importante para mí, y no puedo soportar ver a mi amigo sin él. Por favor, ayúdame a encontrar este hueso`,
       en: `I am seeking your help to locate the lost bone of my beloved pet. It important for me, and I can't bear to see my friend without it. Please assist me in finding this bone`,
     },
-    logic: (input) => {
+    successDialog: {
+      es: `Muchas gracias !!`,
+      en: `Thanks very much !! `,
+    },
+    setSuccessQuest: (input) => {
+      htmls(`.quest-count-${input.id}`, 1);
+    },
+    logic: (input, setSuccessQuest) => {
       setTimeout(() => {
         if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
         hashIntervals[socket.id][input.id] = setInterval(() => {
@@ -25,6 +32,8 @@ const quests = [
               elements[boneElement.type].findIndex((element) => element.id === boneElement.id),
               1
             );
+            renderQuestNotification(input);
+            setSuccessQuest(input);
             return clearInterval(hashIntervals[socket.id][input.id]);
           }
         }, 100);

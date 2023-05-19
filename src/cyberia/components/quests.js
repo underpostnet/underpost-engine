@@ -1,3 +1,22 @@
+const renderQuestNotification = (input) => {
+  const idNotiQuest = 'noti-quest' + s4() + s4();
+  append(
+    'body',
+    /*html*/ `
+    <div class='fix center quest-noti-content ${idNotiQuest}'>
+        <div class='abs center'>
+            <img class='noti-quest-sprite-img' src='/sprites/${input.sprite}/08/0.png'>
+            <br><br>
+            ${renderLang(input.successDialog)}
+        </div>
+    </div>
+  `
+  );
+  setTimeout(() => {
+    s(`.${idNotiQuest}`).remove();
+  }, 2000);
+};
+
 const renderMapsQuests = () => {
   resetNotiCircleQuests();
   htmls(
@@ -23,8 +42,9 @@ const renderMapsQuests = () => {
             s(`.qmbsm-${hashQuest}`).style.display = 'inline-table';
           };
           let questRenderCard;
+          let setSuccessQuest;
           eval(questData.eval);
-          htmls(`.quest-render-${questData.id}`, questRenderCard(questData));
+          htmls(`.quest-render-${questData.id}`, questRenderCard(questData, setSuccessQuest));
         });
         return /*html*/ `
         <div class='fl custom-cursor quest-menu-btn-content ${hashQuest}'>

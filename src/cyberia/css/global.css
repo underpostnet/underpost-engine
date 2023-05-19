@@ -563,3 +563,16 @@ event-board {
     padding: 9px;
     border-top: 2px solid yellow;
 }
+
+.quest-noti-content {
+    border: 3px solid yellow;
+    width: 200px;
+    height: 200px;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 10px;
+}
+
+.noti-quest-sprite-img {
+    width: 80px;
+    height: auto;
+}
