@@ -16,7 +16,7 @@ const items = [
       height: 0.75,
     },
     probabilityDrop: [1, 1],
-    display: ['punk'],
+    display: [{ map: 'orange-over-purple', sprite: 'punk' }],
     drop: [{ map: 'orange-over-purple', sprite: 'punk' }],
     categoryFactor: 1,
     stats: {
@@ -41,7 +41,8 @@ const getDataRenderItem = (item) => {
   };
 };
 
-const getDisplayBotData = (sprite) => items.filter((i) => i.display.includes(sprite)).map((i) => i.id);
+const getDisplayBotData = (sprite, map) =>
+  items.filter((i) => i.display.find((d) => d.map === map && d.sprite === sprite) !== undefined).map((i) => i.id);
 
 const getItemService = (req, res) => {
   try {

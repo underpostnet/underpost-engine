@@ -1046,7 +1046,7 @@ const wsServer = (httpServer, app, internalApi) => {
           velFactor: 3,
           ...customBot,
         };
-        bot.displayItems = getDisplayBotData(bot.sprite);
+        bot.displayItems = getDisplayBotData(bot.sprite, map);
         elements[type].push(bot);
         params[type][bot.id] = {};
         setIntervalPassiveHeal(
