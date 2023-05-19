@@ -271,6 +271,24 @@ const newInstanceBagItems = async (items) => {
     },
     // chosenClass: 'css-class',
     // ghostClass: 'css-class',
+    // Element dragging ended
+    onEnd: function (/**Event*/ evt) {
+      // console.log('Sortable onEnd', evt);
+      // console.log('data-id', evt.item.getAttribute('data-id'));
+      // console.log('evt.oldIndex', evt.oldIndex);
+      // console.log('evt.newIndex', evt.newIndex);
+      if (evt.oldIndex === evt.newIndex)
+        s(`.grid-cell-${mainUserBag[parseInt(evt.item.getAttribute('data-id')) - 1].data.id}`).click();
+      // var itemEl = evt.item; // dragged HTMLElement
+      // evt.to; // target list
+      // evt.from; // previous list
+      // evt.oldIndex; // element's old index within old parent
+      // evt.newIndex; // element's new index within new parent
+      // evt.oldDraggableIndex; // element's old index within old parent, only counting draggable elements
+      // evt.newDraggableIndex; // element's new index within new parent, only counting draggable elements
+      // evt.clone; // the clone element
+      // evt.pullMode; // when item is in another sortable: `"clone"` if cloning, `true` if moving
+    },
   });
 
   renderInitModalCounts();
