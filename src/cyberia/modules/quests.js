@@ -13,7 +13,8 @@ const quests = [
       setTimeout(() => {
         if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
         hashIntervals[socket.id][input.id] = setInterval(() => {
-          if (!input.maps.includes(mapMetaData.map)) return clearInterval(hashIntervals[socket.id][input.id]);
+          if (input.maps !== 'all' && !input.maps.includes(mapMetaData.map))
+            return clearInterval(hashIntervals[socket.id][input.id]);
 
           const userElement = elements['user'].find((e) => e.id === socket.id);
           const boneElement = elements['object'].find((e) => e.id === input.id);
