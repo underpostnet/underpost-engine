@@ -150,6 +150,7 @@ const typeModels = () => {
       velPassiveHealValue: () => 1000,
       items: () => [],
       displayItems: () => [],
+      successQuests: () => [],
     },
     bullet: {
       color: () => 'venetian red',
@@ -382,7 +383,7 @@ const upGradeStatsElements = (clients, clientElementIndex, item, factor) => {
 })();
 
 const validateSchemeElement = (element) => {
-  const arrAttr = ['components', 'items', 'displayItems'];
+  const arrAttr = ['components', 'items', 'displayItems', 'successQuests'];
   // const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
   const forcesAttr = ['components'];
   Object.keys(typeModels()[element.type]).map((key) => {
@@ -967,6 +968,37 @@ const wsServer = (httpServer, app, internalApi) => {
                 });
               }
             })();
+            break;
+          case 'success-quest':
+            const dataQuest = quests.find((q) => q.id === eventElement.id);
+            if (dataQuest && !elements['user'][clientElementIndex].successQuests.includes(eventElement.id)) {
+              elements['user'][clientElementIndex].successQuests.push(eventElement.id);
+              if (dataQuest.reward && dataQuest.reward.stats) {
+                const stats = {};
+                Object.keys(dataQuest.reward.stats).map((keyStat) => {
+                  elements['user'][clientElementIndex][keyStat] =
+                    elements['user'][clientElementIndex][keyStat] + dataQuest.reward.stats[keyStat];
+                  stats[keyStat] = elements['user'][clientElementIndex][keyStat];
+                });
+
+                const emitData = {
+                  id: socket.id,
+                  type: 'user',
+                  successQuests: elements['user'][clientElementIndex].successQuests,
+                  ...stats,
+                };
+
+                clients.map((client) => {
+                  const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                  if (
+                    clientIndex > -1 &&
+                    elements['user'][clientIndex].map === elements['user'][clientElementIndex].map
+                  ) {
+                    client.emit('update', JSON.stringify(emitData));
+                  }
+                });
+              }
+            }
             break;
           default:
             break;

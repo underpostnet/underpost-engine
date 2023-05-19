@@ -59,6 +59,13 @@ socket.on('update', (...args) => {
     }, eventElement.lifeTime);
 
   if (elementIndex > -1) {
+    if (
+      eventElement.id === socket.id &&
+      eventElement.successQuests &&
+      Object.values(eventElement.successQuests).length > elements[type][elementIndex].successQuests.length
+    )
+      setTimeout(() => renderMapsQuests());
+
     elements[type][elementIndex] = validateSchemeElement(merge(elements[type][elementIndex], eventElement));
 
     if (eventElement.id === socket.id)

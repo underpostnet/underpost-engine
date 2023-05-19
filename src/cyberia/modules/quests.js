@@ -13,14 +13,31 @@ const quests = [
       es: `Muchas gracias !!`,
       en: `Thanks very much !! `,
     },
+    reward: {
+      stats: {
+        koyn: 10,
+      },
+      // items: [{ id: '', count: 1 }],
+    },
     setSuccessQuest: (input) => {
       htmls(`.quest-count-${input.id}`, 1);
     },
     logic: (input, setSuccessQuest) => {
       setTimeout(() => {
+        let successQuest = false;
+        if (elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)) {
+          successQuest = true;
+          setSuccessQuest(input);
+        }
+
         if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
         hashIntervals[socket.id][input.id] = setInterval(() => {
-          if (input.maps !== 'all' && !input.maps.includes(mapMetaData.map))
+          if (!elements['user'].find((e) => e.id === socket.id)) return;
+          if (elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)) successQuest = true;
+          if (
+            (input.maps !== 'all' && !input.maps.includes(mapMetaData.map)) ||
+            !elements['object'].find((e) => e.id === input.id)
+          )
             return clearInterval(hashIntervals[socket.id][input.id]);
 
           const userElement = elements['user'].find((e) => e.id === socket.id);
@@ -32,8 +49,16 @@ const quests = [
               elements[boneElement.type].findIndex((element) => element.id === boneElement.id),
               1
             );
-            renderQuestNotification(input);
-            setSuccessQuest(input);
+            if (!successQuest) {
+              renderQuestNotification(input);
+              socket.emit(
+                'event',
+                JSON.stringify({
+                  event: 'success-quest',
+                  id: input.id,
+                })
+              );
+            }
             return clearInterval(hashIntervals[socket.id][input.id]);
           }
         }, 100);

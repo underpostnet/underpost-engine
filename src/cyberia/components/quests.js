@@ -23,7 +23,8 @@ const renderMapsQuests = () => {
     'map-quests-render',
     /*html*/ mapMetaData.quests
       .map((questData) => {
-        renderNotiCircleQuests();
+        if (!elements['user'].find((e) => e.id === socket.id).successQuests.includes(questData.id))
+          renderNotiCircleQuests();
         let openQuest = false;
         const hashQuest = 'quest-' + s4() + s4();
 
