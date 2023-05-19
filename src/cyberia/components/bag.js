@@ -1,6 +1,7 @@
 let mainUserBag = [];
 let localItemsStorage = [];
 let localItemsRenderStorage = [];
+let sortableBagInstance = null;
 
 const getK = (koyn) => {
   /*
@@ -210,7 +211,10 @@ const newInstanceBagItems = async (items) => {
     append(
       '.grid-bag',
       /*html*/ `
+      <!--
        <div class='fl grid-row-${iRow}'></div>    
+       -->
+       <div class='fl grid-row-irow'></div> 
       `
     );
     range(0, 3).map((iCell) => {
@@ -223,11 +227,15 @@ const newInstanceBagItems = async (items) => {
           };
         });
       append(
-        `.grid-row-${iRow}`,
+        // `.grid-row-${iRow}`,
+        `.grid-row-irow`,
         /*html*/ `
-        <div class="in fll grid-cell custom-cursor ${
+        <!--
+        <div class="in fll grid-cell custom-cursor 
+        -->
+        <div class="inl fll grid-cell custom-cursor ${
           mainUserBag[currentIndex] ? 'grid-cell-' + mainUserBag[currentIndex].data.id : ''
-        }">
+        }" data-id="${indexCell + 1}">
              ${mainUserBag[currentIndex] ? mainUserBag[currentIndex].render() : ''}
         </div>
         `
@@ -235,6 +243,36 @@ const newInstanceBagItems = async (items) => {
       indexCell++;
     });
   });
+
+  sortableBagInstance = new Sortable(s(`.grid-row-irow`), {
+    animation: 150,
+    group: `bag-grid`,
+    forceFallback: true,
+    fallbackOnBody: true,
+    store: {
+      /**
+       * Get the order of elements. Called once during initialization.
+       * @param   {Sortable}  sortable
+       * @returns {Array}
+       */
+      get: function (sortable) {
+        const order = localStorage.getItem(sortable.options.group.name);
+        return order ? order.split('|') : [];
+      },
+
+      /**
+       * Save the order of elements. Called onEnd (when the item is dropped).
+       * @param {Sortable}  sortable
+       */
+      set: function (sortable) {
+        const order = sortable.toArray();
+        localStorage.setItem(sortable.options.group.name, order.join('|'));
+      },
+    },
+    // chosenClass: 'css-class',
+    // ghostClass: 'css-class',
+  });
+
   renderInitModalCounts();
 };
 

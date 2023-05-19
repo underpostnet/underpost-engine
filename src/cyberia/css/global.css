@@ -10,6 +10,7 @@ body {
     margin: 0px;
     cursor: url('/cursors/black-default.png') -30 -30, auto;
     font-family: 'retro-font';
+    overscroll-behavior: contain;
 }
 
 input {

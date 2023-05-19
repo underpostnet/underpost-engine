@@ -25,6 +25,8 @@ const httpClient = (app) => {
   copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
   copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
   copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
+  copyDir('./node_modules/sortablejs', `${dir}/sortablejs`);
+
   copyDir(`./src/${NAME_APP}/assets`, `${dir}`);
 
   fs.mkdirSync(`${dir}/.well-known`, { recursive: true });
@@ -48,6 +50,7 @@ const httpClient = (app) => {
                 <script src="/socket.io/socket.io.js"></script>
                 <script src="/pixi.js/pixi.js"></script>
                 <script src="/pathfinding/pathfinding-browser.min.js"></script>
+                <script src="/sortablejs/Sortable.min.js"></script>
                 <style>
                   ${fs.readFileSync(`./src/core/css/base.css`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
