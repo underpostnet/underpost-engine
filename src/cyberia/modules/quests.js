@@ -29,7 +29,7 @@ const quests = [
         }, 100);
       });
       return /*html*/ `
-      find floki's bone 
+      ${renderLang({ en: "Find floki's bone", es: 'Encuentra el hueso de floki' })}
       <br><br>
       <div class='in' style='color: yellow'>
         [ <span class='quest-count-${input.id}'>0</span> / 1 ]
