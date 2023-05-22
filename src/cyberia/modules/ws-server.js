@@ -975,6 +975,12 @@ const wsServer = (httpServer, app, internalApi) => {
               elements['user'][clientElementIndex].successQuests.push(eventElement.id);
               if (dataQuest.reward && dataQuest.reward.stats) {
                 const stats = {};
+
+                const koynData = dataQuest.reward.items.find((i) => i.id === 'koyn');
+                const cryptoKoynData = dataQuest.reward.items.find((i) => i.id === 'cryptokoyn');
+                if (koynData) dataQuest.reward.stats.koyn = koynData.count;
+                if (cryptoKoynData) dataQuest.reward.stats.cryptokoyn = cryptoKoynData.count;
+
                 Object.keys(dataQuest.reward.stats).map((keyStat) => {
                   elements['user'][clientElementIndex][keyStat] =
                     elements['user'][clientElementIndex][keyStat] + dataQuest.reward.stats[keyStat];

@@ -14,10 +14,8 @@ const quests = [
       en: `Thanks very much !! `,
     },
     reward: {
-      stats: {
-        koyn: 10,
-      },
-      // items: [{ id: '', count: 1 }],
+      stats: {},
+      items: [{ id: 'koyn', count: 10 }],
     },
     setSuccessQuest: (input) => {
       htmls(`.quest-count-${input.id}`, 1);
@@ -81,10 +79,26 @@ const quests = [
           ${renderLang({ en: 'REWARDS:', es: 'RECOMPENSAS:' })}
         </span>
         <br><br>
-        <div class='inl' style='color: yellow'>
-            [ 10 <img src='/icons/50x50/koyn.gif' class='inl icon-board-img'> ]
+        <div class='fl'>
+            ${input.reward.items
+              .map((item) => {
+                setTimeout(async () => {
+                  let result;
+                  if (item.id == 'koyn') {
+                    result = renderKoynLogo(item.count, false, 'bag-koyn-indicator');
+                  } else if (item.id == 'cryptokoyn') {
+                    result = renderKoynLogo(item.count, 'crypto', 'bag-cryptokoyn-indicator');
+                  } else {
+                    result = await getItemData(item);
+                  }
+                  htmls(`.box-reward-${item.id}`, renderItemBox(result, item.count));
+                });
+                return /*html*/ `
+                  <div class="inl fll grid-cell custom-cursor box-reward-${item.id}"> </div>
+              `;
+              })
+              .join('')}
         </div>
-        koyns.
       </div>
       `;
     },

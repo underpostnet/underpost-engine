@@ -44,6 +44,40 @@ const renderItemCount = (valueID, value) => {
   `;
 };
 
+const getItemData = async (item) => {
+  const localItem = localItemsStorage.find((i) => i.id === item.id);
+  let result;
+  if (localItem) {
+    result = {
+      status: 'success',
+      data: localItem,
+    };
+  } else {
+    result = await serviceRequest(API_BASE + `/items/${item.id}`);
+    localItemsStorage.push({
+      ...result.data,
+      count: () =>
+        elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id)
+          ? elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id).count
+          : 0,
+    });
+  }
+  Object.keys(result.data.name).map((langKey) => {
+    result.data.name[langKey] = result.data.name[langKey].replaceAll(' ', '<br>');
+  });
+  return result;
+};
+
+const renderItemBox = (result, count) => /*html*/ `
+<div class='abs center'>
+  <img src='/items/${result.data.id}/animation.gif' class='inl item-bag-icon'>
+</div> 
+<div class='abs center item-bag-style-text'>
+    ${renderLang(result.data.name)}
+</div>
+${renderItemCount(`bag-count-${result.data.id}`, count)}   
+`;
+
 const renderItemModal = (item) => {
   let statsRender = '';
   let equipmentBtn = '';
@@ -159,38 +193,11 @@ const newInstanceBagItems = async (items) => {
     renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
   ];
   for (item of items) {
-    let result;
-    const localItem = localItemsStorage.find((i) => i.id === item.id);
-    if (localItem) {
-      result = {
-        status: 'success',
-        data: localItem,
-      };
-    } else {
-      result = await serviceRequest(API_BASE + `/items/${item.id}`);
-      localItemsStorage.push({
-        ...result.data,
-        count: () =>
-          elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id)
-            ? elements.user.find((e) => e.id === socket.id).items.find((i) => i.id === item.id).count
-            : 0,
-      });
-    }
-    Object.keys(result.data.name).map((langKey) => {
-      result.data.name[langKey] = result.data.name[langKey].replaceAll(' ', '<br>');
-    });
+    const result = await getItemData(item);
     console.log('bag renderItem', result);
     if (result.status === 'success') {
       mainUserBag.push({
-        render: () => /*html*/ `
-          <div class='abs center'>
-            <img src='/items/${item.id}/animation.gif' class='inl item-bag-icon'>
-          </div> 
-          <div class='abs center item-bag-style-text'>
-              ${renderLang(result.data.name)}
-          </div>
-          ${renderItemCount(`bag-count-${item.id}`, item.count)}   
-          `,
+        render: () => renderItemBox(result, item.count),
         data: {
           count: () =>
             elements.user.find((e) => e.id === socket.id)
