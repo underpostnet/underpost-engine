@@ -560,8 +560,6 @@ event-board {
 .quest-render-logic {
     color: white;
     font-size: 10px;
-    padding: 9px;
-    border-top: 2px solid yellow;
 }
 
 .quest-noti-content {
@@ -575,4 +573,18 @@ event-board {
 .noti-quest-sprite-img {
     width: 80px;
     height: auto;
+}
+
+.quest-section-info {
+    border-top: 2px solid yellow;
+    padding: 15px 5px 15px 5px;
+    margin: 5px;
+}
+
+.success-quest-content {
+    color: #21e321;
+    top: 13px;
+    right: 4px;
+    width: 165px;
+    font-size: 10px;
 }

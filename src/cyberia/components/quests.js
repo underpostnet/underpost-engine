@@ -56,6 +56,7 @@ const renderMapsQuests = () => {
             </div>
             <div class='in fll quest-menu-btn-cell-1'>
                 <div class='in quest-menu-btn-cell'>
+                      <br>
                       <div class='in quest-menu-btn-name-npc'>
                           ${questData.name}
                       </div>
@@ -76,6 +77,13 @@ const renderMapsQuests = () => {
                       <div class='in quest-render-logic quest-render-${questData.id}'>
                       </div>
                 </div>
+            </div>
+            <div class='abs success-quest-content success-quest-content-${
+              questData.id
+            }' style='display: none; ${borderChar(1, 'black')}'>
+              <div class='abs center'>
+                [ <span style='font-size: 20px'>&check;</span> ${renderLang({ es: 'COMPLETADA', en: 'COMPLETED' })} ]
+              </div>
             </div>
         </div>
         `;

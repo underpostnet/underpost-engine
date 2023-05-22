@@ -21,6 +21,7 @@ const quests = [
     },
     setSuccessQuest: (input) => {
       htmls(`.quest-count-${input.id}`, 1);
+      s(`.success-quest-content-${input.id}`).style.display = 'block';
     },
     logic: (input, setSuccessQuest) => {
       setTimeout(() => {
@@ -64,10 +65,26 @@ const quests = [
         }, 100);
       });
       return /*html*/ `
-      ${renderLang({ en: "Find floki's bone", es: 'Encuentra el hueso de floki' })}
-      <br><br>
-      <div class='in' style='color: yellow'>
-        [ <span class='quest-count-${input.id}'>0</span> / 1 ]
+      <div class='in quest-section-info'>
+        <span style='color: yellow'>
+          ${renderLang({ en: 'INSTRUCTIONS:', es: 'INSTRUCCIONES:' })}
+        </span>
+        <br><br>
+        ${renderLang({ en: "Find floki's bone", es: 'Encuentra el hueso de floki' })}
+        <br><br>
+        <div class='in' style='color: yellow'>
+          [ <span class='quest-count-${input.id}'>0</span> / 1 ]
+        </div>
+      </div>
+      <div class='in quest-section-info'>
+        <span style='color: yellow'>
+          ${renderLang({ en: 'REWARDS:', es: 'RECOMPENSAS:' })}
+        </span>
+        <br><br>
+        <div class='inl' style='color: yellow'>
+            [ 10 <img src='/icons/50x50/koyn.gif' class='inl icon-board-img'> ]
+        </div>
+        koyns.
       </div>
       `;
     },
