@@ -92,6 +92,13 @@ const quests = [
                     result = await getItemData(item);
                   }
                   htmls(`.box-reward-${item.id}`, renderItemBox(result, item.count));
+                  s(`.box-reward-${item.id}`).onclick = () =>
+                    renderItemModal({
+                      ...result.data,
+                      count: () => item.count,
+                      active: () => false,
+                      typeModal: 'reward',
+                    });
                 });
                 return /*html*/ `
                   <div class="inl fll grid-cell custom-cursor box-reward-${item.id}"> </div>

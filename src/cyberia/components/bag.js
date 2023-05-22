@@ -81,6 +81,7 @@ ${renderItemCount(`bag-count-${result.data.id}`, count)}
 const renderItemModal = (item) => {
   let statsRender = '';
   let equipmentBtn = '';
+  const rewardModal = item.typeModal !== undefined && item.typeModal === 'reward';
   const renderTitleCountType = /*html*/ `
       ${renderLang(item.name)}
       <br>
@@ -112,6 +113,7 @@ const renderItemModal = (item) => {
       
       `;
       setTimeout(() => {
+        if (rewardModal) return;
         s(`.item-equip-${item.id}`).onclick = () => {
           console.log('equip', item);
           socket.emit(
@@ -165,7 +167,7 @@ const renderItemModal = (item) => {
           <div class='in modal-item-stats'>
                 ${statsRender}
 
-                ${equipmentBtn}
+                ${rewardModal ? '' : equipmentBtn}
           </div>
                 
         </div>
