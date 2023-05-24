@@ -41,6 +41,24 @@ const renderStatsGrid = (element) => {
           ${PRE_VALUE_ICON} ${element.passiveHealValue} PT. / ${element.velPassiveHealValue}ms
         </div>
       </div>
+      <div class='in character-stats-grid-row'>
+        <div class='in character-stats-grid-label'>
+          ${renderLang({ en: 'movement speed', es: 'velocidad de movimiento' }).toUpperCase()} 
+        </div>
+        <div class='in value-stat-content'>
+           ${
+             element.type === 'user'
+               ? /*html*/ `1 ${renderLang({
+                   es: 'Cuadrante',
+                   en: 'Quadrant',
+                 })} / `
+               : ''
+           } ${updateTimeInterval * element.velFactor}ms 
+        </div>
+      </div>
+
+      
+
 
   <!--
   <br>
