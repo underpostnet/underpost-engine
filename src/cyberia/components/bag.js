@@ -75,7 +75,7 @@ const renderItemBox = (result, count) => /*html*/ `
 <div class='abs center item-bag-style-text'>
     ${renderLang(result.data.name)}
 </div>
-${renderItemCount(`bag-count-${result.data.id}`, count)}   
+${count !== undefined ? renderItemCount(`bag-count-${result.data.id}`, count) : ''}   
 `;
 
 const renderItemModal = (item) => {
@@ -220,6 +220,11 @@ const newInstanceBagItems = async (items) => {
           ...result.data,
         },
       });
+      if (
+        elements['user'].find((e) => e.id === socket.id) &&
+        elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === result.data.id && i.active === true)
+      )
+        htmls(`.${result.data.itemType.split('-')[1]}-equip-content`, renderItemBox(result));
     }
   }
   htmls('.grid-bag', '');

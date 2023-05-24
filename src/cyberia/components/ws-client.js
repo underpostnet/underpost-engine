@@ -222,16 +222,20 @@ socket.on('event', (...args) => {
         ...elements['user'].find((e) => e.id === eventElement.id),
         displayItems: eventElement.displayItems,
       });
+      htmls(`.${eventElement.item.itemType.split('-')[1]}-equip-content`, renderItemBox({ data: eventElement.item }));
+      // s('.close-gui').click();
+      // s('.btn-character-stats').click();
       break;
     case 'unequip-item':
       removeDisplayItem(
         elements['user'].find((e) => e.id === eventElement.id),
-        eventElement.itemId
+        eventElement.item.id
       );
       const indexEventUser = elements['user'].findIndex((e) => e.id === eventElement.id);
       elements['user'][indexEventUser].displayItems = elements['user'][indexEventUser].displayItems.filter(
-        (i) => i !== eventElement.itemId
+        (i) => i !== eventElement.item.id
       );
+      htmls(`.${eventElement.item.itemType.split('-')[1]}-equip-content`, '');
       break;
     default:
       break;

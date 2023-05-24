@@ -697,6 +697,54 @@ objectsMaps.map((objectMap) => {
   });
 });
 
+const unEquipItem = (clients, clientElement, clientElementIndex, eventElement) => {
+  const { type } = clientElement;
+  const item = items.find((i) => i.id === eventElement.item.id);
+  if (item && elements['user'][clientElementIndex].items.find((i) => i.id === item.id)) {
+    const indexItem = elements['user'][clientElementIndex].items.findIndex((i) => i.id === item.id);
+    if (indexItem > -1) elements['user'][clientElementIndex].items[indexItem].active = false;
+
+    const indexDisplayItem = elements['user'][clientElementIndex].displayItems.findIndex((i) => i === item.id);
+    if (indexDisplayItem > -1) elements['user'][clientElementIndex].displayItems.splice(indexDisplayItem, 1);
+
+    forceSaveAttrElement[clientElement.id].displayItems = newInstance(
+      elements['user'][clientElementIndex].displayItems
+    );
+
+    const statsEmit = upGradeStatsElements(clients, clientElementIndex, item, -1);
+
+    if (statsEmit.maxLife !== undefined && statsEmit.maxLife < elements['user'][clientElementIndex].life) {
+      elements['user'][clientElementIndex].life = newInstance(statsEmit.maxLife);
+      statsEmit.life = newInstance(statsEmit.maxLife);
+    }
+
+    const updateEmit = JSON.stringify({
+      id: elements['user'][clientElementIndex].id,
+      type,
+      // no sirve eliminar desde cliente
+      // displayItems: elements['user'][clientElementIndex].displayItems,
+      items: elements['user'][clientElementIndex].items,
+      ...statsEmit,
+    });
+    const eventEmit = JSON.stringify({
+      id: elements['user'][clientElementIndex].id,
+      type: 'unequip-item',
+      item: {
+        id: item.id,
+        itemType: item.itemType,
+      },
+    });
+
+    clients.map((client) => {
+      const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+      if (elements[type][clientIndex].map === elements['user'][clientElementIndex].map) {
+        client.emit('update', updateEmit);
+        client.emit('event', eventEmit);
+      }
+    });
+  }
+};
+
 const wsApi = (app, internalApi) => {
   app.post(process.env.API_BASE + '/ws/element/user', findUserElementById);
   internalApi.findUserElementById = findUserElementById;
@@ -899,6 +947,13 @@ const wsServer = (httpServer, app, internalApi) => {
           case 'item-equip':
             (() => {
               const item = items.find((i) => i.id === eventElement.item.id);
+
+              const preTypeItemExist = elements['user'][clientElementIndex].items.filter(
+                (i) => items.find((ii) => ii.id === i.id).itemType === item.itemType && i.active === true
+              );
+              if (preTypeItemExist[0])
+                unEquipItem(clients, clientElement, clientElementIndex, { item: preTypeItemExist[0] });
+
               if (
                 item &&
                 elements['user'][clientElementIndex].items.find((i) => i.id === item.id) &&
@@ -921,6 +976,7 @@ const wsServer = (httpServer, app, internalApi) => {
                   id: elements['user'][clientElementIndex].id,
                   type: 'equip-item',
                   displayItems: elements['user'][clientElementIndex].displayItems,
+                  item,
                 });
 
                 clients.map((client) => {
@@ -934,52 +990,7 @@ const wsServer = (httpServer, app, internalApi) => {
             })();
             break;
           case 'item-unequip':
-            (() => {
-              const item = items.find((i) => i.id === eventElement.item.id);
-              if (item && elements['user'][clientElementIndex].items.find((i) => i.id === item.id)) {
-                const indexItem = elements['user'][clientElementIndex].items.findIndex((i) => i.id === item.id);
-                if (indexItem > -1) elements['user'][clientElementIndex].items[indexItem].active = false;
-
-                const indexDisplayItem = elements['user'][clientElementIndex].displayItems.findIndex(
-                  (i) => i === item.id
-                );
-                if (indexDisplayItem > -1)
-                  elements['user'][clientElementIndex].displayItems.splice(indexDisplayItem, 1);
-
-                forceSaveAttrElement[clientElement.id].displayItems = newInstance(
-                  elements['user'][clientElementIndex].displayItems
-                );
-
-                const statsEmit = upGradeStatsElements(clients, clientElementIndex, item, -1);
-
-                if (statsEmit.maxLife !== undefined && statsEmit.maxLife < elements['user'][clientElementIndex].life) {
-                  elements['user'][clientElementIndex].life = newInstance(statsEmit.maxLife);
-                  statsEmit.life = newInstance(statsEmit.maxLife);
-                }
-
-                const updateEmit = JSON.stringify({
-                  id: elements['user'][clientElementIndex].id,
-                  type,
-                  // no sirve eliminar desde cliente
-                  // displayItems: elements['user'][clientElementIndex].displayItems,
-                  items: elements['user'][clientElementIndex].items,
-                  ...statsEmit,
-                });
-                const eventEmit = JSON.stringify({
-                  id: elements['user'][clientElementIndex].id,
-                  type: 'unequip-item',
-                  itemId: item.id,
-                });
-
-                clients.map((client) => {
-                  const clientIndex = elements[type].findIndex((element) => element.id === client.id);
-                  if (elements[type][clientIndex].map === elements['user'][clientElementIndex].map) {
-                    client.emit('update', updateEmit);
-                    client.emit('event', eventEmit);
-                  }
-                });
-              }
-            })();
+            unEquipItem(clients, clientElement, clientElementIndex, eventElement);
             break;
           case 'success-quest':
             const dataQuest = quests.find((q) => q.id === eventElement.id);
