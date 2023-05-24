@@ -181,7 +181,16 @@ label {
 
 .grid-cell:hover {
     border: 2px solid yellow;
+}
+
+.grid-cell-equip {
+    border: 2px solid yellow;
     margin: 3px;
+    background: black;
+}
+
+.grid-cell-equip:hover {
+    border: 2px solid white;
 }
 
 .title-section {
@@ -255,6 +264,7 @@ event-board {
 
 .character-stats-grid {
     font-size: 8px;
+    margin-bottom: 20px;
 }
 
 .character-stats-grid-row {
@@ -273,7 +283,9 @@ event-board {
     width: 50%;
     height: auto;
     border: 2px solid yellow;
-    margin: 3%;
+    margin: auto;
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
 
 .toggle-switch-content {
@@ -587,4 +599,26 @@ event-board {
     right: 4px;
     width: 170px;
     font-size: 10px;
+}
+
+.talisman-equip-content {
+    top: 5%;
+}
+
+.weapon-equip-content {
+    left: 20%;
+}
+
+.breastplate-equip-content {
+    left: 80%;
+    top: 70%;
+}
+
+.legs-equip-content {
+    top: 95%;
+}
+
+.helmet-equip-content {
+    left: 80%;
+    top: 30%;
 }

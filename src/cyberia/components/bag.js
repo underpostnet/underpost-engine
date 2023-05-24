@@ -86,14 +86,14 @@ const renderItemModal = (item) => {
       ${renderLang(item.name)}
       <br>
       <span style='color: yellow; font-size: 7px'>
-          [${item.itemType.toUpperCase()}]
+          ${item.itemType.replaceAll('-', '<br>').toUpperCase()}
       </span>
       <br><br>
       <span style='font-size: 10px'>X</span><span class='modal-count-${
         item.id
       }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>  
   `;
-  switch (item.itemType) {
+  switch (item.itemType.split('-')[0]) {
     case 'currency':
       break;
     case 'equipment':

@@ -27,7 +27,7 @@ const items = [
       velPassiveHealValue: -20,
       velFactor: -0.1,
     },
-    itemType: 'equipment',
+    itemType: 'equipment-weapon',
   },
   {
     id: 'ice-cream',
@@ -52,7 +52,7 @@ const items = [
       velPassiveHealValue: -5,
       velFactor: 0,
     },
-    itemType: 'equipment',
+    itemType: 'equipment-weapon',
   },
 ];
 

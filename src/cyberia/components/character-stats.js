@@ -86,10 +86,31 @@ const characterStats = () => {
 
                                   <img class='in character-stats-img-avatar'>
 
+
+                                  <div class='abs center grid-cell-equip custom-cursor helmet-equip-content'>
+                                  
+                                  </div>
+
+                                  <div class='abs center grid-cell-equip custom-cursor talisman-equip-content'>
+                                  
+                                  </div>
+                                  
+                                  <div class='abs center grid-cell-equip custom-cursor breastplate-equip-content'>
+                                  
+                                  </div>
+
+                                  <div class='abs center grid-cell-equip custom-cursor weapon-equip-content'>
+                                  
+                                  </div>
+
+                                  <div class='abs center grid-cell-equip custom-cursor legs-equip-content'>
+                                  
+                                  </div>                                  
+
                           </div>
                           
             </div>
-            
+            <br><br><br><br>
 
       </sub-content-gui>
     </character-stats>
