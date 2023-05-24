@@ -951,6 +951,12 @@ const wsServer = (httpServer, app, internalApi) => {
                 );
 
                 const statsEmit = upGradeStatsElements(clients, clientElementIndex, item, -1);
+
+                if (statsEmit.maxLife !== undefined && statsEmit.maxLife < elements['user'][clientElementIndex].life) {
+                  elements['user'][clientElementIndex].life = newInstance(statsEmit.maxLife);
+                  statsEmit.life = newInstance(statsEmit.maxLife);
+                }
+
                 const updateEmit = JSON.stringify({
                   id: elements['user'][clientElementIndex].id,
                   type,
