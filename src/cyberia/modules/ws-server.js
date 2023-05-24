@@ -99,6 +99,44 @@ const globalInstancesMapData = {
     }),
 };
 
+const addNewUserItem = (clients, eventElement, item, element) => {
+  const { type } = eventElement.element;
+  const indexClientElement = elements[type].findIndex((e) => e.id === eventElement.element.id);
+  const indexItemExist = elements[type][indexClientElement].items.findIndex((i) => i.id === item.id);
+  if (indexItemExist > -1) {
+    elements[type][indexClientElement].items[indexItemExist].count++;
+  } else {
+    elements[type][indexClientElement].items.push({ id: item.id, count: 1 });
+  }
+
+  const client = clients.find((c) => c.id === elements[type][indexClientElement].id);
+  const emitDrop = {
+    type: 'drop',
+    item: {
+      name: item.name,
+      id: item.id,
+      count: elements[type][indexClientElement].items[indexItemExist]
+        ? elements[type][indexClientElement].items[indexItemExist].count
+        : 0,
+    },
+    newItemsState: elements[type][indexClientElement].items,
+    elementFromDrop: element,
+  };
+
+  // console.log('emitDrop', emitDrop);
+  if (client) {
+    client.emit('event', JSON.stringify(emitDrop));
+    client.emit(
+      'update',
+      JSON.stringify({
+        id: elements[type][indexClientElement].id,
+        type: elements[type][indexClientElement].type,
+        items: elements[type][indexClientElement].items,
+      })
+    );
+  }
+};
+
 // console.log('changeMapsPoints', changeMapsPoints);
 
 const typeModels = () => {
@@ -518,39 +556,7 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
               );
               drops.map((item) => {
                 if (random(1, item.probabilityDrop[1]) <= item.probabilityDrop[0]) {
-                  const indexItemExist = eventElement.element.items.findIndex((i) => i.id === item.id);
-                  if (indexItemExist > -1) {
-                    eventElement.element.items[indexItemExist].count++;
-                  } else {
-                    eventElement.element.items.push({ id: item.id, count: 1 });
-                  }
-
-                  const client = clients.find((c) => c.id === eventElement.element.id);
-                  const emitDrop = {
-                    type: 'drop',
-                    item: {
-                      name: item.name,
-                      id: item.id,
-                      count: eventElement.element.items[indexItemExist]
-                        ? eventElement.element.items[indexItemExist].count
-                        : 0,
-                    },
-                    newItemsState: eventElement.element.items,
-                    elementFromDrop: element,
-                  };
-
-                  // console.log('emitDrop', emitDrop);
-                  if (client) {
-                    client.emit('event', JSON.stringify(emitDrop));
-                    client.emit(
-                      'update',
-                      JSON.stringify({
-                        id: eventElement.element.id,
-                        type: eventElement.element.type,
-                        items: eventElement.element.items,
-                      })
-                    );
-                  }
+                  addNewUserItem(clients, eventElement, item, element);
                 }
               });
               rebirdElement(clients, element, internalApi);
@@ -980,6 +986,17 @@ const wsServer = (httpServer, app, internalApi) => {
                 const cryptoKoynData = dataQuest.reward.items.find((i) => i.id === 'cryptokoyn');
                 if (koynData) dataQuest.reward.stats.koyn = koynData.count;
                 if (cryptoKoynData) dataQuest.reward.stats.cryptokoyn = cryptoKoynData.count;
+
+                dataQuest.reward.items.map((item) => {
+                  if (item.id !== 'koyn' && item.id !== 'cryptokoyn') {
+                    addNewUserItem(
+                      clients,
+                      { element: elements['user'][clientElementIndex] },
+                      items.find((i) => i.id === item.id),
+                      eventElement.elementFromQuest
+                    );
+                  }
+                });
 
                 Object.keys(dataQuest.reward.stats).map((keyStat) => {
                   elements['user'][clientElementIndex][keyStat] =

@@ -138,6 +138,14 @@ const renderItemModal = (item) => {
           s(`.item-unequip-${item.id}`).style.display = 'none';
           s(`.item-equip-${item.id}`).style.display = 'inline-table';
         };
+        if (
+          elements['user'].find((e) => e.id === socket.id) &&
+          elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id) &&
+          elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id).active === true
+        ) {
+          s(`.item-unequip-${item.id}`).style.display = 'inline-table';
+          s(`.item-equip-${item.id}`).style.display = 'none';
+        }
       });
     default:
       break;
@@ -194,7 +202,7 @@ const newInstanceBagItems = async (items) => {
     ),
     renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
   ];
-  for (item of items) {
+  for (const item of items) {
     const result = await getItemData(item);
     console.log('bag renderItem', result);
     if (result.status === 'success') {

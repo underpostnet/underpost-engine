@@ -196,7 +196,7 @@ socket.on('event', (...args) => {
       `,
       });
       newInstanceBagItems(newItemsState);
-      if (s('.modal-count-' + item.id)) htmls('.modal-count-' + item.id, getK(item.count));
+      if (s('.modal-count-' + item.id)) setTimeout(() => htmls('.modal-count-' + item.id, getK(item.count)));
       break;
     case 'dead-count':
       renderDeadCount(eventElement);

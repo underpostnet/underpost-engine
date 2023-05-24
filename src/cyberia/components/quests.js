@@ -82,7 +82,7 @@ const renderMapsQuests = () => {
               questData.id
             }' style='display: none; ${borderChar(1, 'black')}'>
               <div class='abs center'>
-                [ <span style='font-size: 20px'>&check;</span> ${renderLang({ es: 'COMPLETADA', en: 'COMPLETED' })} ]
+                [ <span style='font-size: 20px'>&check;</span> ${renderLang({ es: 'COMPLETADO', en: 'COMPLETED' })} ]
               </div>
             </div>
         </div>

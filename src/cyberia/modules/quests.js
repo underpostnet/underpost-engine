@@ -15,7 +15,10 @@ const quests = [
     },
     reward: {
       stats: {},
-      items: [{ id: 'koyn', count: 10 }],
+      items: [
+        { id: 'koyn', count: 10 },
+        { id: 'ice-cream', count: 1 },
+      ],
     },
     setSuccessQuest: (input) => {
       htmls(`.quest-count-${input.id}`, 1);
@@ -55,6 +58,7 @@ const quests = [
                 JSON.stringify({
                   event: 'success-quest',
                   id: input.id,
+                  elementFromQuest: { sprite: input.sprite, username: input.name },
                 })
               );
             }

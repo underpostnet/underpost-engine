@@ -29,6 +29,31 @@ const items = [
     },
     itemType: 'equipment',
   },
+  {
+    id: 'ice-cream',
+    name: { es: 'Helado de Vainilla', en: 'Vanilla ice cream' },
+    frames: 3,
+    frameTimeInterval: 200,
+    renderFactor: {
+      x: 0.75,
+      y: 0.4,
+      width: 0.35,
+      height: 0.35,
+    },
+    probabilityDrop: [1, 1],
+    display: [{ map: 'zax-shop', sprite: 'ayleen' }],
+    drop: [],
+    categoryFactor: 1,
+    stats: {
+      maxLife: 50,
+      attackValue: 5,
+      velAttack: -5,
+      passiveHealValue: 5,
+      velPassiveHealValue: -5,
+      velFactor: 0,
+    },
+    itemType: 'equipment',
+  },
 ];
 
 const getDataRenderItem = (item) => {
