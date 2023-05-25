@@ -24,7 +24,7 @@ append(
 
       <style class='css-controller'></style>
   
-      <pixi-container class='in'></pixi-container>
+      <pixi-container class='fix'></pixi-container>
   
       <event-board class='abs' style='display: none'>
           
@@ -35,7 +35,7 @@ append(
   
       <dead-count></dead-count>
   
-      <touch-layer class='abs custom-cursor'>
+      <touch-layer class='fix custom-cursor'>
         <loader class='abs'>
           ${renderSpinner()}
         </loader>

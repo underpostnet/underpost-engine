@@ -165,6 +165,7 @@ socket.on('close', (...args) => {
 
 socket.on('event', (...args) => {
   const eventElement = JSON.parse(args);
+  let boxEquipId;
   switch (eventElement.type) {
     case 'chat':
       renderChatMsg(eventElement.element, eventElement.msg);
@@ -222,9 +223,21 @@ socket.on('event', (...args) => {
         ...elements['user'].find((e) => e.id === eventElement.id),
         displayItems: eventElement.displayItems,
       });
-      htmls(`.${eventElement.item.itemType.split('-')[1]}-equip-content`, renderItemBox({ data: eventElement.item }));
+      boxEquipId = `.${eventElement.item.itemType.split('-')[1]}-equip-content`;
+      htmls(boxEquipId, renderItemBox({ data: eventElement.item }));
       // s('.close-gui').click();
       // s('.btn-character-stats').click();
+      s(boxEquipId).onclick = () =>
+        renderItemModal({
+          ...eventElement.item,
+          count: () => undefined,
+          active: () => false,
+          typeModal: 'character-equip-box',
+        });
+      if (s(`.item-modal-${eventElement.item.id}`)) {
+        s(`.item-equip-${eventElement.item.id}`).style.display = 'none';
+        s(`.item-unequip-${eventElement.item.id}`).style.display = 'inline-table';
+      }
       break;
     case 'unequip-item':
       removeDisplayItem(
@@ -235,7 +248,13 @@ socket.on('event', (...args) => {
       elements['user'][indexEventUser].displayItems = elements['user'][indexEventUser].displayItems.filter(
         (i) => i !== eventElement.item.id
       );
-      htmls(`.${eventElement.item.itemType.split('-')[1]}-equip-content`, '');
+      boxEquipId = `.${eventElement.item.itemType.split('-')[1]}-equip-content`;
+      htmls(boxEquipId, '');
+      s(boxEquipId).onclick = () => null;
+      if (s(`.item-modal-${eventElement.item.id}`)) {
+        s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
+        s(`.item-equip-${eventElement.item.id}`).style.display = 'inline-table';
+      }
       break;
     default:
       break;

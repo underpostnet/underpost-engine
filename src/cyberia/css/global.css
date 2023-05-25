@@ -41,6 +41,7 @@ touch-layer {
 
 gui-layer {
     background: rgba(0, 0, 0, 0.7);
+    min-height: 100%;
 }
 
 main-menu {

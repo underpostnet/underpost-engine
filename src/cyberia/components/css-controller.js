@@ -22,8 +22,10 @@ setInterval(() => {
       }
       gui-layer {
         width: ${screenDim.minValue}px;
-        height: 100%;
         top: 0px;
+        left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
+      }
+      pixi-container {
         left: ${screenDim.maxType === 'height' ? 0 : (screenDim.maxValue - screenDim.minValue) / 2}px;
       }
       .close-gui {

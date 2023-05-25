@@ -81,7 +81,8 @@ ${count !== undefined ? renderItemCount(`bag-count-${result.data.id}`, count) : 
 const renderItemModal = (item) => {
   let statsRender = '';
   let equipmentBtn = '';
-  const rewardModal = item.typeModal !== undefined && item.typeModal === 'reward';
+  const rewardModal =
+    item.typeModal !== undefined && (item.typeModal === 'reward' || item.typeModal === 'character-equip-box');
   const renderTitleCountType = /*html*/ `
       ${renderLang(item.name)}
       <br>
@@ -89,9 +90,13 @@ const renderItemModal = (item) => {
           ${item.itemType.replaceAll('-', '<br>').toUpperCase()}
       </span>
       <br><br>
-      <span style='font-size: 10px'>X</span><span class='modal-count-${
-        item.id
-      }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>  
+      ${
+        item.typeModal !== 'character-equip-box'
+          ? /*html*/ `<span style='font-size: 10px'>X</span><span class='modal-count-${
+              item.id
+            }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>`
+          : ''
+      }
   `;
   switch (item.itemType.split('-')[0]) {
     case 'currency':
@@ -223,8 +228,17 @@ const newInstanceBagItems = async (items) => {
       if (
         elements['user'].find((e) => e.id === socket.id) &&
         elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === result.data.id && i.active === true)
-      )
-        htmls(`.${result.data.itemType.split('-')[1]}-equip-content`, renderItemBox(result));
+      ) {
+        const boxEquipId = `.${result.data.itemType.split('-')[1]}-equip-content`;
+        htmls(boxEquipId, renderItemBox(result));
+        s(boxEquipId).onclick = () =>
+          renderItemModal({
+            ...result.data,
+            count: () => undefined,
+            active: () => false,
+            typeModal: 'character-equip-box',
+          });
+      }
     }
   }
   htmls('.grid-bag', '');
