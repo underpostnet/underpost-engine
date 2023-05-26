@@ -344,6 +344,14 @@ const bag = () => {
     `;
 };
 
+const renderItemDisplayLogic = (element, item) => {
+  console.error('renderItemDisplayLogic', item);
+};
+
+const removeItemDisplayLogic = (element, item) => {
+  console.error('removeItemDisplayLogic', item);
+};
+
 const renderDisplayItems = (element) => {
   const { type } = element;
   const { dim } = setAmplitudeRender(element.render);
@@ -360,9 +368,12 @@ const renderDisplayItems = (element) => {
         return;
       }
     }
+
+    if (item.displayLogic !== undefined) return renderItemDisplayLogic(element, item);
+
     let currentFrame = 0;
     range(0, item.frames).map((frame) => {
-      const src = `/items/${item.id}/${frame}.gif`;
+      const src = `/items/${item.id}/${frame}.${item.frameFormat}`;
       pixi[type][element.id][src] = PIXI.Sprite.from(src);
       pixi[type][element.id][src].x = dim * item.renderFactor.x;
       pixi[type][element.id][src].y = dim * item.renderFactor.y;
@@ -373,22 +384,28 @@ const renderDisplayItems = (element) => {
     });
     if (hashIntervals[element.id][item.id]) clearInterval(hashIntervals[element.id][item.id]);
     hashIntervals[element.id][item.id] = setInterval(function () {
-      if (!params[type][element.id] || !pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`]) return;
-      pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = false;
+      if (!params[type][element.id] || !pixi[type][element.id][`/items/${item.id}/${currentFrame}.${item.frameFormat}`])
+        return;
+      pixi[type][element.id][`/items/${item.id}/${currentFrame}.${item.frameFormat}`].visible = false;
       currentFrame++;
       if (currentFrame > item.frames) currentFrame = 0;
-      if (!params[type][element.id] || !pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`]) return;
-      if (element.life > 0) pixi[type][element.id][`/items/${item.id}/${currentFrame}.gif`].visible = true;
+      if (!params[type][element.id] || !pixi[type][element.id][`/items/${item.id}/${currentFrame}.${item.frameFormat}`])
+        return;
+      if (element.life > 0)
+        pixi[type][element.id][`/items/${item.id}/${currentFrame}.${item.frameFormat}`].visible = true;
     }, item.frameTimeInterval);
   });
 };
 
 const removeDisplayItem = (element, itemId) => {
   const item = localItemsRenderStorage.find((i) => i.id === itemId);
+
+  if (item.displayLogic !== undefined) return removeItemDisplayLogic(element, item);
+
   const { type } = element;
   if (item) {
     range(0, item.frames).map((frame) => {
-      const src = `/items/${item.id}/${frame}.gif`;
+      const src = `/items/${item.id}/${frame}.${item.frameFormat}`;
       pixi[type][element.id][src].destroy();
       delete pixi[type][element.id][src];
     });

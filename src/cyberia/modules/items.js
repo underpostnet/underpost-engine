@@ -8,6 +8,7 @@ const items = [
     id: 'tim-knife',
     name: { es: 'Navaja de tim', en: 'Tim knife' },
     frames: 2,
+    frameFormat: 'gif',
     frameTimeInterval: 200,
     renderFactor: {
       x: 0.25,
@@ -18,7 +19,6 @@ const items = [
     probabilityDrop: [1, 1],
     display: [{ map: 'orange-over-purple', sprite: 'punk' }],
     drop: [{ map: 'orange-over-purple', sprite: 'punk' }],
-    categoryFactor: 1,
     stats: {
       maxLife: 10,
       attackValue: 2,
@@ -33,6 +33,7 @@ const items = [
     id: 'ice-cream',
     name: { es: 'Helado de Vainilla', en: 'Vanilla ice cream' },
     frames: 3,
+    frameFormat: 'gif',
     frameTimeInterval: 200,
     renderFactor: {
       x: 0.75,
@@ -43,7 +44,6 @@ const items = [
     probabilityDrop: [1, 1],
     display: [{ map: 'zax-shop', sprite: 'ayleen' }],
     drop: [],
-    categoryFactor: 1,
     stats: {
       maxLife: 50,
       attackValue: 5,
@@ -54,15 +54,43 @@ const items = [
     },
     itemType: 'equipment-weapon',
   },
+  {
+    id: 'brown-wing',
+    name: { es: 'Brown wings', en: 'Brown wings' },
+    frames: 1,
+    frameFormat: 'png',
+    displayLogic: 'faces-4',
+    frameTimeInterval: 200,
+    renderFactor: {
+      x: 0,
+      y: 0,
+      width: 1,
+      height: 1,
+    },
+    probabilityDrop: [1, 1],
+    display: [],
+    drop: [],
+    stats: {
+      maxLife: 30,
+      attackValue: 2,
+      velAttack: -10,
+      passiveHealValue: 2,
+      velPassiveHealValue: -10,
+      velFactor: -0.6,
+    },
+    itemType: 'equipment-breastplate',
+  },
 ];
 
 const getDataRenderItem = (item) => {
-  const { id, frames, frameTimeInterval, renderFactor } = item;
+  const { id, frames, frameTimeInterval, renderFactor, frameFormat, displayLogic } = item;
   return {
     id,
     frames,
     frameTimeInterval,
     renderFactor,
+    frameFormat,
+    displayLogic,
   };
 };
 
