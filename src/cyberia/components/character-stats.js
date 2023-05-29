@@ -53,7 +53,7 @@ const renderStatsGrid = (element) => {
                    en: 'Quadrant',
                  })} / `
                : ''
-           } ${updateTimeInterval * element.velFactor}ms 
+           } ${ceil10(updateTimeInterval * element.velFactor, 0)}ms 
         </div>
       </div>
 

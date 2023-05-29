@@ -81,8 +81,15 @@ ${count !== undefined ? renderItemCount(`bag-count-${result.data.id}`, count) : 
 const renderItemModal = (item) => {
   let statsRender = '';
   let equipmentBtn = '';
-  const rewardModal =
-    item.typeModal !== undefined && (item.typeModal === 'reward' || item.typeModal === 'character-equip-box');
+  let countRender = '';
+  const itemType = item.itemType.split('-')[0];
+
+  if (item.typeModal === undefined || item.typeModal === 'reward') {
+    countRender = /*html*/ `<span style='font-size: 10px'>X</span><span class='modal-count-${
+      item.id
+    }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>`;
+  }
+
   const renderTitleCountType = /*html*/ `
       ${renderLang(item.name)}
       <br>
@@ -90,24 +97,18 @@ const renderItemModal = (item) => {
           ${item.itemType.replaceAll('-', '<br>').toUpperCase()}
       </span>
       <br><br>
-      ${
-        item.typeModal !== 'character-equip-box'
-          ? /*html*/ `<span style='font-size: 10px'>X</span><span class='modal-count-${
-              item.id
-            }' style='color: yellow; font-size: 12px'>${getK(item.count())}</span>`
-          : ''
-      }
+      ${countRender}
   `;
-  switch (item.itemType.split('-')[0]) {
-    case 'currency':
-      break;
-    case 'equipment':
-      statsRender = /*html*/ `
+
+  if (itemType === 'equipment') {
+    statsRender = /*html*/ `
         <div class='in stats-content-item-modal'>
               ${renderStatsGrid(item.stats)}
         </div>
       `; // btn-item-equip
-      equipmentBtn = /*html*/ `
+  }
+  if (itemType === 'equipment' && (item.typeModal === undefined || item.typeModal === 'character-equip-box')) {
+    equipmentBtn = /*html*/ `
           <br>
           <button class='inl custom-cursor item-equip-${item.id}'>
               ${renderLang({ es: 'Equipar', en: 'Equip' })}
@@ -117,43 +118,40 @@ const renderItemModal = (item) => {
           </button>
       
       `;
-      setTimeout(() => {
-        if (rewardModal) return;
-        s(`.item-equip-${item.id}`).onclick = () => {
-          console.log('equip', item);
-          socket.emit(
-            'event',
-            JSON.stringify({
-              event: 'item-equip',
-              item: { id: item.id },
-            })
-          );
-          s(`.item-equip-${item.id}`).style.display = 'none';
-          s(`.item-unequip-${item.id}`).style.display = 'inline-table';
-        };
-        s(`.item-unequip-${item.id}`).onclick = () => {
-          console.log('unequip', item);
-          socket.emit(
-            'event',
-            JSON.stringify({
-              event: 'item-unequip',
-              item: { id: item.id },
-            })
-          );
-          s(`.item-unequip-${item.id}`).style.display = 'none';
-          s(`.item-equip-${item.id}`).style.display = 'inline-table';
-        };
-        if (
-          elements['user'].find((e) => e.id === socket.id) &&
-          elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id) &&
-          elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id).active === true
-        ) {
-          s(`.item-unequip-${item.id}`).style.display = 'inline-table';
-          s(`.item-equip-${item.id}`).style.display = 'none';
-        }
-      });
-    default:
-      break;
+    setTimeout(() => {
+      s(`.item-equip-${item.id}`).onclick = () => {
+        console.log('equip', item);
+        socket.emit(
+          'event',
+          JSON.stringify({
+            event: 'item-equip',
+            item: { id: item.id },
+          })
+        );
+        s(`.item-equip-${item.id}`).style.display = 'none';
+        s(`.item-unequip-${item.id}`).style.display = 'inline-table';
+      };
+      s(`.item-unequip-${item.id}`).onclick = () => {
+        console.log('unequip', item);
+        socket.emit(
+          'event',
+          JSON.stringify({
+            event: 'item-unequip',
+            item: { id: item.id },
+          })
+        );
+        s(`.item-unequip-${item.id}`).style.display = 'none';
+        s(`.item-equip-${item.id}`).style.display = 'inline-table';
+      };
+      if (
+        elements['user'].find((e) => e.id === socket.id) &&
+        elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id) &&
+        elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id).active === true
+      ) {
+        s(`.item-unequip-${item.id}`).style.display = 'inline-table';
+        s(`.item-equip-${item.id}`).style.display = 'none';
+      }
+    });
   }
   if (!s(`.item-modal-${item.id}`)) {
     append(
@@ -180,7 +178,7 @@ const renderItemModal = (item) => {
           <div class='in modal-item-stats'>
                 ${statsRender}
 
-                ${rewardModal ? '' : equipmentBtn}
+                ${equipmentBtn}
           </div>
                 
         </div>
