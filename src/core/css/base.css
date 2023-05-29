@@ -2,6 +2,10 @@ html {
     scroll-behavior: smooth
 }
 
+body {
+    /* overscroll-behavior: contain; */
+}
+
 .fl {
     position: relative;
     display: flow-root

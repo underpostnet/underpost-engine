@@ -168,98 +168,55 @@ append(
   `
 );
 
+const guiSections = [
+  'create-account',
+  'login',
+  'bag',
+  'chat',
+  'character-stats',
+  'config',
+  'wiki',
+  'map',
+  'account',
+  'quests',
+  'history-board',
+];
+
+const closeGuiSections = () => guiSections.map((section) => (s(section).style.display = 'none'));
+
 s('.close-menu').onclick = () => {
   s('main-menu').style.display = 'none';
   s('.open-menu').style.display = 'block';
 };
 s('.open-menu').onclick = () => {
   s('.open-menu').style.display = 'none';
-  s('.close-gui').click();
   s('main-menu').style.display = 'block';
 };
 
-s('.btn-create-account').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('create-account').style.display = 'block';
-};
+guiSections.map((section) => {
+  s(`.btn-${section}`).onclick = () => {
+    s('.close-menu').click();
+    closeGuiSections();
+    s('gui-layer').style.display = 'block';
+    s(section).style.display = 'block';
 
-s('.btn-login').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('login').style.display = 'block';
-};
-
-s('.btn-bag').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('bag').style.display = 'block';
-};
-
-s('.btn-chat').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('chat').style.display = 'block';
-  setTimeout(() => s('.chat-input').focus());
-  resetNotiCircleChat();
-};
-
-s('.btn-character-stats').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('character-stats').style.display = 'block';
-};
-
-s('.btn-config').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('config').style.display = 'block';
-};
-
-s('.btn-wiki').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('wiki').style.display = 'block';
-};
-
-s('.btn-map').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('map').style.display = 'block';
-};
-
-s('.btn-account').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('account').style.display = 'block';
-};
-
-s('.btn-quests').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('quests').style.display = 'block';
-  resetNotiCircleQuests();
-};
-
-s('.btn-history-board').onclick = () => {
-  s('.close-menu').click();
-  s('gui-layer').style.display = 'block';
-  s('history-board').style.display = 'block';
-};
+    switch (section) {
+      case 'chat':
+        setTimeout(() => s('.chat-input').focus());
+        resetNotiCircleChat();
+        break;
+      case 'quests':
+        // resetNotiCircleQuests();
+        break;
+      default:
+        break;
+    }
+  };
+});
 
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
-  s('create-account').style.display = 'none';
-  s('login').style.display = 'none';
-  s('bag').style.display = 'none';
-  s('chat').style.display = 'none';
-  s('character-stats').style.display = 'none';
-  s('config').style.display = 'none';
-  s('wiki').style.display = 'none';
-  s('map').style.display = 'none';
-  s('account').style.display = 'none';
-  s('quests').style.display = 'none';
-  s('history-board').style.display = 'none';
+  closeGuiSections();
 };
 
 s('.btn-logout').onclick = () => {
