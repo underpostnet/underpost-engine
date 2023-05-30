@@ -59,7 +59,7 @@ const items = [
     name: { es: 'Brown wings', en: 'Brown wings' },
     frames: 1,
     frameFormat: 'png',
-    displayLogic: 'faces-4',
+    displayLogic: 'wings',
     frameTimeInterval: 200,
     renderFactor: {
       x: 0,

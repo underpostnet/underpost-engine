@@ -219,10 +219,13 @@ socket.on('event', (...args) => {
       );
       break;
     case 'equip-item':
-      renderDisplayItems({
-        ...elements['user'].find((e) => e.id === eventElement.id),
-        displayItems: eventElement.displayItems,
-      });
+      renderDisplayItems(
+        {
+          ...elements['user'].find((e) => e.id === eventElement.id),
+          displayItems: eventElement.displayItems,
+        },
+        eventElement.item
+      );
       boxEquipId = `.${eventElement.item.itemType.split('-')[1]}-equip-content`;
       htmls(boxEquipId, renderItemBox({ data: eventElement.item }));
       // s('.close-gui').click();

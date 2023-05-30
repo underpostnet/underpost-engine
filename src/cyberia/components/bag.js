@@ -343,18 +343,103 @@ const bag = () => {
 };
 
 const renderItemDisplayLogic = (element, item) => {
-  console.error('renderItemDisplayLogic', item);
+  // console.error('renderItemDisplayLogic', item);
+  const { type } = element;
+  const container = pixi[type][element.id].container;
+  const botContainer = pixi[type][element.id].botContainer;
+  switch (item.displayLogic) {
+    case 'wings':
+      const { x, y, width, height } = setAmplitudeRender(item.renderFactor);
+      const amplitudeFactor = 1.35;
+
+      [
+        { dir: 'North', container, preSrc: '' },
+        { dir: 'South', container: botContainer, preSrc: '' },
+        { dir: 'South East', container, preSrc: 'r/' },
+        { dir: 'East', container, preSrc: 'r/' },
+        { dir: 'North East', container, preSrc: 'r/' },
+        { dir: 'South West', container, preSrc: 'l/' },
+        { dir: 'West', container, preSrc: 'l/' },
+        { dir: 'North West', container, preSrc: 'l/' },
+      ].map((dirObj) => {
+        const { dir, container, preSrc } = dirObj;
+        range(0, item.frames).map((i) => {
+          const src = `/items/${item.id}/${preSrc}${i}.${item.frameFormat}`;
+          pixi[type][element.id][`${dir}${src}`] = PIXI.Sprite.from(src);
+
+          pixi[type][element.id][`${dir}${src}`].x =
+            preSrc === 'l/'
+              ? width + width * ((amplitudeFactor - 1) / 2) - width * amplitudeFactor * (preSrc !== '' ? 0.5 : 1)
+              : x - width * ((amplitudeFactor - 1) / 2);
+          pixi[type][element.id][`${dir}${src}`].y = y - width * ((amplitudeFactor - 1) / 2);
+
+          pixi[type][element.id][`${dir}${src}`].width = width * amplitudeFactor * (preSrc !== '' ? 0.5 : 1);
+          pixi[type][element.id][`${dir}${src}`].height = height * amplitudeFactor;
+          pixi[type][element.id][`${dir}${src}`].visible = false;
+          container.addChild(pixi[type][element.id][`${dir}${src}`]);
+        });
+        const idInterval = `interval-${dir}-${item.id}-${element.id}`;
+        if (hashIntervals[element.id][idInterval]) clearInterval(hashIntervals[element.id][idInterval]);
+        let currentFrame = 0;
+        hashIntervals[element.id][idInterval] = setInterval(() => {
+          currentFrame++;
+          if (!pixi[type][element.id]) return clearInterval(hashIntervals[element.id][idInterval]);
+          range(0, item.frames).map((i) => {
+            const src = `/items/${item.id}/${preSrc}${i}.${item.frameFormat}`;
+            pixi[type][element.id][`${dir}${src}`].visible =
+              i === currentFrame && params[type][element.id].direction === dir;
+          });
+          if (currentFrame === item.frames) currentFrame = -1;
+        }, item.frameTimeInterval);
+      });
+
+      break;
+
+    default:
+      break;
+  }
 };
 
 const removeItemDisplayLogic = (element, item) => {
-  console.error('removeItemDisplayLogic', item);
+  // console.error('removeItemDisplayLogic', item);
+  const { type } = element;
+  switch (item.displayLogic) {
+    case 'wings':
+      [
+        { dir: 'North', preSrc: '' },
+        { dir: 'South', preSrc: '' },
+        { dir: 'South East', preSrc: 'r/' },
+        { dir: 'East', preSrc: 'r/' },
+        { dir: 'North East', preSrc: 'r/' },
+        { dir: 'South West', preSrc: 'l/' },
+        { dir: 'West', preSrc: 'l/' },
+        { dir: 'North West', preSrc: 'l/' },
+      ].map((dirObj) => {
+        const { dir, preSrc } = dirObj;
+        const idInterval = `interval-${dir}-${item.id}-${element.id}`;
+        if (hashIntervals[element.id][idInterval]) clearInterval(hashIntervals[element.id][idInterval]);
+        delete hashIntervals[element.id][idInterval];
+        range(0, item.frames).map((i) => {
+          const src = `/items/${item.id}/${preSrc}${i}.${item.frameFormat}`;
+          if (pixi[type][element.id][`${dir}${src}`]) {
+            pixi[type][element.id][`${dir}${src}`].destroy();
+            delete pixi[type][element.id][`${dir}${src}`];
+          }
+        });
+      });
+      break;
+
+    default:
+      break;
+  }
 };
 
-const renderDisplayItems = (element) => {
+const renderDisplayItems = (element, singleItem) => {
   const { type } = element;
   const { dim } = setAmplitudeRender(element.render);
   const container = pixi[type][element.id].container;
   element.displayItems.map(async (itemId) => {
+    if (singleItem !== undefined && itemId !== singleItem.id) return;
     let item = localItemsRenderStorage.find((i) => i.id === itemId);
     if (!item) {
       const result = await serviceRequest(API_BASE + `/items/render/${itemId}`);

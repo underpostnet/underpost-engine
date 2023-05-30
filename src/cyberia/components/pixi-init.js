@@ -31,6 +31,14 @@ const renderPixiInitElement = (element) => {
   container.height = dim;
   app.stage.addChild(container);
 
+  pixi[type][element.id].botContainer = new PIXI.Container();
+  const botContainer = pixi[type][element.id].botContainer;
+  botContainer.x = 0;
+  botContainer.y = 0;
+  botContainer.width = dim;
+  botContainer.height = dim;
+  container.addChild(botContainer);
+
   if (typeModels()[type].components().includes('tiles')) {
     pixi[type][element.id].tile = PIXI.Sprite.from(`/tiles/${element.map}.PNG`);
     const tile = pixi[type][element.id].tile;
