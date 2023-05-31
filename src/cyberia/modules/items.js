@@ -80,6 +80,31 @@ const items = [
     },
     itemType: 'equipment-breastplate',
   },
+  {
+    id: 'subkishin-piece',
+    name: { es: 'Pieza de Subkishin', en: 'Subkishin Piece' },
+    frames: 2,
+    frameFormat: 'gif',
+    frameTimeInterval: 200,
+    renderFactor: {
+      x: -0.3,
+      y: -0.5,
+      width: 1.25,
+      height: 1.25,
+    },
+    probabilityDrop: [1, 1],
+    display: [{ map: 'orange-over-purple', sprite: 'kishins' }],
+    drop: [{ map: 'orange-over-purple', sprite: 'kishins' }],
+    stats: {
+      maxLife: 0,
+      attackValue: 30,
+      velAttack: -15,
+      passiveHealValue: 0,
+      velPassiveHealValue: 0,
+      velFactor: -0.2,
+    },
+    itemType: 'equipment-talisman',
+  },
 ];
 
 const getDataRenderItem = (item) => {
