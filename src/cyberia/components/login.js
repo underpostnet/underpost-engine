@@ -92,6 +92,7 @@ const logIn = () => {
           cleanForm();
           localStorage.setItem('_b', result.data.token);
           resetEventBoard();
+          resetCharacterSlots();
           newMainUserInstance(result.data.element);
         }
         renderNotification(result.status, result.data.message);

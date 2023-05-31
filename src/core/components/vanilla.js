@@ -22,7 +22,7 @@ const renderTable = (data, options) =>
             <tr> ${Object.keys(data[0])
               .map((key) => /*html*/ `<th class='header-table'>${key}</th>`)
               .join('')} ${
-        options && options.actions ? (options.customHeader ? options.customHeader : '<th></th>') : ''
+        options && options.actions ? (options.actionsHeader ? options.actionsHeader : '<th></th>') : ''
       }</tr>
             ${data
               .map(

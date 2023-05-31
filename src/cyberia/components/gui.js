@@ -222,6 +222,7 @@ s('.close-gui').onclick = () => {
 s('.btn-logout').onclick = () => {
   localStorage.removeItem('_b');
   htmls('event-history-render', '');
+  resetCharacterSlots();
   resetEventBoard();
   newMainUserInstance();
 };

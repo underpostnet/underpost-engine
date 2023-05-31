@@ -1,3 +1,7 @@
+const characterSlots = ['helmet', 'talisman', 'breastplate', 'weapon', 'legs'];
+
+const resetCharacterSlots = () => characterSlots.map((cs) => htmls(`.${cs}-equip-content`, ''));
+
 const renderStatsGrid = (element) => {
   if (element.itemType === 'currency') return '';
   let SKIN_DATA_RENDER = '';
@@ -85,27 +89,16 @@ const characterStats = () => {
                           <div class='in fll character-stats-section'>
 
                                   <img class='in character-stats-img-avatar'>
-
-
-                                  <div class='abs center grid-cell-equip custom-cursor helmet-equip-content'>
                                   
-                                  </div>
-
-                                  <div class='abs center grid-cell-equip custom-cursor talisman-equip-content'>
+                                   ${characterSlots
+                                     .map(
+                                       (cs) => /*html*/ `
+                                   <div class='abs center grid-cell-equip custom-cursor ${cs}-equip-content'>
                                   
-                                  </div>
-                                  
-                                  <div class='abs center grid-cell-equip custom-cursor breastplate-equip-content'>
-                                  
-                                  </div>
-
-                                  <div class='abs center grid-cell-equip custom-cursor weapon-equip-content'>
-                                  
-                                  </div>
-
-                                  <div class='abs center grid-cell-equip custom-cursor legs-equip-content'>
-                                  
-                                  </div>                                  
+                                   </div>
+                                   `
+                                     )
+                                     .join('')}                             
 
                           </div>
                           
