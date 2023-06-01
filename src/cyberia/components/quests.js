@@ -1,3 +1,5 @@
+const questsLogicsStorage = {};
+
 const getInitStateSucessQuest = (input, setSuccessQuest) => {
   if (elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)) {
     setSuccessQuest(input);

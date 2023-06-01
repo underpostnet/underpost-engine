@@ -179,13 +179,13 @@ socket.on('event', (...args) => {
           ${renderLang({
             es: /*html*/ `
               [<span style='color: yellow'> 
-                ${elementFromDrop.username} 
+                ${getDisplayName(elementFromDrop)} 
                   <img src='/sprites/${elementFromDrop.sprite}/08/0.png' class='inl icon-board-img'> 
                 </span>]
                 ha botado un item`,
             en: /*html*/ `
-              [The <span style='color: yellow'> 
-                ${elementFromDrop.username} 
+              [<span style='color: yellow'> 
+                ${getDisplayName(elementFromDrop)} 
                   <img src='/sprites/${elementFromDrop.sprite}/08/0.png' class='inl icon-board-img'> 
                 </span>]
                 has dropped an item`,
@@ -259,6 +259,50 @@ socket.on('event', (...args) => {
         s(`.item-equip-${eventElement.item.id}`).style.display = 'inline-table';
       }
       break;
+
+    case 'kill-element':
+      const { fromElmement, toElement } = eventElement;
+
+      renderEventBoard({
+        history: true,
+        tag: 'KILL',
+        msg: /*html*/ `                    
+          ${renderLang({
+            es: /*html*/ `
+              [<span style='color: yellow'> 
+                ${getDisplayName(fromElmement)} 
+                  <img src='/sprites/${fromElmement.sprite}/08/0.png' class='inl icon-board-img'> 
+                </span>]
+                a derrotado a`,
+            en: /*html*/ `
+              [<span style='color: yellow'> 
+                ${getDisplayName(fromElmement)} 
+                  <img src='/sprites/${fromElmement.sprite}/08/0.png' class='inl icon-board-img'> 
+                </span>]
+                has defeated`,
+          })}     
+          ${renderLang({
+            es: /*html*/ `
+              [<span style='color: yellow'> 
+                ${getDisplayName(toElement)} 
+                  <img src='/sprites/${toElement.sprite}/08/0.png' class='inl icon-board-img'> 
+                </span>]
+                en ${toElement.map}`,
+            en: /*html*/ `
+              [<span style='color: yellow'> 
+                ${getDisplayName(toElement)} 
+                  <img src='/sprites/${toElement.sprite}/08/0.png' class='inl icon-board-img'> 
+                </span>]
+                in ${toElement.map}`,
+          })}     
+      `,
+      });
+      Object.keys(questsLogicsStorage).map((questId) => {
+        if (questsLogicsStorage[questId].type === 'kill-element')
+          questsLogicsStorage[questId].checkStatusQuest(eventElement);
+      });
+      break;
+
     default:
       break;
   }

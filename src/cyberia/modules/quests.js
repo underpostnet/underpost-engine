@@ -29,6 +29,8 @@ const quests = [
         let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
 
         if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
+        if (successQuest === true) return;
+
         hashIntervals[socket.id][input.id] = setInterval(() => {
           if (!elements['user'].find((e) => e.id === socket.id)) return;
           if (elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)) successQuest = true;
@@ -89,7 +91,23 @@ const quests = [
     logic: (input, setSuccessQuest) => {
       setTimeout(() => {
         let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
-        // endNotiUpdateElementQuestValidator(input, successQuest);
+        if (successQuest === true) return;
+        questsLogicsStorage[input.id] = {
+          type: 'kill-element',
+          checkStatusQuest: (eventElement) => {
+            const { fromElmement, toElement } = eventElement;
+            if (
+              'kishins' === toElement.sprite &&
+              'orange-over-purple' === toElement.map &&
+              fromElmement.id === socket.id
+            ) {
+              endNotiUpdateElementQuestValidator(input, successQuest);
+              questsLogicsStorage[input.id] = undefined;
+              delete questsLogicsStorage[input.id];
+            }
+          },
+          input,
+        };
       });
       return renderQuestInfoGUI(
         input,

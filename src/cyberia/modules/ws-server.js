@@ -560,6 +560,30 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
                 }
               });
               rebirdElement(clients, element, internalApi);
+
+              clients.map((client) => {
+                const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+                if (clientIndex > -1) {
+                  client.emit(
+                    'event',
+                    JSON.stringify({
+                      type: 'kill-element',
+                      fromElmement: {
+                        id: eventElement.element.id,
+                        sprite: eventElement.element.sprite,
+                        username: eventElement.element.username,
+                        map: eventElement.element.map,
+                      },
+                      toElement: {
+                        id: element.id,
+                        sprite: element.sprite,
+                        username: element.username,
+                        map: element.map,
+                      },
+                    })
+                  );
+                }
+              });
             }
             clients.map((client) => {
               const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
