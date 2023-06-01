@@ -114,7 +114,7 @@ const renderItemModal = (item) => {
               ${renderLang({ es: 'Equipar', en: 'Equip' })}
           </button>
           <button class='inl custom-cursor item-unequip-${item.id}' style='display: none'>
-              ${renderLang({ es: 'Desequipar', en: 'Unequip' })}
+              ${renderLang({ es: 'Remover', en: 'Remove' })}
           </button>
       
       `;

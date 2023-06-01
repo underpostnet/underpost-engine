@@ -26,11 +26,7 @@ const quests = [
     },
     logic: (input, setSuccessQuest) => {
       setTimeout(() => {
-        let successQuest = false;
-        if (elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)) {
-          successQuest = true;
-          setSuccessQuest(input);
-        }
+        let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
 
         if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
         hashIntervals[socket.id][input.id] = setInterval(() => {
@@ -51,67 +47,21 @@ const quests = [
               elements[boneElement.type].findIndex((element) => element.id === boneElement.id),
               1
             );
-            if (!successQuest) {
-              renderQuestNotification(input);
-              socket.emit(
-                'event',
-                JSON.stringify({
-                  event: 'success-quest',
-                  id: input.id,
-                  elementFromQuest: { sprite: input.sprite, username: input.name },
-                })
-              );
-            }
+            endNotiUpdateElementQuestValidator(input, successQuest);
             return clearInterval(hashIntervals[socket.id][input.id]);
           }
         }, 100);
       });
-      return /*html*/ `
-      <div class='in quest-section-info'>
-        <span style='color: yellow'>
-          ${renderLang({ en: 'INSTRUCTIONS:', es: 'INSTRUCCIONES:' })}
-        </span>
-        <br><br>
+      return renderQuestInfoGUI(
+        input,
+        /*html*/ `
         ${renderLang({ en: "Find floki's bone", es: 'Encuentra el hueso de floki' })}
         <br><br>
         <div class='in' style='color: yellow'>
           [ <span class='quest-count-${input.id}'>0</span> / 1 ]
         </div>
-      </div>
-      <div class='in quest-section-info'>
-        <span style='color: yellow'>
-          ${renderLang({ en: 'REWARDS:', es: 'RECOMPENSAS:' })}
-        </span>
-        <br><br>
-        <div class='fl'>
-            ${input.reward.items
-              .map((item) => {
-                setTimeout(async () => {
-                  let result;
-                  if (item.id == 'koyn') {
-                    result = renderKoynLogo(item.count, false, 'bag-koyn-indicator');
-                  } else if (item.id == 'cryptokoyn') {
-                    result = renderKoynLogo(item.count, 'crypto', 'bag-cryptokoyn-indicator');
-                  } else {
-                    result = await getItemData(item);
-                  }
-                  htmls(`.box-reward-${item.id}`, renderItemBox(result, item.count));
-                  s(`.box-reward-${item.id}`).onclick = () =>
-                    renderItemModal({
-                      ...result.data,
-                      count: () => item.count,
-                      active: () => false,
-                      typeModal: 'reward',
-                    });
-                });
-                return /*html*/ `
-                  <div class="inl fll grid-cell custom-cursor box-reward-${item.id}"> </div>
-              `;
-              })
-              .join('')}
-        </div>
-      </div>
-      `;
+            `
+      );
     },
   },
   {
@@ -123,6 +73,34 @@ const quests = [
     dialog: {
       en: 'KSV (Kishin SubMutant Virus), the target in this quest. Researchers from our lab observed the virus infected an old prosthesis arm that we stop using because it is obsolete. The virus took the DNA of the arm and spread to its host cell. The infected cells produced antibodies, which that instead of killing the parasite itself, it adapts to it. Then I mutate and  now he is a fuck demon that roams the streets of cyberia. Give me a sample of the virus, a reward awaits you',
       es: 'Sub Mutante Kishin conocido como virus KSV (Kishin SubMutant Virus), es el objetivo de esta misión. Investigadores de nuestro laboratorio observaron que el virus infectó una antigua prótesis de brazo que dejamos de usar por obsoleta. El virus tomó el ADN del brazo y se propagó a su célula huésped. Las células infectadas produjeron anticuerpos, que en lugar de matar al propio parásito, se adaptaron a él. Luego muto y ahora es un jodido demonio que deambula por las calles de Cyberia. Consigue una muestra del virus, te espera una recompensa',
+    },
+    successDialog: {
+      es: `Excelente trabajo, toma unas monedas.`,
+      en: `Excellent work, take some coins.`,
+    },
+    reward: {
+      stats: {},
+      items: [{ id: 'koyn', count: 20 }],
+    },
+    setSuccessQuest: (input) => {
+      htmls(`.quest-count-${input.id}`, 1);
+      s(`.success-quest-content-${input.id}`).style.display = 'block';
+    },
+    logic: (input, setSuccessQuest) => {
+      setTimeout(() => {
+        let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
+        // endNotiUpdateElementQuestValidator(input, successQuest);
+      });
+      return renderQuestInfoGUI(
+        input,
+        /*html*/ `
+        ${renderLang({ en: 'Defeat one SubKishin.', es: 'Derrota a un SubKishin.' })}
+        <br><br>
+        <div class='in' style='color: yellow'>
+          [ <span class='quest-count-${input.id}'>0</span> / 1 ]
+        </div>
+            `
+      );
     },
   },
   {

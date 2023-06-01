@@ -1,3 +1,70 @@
+const getInitStateSucessQuest = (input, setSuccessQuest) => {
+  if (elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)) {
+    setSuccessQuest(input);
+    return true;
+  }
+  return false;
+};
+
+const endNotiUpdateElementQuestValidator = (input, successQuest) => {
+  if (!successQuest) {
+    renderQuestNotification(input);
+    socket.emit(
+      'event',
+      JSON.stringify({
+        event: 'success-quest',
+        id: input.id,
+        elementFromQuest: { sprite: input.sprite, username: input.name },
+      })
+    );
+  }
+};
+
+const renderQuestInfoGUI = (input, instructions) => {
+  return /*html*/ `
+  <div class='in quest-section-info'>
+    <span style='color: yellow'>
+      ${renderLang({ en: 'INSTRUCTIONS:', es: 'INSTRUCCIONES:' })}
+    </span>
+    <br><br>
+    ${instructions}
+  </div>
+  <div class='in quest-section-info'>
+    <span style='color: yellow'>
+      ${renderLang({ en: 'REWARDS:', es: 'RECOMPENSAS:' })}
+    </span>
+    <br><br>
+    <div class='fl'>
+        ${input.reward.items
+          .map((item) => {
+            setTimeout(async () => {
+              let result;
+              if (item.id == 'koyn') {
+                result = renderKoynLogo(item.count, false, 'bag-koyn-indicator');
+              } else if (item.id == 'cryptokoyn') {
+                result = renderKoynLogo(item.count, 'crypto', 'bag-cryptokoyn-indicator');
+              } else {
+                result = await getItemData(item);
+              }
+              htmls(`.box-reward-${input.id}-${item.id}`, renderItemBox(result, item.count));
+              s(`.box-reward-${input.id}-${item.id}`).onclick = () =>
+                renderItemModal({
+                  ...result.data,
+                  count: () => item.count,
+                  active: () => false,
+                  typeModal: 'reward',
+                });
+            });
+            return /*html*/ `
+              <div class="inl fll grid-cell custom-cursor box-reward-${input.id}-${item.id}"> </div>
+          `;
+          })
+          .join('')}
+    </div>
+  </div>
+  `;
+};
+
 const renderQuestNotification = (input) => {
   const idNotiQuest = 'noti-quest' + s4() + s4();
   append(
