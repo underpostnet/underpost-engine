@@ -26,7 +26,7 @@ append(
   
       <pixi-container class='fix'></pixi-container>
   
-      <event-board class='abs' style='display: none'>
+      <event-board class='fix' style='display: none'>
           
       </event-board>
   

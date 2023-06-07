@@ -59,6 +59,7 @@ socket.on('update', (...args) => {
     }, eventElement.lifeTime);
 
   if (elementIndex > -1) {
+    const sprite = `${elements[type][elementIndex].sprite}`;
     if (
       eventElement.id === socket.id &&
       eventElement.successQuests &&
@@ -79,6 +80,9 @@ socket.on('update', (...args) => {
           initMainUserJoy(elements[type][elementIndex]);
         }
       });
+
+    if (eventElement.sprite && sprite !== elements[type][elementIndex].sprite)
+      renderPixiSprite(elements[type][elementIndex], sprite);
 
     return renderPixiEventElement(elements[type][elementIndex]);
   }
@@ -239,7 +243,9 @@ socket.on('event', (...args) => {
         });
       if (s(`.item-modal-${eventElement.item.id}`)) {
         s(`.item-equip-${eventElement.item.id}`).style.display = 'none';
-        s(`.item-unequip-${eventElement.item.id}`).style.display = 'inline-table';
+        if (eventElement.item.displayLogic === 'skins')
+          s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
+        else s(`.item-unequip-${eventElement.item.id}`).style.display = 'inline-table';
       }
       break;
     case 'unequip-item':

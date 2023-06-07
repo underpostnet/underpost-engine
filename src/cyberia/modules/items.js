@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { renderLang } from '../../core/modules/common.js';
+import { skins } from './skins.js';
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ const items = [
       velAttack: -10,
       passiveHealValue: 1,
       velPassiveHealValue: -20,
-      velFactor: -0.1,
+      velFactor: -0.05,
     },
     itemType: 'equipment-weapon',
   },
@@ -76,7 +77,7 @@ const items = [
       velAttack: -10,
       passiveHealValue: 2,
       velPassiveHealValue: -10,
-      velFactor: -0.6,
+      velFactor: -0.2,
     },
     itemType: 'equipment-breastplate',
   },
@@ -101,11 +102,11 @@ const items = [
       velAttack: -15,
       passiveHealValue: 0,
       velPassiveHealValue: 0,
-      velFactor: -0.2,
+      velFactor: -0.08,
     },
     itemType: 'equipment-talisman',
   },
-];
+].concat(skins);
 
 const getDataRenderItem = (item) => {
   const { id, frames, frameTimeInterval, renderFactor, frameFormat, displayLogic } = item;
@@ -126,10 +127,10 @@ const getItemService = (req, res) => {
   try {
     const item = items.find((i) => i.id == req.params.itemId);
     if (item) {
-      const { id, name, stats, itemType } = item;
+      const { id, name, stats, itemType, displayLogic } = item;
       return res.status(200).json({
         status: 'success',
-        data: { id, name, stats, itemType },
+        data: { id, name, stats, itemType, displayLogic },
       });
     }
     return res.status(400).json({

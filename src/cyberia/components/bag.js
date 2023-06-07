@@ -3,6 +3,15 @@ let localItemsStorage = [];
 let localItemsRenderStorage = [];
 let sortableBagInstance = null;
 
+const getFolderAssetSrc = (item) => {
+  switch (item.displayLogic) {
+    case 'skins':
+      return 'sprites';
+    default:
+      return 'items';
+  }
+};
+
 const getK = (koyn) => {
   /*
   TOP DEFINITION
@@ -70,7 +79,7 @@ const getItemData = async (item) => {
 
 const renderItemBox = (result, count) => /*html*/ `
 <div class='abs center'>
-  <img src='/items/${result.data.id}/animation.gif' class='inl item-bag-icon'>
+  <img src='/${getFolderAssetSrc(result.data)}/${result.data.id}/animation.gif' class='inl item-bag-icon'>
 </div> 
 <div class='abs center item-bag-style-text'>
     ${renderLang(result.data.name)}
@@ -148,7 +157,8 @@ const renderItemModal = (item) => {
         elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id) &&
         elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id).active === true
       ) {
-        s(`.item-unequip-${item.id}`).style.display = 'inline-table';
+        if (item.displayLogic === 'skins') s(`.item-unequip-${item.id}`).style.display = 'none';
+        else s(`.item-unequip-${item.id}`).style.display = 'inline-table';
         s(`.item-equip-${item.id}`).style.display = 'none';
       }
     });
@@ -166,7 +176,7 @@ const renderItemModal = (item) => {
                 </div>
             </div>
             <div class='in fll modal-item-header-col'>
-                <img class='abs center item-modal-img' src='/items/${item.id}/animation.gif'>
+                <img class='abs center item-modal-img' src='/${getFolderAssetSrc(item)}/${item.id}/animation.gif'>
             </div>
                 <div class='abs btn-close-modal-item custom-cursor close-item-modal-${item.id}'>
                     <div class='abs center'>

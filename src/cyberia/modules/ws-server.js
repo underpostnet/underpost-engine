@@ -186,8 +186,11 @@ const typeModels = () => {
       deadTime: () => 3,
       velAttack: () => 500,
       velPassiveHealValue: () => 1000,
-      items: () => [],
-      displayItems: () => [],
+      items: () => [
+        { id: 'anon', count: 1, active: true },
+        { id: 'purple', count: 1 },
+      ],
+      displayItems: () => ['anon'],
       successQuests: () => [],
     },
     bullet: {
@@ -989,11 +992,19 @@ const wsServer = (httpServer, app, internalApi) => {
                 elements['user'][clientElementIndex].displayItems.push(item.id);
 
                 const statsEmit = upGradeStatsElements(clients, clientElementIndex, item, 1);
+
+                let sprite = undefined;
+                if (item.displayLogic === 'skins') {
+                  elements['user'][clientElementIndex].sprite = `${item.id}`;
+                  sprite = `${item.id}`;
+                }
+
                 const updateEmit = JSON.stringify({
                   id: elements['user'][clientElementIndex].id,
                   type,
                   displayItems: elements['user'][clientElementIndex].displayItems,
                   items: elements['user'][clientElementIndex].items,
+                  sprite,
                   ...statsEmit,
                 });
                 const eventEmit = JSON.stringify({

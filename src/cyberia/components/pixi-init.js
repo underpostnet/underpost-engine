@@ -61,27 +61,15 @@ const renderPixiInitElement = (element) => {
   }
 
   if (typeModels()[type].components().includes('sprites') && element.sprite) {
-    spriteDirs.map((spriteDir) => {
-      range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
-        const src = `/sprites/${element.sprite}/${spriteDir}/${spriteFrame}.png`;
-        pixi[type][element.id][src] = PIXI.Sprite.from(src);
-        pixi[type][element.id][src].x = 0;
-        pixi[type][element.id][src].y = 0;
-        pixi[type][element.id][src].width = dim;
-        pixi[type][element.id][src].height = dim;
-        pixi[type][element.id][src].visible = spriteDir === '08' && element.life > 0;
-        container.addChild(pixi[type][element.id][src]);
-        if (spriteDir === '08' && id === socket.id) s('.character-stats-img-avatar').src = src;
-      });
-    });
-    const src = `/sprites/ghost/08/0.png`;
-    pixi[type][element.id][src] = PIXI.Sprite.from(src);
-    pixi[type][element.id][src].x = (dim - dim * 0.6) * 0.5;
-    pixi[type][element.id][src].y = 0;
-    pixi[type][element.id][src].width = dim * 0.6;
-    pixi[type][element.id][src].height = dim;
-    pixi[type][element.id][src].visible = element.life <= 0;
-    container.addChild(pixi[type][element.id][src]);
+    pixi[type][element.id].spriteContainer = new PIXI.Container();
+    const spriteContainer = pixi[type][element.id].spriteContainer;
+    spriteContainer.x = 0;
+    spriteContainer.y = 0;
+    spriteContainer.width = dim;
+    spriteContainer.height = dim;
+    container.addChild(spriteContainer);
+
+    renderPixiSprite(element);
   }
 
   if (typeModels()[type].components().includes('object')) {

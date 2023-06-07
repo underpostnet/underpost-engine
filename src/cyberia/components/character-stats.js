@@ -1,26 +1,15 @@
-const characterSlots = ['helmet', 'talisman', 'breastplate', 'weapon', 'legs'];
+const characterSlots = ['skin', 'helmet', 'talisman', 'breastplate', 'weapon', 'legs'];
 
 const resetCharacterSlots = () => characterSlots.map((cs) => htmls(`.${cs}-equip-content`, ''));
 
 const renderStatsGrid = (element) => {
   if (element.itemType === 'currency') return '';
-  let SKIN_DATA_RENDER = '';
+
   let PRE_VALUE_ICON = '+';
   if (element.type === 'user') {
     PRE_VALUE_ICON = '';
-    SKIN_DATA_RENDER = /*html*/ `
-    <div class='in character-stats-grid-row'>
-      <div class='in character-stats-grid-label'>
-        ${renderLang({ es: 'skin', en: 'skin' }).toUpperCase()} 
-      </div>
-      <div class='in value-stat-content'>
-        ${element.sprite.toUpperCase()}
-      </div>
-    </div>
-    `;
   }
   return /*html*/ `
-       ${SKIN_DATA_RENDER}
       <div class='in character-stats-grid-row'>
         <div class='in character-stats-grid-label'>
           ${renderLang({ es: 'vida maxima', en: 'max life' }).toUpperCase()} 
@@ -87,15 +76,14 @@ const characterStats = () => {
 
                           </div>
                           <div class='in fll character-stats-section'>
-
-                                  <img class='in character-stats-img-avatar'>
-                                  
                                    ${characterSlots
                                      .map(
                                        (cs) => /*html*/ `
+                              ${cs === 'skin' ? `<div class='in character-stats-img-avatar'>` : ''}
                                    <div class='abs center grid-cell-equip custom-cursor ${cs}-equip-content'>
                                   
                                    </div>
+                              ${cs === 'skin' ? `</div>` : ''}
                                    `
                                      )
                                      .join('')}                             

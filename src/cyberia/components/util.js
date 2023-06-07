@@ -339,3 +339,42 @@ const initMainUserJoy = (userElement) => {
     }
   }, updateTimeInterval * (userElement.velFactor ? userElement.velFactor : 1));
 };
+
+const renderPixiSprite = (element, oldSpriteId) => {
+  const { type } = element;
+  const { dim } = setAmplitudeRender(element.render);
+  const container = pixi[type][element.id].botContainer;
+  if (oldSpriteId !== undefined) {
+    spriteDirs.map((spriteDir) => {
+      range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
+        const src = `/sprites/${oldSpriteId}/${spriteDir}/${spriteFrame}.png`;
+        if (pixi[type][element.id][src]) {
+          pixi[type][element.id][src].destroy();
+          delete pixi[type][element.id][src];
+        }
+      });
+    });
+  }
+  spriteDirs.map((spriteDir) => {
+    range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
+      const src = `/sprites/${element.sprite}/${spriteDir}/${spriteFrame}.png`;
+      pixi[type][element.id][src] = PIXI.Sprite.from(src);
+      pixi[type][element.id][src].x = 0;
+      pixi[type][element.id][src].y = 0;
+      pixi[type][element.id][src].width = dim;
+      pixi[type][element.id][src].height = dim;
+      pixi[type][element.id][src].visible = spriteDir === '08' && element.life > 0;
+      container.addChild(pixi[type][element.id][src]);
+    });
+  });
+  if (oldSpriteId === undefined) {
+    const src = `/sprites/ghost/08/0.png`;
+    pixi[type][element.id][src] = PIXI.Sprite.from(src);
+    pixi[type][element.id][src].x = (dim - dim * 0.6) * 0.5;
+    pixi[type][element.id][src].y = 0;
+    pixi[type][element.id][src].width = dim * 0.6;
+    pixi[type][element.id][src].height = dim;
+    pixi[type][element.id][src].visible = element.life <= 0;
+    container.addChild(pixi[type][element.id][src]);
+  }
+};
