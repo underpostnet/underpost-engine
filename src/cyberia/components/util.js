@@ -343,7 +343,7 @@ const initMainUserJoy = (userElement) => {
 const renderPixiSprite = (element, oldSpriteId) => {
   const { type } = element;
   const { dim } = setAmplitudeRender(element.render);
-  const container = pixi[type][element.id].botContainer;
+  const container = pixi[type][element.id].spriteContainer;
   if (oldSpriteId !== undefined) {
     spriteDirs.map((spriteDir) => {
       range(0, parseInt(spriteDir[0])).map((spriteFrame) => {
