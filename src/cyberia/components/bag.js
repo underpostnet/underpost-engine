@@ -163,47 +163,53 @@ const renderItemModal = (item) => {
       }
     });
   }
+
+  const bodyModal = /*html*/ `
+  
+  <div class='in modal-item-header'>
+    <div class='in fll modal-item-header-col'>
+        <div class='abs center'>
+            ${renderTitleCountType}
+        </div>
+    </div>
+    <div class='in fll modal-item-header-col'>
+        <img class='abs center item-modal-img' src='/${getFolderAssetSrc(item)}/${item.id}/animation.gif'>
+    </div>
+        <div class='abs btn-close-modal-item custom-cursor close-item-modal-${item.id}'>
+            <div class='abs center'>
+                <img class='inl icons-close-modal-item' src='/icons/200x200/cross.gif'>
+            </div>
+        </div>
+  </div>
+
+  <div class='in modal-item-stats'>
+        ${statsRender}
+
+        ${equipmentBtn}
+  </div>
+  
+  `;
   if (!s(`.item-modal-${item.id}`)) {
     append(
       'body',
       /*html*/ `
 
         <div class='abs center fix custom-cursor item-modal item-modal-${item.id}'>
-          <div class='in modal-item-header'>
-            <div class='in fll modal-item-header-col'>
-                <div class='abs center'>
-                    ${renderTitleCountType}
-                </div>
-            </div>
-            <div class='in fll modal-item-header-col'>
-                <img class='abs center item-modal-img' src='/${getFolderAssetSrc(item)}/${item.id}/animation.gif'>
-            </div>
-                <div class='abs btn-close-modal-item custom-cursor close-item-modal-${item.id}'>
-                    <div class='abs center'>
-                        <img class='inl icons-close-modal-item' src='/icons/200x200/cross.gif'>
-                    </div>
-                </div>
-          </div>
-
-          <div class='in modal-item-stats'>
-                ${statsRender}
-
-                ${equipmentBtn}
-          </div>
-                
+            ${bodyModal}                
         </div>
     
     `
     );
-    if (item.active() === true) {
-      s(`.item-equip-${item.id}`).style.display = 'none';
-      s(`.item-unequip-${item.id}`).style.display = 'inline-table';
-    }
-    dragDrop(`.item-modal-${item.id}`);
-    s(`.close-item-modal-${item.id}`).onclick = () => {
-      s(`.item-modal-${item.id}`).remove();
-    };
+  } else htmls(`.item-modal-${item.id}`, bodyModal);
+
+  if (item.active() === true) {
+    s(`.item-equip-${item.id}`).style.display = 'none';
+    s(`.item-unequip-${item.id}`).style.display = 'inline-table';
   }
+  dragDrop(`.item-modal-${item.id}`);
+  s(`.close-item-modal-${item.id}`).onclick = () => {
+    s(`.item-modal-${item.id}`).remove();
+  };
 };
 
 const newInstanceBagItems = async (items) => {
