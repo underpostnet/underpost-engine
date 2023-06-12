@@ -73,8 +73,16 @@ setInterval(() => {
         height:  ${(screenDim.minValue * 0.8) / 6}px;
       }
       .grid-cell-equip {
-        width: ${(screenDim.minValue * 0.5) / 5}px;
-        height:  ${(screenDim.minValue * 0.5) / 5}px;
+        width: ${
+          screenDim.maxType === 'height' && screenDim.minValue <= 430
+            ? screenDim.minValue / 5
+            : (screenDim.minValue * 0.5) / 5
+        }px;
+        height:  ${
+          screenDim.maxType === 'height' && screenDim.minValue <= 430
+            ? screenDim.minValue / 5
+            : (screenDim.minValue * 0.5) / 5
+        }px;
       }
       history-chat {
         height:  ${screenDim.maxType === 'height' ? screenDim.maxValue * 0.65 : screenDim.minValue * 0.65}px;
