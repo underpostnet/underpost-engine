@@ -14,7 +14,7 @@ const skins = [
       velPassiveHealValue: 0,
       velFactor: 0,
     },
-    itemType: 'equipment-skin',
+    itemType: 'skin',
   },
   {
     id: 'purple',
@@ -31,7 +31,7 @@ const skins = [
       velPassiveHealValue: 0,
       velFactor: -0.01,
     },
-    itemType: 'equipment-skin',
+    itemType: 'skin',
   },
 ];
 

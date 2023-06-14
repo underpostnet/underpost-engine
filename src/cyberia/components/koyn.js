@@ -34,6 +34,7 @@ const renderKoynLogo = (value, type, valueID) => {
           : elements.user.find((e) => e.id === socket.id)
           ? elements.user.find((e) => e.id === socket.id).koyn
           : 0,
+      displayLogic: 'currencies',
     },
   };
 };

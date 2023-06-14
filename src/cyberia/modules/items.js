@@ -29,7 +29,7 @@ const items = [
       velPassiveHealValue: -20,
       velFactor: -0.05,
     },
-    itemType: 'equipment-weapon',
+    itemType: 'weapon',
   },
   {
     id: 'ice-cream',
@@ -54,7 +54,7 @@ const items = [
       velPassiveHealValue: -5,
       velFactor: 0,
     },
-    itemType: 'equipment-weapon',
+    itemType: 'weapon',
   },
   {
     id: 'brown-wing',
@@ -80,7 +80,7 @@ const items = [
       velPassiveHealValue: -10,
       velFactor: -0.2,
     },
-    itemType: 'equipment-breastplate',
+    itemType: 'breastplate',
   },
   {
     id: 'subkishin-piece',
@@ -105,7 +105,7 @@ const items = [
       velPassiveHealValue: 0,
       velFactor: -0.08,
     },
-    itemType: 'equipment-talisman',
+    itemType: 'talisman',
   },
 ]
   .concat(skins)
@@ -130,10 +130,10 @@ const getItemService = (req, res) => {
   try {
     const item = items.find((i) => i.id == req.params.itemId);
     if (item) {
-      const { id, name, stats, itemType, displayLogic } = item;
+      const { id, name, stats, itemType, displayLogic, description } = item;
       return res.status(200).json({
         status: 'success',
-        data: { id, name, stats, itemType, displayLogic },
+        data: { id, name, stats, itemType, displayLogic, description },
       });
     }
     return res.status(400).json({

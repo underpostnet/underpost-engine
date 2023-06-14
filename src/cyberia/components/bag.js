@@ -91,10 +91,9 @@ const renderItemBox = (result, count) => /*html*/ `
 `;
 
 const renderItemModal = (item) => {
-  let statsRender = '';
+  let bodyModalRender = '';
   let equipmentBtn = '';
   let countRender = '';
-  const itemType = item.itemType.split('-')[0];
 
   if (item.typeModal === undefined || item.typeModal === 'reward') {
     countRender = /*html*/ `<span style='font-size: 10px'>X</span><span class='modal-count-${
@@ -111,15 +110,17 @@ const renderItemModal = (item) => {
       <br><br>
       ${countRender}
   `;
-
-  if (itemType === 'equipment') {
-    statsRender = /*html*/ `
+  if (item.displayLogic === 'skills') {
+    bodyModalRender = renderLang(item.description);
+  } else if (item.displayLogic === 'currencies') {
+  } else {
+    bodyModalRender = /*html*/ `
         <div class='in stats-content-item-modal'>
               ${renderStatsGrid(item.stats)}
         </div>
       `; // btn-item-equip
   }
-  if (itemType === 'equipment' && (item.typeModal === undefined || item.typeModal === 'character-equip-box')) {
+  if (item.typeModal === undefined || item.typeModal === 'character-equip-box') {
     equipmentBtn = /*html*/ `
           <br>
           <button class='inl custom-cursor item-equip-${item.id}'>
@@ -186,8 +187,7 @@ const renderItemModal = (item) => {
   </div>
 
   <div class='in modal-item-stats'>
-        ${statsRender}
-
+        ${bodyModalRender}
         ${equipmentBtn}
   </div>
   
@@ -246,7 +246,7 @@ const newInstanceBagItems = async (items) => {
         elements['user'].find((e) => e.id === socket.id) &&
         elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === result.data.id && i.active === true)
       ) {
-        const boxEquipId = `.${result.data.itemType.split('-')[1]}-equip-content`;
+        const boxEquipId = `.${result.data.itemType}-equip-content`;
         htmls(boxEquipId, renderItemBox(result));
         s(boxEquipId).onclick = () =>
           renderItemModal({

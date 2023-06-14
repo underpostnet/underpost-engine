@@ -4,7 +4,7 @@ const skillTypes = ['skill_basic', 'skill_primary', 'skill_secundary'];
 const resetCharacterSlots = () => characterSlots.map((cs) => htmls(`.${cs}-equip-content`, ''));
 
 const renderTitleTypeSlot = (itemType) => {
-  itemType = itemType.replaceAll('equipment-', '').replaceAll('-', '<br>').replaceAll('_', '<br>');
+  itemType = itemType.replaceAll('-', '<br>').replaceAll('_', '<br>');
   return /*html*/ `
     <div class='abs center title-type-equip'>
       ${itemType}

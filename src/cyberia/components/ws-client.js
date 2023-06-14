@@ -230,7 +230,7 @@ socket.on('event', (...args) => {
         },
         eventElement.item
       );
-      boxEquipId = `.${eventElement.item.itemType.split('-')[1]}-equip-content`;
+      boxEquipId = `.${eventElement.item.itemType}-equip-content`;
       htmls(boxEquipId, renderItemBox({ data: eventElement.item }));
       // s('.close-gui').click();
       // s('.btn-character-stats').click();
@@ -257,7 +257,7 @@ socket.on('event', (...args) => {
       elements['user'][indexEventUser].displayItems = elements['user'][indexEventUser].displayItems.filter(
         (i) => i !== eventElement.item.id
       );
-      boxEquipId = `.${eventElement.item.itemType.split('-')[1]}-equip-content`;
+      boxEquipId = `.${eventElement.item.itemType}-equip-content`;
       htmls(boxEquipId, renderTitleTypeSlot(eventElement.item.itemType));
       s(boxEquipId).onclick = () => null;
       if (s(`.item-modal-${eventElement.item.id}`)) {
