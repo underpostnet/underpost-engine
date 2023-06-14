@@ -552,7 +552,37 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
             }) &&
             element.life > 0
           ) {
-            element.life = element.life - eventElement.element.attackValue;
+            switch (basicSkillData.id) {
+              case 'basic-green':
+                element.life = element.life - parseInt(eventElement.element.attackValue * 0.5);
+                eventElement.element.life += parseInt(eventElement.element.attackValue * 0.25);
+
+                if (eventElement.element.life > eventElement.element.maxLife)
+                  eventElement.element.life = newInstance(eventElement.element.maxLife);
+
+                clients.map((client) => {
+                  const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+
+                  if (elements['user'][clientIndex].id === eventElement.element.id)
+                    elements['user'][clientIndex].life = newInstance(eventElement.element.life);
+
+                  if (clientIndex > -1 && elements['user'][clientIndex].map === map)
+                    client.emit(
+                      'update',
+                      JSON.stringify({
+                        id: eventElement.element.id,
+                        type: eventElement.element.type,
+                        life: eventElement.element.life,
+                      })
+                    );
+                });
+                break;
+              case 'basic-red':
+                element.life = element.life - eventElement.element.attackValue;
+                break;
+              default:
+                break;
+            }
             if (element.life <= 0) {
               element.life = 0;
               if (element.dropKoyn !== undefined && eventElement.element.koyn !== undefined) {
@@ -1162,12 +1192,14 @@ const wsServer = (httpServer, app, internalApi) => {
         if (configBot) customBot = configBot.bots[elements[type].filter((element) => element.map === map).length];
 
         const point = botPositionAvailablePoints[random(0, botPositionAvailablePoints.length - 1)];
+        const sprite = 'purple';
+        const idItemSkill = 'basic-red';
         const bot = {
           id: id(),
           type,
           color,
           map,
-          sprite: 'purple',
+          sprite,
           life: 100,
           maxLife: 100,
           attackValue: 5,
@@ -1182,10 +1214,12 @@ const wsServer = (httpServer, app, internalApi) => {
           hostile: true,
           velPassiveHealValue: 1000,
           velFactor: 3,
-          items: [{ id: 'basic-red', count: 1, active: true }],
+          items: [{ id: idItemSkill, count: 1, active: true }],
           ...customBot,
         };
         bot.displayItems = getDisplayBotData(bot.sprite, map);
+        // console.log('bot.displayItems', bot.displayItems);
+        // bot.displayItems = [idItemSkill, bot.sprite].concat(bot.displayItems);
         elements[type].push(bot);
         params[type][bot.id] = {};
         setIntervalPassiveHeal(

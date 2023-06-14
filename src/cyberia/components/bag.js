@@ -131,7 +131,10 @@ const renderItemModal = (item) => {
         </div>
       `; // btn-item-equip
   }
-  if (item.typeModal === undefined || item.typeModal === 'character-equip-box') {
+  if (
+    item.displayLogic !== 'currencies' &&
+    (item.typeModal === undefined || item.typeModal === 'character-equip-box')
+  ) {
     equipmentBtn = /*html*/ `
           <br>
           <button class='inl custom-cursor item-equip-${item.id}'>
