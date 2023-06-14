@@ -1,6 +1,16 @@
 const characterSlots = ['skin', 'helmet', 'talisman', 'breastplate', 'weapon', 'legs'];
+const skillTypes = ['skill_basic', 'skill_primary', 'skill_secundary'];
 
 const resetCharacterSlots = () => characterSlots.map((cs) => htmls(`.${cs}-equip-content`, ''));
+
+const renderTitleTypeSlot = (itemType) => {
+  itemType = itemType.replaceAll('equipment-', '').replaceAll('-', '<br>').replaceAll('_', '<br>');
+  return /*html*/ `
+    <div class='abs center title-type-equip'>
+      ${itemType}
+    </div>
+  `;
+};
 
 const renderStatsGrid = (element) => {
   if (element.itemType === 'currency') return '';
@@ -76,17 +86,32 @@ const characterStats = () => {
 
                           </div>
                           <div class='in fll character-stats-section'>
+
+                              <div class='in'>
                                    ${characterSlots
                                      .map(
                                        (cs) => /*html*/ `
                               ${cs === 'skin' ? `<div class='in character-stats-img-avatar'>` : ''}
                                    <div class='abs center grid-cell-equip custom-cursor ${cs}-equip-content'>
+                                      ${renderTitleTypeSlot(cs)}
                                   
                                    </div>
                               ${cs === 'skin' ? `</div>` : ''}
                                    `
                                      )
-                                     .join('')}                             
+                                     .join('')}      
+                              </div>    
+                              <div class='in skills-equip-content'>
+                                ${skillTypes
+                                  .map((cs) => {
+                                    return /*html*/ `
+                                        <div class='inl grid-cell-equip custom-cursor ${cs}-equip-content'>
+                                                ${renderTitleTypeSlot(cs)}
+                                        </div>
+                                        `;
+                                  })
+                                  .join('')}
+                              </div>                   
 
                           </div>
                           

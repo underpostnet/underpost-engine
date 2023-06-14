@@ -35,7 +35,6 @@ const renderEventBoard = (dataBoard) => {
   if (hashIdEventBoards.length === 3) {
     s(`.${hashIdEventBoards[0]}`).remove();
     hashIdEventBoards = hashIdEventBoards.filter((i) => i != hashIdEventBoards[0]);
-    console.log(hashIdEventBoards);
   }
 
   s('event-board').style.display = 'block';

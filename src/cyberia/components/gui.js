@@ -7,7 +7,7 @@ append(
           ${borderChar(1, 'black')}
         }
   
-        label {
+        label, .title-type-equip {
           ${borderChar(1, 'black')}
         }
   

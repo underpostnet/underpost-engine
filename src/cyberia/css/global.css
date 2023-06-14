@@ -158,10 +158,8 @@ label {
 
 .count-item-text {
     color: yellow;
-    top: 12%;
+    top: 15%;
     width: 150%;
-
-    right: 0%;
 }
 
 .x-count-item-text {
@@ -623,4 +621,18 @@ event-board {
 .helmet-equip-content {
     left: 80%;
     top: 30%;
+}
+
+.skills-equip-content {
+    text-align: center;
+    margin-top: 10%;
+}
+
+.title-type-equip {
+    color: yellow;
+    text-align: center;
+}
+
+.modal-content-type-item {
+    top: 18px;
 }

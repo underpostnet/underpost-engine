@@ -19,6 +19,7 @@ const renderKoynLogo = (value, type, valueID) => {
     <div class='abs center item-bag-style-text'>
       ${koynName()}
     </div>
+    ${renderTitleTypeSlot('currency')}
     ${renderItemCount(valueID, value)}
 
 `,

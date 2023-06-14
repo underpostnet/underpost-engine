@@ -7,6 +7,8 @@ const getFolderAssetSrc = (item) => {
   switch (item.displayLogic) {
     case 'skins':
       return 'sprites';
+    case 'skills':
+      return 'skills';
     default:
       return 'items';
   }
@@ -44,7 +46,7 @@ const renderInitModalCounts = () => {
 
 const renderItemCount = (valueID, value) => {
   return /*html*/ `
-      <div class='abs count-item-text' style='${borderChar(2, 'black')}'>
+      <div class='abs center count-item-text' style='${borderChar(2, 'black')}'>
          <div class='abs center'>
               <span class='inl x-count-item-text'>X</span>
               <span class='${valueID}'>${getK(value)}</span>
@@ -84,7 +86,8 @@ const renderItemBox = (result, count) => /*html*/ `
 <div class='abs center item-bag-style-text'>
     ${renderLang(result.data.name)}
 </div>
-${count !== undefined ? renderItemCount(`bag-count-${result.data.id}`, count) : ''}   
+  ${renderTitleTypeSlot(result.data.itemType)}  
+  ${count !== undefined ? renderItemCount(`bag-count-${result.data.id}`, count) : ''} 
 `;
 
 const renderItemModal = (item) => {
@@ -102,9 +105,9 @@ const renderItemModal = (item) => {
   const renderTitleCountType = /*html*/ `
       ${renderLang(item.name)}
       <br>
-      <span style='color: yellow; font-size: 7px'>
-          ${item.itemType.replaceAll('-', '<br>').toUpperCase()}
-      </span>
+      <div class='in modal-content-type-item'>
+          ${renderTitleTypeSlot(item.itemType)}
+      </div>
       <br><br>
       ${countRender}
   `;

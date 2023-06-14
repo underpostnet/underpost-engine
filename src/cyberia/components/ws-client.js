@@ -258,7 +258,7 @@ socket.on('event', (...args) => {
         (i) => i !== eventElement.item.id
       );
       boxEquipId = `.${eventElement.item.itemType.split('-')[1]}-equip-content`;
-      htmls(boxEquipId, '');
+      htmls(boxEquipId, renderTitleTypeSlot(eventElement.item.itemType));
       s(boxEquipId).onclick = () => null;
       if (s(`.item-modal-${eventElement.item.id}`)) {
         s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';

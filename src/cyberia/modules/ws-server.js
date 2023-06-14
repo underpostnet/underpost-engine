@@ -189,8 +189,10 @@ const typeModels = () => {
       items: () => [
         { id: 'anon', count: 1, active: true },
         { id: 'purple', count: 1 },
+        { id: 'basic-red', count: 1, active: true },
+        { id: 'basic-green', count: 1 },
       ],
-      displayItems: () => ['anon'],
+      displayItems: () => ['anon', 'basic-red'],
       successQuests: () => [],
     },
     bullet: {

@@ -84,6 +84,21 @@ setInterval(() => {
             : (screenDim.minValue * 0.5) / 5
         }px;
       }
+      ${
+        screenDim.maxType === 'height' && screenDim.minValue <= 430
+          ? /*css*/ `
+      .title-type-equip { 
+        font-size: 6px;
+        top: -14%;
+      }
+      `
+          : /*css*/ `
+      .title-type-equip { 
+        font-size: 8px;
+        top: -2%;
+      }
+      `
+      }
       history-chat {
         height:  ${screenDim.maxType === 'height' ? screenDim.maxValue * 0.65 : screenDim.minValue * 0.65}px;
       }

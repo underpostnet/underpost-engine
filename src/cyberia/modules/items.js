@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { renderLang } from '../../core/modules/common.js';
 import { skins } from './skins.js';
+import { skills } from './skills.js';
 
 dotenv.config();
 
@@ -106,7 +107,9 @@ const items = [
     },
     itemType: 'equipment-talisman',
   },
-].concat(skins);
+]
+  .concat(skins)
+  .concat(skills);
 
 const getDataRenderItem = (item) => {
   const { id, frames, frameTimeInterval, renderFactor, frameFormat, displayLogic } = item;
