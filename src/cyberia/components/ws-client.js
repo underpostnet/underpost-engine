@@ -230,22 +230,24 @@ socket.on('event', (...args) => {
         },
         eventElement.item
       );
-      boxEquipId = `.${eventElement.item.itemType}-equip-content`;
-      htmls(boxEquipId, renderItemBox({ data: eventElement.item }));
-      // s('.close-gui').click();
-      // s('.btn-character-stats').click();
-      s(boxEquipId).onclick = () =>
-        renderItemModal({
-          ...eventElement.item,
-          count: () => undefined,
-          active: () => false,
-          typeModal: 'character-equip-box',
-        });
-      if (s(`.item-modal-${eventElement.item.id}`)) {
-        s(`.item-equip-${eventElement.item.id}`).style.display = 'none';
-        if (eventElement.item.displayLogic === 'skins')
-          s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
-        else s(`.item-unequip-${eventElement.item.id}`).style.display = 'inline-table';
+      if (eventElement.id === socket.id) {
+        boxEquipId = `.${eventElement.item.itemType}-equip-content`;
+        htmls(boxEquipId, renderItemBox({ data: eventElement.item }));
+        // s('.close-gui').click();
+        // s('.btn-character-stats').click();
+        s(boxEquipId).onclick = () =>
+          renderItemModal({
+            ...eventElement.item,
+            count: () => undefined,
+            active: () => false,
+            typeModal: 'character-equip-box',
+          });
+        if (s(`.item-modal-${eventElement.item.id}`)) {
+          s(`.item-equip-${eventElement.item.id}`).style.display = 'none';
+          if (eventElement.item.displayLogic === 'skins')
+            s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
+          else s(`.item-unequip-${eventElement.item.id}`).style.display = 'inline-table';
+        }
       }
       break;
     case 'unequip-item':
@@ -257,12 +259,14 @@ socket.on('event', (...args) => {
       elements['user'][indexEventUser].displayItems = elements['user'][indexEventUser].displayItems.filter(
         (i) => i !== eventElement.item.id
       );
-      boxEquipId = `.${eventElement.item.itemType}-equip-content`;
-      htmls(boxEquipId, renderTitleTypeSlot(eventElement.item.itemType));
-      s(boxEquipId).onclick = () => null;
-      if (s(`.item-modal-${eventElement.item.id}`)) {
-        s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
-        s(`.item-equip-${eventElement.item.id}`).style.display = 'inline-table';
+      if (eventElement.id === socket.id) {
+        boxEquipId = `.${eventElement.item.itemType}-equip-content`;
+        htmls(boxEquipId, renderTitleTypeSlot(eventElement.item.itemType));
+        s(boxEquipId).onclick = () => null;
+        if (s(`.item-modal-${eventElement.item.id}`)) {
+          s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
+          s(`.item-equip-${eventElement.item.id}`).style.display = 'inline-table';
+        }
       }
       break;
 
