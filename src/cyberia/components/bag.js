@@ -111,7 +111,18 @@ const renderItemModal = (item) => {
       ${countRender}
   `;
   if (item.displayLogic === 'skills') {
-    bodyModalRender = renderLang(item.description);
+    bodyModalRender = /*html*/ `
+    <div class='in stats-content-item-modal'>
+      <div class='in character-stats-grid-row'>
+        <div class='in character-stats-grid-label'>
+          ${renderLang({ es: 'Descripción', en: 'Description' }).toUpperCase()} 
+        </div>
+        <div class='in value-stat-content'>
+          ${renderLang(item.description)}
+        </div>
+      </div>
+    </div>
+    `;
   } else if (item.displayLogic === 'currencies') {
   } else {
     bodyModalRender = /*html*/ `

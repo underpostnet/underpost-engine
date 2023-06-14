@@ -294,30 +294,41 @@ const renderPixiInitElement = (element) => {
     }, 1000);
   }
 
-  if (typeModels()[type].components().includes('red-power')) {
-    const maxFrames = 2;
-    let currentFrame = 0;
-    range(0, maxFrames).map((frame) => {
-      const src = `/sprites/red-power/08/${frame}.png`;
-      const dimFactor = 0.35;
-      pixi[type][element.id][src] = PIXI.Sprite.from(src);
-      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
-      pixi[type][element.id][src].y = ((dim - dim * dimFactor) / 2) * 1.7;
-      pixi[type][element.id][src].width = dim * dimFactor;
-      pixi[type][element.id][src].height = dim * dimFactor;
-      pixi[type][element.id][src].visible = frame === currentFrame;
-      container.addChild(pixi[type][element.id][src]);
-    });
-    if (hashIntervals[element.id][`interval-red-power`]) clearInterval(hashIntervals[element.id][`interval-red-power`]);
-    hashIntervals[element.id][`interval-red-power`] = setInterval(function () {
-      if (!params[type][element.id] || !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`]) return;
-      pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = false;
-      currentFrame++;
-      if (currentFrame > maxFrames) currentFrame = 0;
-      if (!params[type][element.id] || !pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`]) return;
-      pixi[type][element.id][`/sprites/red-power/08/${currentFrame}.png`].visible = true;
-    }, 50);
-  }
+  ['red', 'green'].map((basicTypeSkill) => {
+    if (element.components && element.components.includes(`${basicTypeSkill}-power`)) {
+      const maxFrames = 2;
+      let currentFrame = 0;
+      range(0, maxFrames).map((frame) => {
+        const src = `/sprites/${basicTypeSkill}-power/08/${frame}.png`;
+        const dimFactor = 0.35;
+        pixi[type][element.id][src] = PIXI.Sprite.from(src);
+        pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+        pixi[type][element.id][src].y = ((dim - dim * dimFactor) / 2) * 1.7;
+        pixi[type][element.id][src].width = dim * dimFactor;
+        pixi[type][element.id][src].height = dim * dimFactor;
+        pixi[type][element.id][src].visible = frame === currentFrame;
+        container.addChild(pixi[type][element.id][src]);
+      });
+      if (hashIntervals[element.id][`interval-${basicTypeSkill}-power`])
+        clearInterval(hashIntervals[element.id][`interval-${basicTypeSkill}-power`]);
+      hashIntervals[element.id][`interval-${basicTypeSkill}-power`] = setInterval(function () {
+        if (
+          !params[type][element.id] ||
+          !pixi[type][element.id][`/sprites/${basicTypeSkill}-power/08/${currentFrame}.png`]
+        )
+          return;
+        pixi[type][element.id][`/sprites/${basicTypeSkill}-power/08/${currentFrame}.png`].visible = false;
+        currentFrame++;
+        if (currentFrame > maxFrames) currentFrame = 0;
+        if (
+          !params[type][element.id] ||
+          !pixi[type][element.id][`/sprites/${basicTypeSkill}-power/08/${currentFrame}.png`]
+        )
+          return;
+        pixi[type][element.id][`/sprites/${basicTypeSkill}-power/08/${currentFrame}.png`].visible = true;
+      }, 50);
+    }
+  });
 
   //  = new PIXI.Graphics();
   // .clear();

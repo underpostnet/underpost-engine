@@ -601,12 +601,13 @@ event-board {
     font-size: 10px;
 }
 
-.talisman-equip-content {
+.faction-symbol-equip-content {
     top: 5%;
 }
 
 .weapon-equip-content {
     left: 20%;
+    top: 70%;
 }
 
 .breastplate-equip-content {
@@ -626,6 +627,11 @@ event-board {
 .skills-equip-content {
     text-align: center;
     margin-top: 10%;
+}
+
+.talisman-equip-content {
+    left: 20%;
+    top: 30%;
 }
 
 .title-type-equip {

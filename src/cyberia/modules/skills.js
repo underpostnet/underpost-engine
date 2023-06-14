@@ -19,6 +19,8 @@ const skills = [
       es: 'Inflige un daño equivalente a los puntos de ataque amplificado en un 0.01%, con un tiempo de impacto de 50ms, hacia todos los personajes ubicados en el cuadrante adyacente en direccion actual del personaje.',
       en: "Inflicts damage equal to the attack points amplified by 0.01%, with an impact time of 50ms, towards all characters located in the quadrant adjacent to the character's current direction.",
     },
+    components: ['red-power'],
+    impactTime: 50,
   },
   {
     id: 'basic-green',
@@ -40,6 +42,8 @@ const skills = [
       es: 'test',
       en: 'test',
     },
+    components: ['green-power'],
+    impactTime: 50,
   },
 ];
 

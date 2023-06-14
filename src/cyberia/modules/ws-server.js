@@ -19,6 +19,7 @@ import { maps } from './maps.js';
 import { mapBots } from './bots.js';
 import { quests } from './quests.js';
 import { getDisplayBotData, items } from './items.js';
+import { skills } from './skills.js';
 
 dotenv.config();
 
@@ -197,7 +198,7 @@ const typeModels = () => {
     },
     bullet: {
       color: () => 'venetian red',
-      components: () => ['red-power'],
+      components: () => [],
       render: () => {
         return {
           dim: () => 1,
@@ -485,6 +486,24 @@ const rebirdElement = (clients, element, internalApi) => {
 
 const attack = (clients, eventElement, map, targets, internalApi) => {
   (() => {
+    let basicSkillData;
+
+    for (const item of eventElement.element.items) {
+      let fountItemSkill = false;
+      for (const skill of skills) {
+        if (skill.id === item.id && item.active === true && skill.itemType === 'skill_basic') {
+          basicSkillData = newInstance(skill);
+          fountItemSkill = true;
+          break;
+        }
+      }
+      if (fountItemSkill) break;
+    }
+
+    if (!basicSkillData) return;
+
+    const { components, impactTime } = basicSkillData;
+
     const type = 'bullet';
     const { color, render } = getParamsType(type);
     const { dim } = render;
@@ -500,6 +519,7 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
         x: eventElement.element.render.x, //+ dim / 2,
         y: eventElement.element.render.y, //+ dim / 2,
       },
+      components,
     };
     elements[type].push(bullet);
     clients.map((client) => {
@@ -652,7 +672,7 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
       setTimeout(() => {
         elements[type] = elements[type].filter((element) => element.id !== bullet.id);
       }, lifeTime);
-    }, 50);
+    }, impactTime);
   })();
 };
 
@@ -1162,6 +1182,7 @@ const wsServer = (httpServer, app, internalApi) => {
           hostile: true,
           velPassiveHealValue: 1000,
           velFactor: 3,
+          items: [{ id: 'basic-red', count: 1, active: true }],
           ...customBot,
         };
         bot.displayItems = getDisplayBotData(bot.sprite, map);
