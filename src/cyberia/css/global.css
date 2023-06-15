@@ -105,14 +105,14 @@ loader {
 
 button {
     background: black;
-    border: 4px solid yellow;
+    border: 2px solid yellow;
     padding: 10px;
     color: yellow;
     font-family: 'retro-font';
 }
 
 button:hover {
-    border: 4px solid white;
+    border: 2px solid white;
     color: white;
 }
 

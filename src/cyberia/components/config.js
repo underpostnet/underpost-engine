@@ -1,4 +1,7 @@
 const config = () => {
+  setTimeout(() => {
+    s(`.reload-btn`).onclick = () => location.reload();
+  });
   return /*html*/ `
       <config style='display: none'>
         <sub-content-gui class='in'>
@@ -69,6 +72,26 @@ const config = () => {
             </div>
 
 
+          </div>
+
+          <div class='in config-row'>
+                <div class='fl'>
+
+                      <div class='in fll config-col'>
+                        <div class='in config-col-content'>
+                          ${renderLang({ es: 'Utilidades', en: 'Utilities' })}
+                        </div>
+                      </div>
+
+                      <div class='in fll config-col'>
+                        <div class='in config-col-content'>
+                          <button class='inl custom-cursor reload-btn'>
+                            ${renderLang({ es: 'Recargar', en: 'Reload' })}
+                          </button>
+                        </div>
+                      </div>
+
+                </div>
           </div>
               
   

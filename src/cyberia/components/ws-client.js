@@ -23,6 +23,7 @@ console.log('elements', elements);
 console.log('pixi', pixi);
 
 let firstLoad = true;
+setTimeout(() => (firstLoad ? location.reload() : null), 3500);
 const socket = io(IO_HOST);
 
 socket.on('connect', () => {
