@@ -241,6 +241,15 @@ const typeModels = () => {
         };
       },
     },
+    'safe-zone': {
+      color: () => 'green (pantone)',
+      components: () => ['safe-quest-zone'],
+      render: () => {
+        return {
+          dim: () => 1,
+        };
+      },
+    },
   };
 };
 
@@ -933,6 +942,7 @@ const wsServer = (httpServer, app, internalApi) => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
         if (clientIndex > -1 && elements[type][clientIndex].map === map) client.emit('update', JSON.stringify(element));
       });
+      const dataMap = maps.find((m) => m.name_map === map);
       socket.emit(
         'init-data',
         JSON.stringify({
@@ -961,7 +971,8 @@ const wsServer = (httpServer, app, internalApi) => {
                 }
                 return q;
               }),
-            types: maps.find((m) => m.name_map === map).type,
+            types: dataMap.type,
+            safe_cords: dataMap.safe_cords,
             map,
           },
         })
@@ -1252,32 +1263,33 @@ const wsServer = (httpServer, app, internalApi) => {
           if (!element.path) element.path = [];
           element.path.shift();
           let targetUser, x2, y2, point, idTarget;
-          while (element.path.length === 0 && !targetUser) {
-            // element.path = range(0, maxRangeMap).map(i => [i, i]);
-            if (usersTarget.length > 0) {
-              const targetElement = usersTarget[random(0, usersTarget.length - 1)];
-              point = targetElement.render;
-              x2 = point.x;
-              y2 = point.y;
-              idTarget = targetElement.id;
-            } else {
-              point = getRandomPoint('', botPositionAvailablePoints);
-              x2 = point.x;
-              y2 = point.y;
-            }
+          if (!element.static)
+            while (element.path.length === 0 && !targetUser) {
+              // element.path = range(0, maxRangeMap).map(i => [i, i]);
+              if (usersTarget.length > 0) {
+                const targetElement = usersTarget[random(0, usersTarget.length - 1)];
+                point = targetElement.render;
+                x2 = point.x;
+                y2 = point.y;
+                idTarget = targetElement.id;
+              } else {
+                point = getRandomPoint('', botPositionAvailablePoints);
+                x2 = point.x;
+                y2 = point.y;
+              }
 
-            element.path = finder.findPath(
-              element.render.x,
-              element.render.y,
-              x2,
-              y2,
-              new pathfinding.Grid(botMatrixCollision)
-            );
-            if (usersTarget.length > 0) {
-              range(0, 0).map(() => element.path.pop());
-              targetUser = true;
+              element.path = finder.findPath(
+                element.render.x,
+                element.render.y,
+                x2,
+                y2,
+                new pathfinding.Grid(botMatrixCollision)
+              );
+              if (usersTarget.length > 0) {
+                range(0, 0).map(() => element.path.pop());
+                targetUser = true;
+              }
             }
-          }
           const newPosValidator =
             element.path[0] && (element.render.x !== element.path[0][0] || element.render.y !== element.path[0][1]);
           if (newPosValidator) {

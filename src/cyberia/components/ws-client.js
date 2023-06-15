@@ -149,6 +149,25 @@ socket.on('init-data', (...args) => {
       renderPixiInitElement(toMapElement);
     })();
   });
+  mapMetaData.safe_cords.map((cords) => {
+    const type = 'safe-zone';
+    const { color, render } = getParamsType(type);
+    const { dim } = render;
+    const map = mapMetaData.map;
+    const safeZoneElement = {
+      id: id(),
+      type,
+      color,
+      map,
+      render: {
+        x: cords[0],
+        y: cords[1],
+        dim,
+      },
+    };
+    elements[type].push(safeZoneElement);
+    renderPixiInitElement(safeZoneElement);
+  });
   s('loader').style.display = 'none';
   if (firstLoad) {
     if (localStorage.getItem('_b')) s('.close-menu').click();

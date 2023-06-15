@@ -5,6 +5,7 @@ const maps = [
     position: 3,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [
         1,
@@ -80,6 +81,7 @@ const maps = [
     position: 4,
     instance: 'cyberia',
     type: ['safe'],
+    safe_cords: [],
     matrix: [
       [
         1,
@@ -170,6 +172,7 @@ const maps = [
   {
     name_map: 'iop-house',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -194,6 +197,7 @@ const maps = [
     position: 1,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
       [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -286,6 +290,7 @@ const maps = [
     position: 0,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -327,6 +332,7 @@ const maps = [
     position: 6,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [[8, 10]],
     matrix: [
       [
         0,
@@ -368,6 +374,7 @@ const maps = [
     position: 7,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [
         0,
@@ -409,6 +416,7 @@ const maps = [
     position: 8,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [
         ['to-map', 'yupark', 'left', 8],
@@ -450,6 +458,7 @@ const maps = [
     position: 5,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [
         1,
@@ -508,6 +517,7 @@ const maps = [
     position: 2,
     instance: 'cyberia',
     type: ['pvp', 'pve'],
+    safe_cords: [],
     matrix: [
       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1],

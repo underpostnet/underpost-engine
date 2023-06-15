@@ -20,7 +20,14 @@ const mapBots = [
     maxBots: 2,
     bots: [
       { sprite: 'scp-2040', username: 'SCP-2040', maxLife: 200, life: 200, attackValue: 30, velFactor: 2 },
-      { sprite: 'agent', username: 'Kinoshita', hostile: false, velFactor: 4 },
+      {
+        sprite: 'agent',
+        username: 'Kinoshita',
+        hostile: false,
+        velFactor: 4,
+        static: true,
+        render: { x: 8, y: 9, dim: 1 },
+      },
     ],
   },
 ];

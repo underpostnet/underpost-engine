@@ -275,6 +275,28 @@ const renderPixiInitElement = (element) => {
     }
   }
 
+  if (typeModels()[type].components().includes('safe-quest-zone')) {
+    const src = `/icons/200x200/safe-quest-zone.png`;
+    let dimFactor = 0.7;
+    pixi[type][element.id][src] = PIXI.Sprite.from(src);
+    pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+    pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+    pixi[type][element.id][src].width = dim * dimFactor;
+    pixi[type][element.id][src].height = dim * dimFactor;
+    pixi[type][element.id][src].visible = true;
+    container.addChild(pixi[type][element.id][src]);
+    if (hashIntervals[element.id][`blink-safe-${element.render.x}-${element.render.y}`])
+      clearInterval(hashIntervals[element.id][`blink-safe-${element.render.x}-${element.render.y}`]);
+    hashIntervals[element.id][`blink-safe-${element.render.x}-${element.render.y}`] = setInterval(() => {
+      if (!params[type][element.id] || !pixi[type][element.id][src]) return;
+      dimFactor === 0.7 ? (dimFactor = 0.6) : (dimFactor = 0.7);
+      pixi[type][element.id][src].x = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].y = (dim - dim * dimFactor) / 2;
+      pixi[type][element.id][src].width = dim * dimFactor;
+      pixi[type][element.id][src].height = dim * dimFactor;
+    }, 250);
+  }
+
   if (typeModels()[type].components().includes('event-pointer-cross')) {
     const src = `/icons/200x200/cross.gif`;
     const dimFactor = 0.8;
