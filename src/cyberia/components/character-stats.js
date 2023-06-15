@@ -2,7 +2,7 @@ const characterSlots = ['skin', 'helmet', 'faction-symbol', 'breastplate', 'weap
 
 const skillTypes = ['skill_basic', 'skill_primary', 'skill_secundary'];
 
-const resetCharacterSlots = () => characterSlots.map((cs) => htmls(`.${cs}-equip-content`, ''));
+const resetCharacterSlots = () => characterSlots.map((cs) => htmls(`.${cs}-equip-content`, renderTitleTypeSlot(cs)));
 
 const renderTitleTypeSlot = (itemType) => {
   itemType = itemType.replaceAll('-', '<br>').replaceAll('_', '<br>');
