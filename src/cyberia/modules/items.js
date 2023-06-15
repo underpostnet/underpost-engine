@@ -107,6 +107,31 @@ const items = [
     },
     itemType: 'talisman',
   },
+  {
+    id: 'control2040',
+    name: { es: 'Control 2040', en: '2040 Controller' },
+    frames: 2,
+    frameFormat: 'gif',
+    frameTimeInterval: 200,
+    renderFactor: {
+      x: -0.5,
+      y: -0.5,
+      width: 1.8,
+      height: 1.8,
+    },
+    probabilityDrop: [1, 1],
+    display: [],
+    drop: [],
+    stats: {
+      maxLife: 10,
+      attackValue: 15,
+      velAttack: -5,
+      passiveHealValue: 2,
+      velPassiveHealValue: 0,
+      velFactor: -0.15,
+    },
+    itemType: 'weapon',
+  },
 ]
   .concat(skins)
   .concat(skills);

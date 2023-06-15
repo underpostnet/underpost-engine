@@ -131,6 +131,95 @@ const quests = [
       es: `SCP-2040 es un robot humanoide compuesto principalmente de hierro, vidrio y plástico. Su diseño es muy simple, posee un sistema electrónico que es tecnológicamente inferior a los equivalentes modernos. Sin embargo, SCP-2040 exhibe una funcionalidad que no es posible con esta estructura. SCP-2040 posee una IA compleja que es casi indistinguible de una inteligencia humana y una fuente de energía aparentemente ilimitada que aún no ha requerido ningún reabastecimiento de combustible obvio. Cuando se le pregunta, SCP-2040 afirma que "está alimentado por energía nuclear" y se niega a dar más detalles. A menudo, SCP-2040 repetirá una frase a la que se refiere como su "mensaje principal" y pedirá una respuesta. Aunque SCP-2040 a menudo es autoritario al solicitar una respuesta, ha mostrado su voluntad de esperar indefinidamente si se le dice que aún se está formulando una respuesta. SCP-2040 generalmente se niega a comunicarse sobre temas que no sean su misión principal, pero puede distraerse cuando se le pregunta sobre su viaje a la Tierra o misiones anteriores. La siguiente es la transcripción del mensaje principal de SCP-2040: "EL UNIVERSO NO DEBIÓ TENER LEYES FÍSICAS; LAS LEYES FÍSICAS RESTRINGEN LA VIDA; LAS LEYES FÍSICAS ESTÁN CORROMPIENDO EL UNIVERSO; ESTAMOS TRATANDO DE CORREGIR ESTO; SOLICITAMOS SU AYUDA EN ESTE ASUNTO; POR FAVOR RESPONDE"`,
       en: `SCP-2040 is a humanoid robot composed primarily of iron, glass, and plastic. Its design is very simplistic, possessing an electronic system which is technologically inferior to modern equivalents. However, SCP-2040 exhibits functionality not possible with this structure. SCP-2040 possesses a complex AI that is almost indistinguishable from a human intelligence, and a seemingly limitless power-source that has not yet required any obvious refueling. When questioned, SCP-2040 claims that it "is powered by nuclear energy" and refuses to elaborate further. Often, SCP-2040 will repeat a phrase it refers to as its "primary message" and ask for a response. Though SCP-2040 is often overbearing in requesting a response, it has shown a willingness to wait indefinitely if told that a response is still being formulated. SCP-2040 usually refuses to communicate about topics other than its primary mission, but can be distracted when questioned about its journey to Earth or previous missions. The following is the transcription of SCP-2040's primary message: "THE UNIVERSE WAS NOT MEANT TO HAVE PHYSICAL LAWS; PHYSICAL LAWS RESTRICT LIFE; PHYSICAL LAWS ARE CORRUPTING THE UNIVERSE; WE ARE ATTEMPTING TO CORRECT THIS; WE REQUEST YOUR ASSISTANCE IN THIS MATTER; PLEASE RESPOND"`,
     },
+    successDialog: {
+      es: `Hasta la fecha, es la información más útil proporcionada por SCP-2040 sin cambiar el tema de su Mensaje principal.`,
+      en: `To date, it is the most useful information given by SCP-2040 without it changing the subject to its Primary Message.`,
+    },
+    reward: {
+      stats: {},
+      items: [{ id: 'control2040', count: 1 }],
+    },
+    setSuccessQuest: (input) => {
+      htmls(`.quest-count-${input.id}`, 1);
+      s(`.success-quest-content-${input.id}`).style.display = 'block';
+    },
+    logic: (input, setSuccessQuest) => {
+      setTimeout(() => {
+        let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
+        if (successQuest === true) return;
+
+        const dataDialog = [
+          [
+            `I am not responding to your primary message. I will not respond to your primary message for the duration of this interaction. I would just like to ask you a few questions.`,
+            `No estoy respondiendo a tu mensaje principal. No responderé a su mensaje principal durante la duración de esta interacción. Sólo me gustaría hacerle algunas preguntas.`,
+          ],
+          [`State your inquiries.`, `Indique sus consultas.`],
+          [
+            `Can you explain your primary message and tell us some information about who sent it?`,
+            `¿Puede explicar su mensaje principal y darnos información sobre quién lo envió?`,
+          ],
+          [
+            `To prevent a Messenger from affecting a response, it is against protocol for a Messenger to reveal classified information about a Primary Message and the Primary Message's senders. All inquiries must be addressed directly to the sender.`,
+            `Para evitar que un Mensajero afecte una respuesta, es contra el protocolo que un Mensajero revele información clasificada sobre un Mensaje principal y los remitentes del Mensaje principal. Todas las consultas deben dirigirse directamente al remitente.`,
+          ],
+          [
+            `I see. In that case, can you tell us anything about yourself, such as how were you built and how do you function?`,
+            `Ya veo. En ese caso, ¿puede decirnos algo sobre usted, por ejemplo, cómo se formó y cómo funciona?`,
+          ],
+          [
+            `I cannot explain my design or function. It is classified. However, it is publicly available information that I underwent upgrades specifically for this mission. I am now one of the few entities that can safely inhabit the Restricted Zone.`,
+            `No puedo explicar mi diseño o función. Está clasificado. Sin embargo, es información disponible públicamente que realicé actualizaciones específicamente para esta misión. Ahora soy una de las pocas entidades que pueden habitar con seguridad la Zona restringida.`,
+          ],
+          [
+            `Restricted Zone? Can you tell me more about this Restricted Zone?`,
+            `¿Zona restringida? ¿Puedes contarme más sobre esta Zona Restringida?`,
+          ],
+          [
+            `My emotion circuits show surprise that you inquire that. However, my emotion circuits show surprise that you exist at all. With all the strict requirements, it was thought that life could not exist here, until very recently. Outside the Zone, the requirements for life are much less strict. Outside the Zone, life is much more plentiful and varied. Your ignorance about the Universe reminds me of the Addisonhers, which I encountered after crash landing on their home planet.`,
+            `Mis circuitos emocionales muestran sorpresa de que preguntes eso. Sin embargo, mis circuitos emocionales muestran sorpresa de que existas. Con todos los requisitos estrictos, se pensó que la vida no podría existir aquí, hasta hace muy poco tiempo. Fuera de la Zona, los requisitos para la vida son mucho menos estrictos. Fuera de la Zona, la vida es mucho más abundante y variada. Tu ignorancia sobre el Universo me recuerda a los Addisonher, a los que encontré después de un aterrizaje forzoso en su planeta de origen.`,
+          ],
+          [
+            `Tell me more about life outside the Restricted Zone.`,
+            `Cuéntame más sobre la vida fuera de la Zona restringida.`,
+          ],
+          [
+            `To prevent a Messenger from affecting a response, it is against protocol for a Messenger to reveal classified information about a Primary Message and the Primary Message's senders. All inquiries must be addressed directly to the sender.`,
+            `Para evitar que un Mensajero afecte una respuesta, es contra el protocolo que un Mensajero revele información clasificada sobre un Mensaje principal y los remitentes del Mensaje principal. Todas las consultas deben dirigirse directamente al remitente.`,
+          ],
+          [
+            `What? How is that related to your Primary Message?`,
+            `¿Qué? ¿Cómo se relaciona eso con su mensaje principal?`,
+          ],
+          [
+            `To prevent a Messenger from affecting a response, it is against protocol for a Messenger to reveal classified information about a Primary Message and the Primary Message's senders. All inquiries must be addressed directly to the sender.`,
+            `Para evitar que un Mensajero afecte una respuesta, es contra el protocolo que un Mensajero revele información clasificada sobre un Mensaje principal y los remitentes del Mensaje principal. Todas las consultas deben dirigirse directamente al remitente.`,
+          ],
+          [
+            `Fine. I thought we were finally getting somewhere. I suppose this interview is over.`,
+            `Bien. Pensé que finalmente estábamos llegando a alguna parte. Supongo que esta entrevista ha terminado.`,
+          ],
+          [`Human. I have a statement to make.`, `Humano. Tengo una declaración que hacer.`],
+          [`Oh? What is that?`, `Ah? ¿Qué es eso?`],
+          [
+            `Please inform your leaders: Time passes differently in the Restricted Zone. Therefore, I am able to wait for a response. However, I cannot wait forever. We need your help.`,
+            `Informe a sus líderes: el tiempo pasa de manera diferente en la Zona Restringida. Por lo tanto, puedo esperar una respuesta. Sin embargo, no puedo esperar para siempre. Necesitamos tu ayuda.`,
+          ],
+        ];
+      });
+      return renderQuestInfoGUI(
+        input,
+        /*html*/ `       
+           ${renderLang({
+             en: 'Find Kinoshita dialogue with SCP 2040 in Todarp.',
+             es: 'Encuentra el diálogo de Kinoshita con SCP 2040 en Todarp.',
+           })}
+           <br><br>
+           <div class='in' style='color: yellow'>
+             [ <span class='quest-count-${input.id}'>0</span> / 1 ]
+           </div>
+               `
+      );
+    },
   },
   {
     id: 'anon-a',
