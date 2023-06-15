@@ -1247,7 +1247,15 @@ const wsServer = (httpServer, app, internalApi) => {
         setInterval(() => {
           usersTarget = element.hostile
             ? elements['user'].filter((userElement) => {
-                if (userElement.map !== map || userElement.life === 0 || element.life === 0) return false;
+                if (
+                  userElement.map !== map ||
+                  userElement.life === 0 ||
+                  element.life === 0 ||
+                  dataMap.safe_cords.find(
+                    (cord) => cord[0] === userElement.render.x && cord[1] === userElement.render.y
+                  )
+                )
+                  return false;
                 const userDistance = getDistance(
                   element.render.x + parseInt(element.render.dim / 2),
                   element.render.y + parseInt(element.render.dim / 2),
