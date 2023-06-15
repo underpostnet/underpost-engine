@@ -169,7 +169,6 @@ socket.on('close', (...args) => {
 
 socket.on('event', (...args) => {
   const eventElement = JSON.parse(args);
-  let boxEquipId;
   switch (eventElement.type) {
     case 'chat':
       renderChatMsg(eventElement.element, eventElement.msg);
@@ -231,7 +230,7 @@ socket.on('event', (...args) => {
         eventElement.item
       );
       if (eventElement.id === socket.id) {
-        boxEquipId = `.${eventElement.item.itemType}-equip-content`;
+        const boxEquipId = `.${eventElement.item.itemType}-equip-content`;
         htmls(boxEquipId, renderItemBox({ data: eventElement.item }));
         // s('.close-gui').click();
         // s('.btn-character-stats').click();
