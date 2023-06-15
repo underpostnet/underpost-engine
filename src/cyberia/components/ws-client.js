@@ -260,9 +260,7 @@ socket.on('event', (...args) => {
         (i) => i !== eventElement.item.id
       );
       if (eventElement.id === socket.id) {
-        boxEquipId = `.${eventElement.item.itemType}-equip-content`;
-        htmls(boxEquipId, renderTitleTypeSlot(eventElement.item.itemType));
-        s(boxEquipId).onclick = () => null;
+        removeTypeSlot(eventElement.item.itemType);
         if (s(`.item-modal-${eventElement.item.id}`)) {
           s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
           s(`.item-equip-${eventElement.item.id}`).style.display = 'inline-table';
