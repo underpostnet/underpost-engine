@@ -60,7 +60,7 @@ const renderDeadCount = (data) => {
   append(
     'dead-count',
     /*html*/ `
-    <div class='abs center dead-content ${hashRender}'>
+    <div class='fix center dead-content ${hashRender}'>
         <div class='abs center'>
             <img class='inl dead-icon' src='/icons/dead.png'>
               <br>

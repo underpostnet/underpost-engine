@@ -155,10 +155,41 @@ const quests = [
 
           if (userElement && zoneElement) {
             const src = `/icons/200x200/safe-quest-zone.png`;
-            if (userElement.render.x === zoneElement.render.x && userElement.render.y === zoneElement.render.y) {
+            if (
+              userElement.render.x === zoneElement.render.x &&
+              userElement.render.y === zoneElement.render.y &&
+              userElement.path.length === 0
+            ) {
               if (pixi[zoneElement.type][zoneElement.id][src].visible === true)
                 pixi[zoneElement.type][zoneElement.id][src].visible = false;
+
+              if (!s(`${input.id}`)) {
+                mainCloseGUI();
+                prepend(
+                  'gui-layer',
+                  /*html*/ `
+                 <${input.id}>
+                  <sub-content-gui class='in modal-${input.id}'>
+
+                    <div class='in quest-menu-btn-name-npc'>  
+                      ${renderLang({ es: 'Logro', en: 'Achievement' })}
+                    </div> 
+                    <div class='in title-section'>
+                      "${renderLang(input.title)}"
+                    </div>
+                    
+                    
+
+                  </sub-content-gui>
+                </${input.id}>
+                  `
+                );
+              }
             } else {
+              if (s(`${input.id}`)) {
+                s(`${input.id}`).remove();
+                s('gui-layer').style.display = 'none';
+              }
               if (pixi[zoneElement.type][zoneElement.id][src].visible === false)
                 pixi[zoneElement.type][zoneElement.id][src].visible = true;
             }

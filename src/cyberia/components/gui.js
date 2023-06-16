@@ -193,11 +193,15 @@ s('.open-menu').onclick = () => {
   s('main-menu').style.display = 'block';
 };
 
+const mainCloseGUI = () => {
+  s('.close-menu').click();
+  closeGuiSections();
+  s('gui-layer').style.display = 'block';
+};
+
 guiSections.map((section) => {
   s(`.btn-${section}`).onclick = () => {
-    s('.close-menu').click();
-    closeGuiSections();
-    s('gui-layer').style.display = 'block';
+    mainCloseGUI();
     s(section).style.display = 'block';
 
     switch (section) {
