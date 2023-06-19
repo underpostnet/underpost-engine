@@ -19,12 +19,13 @@ const mapBots = [
     map: 'todarp',
     maxBots: 2,
     bots: [
-      { sprite: 'scp-2040', username: 'SCP-2040', maxLife: 200, life: 200, attackValue: 30, velFactor: 2 },
+      { sprite: 'agent', username: 'Kinoshita', velFactor: 6, hostile: false },
       {
-        sprite: 'agent',
-        username: 'Kinoshita',
+        sprite: 'scp-2040',
+        username: 'SCP-2040',
+        maxLife: 200,
+        life: 200,
         hostile: false,
-        velFactor: 4,
         static: true,
         render: { x: 8, y: 9, dim: 1 },
       },

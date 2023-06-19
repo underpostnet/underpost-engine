@@ -331,7 +331,7 @@ const maps = [
     name_map: 'todarp',
     position: 6,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    type: ['safe'], // 'pvp', 'pve'
     safe_cords: [[8, 10]],
     matrix: [
       [

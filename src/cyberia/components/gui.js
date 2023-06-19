@@ -182,7 +182,13 @@ const guiSections = [
   'history-board',
 ];
 
-const closeGuiSections = () => guiSections.map((section) => (s(section).style.display = 'none'));
+let tempGuiSections = [];
+
+const closeGuiSections = () => {
+  guiSections.map((section) => (s(section).style.display = 'none'));
+  tempGuiSections.map((section) => (s(section) ? (s(section).style.display = 'none') : null));
+  tempGuiSections = [];
+};
 
 s('.close-menu').onclick = () => {
   s('main-menu').style.display = 'none';

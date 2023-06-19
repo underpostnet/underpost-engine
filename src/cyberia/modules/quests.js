@@ -148,54 +148,6 @@ const quests = [
         let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
         if (successQuest === true) return;
 
-        if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
-        hashIntervals[socket.id][input.id] = setInterval(() => {
-          const userElement = elements['user'].find((e) => e.id === socket.id);
-          const zoneElement = elements['safe-zone'].find((e) => e.render.x === 8 && e.render.y === 10);
-
-          if (userElement && zoneElement) {
-            const src = `/icons/200x200/safe-quest-zone.png`;
-            if (
-              userElement.render.x === zoneElement.render.x &&
-              userElement.render.y === zoneElement.render.y &&
-              userElement.path.length === 0
-            ) {
-              if (pixi[zoneElement.type][zoneElement.id][src].visible === true)
-                pixi[zoneElement.type][zoneElement.id][src].visible = false;
-
-              if (!s(`${input.id}`)) {
-                mainCloseGUI();
-                prepend(
-                  'gui-layer',
-                  /*html*/ `
-                 <${input.id}>
-                  <sub-content-gui class='in modal-${input.id}'>
-
-                    <div class='in quest-menu-btn-name-npc'>  
-                      ${renderLang({ es: 'Logro', en: 'Achievement' })}
-                    </div> 
-                    <div class='in title-section'>
-                      "${renderLang(input.title)}"
-                    </div>
-                    
-                    
-
-                  </sub-content-gui>
-                </${input.id}>
-                  `
-                );
-              }
-            } else {
-              if (s(`${input.id}`)) {
-                s(`${input.id}`).remove();
-                s('gui-layer').style.display = 'none';
-              }
-              if (pixi[zoneElement.type][zoneElement.id][src].visible === false)
-                pixi[zoneElement.type][zoneElement.id][src].visible = true;
-            }
-          }
-        }, 100);
-
         const dataDialog = [
           [
             `I am not responding to your primary message. I will not respond to your primary message for the duration of this interaction. I would just like to ask you a few questions.`,
@@ -253,6 +205,53 @@ const quests = [
             `Informe a sus líderes: el tiempo pasa de manera diferente en la Zona Restringida. Por lo tanto, puedo esperar una respuesta. Sin embargo, no puedo esperar para siempre. Necesitamos tu ayuda.`,
           ],
         ];
+
+        if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
+        hashIntervals[socket.id][input.id] = setInterval(() => {
+          const userElement = elements['user'].find((e) => e.id === socket.id);
+          const zoneElement = elements['safe-zone'].find((e) => e.render.x === 8 && e.render.y === 10);
+
+          if (userElement && zoneElement) {
+            const src = `/icons/200x200/safe-quest-zone.png`;
+            if (
+              userElement.render.x === zoneElement.render.x &&
+              userElement.render.y === zoneElement.render.y &&
+              userElement.path.length === 0
+            ) {
+              if (pixi[zoneElement.type][zoneElement.id][src].visible === true)
+                pixi[zoneElement.type][zoneElement.id][src].visible = false;
+
+              if (!s(`${input.id}`) && s('gui-layer').style.display === 'none') {
+                mainCloseGUI();
+                prepend(
+                  'gui-layer',
+                  /*html*/ `
+                 <${input.id}>
+                  <sub-content-gui class='in modal-${input.id}'>
+
+                    <div class='in quest-menu-btn-name-npc'>  
+                      ${renderLang({ es: 'Logro', en: 'Achievement' })}
+                    </div> 
+                    <div class='in title-section'>
+                      "${renderLang(input.title)}"
+                    </div>
+
+                  </sub-content-gui>
+                </${input.id}>
+                  `
+                );
+                tempGuiSections.push(input.id);
+              }
+            } else {
+              if (s(`${input.id}`)) {
+                s(`${input.id}`).remove();
+                s('gui-layer').style.display = 'none';
+              }
+              if (pixi[zoneElement.type][zoneElement.id][src].visible === false)
+                pixi[zoneElement.type][zoneElement.id][src].visible = true;
+            }
+          }
+        }, 100);
       });
       return renderQuestInfoGUI(
         input,
