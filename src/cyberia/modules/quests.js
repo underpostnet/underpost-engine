@@ -220,7 +220,7 @@ const quests = [
             ) {
               if (pixi[zoneElement.type][zoneElement.id][src].visible === true)
                 pixi[zoneElement.type][zoneElement.id][src].visible = false;
-
+              let currentIndexDialog = 0;
               if (!s(`${input.id}`) && s('gui-layer').style.display === 'none') {
                 mainCloseGUI();
                 prepend(
@@ -229,17 +229,147 @@ const quests = [
                  <${input.id}>
                   <sub-content-gui class='in modal-${input.id}'>
 
+                    <style>
+                      .cell-quest-${input.id} {
+                        width: 50%;
+                      }
+                      .img-quest-${input.id} {
+                        width: 90%;
+                        height: auto;
+                        margin: auto;
+                        max-width: 200px;
+                      }
+                      .content-text-${input.id} {
+                        padding: 10px;
+                        background: white;
+                        color: black;
+                        border-radius: 10px;
+                        font-size: 10px;
+                        min-height: 100px;
+                      }
+                      .content-btns-${input.id} {
+                          width: 220px;
+                          padding: 3px;
+                          /* border: 2px solid yellow; */
+                          margin: 3px;
+                      }
+                      /* http://apps.eky.hk/css-triangle-generator/ */
+                      .triangle-bubble-a-${input.id} {
+                        border-width: 15px 0px 15px 30px;                        
+                        border-color: transparent transparent transparent white;
+                        top: 20px;
+                        right: -24px;
+                      }
+                      .triangle-bubble-b-${input.id} {
+                        border-width: 15px 30px 15px 0px;
+                        border-color: transparent white transparent transparent;
+                        top: 20px;
+                        left: -24px;
+                      }
+                      .triangle-bubble-${input.id} {
+                        width: 0;
+                        height: 0;
+                        border-style: solid;
+                      }
+                    </style>
+
                     <div class='in quest-menu-btn-name-npc'>  
                       ${renderLang({ es: 'Logro', en: 'Achievement' })}
                     </div> 
                     <div class='in title-section'>
                       "${renderLang(input.title)}"
                     </div>
+                    <div class='in'>                          
+                          <div class='fl'>
+                            <div class='in fll cell-quest-${input.id}'>
+                              <div class='in content-text-${input.id} bubble-${input.id}-a'>  
+
+                                  <div class='abs triangle-bubble-${input.id} triangle-bubble-a-${input.id}'>
+                                  </div>
+                                  <span class='bubble-${input.id}-a-text'>
+                                    ${renderLang({
+                                      es: dataDialog[currentIndexDialog][1],
+                                      en: dataDialog[currentIndexDialog][0],
+                                    })}
+                                  </span>
+                              </div>
+                            </div>
+                            <div class='in fll cell-quest-${input.id}'>
+                                  <img src='/sprites/agent/04/0.png' class='in img-quest-${input.id}'>
+                            </div>
+                          </div>
+                          <div class='fl'>
+                            <div class='in fll cell-quest-${input.id}'>
+                                <img src='/sprites/scp-2040/06/0.png' class='in img-quest-${input.id}'>
+                            </div>
+                            <div class='in fll cell-quest-${input.id}'>
+                              <div class='in content-text-${input.id} bubble-${input.id}-b'>  
+                                <div class='abs triangle-bubble-${input.id} triangle-bubble-b-${input.id}'>
+                                </div>
+                                <span class='bubble-${input.id}-b-text'>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class='in content-btns-${input.id}'>
+                            <button class='inl fll custom-cursor btn-${input.id}-back'>
+                                <
+                            </button>
+                            <button class='inl flr custom-cursor btn-${input.id}-next'>
+                                ${renderLang({ es: 'Siguiente >', en: 'Next >' })}
+                            </button>
+                          </div>
+                    </div>
 
                   </sub-content-gui>
                 </${input.id}>
                   `
                 );
+
+                const btnActiveValidator = () => {
+                  if (currentIndexDialog <= 0) s(`.btn-${input.id}-back`).style.display = 'none';
+                  else s(`.btn-${input.id}-back`).style.display = 'inline-table';
+
+                  if (currentIndexDialog >= dataDialog.length - 1) s(`.btn-${input.id}-next`).style.display = 'none';
+                  else s(`.btn-${input.id}-next`).style.display = 'inline-table';
+
+                  if (currentIndexDialog < 0) currentIndexDialog = 0;
+                  if (currentIndexDialog > dataDialog.length - 1) currentIndexDialog = dataDialog.length - 1;
+
+                  if (currentIndexDialog % 2 == 0) {
+                    htmls(
+                      `.bubble-${input.id}-a-text`,
+                      renderLang({
+                        es: dataDialog[currentIndexDialog][1],
+                        en: dataDialog[currentIndexDialog][0],
+                      })
+                    );
+                    s(`.bubble-${input.id}-b`).style.opacity = 0;
+                    s(`.bubble-${input.id}-a`).style.opacity = 1;
+                  } else {
+                    htmls(
+                      `.bubble-${input.id}-b-text`,
+                      renderLang({
+                        es: dataDialog[currentIndexDialog][1],
+                        en: dataDialog[currentIndexDialog][0],
+                      })
+                    );
+                    s(`.bubble-${input.id}-a`).style.opacity = 0;
+                    s(`.bubble-${input.id}-b`).style.opacity = 1;
+                  }
+                };
+
+                btnActiveValidator();
+
+                s(`.btn-${input.id}-back`).onclick = () => {
+                  currentIndexDialog--;
+                  btnActiveValidator();
+                };
+                s(`.btn-${input.id}-next`).onclick = () => {
+                  currentIndexDialog++;
+                  btnActiveValidator();
+                };
+
                 tempGuiSections.push(input.id);
               }
             } else {
