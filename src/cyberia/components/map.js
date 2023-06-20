@@ -26,16 +26,23 @@ const map = () => {
                         rowEnd = ``;
                       }
                       countDisplayRow++;
-
+                      setTimeout(() => {
+                        s(`.map-cell-${mapData.name}`).onclick = () => {};
+                      });
                       return /*html*/ `
                           ${rowIni}
                             <div class='in fll map-cell custom-cursor'>
                                 <img class='in map-img' src='/tiles/${mapData.name}.png'>
-                                <div class='abs center map-hover-gfx' style='${borderChar(1, 'black')}'>
+                                <div class='abs center map-hover-gfx map-cell-${mapData.name}' style='${borderChar(
+                        1,
+                        'black'
+                      )}'>
                                       <div class='abs center'>
                                           ${renderInstanceTitle({ name_map: mapData.name })
                                             .replaceAll('|', '')
                                             .replaceAll('CYBERIA', '')}
+                                      </div>
+                                      <div class='abs center gps-map-cell-${mapData.name}'>
                                       </div>
                                 </div>
                             </div>   
@@ -48,4 +55,16 @@ const map = () => {
         </sub-content-gui>
     </map>
     `;
+};
+
+const updateMapGPS = () => {
+  if (mapMetaData.map) htmls(`.gps-map-cell-${mapMetaData.map}`, '');
+  setTimeout(() =>
+    htmls(
+      `.gps-map-cell-${mapMetaData.map}`,
+      /*html*/ `
+   <img src='/icons/400x400/gps.png' class='inl gps-icon'>
+   `
+    )
+  );
 };

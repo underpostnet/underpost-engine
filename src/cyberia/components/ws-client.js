@@ -125,6 +125,7 @@ socket.on('init-data', (...args) => {
   const initData = JSON.parse(args);
   console.log('initData', initData);
   changeMapsPoints = initData.changeMapsPoints;
+  updateMapGPS();
   mapMetaData = initData.mapMetaData;
   instanceMapTypeStatus();
   renderMapsQuests();

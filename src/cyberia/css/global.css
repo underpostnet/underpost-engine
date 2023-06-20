@@ -642,3 +642,22 @@ event-board {
 .modal-content-type-item {
     top: 18px;
 }
+
+.gps-icon {
+    top: -20px;
+    /* transition: .3s; */
+    animation-duration: 0.3s;
+    animation-name: gpsIconAnimate;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes gpsIconAnimate {
+    from {
+        width: 30px;
+    }
+
+    to {
+        width: 40px;
+    }
+}

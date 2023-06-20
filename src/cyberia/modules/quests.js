@@ -271,6 +271,11 @@ const quests = [
                         height: 0;
                         border-style: solid;
                       }
+                      .content-count-dialog-${input.id} {
+                        margin: 10px;
+                        padding: 3px;
+                        top: -9px;
+                      }
                     </style>
 
                     <div class='in quest-menu-btn-name-npc'>  
@@ -278,6 +283,20 @@ const quests = [
                     </div> 
                     <div class='in title-section'>
                       "${renderLang(input.title)}"
+                    </div>
+                    <div class='inl content-btns-${input.id}'>
+                      <button class='inl fll custom-cursor btn-${input.id}-back'>
+                          <
+                      </button>
+                      <button class='inl flr custom-cursor btn-${input.id}-next'>
+                          ${renderLang({ es: 'Siguiente >', en: 'Next >' })}
+                      </button>
+                    </div>
+                    <div class='inl content-count-dialog-${input.id}'>
+                      <span class='index-dialog-${input.id}'> 
+                        ${currentIndexDialog + 1} 
+                      </span>
+                        / ${dataDialog.length}
                     </div>
                     <div class='in'>                          
                           <div class='fl'>
@@ -311,30 +330,28 @@ const quests = [
                               </div>
                             </div>
                           </div>
-                          <div class='in content-btns-${input.id}'>
-                            <button class='inl fll custom-cursor btn-${input.id}-back'>
-                                <
-                            </button>
-                            <button class='inl flr custom-cursor btn-${input.id}-next'>
-                                ${renderLang({ es: 'Siguiente >', en: 'Next >' })}
-                            </button>
-                          </div>
+                          <br><br>           
                     </div>
 
                   </sub-content-gui>
                 </${input.id}>
                   `
                 );
-
+                let endDialog = false;
                 const btnActiveValidator = () => {
                   if (currentIndexDialog <= 0) s(`.btn-${input.id}-back`).style.display = 'none';
                   else s(`.btn-${input.id}-back`).style.display = 'inline-table';
 
-                  if (currentIndexDialog >= dataDialog.length - 1) s(`.btn-${input.id}-next`).style.display = 'none';
-                  else s(`.btn-${input.id}-next`).style.display = 'inline-table';
-
                   if (currentIndexDialog < 0) currentIndexDialog = 0;
                   if (currentIndexDialog > dataDialog.length - 1) currentIndexDialog = dataDialog.length - 1;
+
+                  if (currentIndexDialog === dataDialog.length - 1) {
+                    htmls(`.btn-${input.id}-next`, renderLang({ es: 'Finalizar', en: 'Finish' }));
+                    endDialog = true;
+                  } else {
+                    htmls(`.btn-${input.id}-next`, renderLang({ es: 'Siguiente >', en: 'Next >' }));
+                    endDialog = false;
+                  }
 
                   if (currentIndexDialog % 2 == 0) {
                     htmls(
@@ -357,6 +374,8 @@ const quests = [
                     s(`.bubble-${input.id}-a`).style.opacity = 0;
                     s(`.bubble-${input.id}-b`).style.opacity = 1;
                   }
+
+                  htmls(`.index-dialog-${input.id}`, currentIndexDialog + 1);
                 };
 
                 btnActiveValidator();
@@ -366,17 +385,17 @@ const quests = [
                   btnActiveValidator();
                 };
                 s(`.btn-${input.id}-next`).onclick = () => {
-                  currentIndexDialog++;
-                  btnActiveValidator();
                   if (
+                    endDialog &&
                     elements['user'].find((e) => e.id === socket.id) &&
                     !elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)
                   ) {
-                    if (currentIndexDialog === dataDialog.length - 1) {
-                      endNotiUpdateElementQuestValidator(input, successQuest);
-                      if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
-                    }
+                    endNotiUpdateElementQuestValidator(input, successQuest);
+                    if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
                   }
+                  if (endDialog) s('.close-gui').click();
+                  currentIndexDialog++;
+                  btnActiveValidator();
                 };
 
                 tempGuiSections.push(input.id);
