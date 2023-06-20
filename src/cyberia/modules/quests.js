@@ -29,7 +29,7 @@ const quests = [
         let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
 
         if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
-        if (successQuest === true) return;
+        // if (successQuest === true) return;
 
         hashIntervals[socket.id][input.id] = setInterval(() => {
           if (!elements['user'].find((e) => e.id === socket.id)) return;
@@ -146,7 +146,7 @@ const quests = [
     logic: (input, setSuccessQuest) => {
       setTimeout(() => {
         let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
-        if (successQuest === true) return;
+        // if (successQuest === true) return;
 
         const dataDialog = [
           [
@@ -368,6 +368,15 @@ const quests = [
                 s(`.btn-${input.id}-next`).onclick = () => {
                   currentIndexDialog++;
                   btnActiveValidator();
+                  if (
+                    elements['user'].find((e) => e.id === socket.id) &&
+                    !elements['user'].find((e) => e.id === socket.id).successQuests.includes(input.id)
+                  ) {
+                    if (currentIndexDialog === dataDialog.length - 1) {
+                      endNotiUpdateElementQuestValidator(input, successQuest);
+                      if (hashIntervals[socket.id][input.id]) clearInterval(hashIntervals[socket.id][input.id]);
+                    }
+                  }
                 };
 
                 tempGuiSections.push(input.id);
