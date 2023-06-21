@@ -12,7 +12,6 @@ const initDemon = () => {
   if (!periodLoad) {
     periodLoad = true;
     setTimeout(() => {
-      alert('check load');
       if (periodLoad) location.reload();
     }, 3500);
   }
