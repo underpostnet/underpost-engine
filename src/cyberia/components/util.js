@@ -238,36 +238,6 @@ const attack = (element) => {
   }
 };
 
-const instanceMapTypeStatus = (selector, styleClass, topHTML, map, types) => {
-  const titleMap = renderInstanceTitle({ name_map: map ? map : mapMetaData.map }).split('|');
-  htmls(
-    selector,
-    /*html*/ `
-    <div class='fix map-type-status-content ${styleClass}'>
-          <div class='abs center'>
-             ${topHTML}
-            <span style='color: black; ${borderChar(1, 'yellow')}'>
-              ${titleMap[0]}
-            </span>
-            <br><br>
-            ${(types ? types : mapMetaData.types)
-              .map(
-                (t, i) => /*html*/ `
-                <span class='map-type-${t}'> 
-                  ${t.toUpperCase()}
-                </span>
-                ${i !== mapMetaData.types.length - 1 ? `` : ''}
-            `
-              )
-              .join('')}
-              <br>
-              zone
-          </div>
-    </div>
-  `
-  );
-};
-
 const initMainUserJoy = (userElement) => {
   if (hashIntervals[`key-attack`]) clearInterval(hashIntervals[`key-attack`]);
   hashIntervals[`key-attack`] = setInterval(() => {

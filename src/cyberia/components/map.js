@@ -34,7 +34,7 @@ const map = () => {
                           mapData.name,
                           mapData.types
                         );
-                        s(`.map-cell-${mapData.name}`).onclick = () => {};
+                        s(`.map-cell-${mapData.name}`).onclick = () => renderMapModal(mapData);
                       });
                       return /*html*/ `
                           ${rowIni}
@@ -101,4 +101,79 @@ const setNotiContentMap = () => {
       );
     else if (s(`.noti-content-map-${mapData.name}`)) htmls(`.noti-content-map-${mapData.name}`, '');
   });
+};
+
+const instanceMapTypeStatus = (selector, styleClass, topHTML, map, types) => {
+  const titleMap = renderInstanceTitle({ name_map: map ? map : mapMetaData.map }).split('|');
+  htmls(
+    selector,
+    /*html*/ `
+    <div class='fix map-type-status-content ${styleClass}'>
+          <div class='abs center'>
+             ${topHTML}
+            <span style='color: black; ${borderChar(1, 'yellow')}'>
+              ${titleMap[0]}
+            </span>
+            <br><br>
+            ${(types ? types : mapMetaData.types)
+              .map(
+                (t, i) => /*html*/ `
+                <span class='map-type-${t}'> 
+                  ${t.toUpperCase()}
+                </span>
+                ${i !== mapMetaData.types.length - 1 ? `` : ''}
+            `
+              )
+              .join('')}
+              <br>
+              zone
+          </div>
+    </div>
+  `
+  );
+};
+
+const renderMapModal = (mapData) => {
+  const bodyModal = /*html*/ `
+  <div class='in modal-item-header'>
+          <!--
+          <div class='in fll modal-item-header-col'>
+            
+          </div>
+          <div class='in fll modal-item-header-col'>
+                
+          </div>
+          -->
+          <div class='abs center modal-item-header-col-${mapData.name}'>
+
+          </div>
+          <div class='abs btn-close-modal-item custom-cursor close-map-modal-${mapData.name}'>
+              <div class='abs center'>
+                  <img class='inl icons-close-modal-item' src='/icons/200x200/cross.gif'>
+              </div>
+          </div>
+  </div>
+
+  <div class='in modal-item-stats'>
+      <img class='in map-img-modal' src='/tiles/${mapData.name}.png'>
+  </div>
+
+  `;
+  if (!s(`.map-modal-${mapData.name}`)) {
+    append(
+      'body',
+      /*html*/ `
+
+        <div class='abs center fix custom-cursor item-modal map-modal-${mapData.name}'>
+            ${bodyModal}                
+        </div>
+    
+    `
+    );
+  } else htmls(`.map-modal-${mapData.name}`, bodyModal);
+  dragDrop(`.map-modal-${mapData.name}`);
+  s(`.close-map-modal-${mapData.name}`).onclick = () => {
+    s(`.map-modal-${mapData.name}`).remove();
+  };
+  instanceMapTypeStatus(`.modal-item-header-col-${mapData.name}`, 'center', '', mapData.name, mapData.types);
 };
