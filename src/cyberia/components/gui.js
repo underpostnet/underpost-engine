@@ -30,7 +30,7 @@ append(
           
       </event-board>
   
-      <map-type-status>
+      <map-type-status class='custom-cursor'>
       </map-type-status>
   
       <dead-count></dead-count>

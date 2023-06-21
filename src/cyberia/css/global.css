@@ -261,6 +261,10 @@ event-board {
     right: 10px;
 }
 
+.map-type-status-content-gui:hover {
+    border: 2px solid white;
+}
+
 .map-type-pve {
     color: #2be8e2;
 }

@@ -134,6 +134,7 @@ const instanceMapTypeStatus = (selector, styleClass, topHTML, map, types) => {
 };
 
 const renderMapModal = (mapData) => {
+  if (mapData === undefined) mapData = globalInstancesMapData.find((m) => m.name === mapMetaData.map);
   const bodyModal = /*html*/ `
   <div class='in modal-item-header'>
           <!--

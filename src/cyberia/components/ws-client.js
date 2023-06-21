@@ -135,6 +135,7 @@ socket.on('init-data', (...args) => {
   <br><br>
   `
   );
+  s('map-type-status').onclick = () => renderMapModal();
   renderMapsQuests();
   changeMapsPoints.map((mapData) => {
     (() => {
