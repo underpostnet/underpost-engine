@@ -8,6 +8,16 @@ let mapMetaData = {
   types: ['pve', 'pvp'],
 };
 
+const initDemon = () => {
+  if (!periodLoad) {
+    periodLoad = true;
+    setTimeout(() => {
+      alert('check load');
+      if (periodLoad) location.reload();
+    }, 3500);
+  }
+};
+
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
 const app = new PIXI.Application({
@@ -23,7 +33,8 @@ console.log('elements', elements);
 console.log('pixi', pixi);
 
 let firstLoad = true;
-setTimeout(() => (firstLoad ? location.reload() : null), 3500);
+let periodLoad = false;
+initDemon();
 const socket = io(IO_HOST);
 
 socket.on('connect', () => {
@@ -178,6 +189,7 @@ socket.on('init-data', (...args) => {
     renderPixiInitElement(safeZoneElement);
   });
   s('loader').style.display = 'none';
+  periodLoad = false;
   if (firstLoad) {
     if (localStorage.getItem('_b')) s('.close-menu').click();
     else s('main-menu').style.display = 'block';

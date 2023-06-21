@@ -215,6 +215,7 @@ const renderPixiEventElement = (element) => {
           (!element.path || element.path.length === 0)
         ) {
           console.log('newMapObj', newMapObj);
+          initDemon();
           const eventElement = newInstance(element);
           eventElement.render.x = newMapObj.toX;
           eventElement.render.y = newMapObj.toY;

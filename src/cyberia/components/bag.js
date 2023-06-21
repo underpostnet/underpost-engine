@@ -419,6 +419,7 @@ const renderItemDisplayLogic = (element, item) => {
           if (!pixi[type][element.id]) return clearInterval(hashIntervals[element.id][idInterval]);
           range(0, item.frames).map((i) => {
             const src = `/items/${item.id}/${preSrc}${i}.${item.frameFormat}`;
+            if (!pixi[type][element.id][`${dir}${src}`]) return clearInterval(hashIntervals[element.id][idInterval]);
             pixi[type][element.id][`${dir}${src}`].visible =
               i === currentFrame && params[type][element.id].direction === dir;
           });
