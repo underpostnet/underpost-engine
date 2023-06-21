@@ -13,7 +13,7 @@ const initDemon = () => {
     periodLoad = true;
     setTimeout(() => {
       if (periodLoad) location.reload();
-    }, 3500);
+    }, 5000);
   }
 };
 
