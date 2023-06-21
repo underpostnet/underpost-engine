@@ -86,7 +86,7 @@ const setNotiContentMap = () => {
   globalInstancesMapData.map((mapData) => {
     let countQuest = 0;
     mapData.quests.map((quest) => {
-      if (!successQuests.includes(quest)) countQuest++;
+      if (!successQuests.includes(quest.id)) countQuest++;
     });
     if (countQuest > 0 && s(`.noti-content-map-${mapData.name}`))
       htmls(
@@ -154,9 +154,21 @@ const renderMapModal = (mapData) => {
               </div>
           </div>
   </div>
-
+  <div class='fl'>
+    <button class='in fll custom-cursor menu-btn-modal-map menu-btn-map-${mapData.name} active-btn-map-modal-white'>
+      ${renderLang({ es: 'Mapa', en: 'Map' })}
+    </button>
+    <button class='in fll custom-cursor menu-btn-modal-map menu-btn-quest-${mapData.name}'>
+      ${renderLang({ es: 'Logros', en: 'Achievements' })}
+    </button>
+  </div>
   <div class='in modal-item-stats'>
-      <img class='in map-img-modal' src='/tiles/${mapData.name}.png'>
+      <img class='in body-map-modal-tab-map-${mapData.name} quest-map-modal-body map-img-modal' src='/tiles/${
+    mapData.name
+  }.png'>
+      <div class='in body-map-modal-tab-quest-${mapData.name} quest-map-modal-body' style='display: none'>
+            ${mapData.quests.map((q) => ` > ${renderLang(q.title)} `).join('<br>')}
+      </div>
   </div>
 
   `;
@@ -177,4 +189,16 @@ const renderMapModal = (mapData) => {
     s(`.map-modal-${mapData.name}`).remove();
   };
   instanceMapTypeStatus(`.modal-item-header-col-${mapData.name}`, 'center', '', mapData.name, mapData.types);
+  let currentBtnModalInstance = 'map';
+  ['map', 'quest'].map((tab) => {
+    s(`.menu-btn-${tab}-${mapData.name}`).onclick = () => {
+      if (currentBtnModalInstance !== tab) {
+        s(`.menu-btn-${currentBtnModalInstance}-${mapData.name}`).classList.remove('active-btn-map-modal-white');
+        s(`.body-map-modal-tab-${currentBtnModalInstance}-${mapData.name}`).style.display = 'none';
+        currentBtnModalInstance = `${tab}`;
+        s(`.menu-btn-${currentBtnModalInstance}-${mapData.name}`).classList.add('active-btn-map-modal-white');
+        s(`.body-map-modal-tab-${currentBtnModalInstance}-${mapData.name}`).style.display = 'block';
+      }
+    };
+  });
 };

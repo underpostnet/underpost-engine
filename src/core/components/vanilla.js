@@ -8,6 +8,9 @@ const append = (el, html) => s(el).insertAdjacentHTML('beforeend', html);
 const prepend = (el, html) => s(el).insertAdjacentHTML('afterbegin', html);
 const sa = (el) => document.querySelectorAll(el); // .forEach((currentValue, currentIndex, listObj)
 
+// el.classList.remove(targetClass);
+// el.classList.add(targetClass);
+
 const borderChar = (px, color) => /*html*/ `
 text-shadow: ${px}px -${px}px ${px}px ${color},
                          -${px}px ${px}px ${px}px ${color},

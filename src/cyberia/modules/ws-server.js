@@ -96,7 +96,15 @@ const globalInstancesMapData = {
       return {
         name: mapData.name_map,
         position: mapData.position,
-        quests: quests.filter((m) => m.targetsMaps.includes(mapData.name_map)).map((m) => m.id),
+        quests: quests
+          .filter((m) => m.targetsMaps.includes(mapData.name_map))
+          .map((m) => {
+            const { id, title } = m;
+            return {
+              id,
+              title,
+            };
+          }),
         types: mapData.types,
       };
     }),

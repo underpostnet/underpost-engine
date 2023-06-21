@@ -104,7 +104,7 @@ loader {
 }
 
 button {
-    background: black;
+    background: rgba(0, 0, 0, 0.4);
     border: 2px solid yellow;
     padding: 10px;
     color: yellow;
@@ -710,4 +710,22 @@ event-board {
     width: 100%;
     height: auto;
     margin: auto;
+}
+
+.quest-map-modal-body {
+    margin: 5px;
+    color: yellow;
+    text-align: left;
+    font-size: 9px;
+}
+
+.active-btn-map-modal-white {
+    border: 2px solid white !important;
+    border-bottom: 10px solid white !important;
+    color: white !important;
+}
+
+.menu-btn-modal-map {
+    font-size: 8px;
+    margin: 2px;
 }
