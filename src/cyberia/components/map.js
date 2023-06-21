@@ -27,6 +27,13 @@ const map = () => {
                       }
                       countDisplayRow++;
                       setTimeout(() => {
+                        instanceMapTypeStatus(
+                          `.resume-info-map-${mapData.name}`,
+                          'center',
+                          '',
+                          mapData.name,
+                          mapData.types
+                        );
                         s(`.map-cell-${mapData.name}`).onclick = () => {};
                       });
                       return /*html*/ `
@@ -37,12 +44,11 @@ const map = () => {
                         1,
                         'black'
                       )}'>
-                                      <div class='abs center'>
-                                          ${renderInstanceTitle({ name_map: mapData.name })
-                                            .replaceAll('|', '')
-                                            .replaceAll('CYBERIA', '')}
+                                      <div class='abs center resume-info-map-${mapData.name}'>
                                       </div>
-                                      <div class='abs center gps-map-cell-${mapData.name}'>
+                                      <div class='gps-map-cell-${mapData.name}'>
+                                      </div>
+                                      <div class='noti-content-map-${mapData.name}'>
                                       </div>
                                 </div>
                             </div>   
@@ -58,13 +64,41 @@ const map = () => {
 };
 
 const updateMapGPS = () => {
-  if (mapMetaData.map) htmls(`.gps-map-cell-${mapMetaData.map}`, '');
-  setTimeout(() =>
-    htmls(
-      `.gps-map-cell-${mapMetaData.map}`,
-      /*html*/ `
-   <img src='/icons/400x400/gps.png' class='inl gps-icon'>
+  if (s(`.gps-map-cell-${mapMetaData.map}`) && mapMetaData.map) htmls(`.gps-map-cell-${mapMetaData.map}`, '');
+  setTimeout(() => {
+    if (s(`.gps-map-cell-${mapMetaData.map}`))
+      htmls(
+        `.gps-map-cell-${mapMetaData.map}`,
+        /*html*/ `
+        <!-- <img src='/icons/400x400/gps.png' class='abs center gps-icon'>  -->
+        <div class='abs center gps-map-dash'>
+        
+        </div>
    `
-    )
-  );
+      );
+  });
+};
+
+const setNotiContentMap = () => {
+  const successQuests = elements['user'].find((e) => e.id === socket.id)
+    ? elements['user'].find((e) => e.id === socket.id).successQuests
+    : [];
+  globalInstancesMapData.map((mapData) => {
+    let countQuest = 0;
+    mapData.quests.map((quest) => {
+      if (!successQuests.includes(quest)) countQuest++;
+    });
+    if (countQuest > 0 && s(`.noti-content-map-${mapData.name}`))
+      htmls(
+        `.noti-content-map-${mapData.name}`,
+        /*html*/ `
+          <div class='abs center noti-circle noti-circle-map'>
+            <div class='abs center'>
+                ${countQuest}
+            </div>
+          </div>
+    `
+      );
+    else if (s(`.noti-content-map-${mapData.name}`)) htmls(`.noti-content-map-${mapData.name}`, '');
+  });
 };

@@ -4,7 +4,7 @@ const maps = [
     name_map: 'orange-over-purple',
     position: 3,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [
@@ -80,7 +80,7 @@ const maps = [
     name_map: 'zax-shop',
     position: 4,
     instance: 'cyberia',
-    type: ['safe'],
+    types: ['safe'],
     safe_cords: [],
     matrix: [
       [
@@ -171,7 +171,7 @@ const maps = [
   },
   {
     name_map: 'iop-house',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -196,7 +196,7 @@ const maps = [
     name_map: 'cy03-station',
     position: 1,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -289,7 +289,7 @@ const maps = [
     name_map: 'buro',
     position: 0,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -331,7 +331,7 @@ const maps = [
     name_map: 'todarp',
     position: 6,
     instance: 'cyberia',
-    type: ['safe'], // 'pvp', 'pve'
+    types: ['safe'], // 'pvp', 'pve'
     safe_cords: [[8, 10]],
     matrix: [
       [
@@ -373,7 +373,7 @@ const maps = [
     name_map: 'yupark',
     position: 7,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [
@@ -415,7 +415,7 @@ const maps = [
     name_map: 'redpark',
     position: 8,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [
@@ -457,7 +457,7 @@ const maps = [
     name_map: 'mont',
     position: 5,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [
@@ -516,7 +516,7 @@ const maps = [
     name_map: 'ubrig',
     position: 2,
     instance: 'cyberia',
-    type: ['pvp', 'pve'],
+    types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
       [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0],

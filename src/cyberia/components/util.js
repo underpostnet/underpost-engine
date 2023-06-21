@@ -238,20 +238,19 @@ const attack = (element) => {
   }
 };
 
-const instanceMapTypeStatus = () => {
-  const titleMap = renderInstanceTitle({ name_map: mapMetaData.map }).split('|');
+const instanceMapTypeStatus = (selector, styleClass, topHTML, map, types) => {
+  const titleMap = renderInstanceTitle({ name_map: map ? map : mapMetaData.map }).split('|');
   htmls(
-    'map-type-status',
+    selector,
     /*html*/ `
-    <div class='fix map-type-status-content'>
+    <div class='fix map-type-status-content ${styleClass}'>
           <div class='abs center'>
-            <span style='font-size: 5px; color: white'>C Y B E R I A</span>
-            <br><br>
+             ${topHTML}
             <span style='color: black; ${borderChar(1, 'yellow')}'>
               ${titleMap[0]}
             </span>
             <br><br>
-            ${mapMetaData.types
+            ${(types ? types : mapMetaData.types)
               .map(
                 (t, i) => /*html*/ `
                 <span class='map-type-${t}'> 

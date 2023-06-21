@@ -127,7 +127,14 @@ socket.on('init-data', (...args) => {
   changeMapsPoints = initData.changeMapsPoints;
   updateMapGPS();
   mapMetaData = initData.mapMetaData;
-  instanceMapTypeStatus();
+  instanceMapTypeStatus(
+    'map-type-status',
+    'map-type-status-content-gui',
+    /*html*/ `
+  <span style='font-size: 5px; color: white'>C Y B E R I A</span>
+  <br><br>
+  `
+  );
   renderMapsQuests();
   changeMapsPoints.map((mapData) => {
     (() => {
@@ -173,6 +180,7 @@ socket.on('init-data', (...args) => {
   if (firstLoad) {
     if (localStorage.getItem('_b')) s('.close-menu').click();
     else s('main-menu').style.display = 'block';
+    setNotiContentMap();
     firstLoad = false;
   }
 });

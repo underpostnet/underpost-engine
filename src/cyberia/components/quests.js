@@ -88,6 +88,7 @@ const renderQuestNotification = (input) => {
 
 const renderMapsQuests = () => {
   resetNotiCircleQuests();
+  setNotiContentMap();
   htmls(
     'map-quests-render',
     /*html*/ mapMetaData.quests

@@ -222,13 +222,22 @@ history-chat {
 .noti-circle {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     background: red;
-    top: -10px;
-    right: -10px;
     font-size: 8px;
     color: white;
 }
+
+.noti-circle-gui {
+    top: -10px;
+    right: -10px;
+}
+
+.noti-circle-map {
+    top: 85%;
+}
+
+
 
 event-board {
     border: 2px solid yellow;
@@ -237,16 +246,19 @@ event-board {
 }
 
 .map-type-status-content {
-    border: 2px solid yellow;
-    background: rgba(0, 0, 0, 0.7);
     overflow: hidden;
     font-size: 8px;
     color: yellow;
     width: 80px;
     height: 70px;
+    /* font-weight: bold; */
+}
+
+.map-type-status-content-gui {
+    border: 2px solid yellow;
+    background: rgba(0, 0, 0, 0.7);
     top: 10px;
     right: 10px;
-    /* font-weight: bold; */
 }
 
 .map-type-pve {
@@ -644,7 +656,7 @@ event-board {
 }
 
 .gps-icon {
-    top: -20px;
+
     /* transition: .3s; */
     animation-duration: 0.3s;
     animation-name: gpsIconAnimate;
@@ -654,10 +666,38 @@ event-board {
 
 @keyframes gpsIconAnimate {
     from {
-        width: 30px;
+        width: 30%;
+        height: auto;
+        max-width: 30px;
     }
 
     to {
-        width: 40px;
+        width: 38%;
+        height: auto;
+        max-width: 40px;
+    }
+}
+
+.gps-map-dash {
+
+    background: linear-gradient(90deg, yellow 50%, transparent 50%),
+        linear-gradient(90deg, yellow 50%, transparent 50%),
+        linear-gradient(0deg, yellow 50%, transparent 50%),
+        linear-gradient(0deg, yellow 50%, transparent 50%);
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+    background-size: 16px 4px, 16px 4px, 4px 16px, 4px 16px;
+    background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0px;
+    border-radius: 5px;
+    padding: 10px;
+    animation: dashRange 5s linear infinite;
+
+    width: 90%;
+    height: 90%;
+
+}
+
+@keyframes dashRange {
+    to {
+        background-position: 100% 0%, 0% 100%, 0% 0%, 100% 100%;
     }
 }

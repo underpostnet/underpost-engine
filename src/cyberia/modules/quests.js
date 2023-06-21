@@ -2,7 +2,8 @@ const quests = [
   {
     id: 'floki-bone',
     title: { es: 'Hueso de floki', en: "Floki's bone" },
-    maps: 'all', // ['zax-shop'],
+    maps: 'all',
+    targetsMaps: ['zax-shop'],
     sprite: 'ayleen',
     name: 'Ayleen',
     dialog: {
@@ -69,7 +70,8 @@ const quests = [
   {
     id: 'subkishin-prosthesis',
     title: { es: 'Protesis subkishin', en: 'Subkishin Prosthesis' },
-    maps: 'all', // ['orange-over-purple'],
+    maps: 'all',
+    targetsMaps: ['orange-over-purple'],
     sprite: 'punk',
     name: 'Tim',
     dialog: {
@@ -124,7 +126,8 @@ const quests = [
   {
     id: 'scp-2040',
     title: { en: 'SCP-2040', es: 'SCP-2040' },
-    maps: 'all', // ['todarp'],
+    maps: 'all',
+    targetsMaps: ['todarp'],
     sprite: 'agent',
     name: 'Kinoshita',
     dialog: {
@@ -436,6 +439,7 @@ const quests = [
       es: `Test`,
       en: `Test`,
     },
+    targetsMaps: [],
   },
   {
     id: 'anon-b',
@@ -447,6 +451,7 @@ const quests = [
       es: `Test`,
       en: `Test`,
     },
+    targetsMaps: [],
   },
 ];
 

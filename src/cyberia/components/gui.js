@@ -64,7 +64,7 @@ append(
           <div class='abs center'>
               <img class='inl cyberia-logo' src='/icons/144x144/cyberia.png'>
           </div>
-          <div class='abs noti-circle noti-circle-total' style='display: none'>
+          <div class='abs noti-circle noti-circle-gui noti-circle-total' style='display: none'>
               <div class='abs center noti-count-total'>
                 
               </div>
@@ -88,7 +88,7 @@ append(
               <div class='abs center'>
                 ${renderLang({ es: 'Logros', en: 'Achievements' })}
               </div>
-              <div class='abs noti-circle noti-circle-quests' style='display: none'>
+              <div class='abs noti-circle noti-circle-gui noti-circle-quests' style='display: none'>
                 <div class='abs center noti-count-quests'>
                   
                 </div>
@@ -103,7 +103,7 @@ append(
               <div class='abs center'>
                 ${renderLang({ es: 'Chat', en: 'Chat' })}
               </div>
-              <div class='abs noti-circle noti-circle-chat' style='display: none'>
+              <div class='abs noti-circle noti-circle-gui noti-circle-chat' style='display: none'>
                 <div class='abs center noti-count-chat'>
                   
                 </div>

@@ -96,6 +96,8 @@ const globalInstancesMapData = {
       return {
         name: mapData.name_map,
         position: mapData.position,
+        quests: quests.filter((m) => m.targetsMaps.includes(mapData.name_map)).map((m) => m.id),
+        types: mapData.types,
       };
     }),
 };
@@ -971,7 +973,7 @@ const wsServer = (httpServer, app, internalApi) => {
                 }
                 return q;
               }),
-            types: dataMap.type,
+            types: dataMap.types,
             safe_cords: dataMap.safe_cords,
             map,
           },
