@@ -134,6 +134,7 @@ const instanceMapTypeStatus = (selector, styleClass, topHTML, map, types) => {
 };
 
 const renderMapModal = (mapData) => {
+  let currentMapModalDisplay = 'map';
   if (mapData === undefined) mapData = globalInstancesMapData.find((m) => m.name === mapMetaData.map);
   const bodyModal = /*html*/ `
   <div class='in modal-item-header'>
@@ -154,13 +155,33 @@ const renderMapModal = (mapData) => {
               </div>
           </div>
   </div>
-  <div class='fl'>
-    <button class='in fll custom-cursor menu-btn-modal-map menu-btn-map-${mapData.name} active-btn-map-modal-white'>
-      ${renderLang({ es: 'Mapa', en: 'Map' })}
-    </button>
-    <button class='in fll custom-cursor menu-btn-modal-map menu-btn-quest-${mapData.name}'>
-      ${renderLang({ es: 'Logros', en: 'Achievements' })}
-    </button>
+  <div class='in main-dropdown-content modal-map-dropdown-content'>
+    ${renderDropDown({
+      id: `dropdow-map-modal-${mapData.name}`,
+      optionCustomClass: 'custom-cursor',
+      style_dropdown_option: `
+          background: black;
+          padding: 10px;
+          z-index: 1;
+        `,
+      label: renderLang({ es: 'Mapa', en: 'Map' }),
+      data: [
+        {
+          display: renderLang({ es: 'Mapa', en: 'Map' }),
+          value: 'map',
+        },
+        {
+          display: renderLang({ es: 'Logros', en: 'Achievements' }),
+          value: 'quest',
+        },
+      ],
+      onClick: (value) => {
+        console.log(`dropdow-map-modal-${mapData.name}`, value);
+        s(`.body-map-modal-tab-${currentMapModalDisplay}-${mapData.name}`).style.display = 'none';
+        currentMapModalDisplay = `${value}`;
+        s(`.body-map-modal-tab-${currentMapModalDisplay}-${mapData.name}`).style.display = 'block';
+      },
+    })}
   </div>
   <div class='in modal-item-stats'>
       <img class='in body-map-modal-tab-map-${mapData.name} quest-map-modal-body map-img-modal' src='/tiles/${
@@ -189,16 +210,4 @@ const renderMapModal = (mapData) => {
     s(`.map-modal-${mapData.name}`).remove();
   };
   instanceMapTypeStatus(`.modal-item-header-col-${mapData.name}`, 'center', '', mapData.name, mapData.types);
-  let currentBtnModalInstance = 'map';
-  ['map', 'quest'].map((tab) => {
-    s(`.menu-btn-${tab}-${mapData.name}`).onclick = () => {
-      if (currentBtnModalInstance !== tab) {
-        s(`.menu-btn-${currentBtnModalInstance}-${mapData.name}`).classList.remove('active-btn-map-modal-white');
-        s(`.body-map-modal-tab-${currentBtnModalInstance}-${mapData.name}`).style.display = 'none';
-        currentBtnModalInstance = `${tab}`;
-        s(`.menu-btn-${currentBtnModalInstance}-${mapData.name}`).classList.add('active-btn-map-modal-white');
-        s(`.body-map-modal-tab-${currentBtnModalInstance}-${mapData.name}`).style.display = 'block';
-      }
-    };
-  });
 };

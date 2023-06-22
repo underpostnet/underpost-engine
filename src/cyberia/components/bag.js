@@ -377,7 +377,7 @@ const bag = () => {
 
             <div class='in title-section'>${renderLang({ es: 'Mochila', en: 'Bag' })}</div>
 
-            <div class='in bag-dropdown-content'>
+            <div class='in main-dropdown-content'>
                 ${renderDropDown({
                   id: 'bag-dropdown',
                   optionCustomClass: 'custom-cursor',

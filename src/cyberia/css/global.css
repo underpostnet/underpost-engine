@@ -732,6 +732,11 @@ event-board {
     margin: 2px;
 }
 
-.bag-dropdown-content {
-    max-height: 40px;
+.main-dropdown-content {
+    max-height: 30px;
+}
+
+.modal-map-dropdown-content {
+    margin-bottom: 15px;
+    text-align: left;
 }
