@@ -32,6 +32,8 @@ const minBotsMap = 3;
 
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
+const characterSlots = ['skin', 'helmet', 'faction-symbol', 'breastplate', 'weapon', 'legs', 'talisman'];
+const skillTypes = ['skill_basic', 'skill_primary', 'skill_secundary'];
 
 const forceSaveAttrElement = {};
 
@@ -477,6 +479,8 @@ const ssrWS = `
     const globalInstancesMapData = ${JSONweb(globalInstancesMapData['cyberia'])}
     const validateSchemeElement = ${validateSchemeElement};
     const statsItems = ${JSONweb(Object.keys(items[0].stats))}
+    const characterSlots = ${JSONweb(characterSlots)};
+    const skillTypes = ${JSONweb(skillTypes)};
 `;
 
 const rebirdElement = (clients, element, internalApi) => {

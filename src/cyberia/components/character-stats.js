@@ -1,7 +1,3 @@
-const characterSlots = ['skin', 'helmet', 'faction-symbol', 'breastplate', 'weapon', 'legs', 'talisman'];
-
-const skillTypes = ['skill_basic', 'skill_primary', 'skill_secundary'];
-
 const removeTypeSlot = (type) => {
   const boxEquipId = `.${type}-equip-content`;
   htmls(boxEquipId, renderTitleTypeSlot(type));

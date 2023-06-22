@@ -729,3 +729,7 @@ event-board {
     font-size: 8px;
     margin: 2px;
 }
+
+.bag-dropdown-content {
+    max-height: 40px;
+}

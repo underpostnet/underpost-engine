@@ -367,6 +367,44 @@ const bag = () => {
       <sub-content-gui class='in'>
 
             <div class='in title-section'>${renderLang({ es: 'Mochila', en: 'Bag' })}</div>
+
+            <div class='in bag-dropdown-content'>
+                ${renderDropDown({
+                  id: 'bag-dropdown',
+                  optionCustomClass: 'custom-cursor',
+                  style_dropdown_option: `
+                    background: black;
+                    z-index: 1;
+                  `,
+                  label: renderLang({ es: 'Todos', en: 'All' }),
+                  data: [
+                    {
+                      display: renderLang({ es: 'Todos', en: 'All' }),
+                      value: 'all',
+                    },
+                  ]
+                    .concat(
+                      characterSlots.map((x) => {
+                        return {
+                          display: cap(x.replaceAll('-', ' ').replaceAll('_', ' ')),
+                          value: x,
+                        };
+                      })
+                    )
+                    .concat(
+                      skillTypes.map((x) => {
+                        return {
+                          display: cap(x.replaceAll('-', ' ').replaceAll('_', ' ')),
+                          value: x,
+                        };
+                      })
+                    ),
+                  onClick: (value) => {
+                    console.log('bag-dropdown onclick ->', value);
+                  },
+                })}
+            </div>
+            <br><br>
             
             <div class='in grid-bag'> </div>
 
