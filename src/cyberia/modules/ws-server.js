@@ -29,8 +29,7 @@ const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
 const minBotsMap = 3;
-const minMapLimitCellRow = -1;
-const maxMapLimitCellRow = 2;
+const rangeMapView = 1;
 
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
@@ -483,8 +482,7 @@ const ssrWS = `
     const statsItems = ${JSONweb(Object.keys(items[0].stats))}
     const characterSlots = ${JSONweb(characterSlots)};
     const skillTypes = ${JSONweb(skillTypes)};
-    const minMapLimitCellRow = ${minMapLimitCellRow};
-    const maxMapLimitCellRow = ${maxMapLimitCellRow};
+    const rangeMapView = ${JSONweb(rangeMapView)};
 `;
 
 const rebirdElement = (clients, element, internalApi) => {
@@ -992,6 +990,7 @@ const wsServer = (httpServer, app, internalApi) => {
             types: dataMap.types,
             safe_cords: dataMap.safe_cords,
             map,
+            position: dataMap.position,
           },
         })
       );

@@ -113,7 +113,7 @@ setInterval(() => {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
       }
       .map-cell {
-        width: ${100 / range(minMapLimitCellRow, maxMapLimitCellRow).length}%;
+        width: ${100 / (1 + rangeMapView * 2)}%;
       }
       .count-item-text {
           font-size:  ${screenDim.minValue >= 430 ? 10 : 8}px;

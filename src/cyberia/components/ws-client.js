@@ -187,6 +187,7 @@ socket.on('init-data', (...args) => {
     elements[type].push(safeZoneElement);
     renderPixiInitElement(safeZoneElement);
   });
+  renderMainMap();
   s('loader').style.display = 'none';
   periodLoad = false;
   if (firstLoad) {

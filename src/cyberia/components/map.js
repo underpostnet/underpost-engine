@@ -1,3 +1,56 @@
+const renderMainMap = (selector) => {
+  if (selector === undefined) selector = '.main-map-render-content';
+
+  htmls(
+    selector,
+    range(mapMetaData.position[1] - rangeMapView, mapMetaData.position[1] + rangeMapView)
+      .map(
+        (yIndex) => /*html*/ `
+        <div class='fl'>
+          ${range(mapMetaData.position[0] - rangeMapView, mapMetaData.position[0] + rangeMapView)
+            .map((xIndex) => {
+              let mapData = globalInstancesMapData.find((x) => x.position[0] === xIndex && x.position[1] === yIndex);
+              let voidMap = false;
+              if (!mapData) {
+                voidMap = true;
+                mapData = {
+                  name: 'void',
+                };
+              }
+
+              setTimeout(() => {
+                if (voidMap) return;
+                instanceMapTypeStatus(`.resume-info-map-${mapData.name}`, 'center', '', mapData.name, mapData.types);
+                s(`.map-cell-${mapData.name}`).onclick = () => renderMapModal(mapData);
+              });
+
+              return /*html*/ `
+              <div class='in fll map-cell custom-cursor map-cell-${xIndex}-${yIndex}'>
+                  <img class='in map-img' src='/tiles/${mapData.name}.png'>
+                ${
+                  !voidMap
+                    ? /*html*/ `
+                  <div class='abs center map-hover-gfx map-cell-${mapData.name}' style='${borderChar(1, 'black')}'>
+                        <div class='abs center resume-info-map-${mapData.name}'>
+                        </div>
+                        <div class='gps-map-cell-${mapData.name}'>
+                        </div>
+                        <div class='noti-content-map-${mapData.name}'>
+                        </div>
+                  </div>
+                `
+                    : ''
+                }
+              </div>        
+            `;
+            })
+            .join('')}
+        </div>`
+      )
+      .join('')
+  );
+};
+
 const map = () => {
   return /*html*/ `
     <map style='display: none'>
@@ -5,64 +58,7 @@ const map = () => {
 
                 <div class='in title-section'>${renderLang({ es: 'Mapa', en: 'Map' })}</div>
                 
-                <div class='in'>
-
-                ${range(minMapLimitCellRow, maxMapLimitCellRow)
-                  .map(
-                    (yIndex) => /*html*/ `
-                      <div class='fl'>
-                        ${range(minMapLimitCellRow, maxMapLimitCellRow)
-                          .map((xIndex) => {
-                            let mapData = globalInstancesMapData.find(
-                              (x) => x.position[0] === xIndex && x.position[1] === yIndex
-                            );
-                            let voidMap = false;
-                            if (!mapData) {
-                              voidMap = true;
-                              mapData = {
-                                name: 'void',
-                              };
-                            }
-
-                            setTimeout(() => {
-                              if (voidMap) return;
-                              instanceMapTypeStatus(
-                                `.resume-info-map-${mapData.name}`,
-                                'center',
-                                '',
-                                mapData.name,
-                                mapData.types
-                              );
-                              s(`.map-cell-${mapData.name}`).onclick = () => renderMapModal(mapData);
-                            });
-
-                            return /*html*/ `
-                            <div class='in fll map-cell custom-cursor map-cell-${xIndex}-${yIndex}'>
-                                <img class='in map-img' src='/tiles/${mapData.name}.png'>
-                              ${
-                                !voidMap
-                                  ? /*html*/ `
-                                <div class='abs center map-hover-gfx map-cell-${mapData.name}' style='${borderChar(
-                                      1,
-                                      'black'
-                                    )}'>
-                                      <div class='abs center resume-info-map-${mapData.name}'>
-                                      </div>
-                                      <div class='gps-map-cell-${mapData.name}'>
-                                      </div>
-                                      <div class='noti-content-map-${mapData.name}'>
-                                      </div>
-                                </div>
-                              `
-                                  : ''
-                              }
-                            </div>                           
-                          `;
-                          })
-                          .join('')}
-                      </div>`
-                  )
-                  .join('')}
+                <div class='in main-map-render-content'>
 
                 </div>
 
