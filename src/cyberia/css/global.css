@@ -53,6 +53,7 @@ main-menu {
     text-align: right;
     overflow-y: auto;
     overflow-x: hidden;
+    z-index: 1;
 }
 
 main-menu,
@@ -544,6 +545,7 @@ event-board {
     background: black;
     border: 3px solid yellow;
     padding: 10px;
+    z-index: 1;
 }
 
 .item-modal-img {

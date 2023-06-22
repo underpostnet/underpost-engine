@@ -2,6 +2,7 @@ let mainUserBag = [];
 let localItemsStorage = [];
 let localItemsRenderStorage = [];
 let sortableBagInstance = null;
+let currentTypeBagItemDisplay = 'all';
 
 const getFolderAssetSrc = (item) => {
   switch (item.displayLogic) {
@@ -230,16 +231,24 @@ const renderItemModal = (item) => {
 };
 
 const newInstanceBagItems = async (items) => {
-  mainUserBag = [
-    renderKoynLogo(
-      elements['user'].find((e) => e.id === socket.id) ? elements['user'].find((e) => e.id === socket.id).koyn : 0,
-      false,
-      'bag-koyn-indicator'
-    ),
-    renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
-  ];
+  if (items === undefined) {
+    const mainUser = elements['user'].find((u) => u.id === socket.id);
+    if (mainUser) items = mainUser.items;
+    else return;
+  }
+  if (currentTypeBagItemDisplay === 'all' || currentTypeBagItemDisplay === 'currency')
+    mainUserBag = [
+      renderKoynLogo(
+        elements['user'].find((e) => e.id === socket.id) ? elements['user'].find((e) => e.id === socket.id).koyn : 0,
+        false,
+        'bag-koyn-indicator'
+      ),
+      renderKoynLogo(0, 'crypto', 'bag-cryptokoyn-indicator'),
+    ];
+  else mainUserBag = [];
   for (const item of items) {
     const result = await getItemData(item);
+    if (currentTypeBagItemDisplay !== 'all' && result.data.itemType !== currentTypeBagItemDisplay) continue;
     console.log('bag renderItem', result);
     if (result.status === 'success') {
       mainUserBag.push({
@@ -382,6 +391,10 @@ const bag = () => {
                       display: renderLang({ es: 'Todos', en: 'All' }),
                       value: 'all',
                     },
+                    {
+                      display: 'currency',
+                      value: 'currency',
+                    },
                   ]
                     .concat(
                       characterSlots.map((x) => {
@@ -401,6 +414,8 @@ const bag = () => {
                     ),
                   onClick: (value) => {
                     console.log('bag-dropdown onclick ->', value);
+                    currentTypeBagItemDisplay = `${value}`;
+                    newInstanceBagItems();
                   },
                 })}
             </div>
