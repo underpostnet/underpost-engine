@@ -116,10 +116,12 @@ const addNewUserItem = (clients, eventElement, item, element) => {
   const { type } = eventElement.element;
   const indexClientElement = elements[type].findIndex((e) => e.id === eventElement.element.id);
   const indexItemExist = elements[type][indexClientElement].items.findIndex((i) => i.id === item.id);
+  let count = 1;
   if (indexItemExist > -1) {
     elements[type][indexClientElement].items[indexItemExist].count++;
+    count = elements[type][indexClientElement].items[indexItemExist].count;
   } else {
-    elements[type][indexClientElement].items.push({ id: item.id, count: 1 });
+    elements[type][indexClientElement].items.push({ id: item.id, count });
   }
 
   const client = clients.find((c) => c.id === elements[type][indexClientElement].id);
@@ -128,9 +130,7 @@ const addNewUserItem = (clients, eventElement, item, element) => {
     item: {
       name: item.name,
       id: item.id,
-      count: elements[type][indexClientElement].items[indexItemExist]
-        ? elements[type][indexClientElement].items[indexItemExist].count
-        : 0,
+      count,
     },
     newItemsState: elements[type][indexClientElement].items,
     elementFromDrop: element,
