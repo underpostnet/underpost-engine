@@ -173,6 +173,8 @@ const maps = [
     name_map: 'iop-house',
     types: ['pvp', 'pve'],
     safe_cords: [],
+    position: [null, null],
+    instance: 'cyberia',
     matrix: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
