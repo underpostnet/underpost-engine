@@ -113,7 +113,7 @@ setInterval(() => {
         width: ${screenDim.minValue >= 430 ? 50 : 100}%;
       }
       .map-cell {
-        width: ${screenDim.maxType === 'height' ? 33 : 25}%;
+        width: ${100 / range(minMapLimitCellRow, maxMapLimitCellRow).length}%;
       }
       .count-item-text {
           font-size:  ${screenDim.minValue >= 430 ? 10 : 8}px;

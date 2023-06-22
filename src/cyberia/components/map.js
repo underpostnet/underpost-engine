@@ -1,6 +1,4 @@
 const map = () => {
-  const minLimitCellRow = 0;
-  const maxLimitCellRow = 2;
   return /*html*/ `
     <map style='display: none'>
         <sub-content-gui class='in'>
@@ -9,17 +7,25 @@ const map = () => {
                 
                 <div class='in'>
 
-                ${range(minLimitCellRow, maxLimitCellRow)
+                ${range(minMapLimitCellRow, maxMapLimitCellRow)
                   .map(
                     (yIndex) => /*html*/ `
                       <div class='fl'>
-                        ${range(minLimitCellRow, maxLimitCellRow)
+                        ${range(minMapLimitCellRow, maxMapLimitCellRow)
                           .map((xIndex) => {
-                            const mapData = globalInstancesMapData.find(
+                            let mapData = globalInstancesMapData.find(
                               (x) => x.position[0] === xIndex && x.position[1] === yIndex
                             );
+                            let voidMap = false;
+                            if (!mapData) {
+                              voidMap = true;
+                              mapData = {
+                                name: 'void',
+                              };
+                            }
 
                             setTimeout(() => {
+                              if (voidMap) return;
                               instanceMapTypeStatus(
                                 `.resume-info-map-${mapData.name}`,
                                 'center',
@@ -33,10 +39,13 @@ const map = () => {
                             return /*html*/ `
                             <div class='in fll map-cell custom-cursor map-cell-${xIndex}-${yIndex}'>
                                 <img class='in map-img' src='/tiles/${mapData.name}.png'>
+                              ${
+                                !voidMap
+                                  ? /*html*/ `
                                 <div class='abs center map-hover-gfx map-cell-${mapData.name}' style='${borderChar(
-                              1,
-                              'black'
-                            )}'>
+                                      1,
+                                      'black'
+                                    )}'>
                                       <div class='abs center resume-info-map-${mapData.name}'>
                                       </div>
                                       <div class='gps-map-cell-${mapData.name}'>
@@ -44,6 +53,9 @@ const map = () => {
                                       <div class='noti-content-map-${mapData.name}'>
                                       </div>
                                 </div>
+                              `
+                                  : ''
+                              }
                             </div>                           
                           `;
                           })
