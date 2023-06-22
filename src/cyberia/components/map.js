@@ -79,28 +79,36 @@ const updateMapGPS = () => {
   });
 };
 
+let currentQuestsStatusNoti = [];
 const setNotiContentMap = () => {
+  currentQuestsStatusNoti = [];
   const successQuests = elements['user'].find((e) => e.id === socket.id)
     ? elements['user'].find((e) => e.id === socket.id).successQuests
     : [];
   globalInstancesMapData.map((mapData) => {
-    let countQuest = 0;
+    let dataQuests = [];
     mapData.quests.map((quest) => {
-      if (!successQuests.includes(quest.id)) countQuest++;
+      if (!successQuests.includes(quest.id)) dataQuests.push(quest);
     });
-    if (countQuest > 0 && s(`.noti-content-map-${mapData.name}`))
+    if (dataQuests.length > 0 && s(`.noti-content-map-${mapData.name}`))
       htmls(
         `.noti-content-map-${mapData.name}`,
         /*html*/ `
           <div class='abs center noti-circle noti-circle-map'>
             <div class='abs center'>
-                ${countQuest}
+                ${dataQuests.length}
             </div>
           </div>
     `
       );
     else if (s(`.noti-content-map-${mapData.name}`)) htmls(`.noti-content-map-${mapData.name}`, '');
+    if (dataQuests.length > 0)
+      currentQuestsStatusNoti.push({
+        dataQuests,
+        map: mapData.name,
+      });
   });
+  console.log('currentQuestsStatusNoti', currentQuestsStatusNoti);
 };
 
 const instanceMapTypeStatus = (selector, styleClass, topHTML, map, types) => {
