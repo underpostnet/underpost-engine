@@ -1,8 +1,6 @@
 const map = () => {
-  let countDisplayRow = 0;
-  let rowIni = '';
-  let rowEnd = '';
-  const limitCellRow = 2;
+  const minLimitCellRow = 0;
+  const maxLimitCellRow = 2;
   return /*html*/ `
     <map style='display: none'>
         <sub-content-gui class='in'>
@@ -10,40 +8,35 @@ const map = () => {
                 <div class='in title-section'>${renderLang({ es: 'Mapa', en: 'Map' })}</div>
                 
                 <div class='in'>
-                  ${range(0, globalInstancesMapData.length - 1)
-                    .map((index) => {
-                      const mapData = globalInstancesMapData.find((x) => x.position === index);
 
-                      if (countDisplayRow === limitCellRow + 1) countDisplayRow = 0;
-                      if (countDisplayRow === 0) {
-                        rowIni = `<div class='fl'>`;
-                        rowEnd = '';
-                      } else if (countDisplayRow === limitCellRow) {
-                        rowIni = ``;
-                        rowEnd = `</div>`;
-                      } else {
-                        rowIni = ``;
-                        rowEnd = ``;
-                      }
-                      countDisplayRow++;
-                      setTimeout(() => {
-                        instanceMapTypeStatus(
-                          `.resume-info-map-${mapData.name}`,
-                          'center',
-                          '',
-                          mapData.name,
-                          mapData.types
-                        );
-                        s(`.map-cell-${mapData.name}`).onclick = () => renderMapModal(mapData);
-                      });
-                      return /*html*/ `
-                          ${rowIni}
-                            <div class='in fll map-cell custom-cursor'>
+                ${range(minLimitCellRow, maxLimitCellRow)
+                  .map(
+                    (yIndex) => /*html*/ `
+                      <div class='fl'>
+                        ${range(minLimitCellRow, maxLimitCellRow)
+                          .map((xIndex) => {
+                            const mapData = globalInstancesMapData.find(
+                              (x) => x.position[0] === xIndex && x.position[1] === yIndex
+                            );
+
+                            setTimeout(() => {
+                              instanceMapTypeStatus(
+                                `.resume-info-map-${mapData.name}`,
+                                'center',
+                                '',
+                                mapData.name,
+                                mapData.types
+                              );
+                              s(`.map-cell-${mapData.name}`).onclick = () => renderMapModal(mapData);
+                            });
+
+                            return /*html*/ `
+                            <div class='in fll map-cell custom-cursor map-cell-${xIndex}-${yIndex}'>
                                 <img class='in map-img' src='/tiles/${mapData.name}.png'>
                                 <div class='abs center map-hover-gfx map-cell-${mapData.name}' style='${borderChar(
-                        1,
-                        'black'
-                      )}'>
+                              1,
+                              'black'
+                            )}'>
                                       <div class='abs center resume-info-map-${mapData.name}'>
                                       </div>
                                       <div class='gps-map-cell-${mapData.name}'>
@@ -51,11 +44,14 @@ const map = () => {
                                       <div class='noti-content-map-${mapData.name}'>
                                       </div>
                                 </div>
-                            </div>   
-                          ${rowEnd}                     
-                        `;
-                    })
-                    .join('')}
+                            </div>                           
+                          `;
+                          })
+                          .join('')}
+                      </div>`
+                  )
+                  .join('')}
+
                 </div>
 
         </sub-content-gui>
