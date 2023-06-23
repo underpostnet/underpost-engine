@@ -184,15 +184,16 @@ const renderPixiEventElement = (element) => {
     pixi[type][element.id].barLife.width = newLife;
   }
 
-  if (direction !== undefined) params[type][element.id].direction = direction;
   if (typeModels()[type].components().includes('life-indicator')) renderIndicatorLife(container, element, dim, type); // .text = 'new text';
   // change position animation
   // 100 -> 6
   // 100*vel -> x
   const intervalFrameTimeAnimation = updateTimeInterval * (element.velFactor ? element.velFactor : 1);
   const frames = parseInt((intervalFrameTimeAnimation * 4) / 100);
-  const intervalChangeX = Math.abs(x - container.x) / frames;
-  const intervalChangeY = Math.abs(y - container.y) / frames;
+  const deltaMovX = Math.abs(x - container.x);
+  const deltaMovY = Math.abs(y - container.y);
+  const intervalChangeX = deltaMovX / frames;
+  const intervalChangeY = deltaMovY / frames;
   range(0, frames - 1).map((frameTime) => {
     setTimeout(() => {
       if (container._destroyed) return;
@@ -225,4 +226,17 @@ const renderPixiEventElement = (element) => {
       }
     }, frameTime * (intervalFrameTimeAnimation / (frames - 1))); // 4 frames 100 interval -> 33*0 33*1 33*2 33*3
   });
+
+  if (direction !== undefined && params[type][element.id].direction !== direction) {
+    params[type][element.id].direction = direction;
+    if (element.type === 'user' && mapMetaData.types.includes('safe') && deltaMovX === 0 && deltaMovY === 0) {
+      socket.emit(
+        'event',
+        JSON.stringify({
+          event: 'direction',
+          direction,
+        })
+      );
+    }
+  }
 };

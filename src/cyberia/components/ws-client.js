@@ -344,6 +344,49 @@ socket.on('event', (...args) => {
       });
       break;
 
+    case 'direction':
+      const { element } = eventElement;
+      clearFramesSprites(element);
+      const { type, direction } = element;
+      if (pixi[type][element.id])
+        switch (direction) {
+          case 'South East':
+            // ↘
+            pixi[type][element.id][`/sprites/${element.sprite}/06/0.png`].visible = true;
+            break;
+          case 'East':
+            // →
+            pixi[type][element.id][`/sprites/${element.sprite}/06/0.png`].visible = true;
+            break;
+          case 'North East':
+            // ↗
+            pixi[type][element.id][`/sprites/${element.sprite}/06/0.png`].visible = true;
+            break;
+          case 'South':
+            // ↓
+            pixi[type][element.id][`/sprites/${element.sprite}/08/0.png`].visible = true;
+            break;
+          case 'North':
+            // ↑
+            pixi[type][element.id][`/sprites/${element.sprite}/02/0.png`].visible = true;
+            break;
+          case 'South West':
+            // ↙
+            pixi[type][element.id][`/sprites/${element.sprite}/04/0.png`].visible = true;
+            break;
+          case 'West':
+            // ←
+            pixi[type][element.id][`/sprites/${element.sprite}/04/0.png`].visible = true;
+            break;
+          case 'North West':
+            // ↖
+            pixi[type][element.id][`/sprites/${element.sprite}/04/0.png`].visible = true;
+            break;
+          default:
+            pixi[type][element.id][`/sprites/${element.sprite}/08/0.png`].visible = true;
+            break;
+        }
+      break;
     default:
       break;
   }
@@ -352,15 +395,3 @@ socket.on('event', (...args) => {
 socket.onAny((event, ...args) => {
   // console.log(`socket.io onAny event: ${event} | arguments: ${args}`);
 });
-
-// intervals clear
-// setInterval(() => {
-//   Object.keys(hashIntervals).map((idElement) => {
-//     if (!getAllElements().find((e) => e.id === idElement)) {
-//       Object.keys(hashIntervals[idElement]).map((idInterval) => {
-//         if (hashIntervals[idElement][idInterval]) clearInterval(hashIntervals[idElement][idInterval]);
-//       });
-//       delete hashIntervals[idElement];
-//     }
-//   });
-// }, 1000);

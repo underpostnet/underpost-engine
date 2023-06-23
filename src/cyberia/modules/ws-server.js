@@ -1202,6 +1202,25 @@ const wsServer = (httpServer, app, internalApi) => {
               }
             }
             break;
+          case 'direction':
+            clients.map((client) => {
+              const clientIndex = elements['user'].findIndex((element) => element.id === client.id);
+              if (clientIndex > -1 && elements['user'][clientIndex].map === elements['user'][clientElementIndex].map) {
+                client.emit(
+                  'event',
+                  JSON.stringify({
+                    type: 'direction',
+                    element: {
+                      id: elements['user'][clientElementIndex].id,
+                      type: elements['user'][clientElementIndex].type,
+                      direction: eventElement.direction,
+                      sprite: elements['user'][clientElementIndex].sprite,
+                    },
+                  })
+                );
+              }
+            });
+            break;
           default:
             break;
         }
