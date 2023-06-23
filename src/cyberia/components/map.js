@@ -10,7 +10,7 @@ const renderMainMap = (selector) => {
           ${range(mapMetaData.position[0] - rangeMapView, mapMetaData.position[0] + rangeMapView)
             .map((xIndex) => {
               let mapData = mapMetaData.globalInstancesMapData.find(
-                (x) => x.position[0] === xIndex && x.position[1] === yIndex
+                (x) => x.position && x.position[0] === xIndex && x.position[1] === yIndex
               );
               let voidMap = false;
               if (!mapData) {
@@ -51,6 +51,27 @@ const renderMainMap = (selector) => {
       )
       .join('')
   );
+  const gpsMap = mapMetaData.parentMapData ? mapMetaData.parentMapData.name_map : mapMetaData.map;
+  if (s(`.gps-map-cell-${gpsMap}`))
+    htmls(
+      `.gps-map-cell-${gpsMap}`,
+      /*html*/ `
+    <!-- <img src='/icons/400x400/gps.png' class='abs center gps-icon'>  -->
+    <div class='abs center gps-map-dash'>
+    
+    </div>
+`
+    );
+  instanceMapTypeStatus(
+    'map-type-status',
+    'map-type-status-content-gui',
+    /*html*/ `
+    <span style='font-size: 5px; color: white'>C Y B E R I A</span>
+    <br><br>
+    `
+  );
+  s('map-type-status').onclick = () => renderMapModal();
+  renderMapsQuests();
 };
 
 const map = () => {
@@ -67,22 +88,6 @@ const map = () => {
         </sub-content-gui>
     </map>
     `;
-};
-
-const updateMapGPS = () => {
-  if (s(`.gps-map-cell-${mapMetaData.map}`) && mapMetaData.map) htmls(`.gps-map-cell-${mapMetaData.map}`, '');
-  setTimeout(() => {
-    if (s(`.gps-map-cell-${mapMetaData.map}`))
-      htmls(
-        `.gps-map-cell-${mapMetaData.map}`,
-        /*html*/ `
-        <!-- <img src='/icons/400x400/gps.png' class='abs center gps-icon'>  -->
-        <div class='abs center gps-map-dash'>
-        
-        </div>
-   `
-      );
-  });
 };
 
 let currentQuestsStatusNoti = [];

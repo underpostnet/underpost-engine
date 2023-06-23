@@ -135,18 +135,7 @@ socket.on('init-data', (...args) => {
   const initData = JSON.parse(args);
   console.log('initData', initData);
   changeMapsPoints = initData.changeMapsPoints;
-  updateMapGPS();
   mapMetaData = initData.mapMetaData;
-  instanceMapTypeStatus(
-    'map-type-status',
-    'map-type-status-content-gui',
-    /*html*/ `
-  <span style='font-size: 5px; color: white'>C Y B E R I A</span>
-  <br><br>
-  `
-  );
-  s('map-type-status').onclick = () => renderMapModal();
-  renderMapsQuests();
   changeMapsPoints.map((mapData) => {
     (() => {
       const type = 'to-map';
@@ -193,7 +182,6 @@ socket.on('init-data', (...args) => {
   if (firstLoad) {
     if (localStorage.getItem('_b')) s('.close-menu').click();
     else s('main-menu').style.display = 'block';
-    setNotiContentMap();
     firstLoad = false;
   }
 });

@@ -289,9 +289,10 @@ const maps = [
   },
   {
     name_map: 'iop-house',
+    parent: 'orange-over-purple',
     types: ['pvp', 'pve'],
     safe_cords: [],
-    position: [null, null],
+    position: undefined,
     instance: 'cyberia',
     matrix: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],

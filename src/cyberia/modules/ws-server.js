@@ -827,6 +827,16 @@ const unEquipItem = (clients, clientElement, clientElementIndex, eventElement) =
   }
 };
 
+const validateMapViewRange = (dataMapIter, dataMap) => {
+  if (dataMapIter.position === undefined || dataMap.position === undefined) return false;
+  return (
+    dataMapIter.position[0] >= dataMap.position[0] - rangeMapView &&
+    dataMapIter.position[0] <= dataMap.position[0] + rangeMapView &&
+    dataMapIter.position[1] >= dataMap.position[1] - rangeMapView &&
+    dataMapIter.position[1] <= dataMap.position[1] + rangeMapView
+  );
+};
+
 const wsApi = (app, internalApi) => {
   app.post(process.env.API_BASE + '/ws/element/user', findUserElementById);
   internalApi.findUserElementById = findUserElementById;
@@ -937,6 +947,7 @@ const wsServer = (httpServer, app, internalApi) => {
         if (clientIndex > -1 && elements[type][clientIndex].map === map) client.emit('update', JSON.stringify(element));
       });
       const dataMap = maps.find((m) => m.name_map === map);
+      const parentMapData = dataMap.parent ? maps.find((m) => m.name_map === dataMap.parent) : false;
       socket.emit(
         'init-data',
         JSON.stringify({
@@ -968,16 +979,19 @@ const wsServer = (httpServer, app, internalApi) => {
             types: dataMap.types,
             safe_cords: dataMap.safe_cords,
             map,
-            position: dataMap.position,
+            position: parentMapData ? parentMapData.position : dataMap.position,
+            parentMapData: parentMapData
+              ? (() => {
+                  return {
+                    name_map: parentMapData.name_map,
+                  };
+                })()
+              : undefined,
             globalInstancesMapData: maps
               .filter(
                 (x) =>
                   x.instance === currentInstance &&
-                  x.position !== undefined &&
-                  x.position[0] >= dataMap.position[0] - rangeMapView &&
-                  x.position[0] <= dataMap.position[0] + rangeMapView &&
-                  x.position[1] >= dataMap.position[1] - rangeMapView &&
-                  x.position[1] <= dataMap.position[1] + rangeMapView
+                  (validateMapViewRange(x, parentMapData ? parentMapData : dataMap) || x.name_map === dataMap.name_map)
               )
               .map((mapData) => {
                 return {
