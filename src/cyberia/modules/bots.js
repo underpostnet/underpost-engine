@@ -11,7 +11,7 @@ const mapBots = [
     map: 'orange-over-purple',
     maxBots: 2,
     bots: [
-      { sprite: 'kishins', username: 'Subkishins', attackValue: 20 },
+      { sprite: 'kishins', username: 'Subkishins', effectValue: 20 },
       { sprite: 'punk', username: 'Tim', velFactor: 3 },
     ],
   },

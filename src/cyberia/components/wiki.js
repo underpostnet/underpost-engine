@@ -13,7 +13,7 @@ const wiki = () => {
               </div>
               <div class='in fll wiki-value'>
               <div class='in wiki-cell'>
-                ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+                ${renderLang({ en: 'Basic effect', es: 'Ataque Basico' })}
               </div>
               </div>
             </div>
@@ -51,7 +51,7 @@ const wiki = () => {
               </div> 
               <div class='in fll wiki-value'>
               <div class='in wiki-cell'>
-                ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+                ${renderLang({ en: 'Basic effect', es: 'Ataque Basico' })}
                 </div>
               </div>
             </div>
@@ -81,7 +81,7 @@ const wiki = () => {
               </div>
               <div class='in fll wiki-value'>
                 <div class='in wiki-cell'>
-                    ${renderLang({ en: 'Basic attack', es: 'Ataque Basico' })}
+                    ${renderLang({ en: 'Basic effect', es: 'Ataque Basico' })}
                 </div>
               </div>
             </div>

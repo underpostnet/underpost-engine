@@ -8,8 +8,8 @@ const skins = [
     drop: [],
     stats: {
       maxLife: 0,
-      attackValue: 0,
-      velAttack: 0,
+      effectValue: 0,
+      velEffect: 0,
       passiveHealValue: 0,
       velPassiveHealValue: 0,
       velFactor: 0,
@@ -25,8 +25,8 @@ const skins = [
     drop: [],
     stats: {
       maxLife: 20,
-      attackValue: 10,
-      velAttack: -30,
+      effectValue: 10,
+      velEffect: -30,
       passiveHealValue: 5,
       velPassiveHealValue: 0,
       velFactor: -0.01,

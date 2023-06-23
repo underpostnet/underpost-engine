@@ -171,13 +171,13 @@ const typeModels = () => {
       },
       life: () => 100,
       maxLife: () => 100,
-      attackValue: () => 20,
+      effectValue: () => 20,
       passiveHealValue: () => 10,
       sprite: () => 'anon',
       koyn: () => 0,
       velFactor: () => 2,
       deadTime: () => 3,
-      velAttack: () => 500,
+      velEffect: () => 500,
       velPassiveHealValue: () => 1000,
       items: () => [
         { id: 'anon', count: 1, active: true },
@@ -429,7 +429,7 @@ const upGradeStatsElements = (clients, clientElementIndex, item, factor) => {
 
 const validateSchemeElement = (element) => {
   const arrAttr = ['components', 'items', 'displayItems', 'successQuests'];
-  // const forcesAttr = ['components', 'velFactor', 'velAttack', 'velPassiveHealValue'];
+  // const forcesAttr = ['components', 'velFactor', 'velEffect', 'velPassiveHealValue'];
   const forcesAttr = ['components'];
   Object.keys(typeModels()[element.type]).map((key) => {
     if (element[key] === undefined || forcesAttr.includes(key)) element[key] = typeModels()[element.type][key]();
@@ -487,7 +487,7 @@ const rebirdElement = (clients, element, internalApi) => {
   }, deadTime * 1000);
 };
 
-const attack = (clients, eventElement, map, targets, internalApi) => {
+const effect = (clients, eventElement, map, targets, internalApi) => {
   (() => {
     let basicSkillData;
 
@@ -557,8 +557,8 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
           ) {
             switch (basicSkillData.id) {
               case 'basic-green':
-                element.life = element.life - parseInt(eventElement.element.attackValue * 0.5);
-                eventElement.element.life += parseInt(eventElement.element.attackValue * 0.25);
+                element.life = element.life - parseInt(eventElement.element.effectValue * 0.5);
+                eventElement.element.life += parseInt(eventElement.element.effectValue * 0.25);
 
                 if (eventElement.element.life > eventElement.element.maxLife)
                   eventElement.element.life = newInstance(eventElement.element.maxLife);
@@ -581,7 +581,7 @@ const attack = (clients, eventElement, map, targets, internalApi) => {
                 });
                 break;
               case 'basic-red':
-                element.life = element.life - eventElement.element.attackValue;
+                element.life = element.life - eventElement.element.effectValue;
                 break;
               default:
                 break;
@@ -1047,8 +1047,8 @@ const wsServer = (httpServer, app, internalApi) => {
         const { map } = clientElement;
         if (eventElement.element) eventElement.element = merge(clientElement, eventElement.element);
         switch (eventElement.event) {
-          case 'attack':
-            attack(clients, eventElement, map, ['bot', 'user'], internalApi);
+          case 'effect':
+            effect(clients, eventElement, map, ['bot', 'user'], internalApi);
             break;
           case 'chat':
             clients.map((client) => {
@@ -1250,8 +1250,8 @@ const wsServer = (httpServer, app, internalApi) => {
           sprite,
           life: 100,
           maxLife: 100,
-          attackValue: 5,
-          velAttack: 500,
+          effectValue: 5,
+          velEffect: 500,
           passiveHealValue: 10,
           dropKoyn: random(1, 10),
           render: {
@@ -1343,8 +1343,8 @@ const wsServer = (httpServer, app, internalApi) => {
             element.render.y = element.path[0][1];
           }
           if (targetUser) {
-            if (!params[type][element.id].intervalAttack) {
-              const instanceAttack = () => {
+            if (!params[type][element.id].intervalEffect) {
+              const instanceEffect = () => {
                 const elementInstance = elements[type].find((e) => e.id === element.id);
                 const targetInstance = elements['user'].find((e) => e.id === idTarget);
                 if (elementInstance && targetInstance) {
@@ -1354,7 +1354,7 @@ const wsServer = (httpServer, app, internalApi) => {
                     targetInstance.render.x,
                     targetInstance.render.y
                   ).direction;
-                  attack(
+                  effect(
                     clients,
                     {
                       element: elementInstance,
@@ -1367,12 +1367,12 @@ const wsServer = (httpServer, app, internalApi) => {
                   );
                 }
               };
-              instanceAttack();
-              params[type][element.id].intervalAttack = setInterval(() => instanceAttack(), element.velAttack);
+              instanceEffect();
+              params[type][element.id].intervalEffect = setInterval(() => instanceEffect(), element.velEffect);
             }
           } else {
-            if (params[type][element.id].intervalAttack) clearInterval(params[type][element.id].intervalAttack);
-            params[type][element.id].intervalAttack = undefined;
+            if (params[type][element.id].intervalEffect) clearInterval(params[type][element.id].intervalEffect);
+            params[type][element.id].intervalEffect = undefined;
           }
           clients.map((client) => {
             const clientIndex = elements['user'].findIndex((element) => element.id === client.id);

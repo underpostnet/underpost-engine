@@ -33,10 +33,10 @@ const renderStatsGrid = (element) => {
       </div>
       <div class='in character-stats-grid-row'>
         <div class='in character-stats-grid-label'>
-          ${renderLang({ en: 'attack points', es: 'puntos de ataque' }).toUpperCase()} 
+          ${renderLang({ en: 'effect points', es: 'puntos de ataque' }).toUpperCase()} 
         </div>
         <div class='in value-stat-content'>
-          ${PRE_VALUE_ICON} ${element.attackValue} PT. / ${element.velAttack}ms
+          ${PRE_VALUE_ICON} ${element.effectValue} PT. / ${element.velEffect}ms
         </div>
       </div>
       <div class='in character-stats-grid-row'>

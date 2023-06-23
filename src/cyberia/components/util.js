@@ -206,7 +206,7 @@ const resetsElements = () => {
   });
 };
 
-const attack = (element) => {
+const effect = (element) => {
   if (
     element.life > 0 &&
     params[element.type][element.id].shootActive === true &&
@@ -217,7 +217,7 @@ const attack = (element) => {
     socket.emit(
       'event',
       JSON.stringify({
-        event: 'attack',
+        event: 'effect',
         element: {
           render: {
             x: element.render.x,
@@ -233,17 +233,17 @@ const attack = (element) => {
         if (!params[element.type][element.id]) return;
         params[element.type][element.id].shootActive = true;
       },
-      element.velAttack !== undefined ? element.velAttack : 500
+      element.velEffect !== undefined ? element.velEffect : 500
     );
   }
 };
 
 const initMainUserJoy = (userElement) => {
-  if (hashIntervals[`key-attack`]) clearInterval(hashIntervals[`key-attack`]);
-  hashIntervals[`key-attack`] = setInterval(() => {
+  if (hashIntervals[`key-effect`]) clearInterval(hashIntervals[`key-effect`]);
+  hashIntervals[`key-effect`] = setInterval(() => {
     if (window.activeKey['Q'] || window.activeKey['q']) {
       const element = elements.user.find((element) => element.id === socket.id);
-      if (element) attack(element);
+      if (element) effect(element);
     }
   }, 10);
   if (hashIntervals[`joy`]) clearInterval(hashIntervals[`joy`]);

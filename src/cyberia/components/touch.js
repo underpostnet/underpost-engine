@@ -5,7 +5,7 @@ const finder = new pathfinding.AStarFinder({
   heuristic: pathfinding.Heuristic.chebyshev,
 });
 
-let currenTimeAttack = 0;
+let currenTimeEffect = 0;
 s('touch-layer').onclick = (e, subPath) => {
   // console.log('onClickCanvas', e, subPath);
   let x2 = subPath === undefined ? parseInt(maxRangeMap() * (e.offsetX / dimState().minValue)) : e.offsetX;
@@ -33,17 +33,17 @@ s('touch-layer').onclick = (e, subPath) => {
   const element = elements.user.find((element) => element.id === socket.id);
   if (element) {
     if (subPath === undefined) {
-      const newTimeAttack = +new Date();
-      let validateAttack = false;
-      if (newTimeAttack - currenTimeAttack <= 500) {
-        validateAttack = true;
+      const newTimeEffect = +new Date();
+      let validateEffect = false;
+      if (newTimeEffect - currenTimeEffect <= 500) {
+        validateEffect = true;
         element.direction = getDirection(element.render.x, element.render.y, x2, y2).direction;
-        attack(element);
+        effect(element);
         renderPixiEventElement(element);
       }
-      currenTimeAttack = newTimeAttack;
-      console.log('validateAttack', validateAttack);
-      if (validateAttack) return;
+      currenTimeEffect = newTimeEffect;
+      console.log('validateEffect', validateEffect);
+      if (validateEffect) return;
     }
 
     if (x2 > maxRangeMap(element.render.dim)) x2 = maxRangeMap(element.render.dim);
