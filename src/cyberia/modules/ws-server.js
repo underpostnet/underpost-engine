@@ -30,7 +30,7 @@ const allowDiagonal = true;
 const dontCrossCorners = true;
 const minBotsMap = 3;
 const rangeMapView = 1;
-
+const currentInstance = 'cyberia';
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 const characterSlots = ['skin', 'helmet', 'faction-symbol', 'breastplate', 'weapon', 'legs', 'talisman'];
@@ -91,27 +91,6 @@ maps.map((dataMap) => {
 
   objectsMaps.push(objectsMap);
 });
-
-const globalInstancesMapData = {
-  cyberia: maps
-    .filter((x) => x.position !== undefined && x.instance === 'cyberia')
-    .map((mapData) => {
-      return {
-        name: mapData.name_map,
-        position: mapData.position,
-        quests: quests
-          .filter((m) => m.targetsMaps.includes(mapData.name_map))
-          .map((m) => {
-            const { id, title } = m;
-            return {
-              id,
-              title,
-            };
-          }),
-        types: mapData.types,
-      };
-    }),
-};
 
 const addNewUserItem = (clients, eventElement, item, element) => {
   const { type } = eventElement.element;
@@ -477,7 +456,6 @@ const ssrWS = `
     const directions = ${JSONweb(directions)};
     const getParamsType = ${getParamsType};
     const getMissileDirection = ${getMissileDirection};
-    const globalInstancesMapData = ${JSONweb(globalInstancesMapData['cyberia'])}
     const validateSchemeElement = ${validateSchemeElement};
     const statsItems = ${JSONweb(Object.keys(items[0].stats))}
     const characterSlots = ${JSONweb(characterSlots)};
@@ -991,6 +969,32 @@ const wsServer = (httpServer, app, internalApi) => {
             safe_cords: dataMap.safe_cords,
             map,
             position: dataMap.position,
+            globalInstancesMapData: maps
+              .filter(
+                (x) =>
+                  x.instance === currentInstance &&
+                  x.position !== undefined &&
+                  x.position[0] >= dataMap.position[0] - rangeMapView &&
+                  x.position[0] <= dataMap.position[0] + rangeMapView &&
+                  x.position[1] >= dataMap.position[1] - rangeMapView &&
+                  x.position[1] <= dataMap.position[1] + rangeMapView
+              )
+              .map((mapData) => {
+                return {
+                  name: mapData.name_map,
+                  position: mapData.position,
+                  quests: quests
+                    .filter((m) => m.targetsMaps.includes(mapData.name_map))
+                    .map((m) => {
+                      const { id, title } = m;
+                      return {
+                        id,
+                        title,
+                      };
+                    }),
+                  types: mapData.types,
+                };
+              }),
           },
         })
       );

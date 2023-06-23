@@ -9,7 +9,9 @@ const renderMainMap = (selector) => {
         <div class='fl'>
           ${range(mapMetaData.position[0] - rangeMapView, mapMetaData.position[0] + rangeMapView)
             .map((xIndex) => {
-              let mapData = globalInstancesMapData.find((x) => x.position[0] === xIndex && x.position[1] === yIndex);
+              let mapData = mapMetaData.globalInstancesMapData.find(
+                (x) => x.position[0] === xIndex && x.position[1] === yIndex
+              );
               let voidMap = false;
               if (!mapData) {
                 voidMap = true;
@@ -89,7 +91,7 @@ const setNotiContentMap = () => {
   const successQuests = elements['user'].find((e) => e.id === socket.id)
     ? elements['user'].find((e) => e.id === socket.id).successQuests
     : [];
-  globalInstancesMapData.map((mapData) => {
+  mapMetaData.globalInstancesMapData.map((mapData) => {
     let dataQuests = [];
     mapData.quests.map((quest) => {
       if (!successQuests.includes(quest.id)) dataQuests.push(quest);
@@ -147,7 +149,7 @@ const instanceMapTypeStatus = (selector, styleClass, topHTML, map, types) => {
 
 const renderMapModal = (mapData) => {
   let currentMapModalDisplay = 'map';
-  if (mapData === undefined) mapData = globalInstancesMapData.find((m) => m.name === mapMetaData.map);
+  if (mapData === undefined) mapData = mapMetaData.globalInstancesMapData.find((m) => m.name === mapMetaData.map);
   const bodyModal = /*html*/ `
   <div class='in modal-item-header'>
           <!--
