@@ -1218,7 +1218,7 @@ const wsServer = (httpServer, app, internalApi) => {
   });
 
   // bots controller
-
+  const baseDefaultNameBots = ['Amon', 'Pruslas', 'Barbatos'];
   maps.map((dataMap) => {
     const map = dataMap.name_map;
     const type = 'bot';
@@ -1230,10 +1230,12 @@ const wsServer = (httpServer, app, internalApi) => {
       const maxBots = configBot && configBot.maxBots !== undefined ? configBot.maxBots : minBotsMap;
       const { color, render } = getParamsType(type);
       const { dim } = render;
+      let indexBot = -1;
       while (
         botPositionAvailablePoints.length > 0 &&
         elements[type].filter((element) => element.map === map).length < maxBots
       ) {
+        indexBot++;
         let customBot = {};
         if (configBot) customBot = configBot.bots[elements[type].filter((element) => element.map === map).length];
 
@@ -1257,6 +1259,7 @@ const wsServer = (httpServer, app, internalApi) => {
             y: point[1],
             dim,
           },
+          username: baseDefaultNameBots[indexBot],
           hostile: true,
           velPassiveHealValue: 1000,
           velFactor: 3,

@@ -7,12 +7,14 @@ let changeMapsPoints = [];
 let mapMetaData = {
   types: ['pve', 'pvp'],
 };
-
+let currentDemonHash;
 const initDemon = () => {
   if (!periodLoad) {
     periodLoad = true;
+    currentDemonHash = `demon-${s4()}-${s4()}`;
+    const friceDemonHash = `${currentDemonHash}`;
     setTimeout(() => {
-      if (periodLoad) location.reload();
+      if (periodLoad && friceDemonHash === currentDemonHash) location.reload();
     }, 5000);
   }
 };
