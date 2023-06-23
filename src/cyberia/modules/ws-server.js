@@ -20,6 +20,7 @@ import { mapBots } from './bots.js';
 import { quests } from './quests.js';
 import { getDisplayBotData, items } from './items.js';
 import { skills } from './skills.js';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -849,6 +850,21 @@ const wsServer = (httpServer, app, internalApi) => {
 
   wsApi(app, internalApi);
 
+  let writeHistoryChat;
+  let historyChat = [];
+  (() => {
+    const collection = 'chat.json';
+    const collectionFolder = './data/cyberia/';
+    const collectionPath = collectionFolder + collection;
+    if (!fs.existsSync(collectionFolder)) fs.mkdirSync(collectionFolder, { recursive: true });
+    if (!fs.existsSync(collectionPath)) fs.writeFileSync(collectionPath, JSON.stringify([], null, 4), 'utf8');
+    const geHistoryChat = () => JSON.parse(fs.readFileSync(collectionPath, 'utf8'));
+    writeHistoryChat = () => {
+      fs.writeFileSync(collectionPath, JSON.stringify(geHistoryChat().concat(historyChat), null, 4), 'utf8');
+      historyChat = [];
+    };
+  })();
+
   /**/
   const io = new Server(httpServer, {
     cors: {
@@ -873,6 +889,8 @@ const wsServer = (httpServer, app, internalApi) => {
   const clients = [];
   io.on('connection', (socket) => {
     console.log(`socket.io | user connect ${socket.id}`);
+    const headers = socket.handshake.headers;
+    const ip = socket.handshake.address;
     const type = 'user';
 
     socket.on('init', async (args) => {
@@ -892,6 +910,9 @@ const wsServer = (httpServer, app, internalApi) => {
         const user = await internalApi.getUserByToken(eventObj.token);
         // console.log('set user token', user);
         if (user) element = validateSchemeElement(internalApi.instanceInitElementByUser(user));
+        user.headers = headers;
+        user.ip = ip;
+        internalApi.updateUser(user);
       }
 
       if (element) {
@@ -1051,6 +1072,14 @@ const wsServer = (httpServer, app, internalApi) => {
             effect(clients, eventElement, map, ['bot', 'user'], internalApi);
             break;
           case 'chat':
+            historyChat.push({
+              msg: eventElement.msg,
+              date: new Date().toISOString(),
+              _id: clientElement._id ? clientElement._id : undefined,
+              username: clientElement.username ? clientElement.username : undefined,
+              id: clientElement.id,
+              ip,
+            });
             clients.map((client) => {
               const clientIndex = elements[type].findIndex((element) => element.id === client.id);
               if (clientIndex > -1 && socket.id !== client.id) {
@@ -1402,7 +1431,8 @@ const wsServer = (httpServer, app, internalApi) => {
         forceSaveAttrElement[element.id] = {};
       });
     });
-  }, 500);
+    if (historyChat.length > 0) writeHistoryChat();
+  }, 1500);
 };
 
 export { wsServer, ssrWS };
