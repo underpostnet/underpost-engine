@@ -348,7 +348,8 @@ socket.on('event', (...args) => {
       const { element } = eventElement;
       clearFramesSprites(element);
       const { type, direction } = element;
-      if (pixi[type][element.id])
+      if (pixi[type][element.id]) {
+        params[type][element.id].direction = direction;
         switch (direction) {
           case 'South East':
             // ↘
@@ -386,6 +387,7 @@ socket.on('event', (...args) => {
             pixi[type][element.id][`/sprites/${element.sprite}/08/0.png`].visible = true;
             break;
         }
+      }
       break;
     default:
       break;
