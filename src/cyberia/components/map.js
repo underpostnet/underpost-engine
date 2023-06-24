@@ -1,13 +1,13 @@
 const renderMainMap = (selector) => {
   if (selector === undefined) selector = '.main-map-render-content';
-
+  // const centerMapPosition = mapMetaData.position;
   htmls(
     selector,
-    range(mapMetaData.position[1] - rangeMapView, mapMetaData.position[1] + rangeMapView)
+    range(centerMapPosition[1] - rangeMapView, centerMapPosition[1] + rangeMapView)
       .map(
         (yIndex) => /*html*/ `
         <div class='fl'>
-          ${range(mapMetaData.position[0] - rangeMapView, mapMetaData.position[0] + rangeMapView)
+          ${range(centerMapPosition[0] - rangeMapView, centerMapPosition[0] + rangeMapView)
             .map((xIndex) => {
               let mapData = mapMetaData.globalInstancesMapData.find(
                 (x) => x.position && x.position[0] === xIndex && x.position[1] === yIndex

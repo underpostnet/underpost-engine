@@ -31,6 +31,7 @@ const allowDiagonal = true;
 const dontCrossCorners = true;
 const minBotsMap = 3;
 const rangeMapView = 2;
+const centerMapPosition = [1, 1];
 const currentInstance = 'cyberia';
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
@@ -462,6 +463,7 @@ const ssrWS = `
     const characterSlots = ${JSONweb(characterSlots)};
     const skillTypes = ${JSONweb(skillTypes)};
     const rangeMapView = ${JSONweb(rangeMapView)};
+    const centerMapPosition = ${JSONweb(centerMapPosition)};
 `;
 
 const rebirdElement = (clients, element, internalApi) => {
@@ -830,11 +832,12 @@ const unEquipItem = (clients, clientElement, clientElementIndex, eventElement) =
 
 const validateMapViewRange = (dataMapIter, dataMap) => {
   if (dataMapIter.position === undefined || dataMap.position === undefined) return false;
+  // const centerMapPosition = dataMap.position;
   return (
-    dataMapIter.position[0] >= dataMap.position[0] - rangeMapView &&
-    dataMapIter.position[0] <= dataMap.position[0] + rangeMapView &&
-    dataMapIter.position[1] >= dataMap.position[1] - rangeMapView &&
-    dataMapIter.position[1] <= dataMap.position[1] + rangeMapView
+    dataMapIter.position[0] >= centerMapPosition[0] - rangeMapView &&
+    dataMapIter.position[0] <= centerMapPosition[0] + rangeMapView &&
+    dataMapIter.position[1] >= centerMapPosition[1] - rangeMapView &&
+    dataMapIter.position[1] <= centerMapPosition[1] + rangeMapView
   );
 };
 
