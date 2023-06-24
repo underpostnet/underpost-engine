@@ -4,6 +4,8 @@ if (!logicStorage['logout']['admin'])
     s('graphics-engine').remove();
     guiSections = guiSections.filter((g) => g !== 'graphics-engine');
     intanceMenuBtns();
+    logicStorage['logout']['admin'] = undefined;
+    delete logicStorage['logout']['admin'];
   };
 
 guiSections.push('graphics-engine');
