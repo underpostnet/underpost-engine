@@ -4,6 +4,7 @@ html {
 
 body {
     /* overscroll-behavior: contain; */
+    /* box-sizing: border-box; */
 }
 
 .fl {
