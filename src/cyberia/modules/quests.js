@@ -94,21 +94,17 @@ const quests = [
       setTimeout(() => {
         let successQuest = getInitStateSucessQuest(input, setSuccessQuest);
         if (successQuest === true) return;
-        questsLogicsStorage[input.id] = {
-          type: 'kill-element',
-          checkStatusQuest: (eventElement) => {
-            const { fromElmement, toElement } = eventElement;
-            if (
-              'kishins' === toElement.sprite &&
-              'orange-over-purple' === toElement.map &&
-              fromElmement.id === socket.id
-            ) {
-              endNotiUpdateElementQuestValidator(input, successQuest);
-              questsLogicsStorage[input.id] = undefined;
-              delete questsLogicsStorage[input.id];
-            }
-          },
-          input,
+        logicStorage['kill-element'][input.id] = (eventElement) => {
+          const { fromElmement, toElement } = eventElement;
+          if (
+            'kishins' === toElement.sprite &&
+            'orange-over-purple' === toElement.map &&
+            fromElmement.id === socket.id
+          ) {
+            endNotiUpdateElementQuestValidator(input, successQuest);
+            logicStorage['kill-element'][input.id] = undefined;
+            delete logicStorage['kill-element'][input.id];
+          }
         };
       });
       return renderQuestInfoGUI(

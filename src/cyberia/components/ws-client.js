@@ -20,6 +20,7 @@ const initDemon = () => {
 };
 const logicStorage = {
   logout: {},
+  'kill-element': {},
 };
 let enableFirstUserRender = true;
 
@@ -356,10 +357,7 @@ socket.on('event', (...args) => {
           })}     
       `,
       });
-      Object.keys(questsLogicsStorage).map((questId) => {
-        if (questsLogicsStorage[questId].type === 'kill-element')
-          questsLogicsStorage[questId].checkStatusQuest(eventElement);
-      });
+      Object.keys(logicStorage['kill-element']).map((keyLogic) => logicStorage['kill-element'][keyLogic](eventElement));
       break;
 
     case 'direction':
