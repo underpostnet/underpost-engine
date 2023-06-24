@@ -675,6 +675,38 @@ const maps = [
       ],
     ],
   },
+  {
+    name_map: 'a225',
+    position: [3, 0],
+    instance: 'cyberia',
+    types: ['pvp', 'pve'],
+    safe_cords: [],
+    matrix: [],
+  },
+  {
+    name_map: 'cd89',
+    position: [2, -1],
+    instance: 'cyberia',
+    types: ['pvp', 'pve'],
+    safe_cords: [],
+    matrix: [],
+  },
+  {
+    name_map: 'cy-stadium',
+    position: [3, -1],
+    instance: 'cyberia',
+    types: ['pvp', 'pve'],
+    safe_cords: [],
+    matrix: [],
+  },
+  {
+    name_map: 'fe17',
+    position: [-1, 2],
+    instance: 'cyberia',
+    types: ['pvp', 'pve'],
+    safe_cords: [],
+    matrix: [],
+  },
 ];
 
 export { maps };
