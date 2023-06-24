@@ -189,7 +189,6 @@ socket.on('init-data', (...args) => {
       enableFirstUserRender = false;
       const result = await serviceRequest(API_BASE + '/user-render', {
         method: 'POST',
-        log: true,
         headers: {
           Authorization: `Bearer ${localStorage.getItem('_b')}`,
           //  'Content-Type': 'application/json',

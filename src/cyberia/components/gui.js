@@ -168,7 +168,7 @@ append(
   `
 );
 
-const guiSections = [
+let guiSections = [
   'create-account',
   'login',
   'bag',
@@ -205,24 +205,27 @@ const mainCloseGUI = () => {
   s('gui-layer').style.display = 'block';
 };
 
-guiSections.map((section) => {
-  s(`.btn-${section}`).onclick = () => {
-    mainCloseGUI();
-    s(section).style.display = 'block';
+const intanceMenuBtns = () => {
+  guiSections.map((section) => {
+    s(`.btn-${section}`).onclick = () => {
+      mainCloseGUI();
+      s(section).style.display = 'block';
 
-    switch (section) {
-      case 'chat':
-        setTimeout(() => s('.chat-input').focus());
-        resetNotiCircleChat();
-        break;
-      case 'quests':
-        // resetNotiCircleQuests();
-        break;
-      default:
-        break;
-    }
-  };
-});
+      switch (section) {
+        case 'chat':
+          setTimeout(() => s('.chat-input').focus());
+          resetNotiCircleChat();
+          break;
+        case 'quests':
+          // resetNotiCircleQuests();
+          break;
+        default:
+          break;
+      }
+    };
+  });
+};
+intanceMenuBtns();
 
 s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
