@@ -347,6 +347,7 @@ const verifyToken = (req, res, token, next) => {
         });
       const user = getUsers().find((user) => user.email == response.user.email && user.pass == response.user.pass);
       if (user) {
+        if (user.email === process.env.ADMIN) user.admin = true;
         req.user = user;
         return next();
       }
@@ -500,4 +501,4 @@ const authApi = (app, internalApi) => {
   app.get(process.env.API_BASE + '/auth/confirm/email/:token', (req, res) => confirmEmailToken(req, res, internalApi));
 };
 
-export { authApi };
+export { authApi, authValidator };

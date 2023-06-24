@@ -8,10 +8,39 @@ import { ssrColor } from '../../core/modules/colors.js';
 
 import { ssrWS } from './ws-server.js';
 import { maps } from './maps.js';
+import { authValidator } from './auth.js';
 
 dotenv.config();
 
-const NAME_APP = 'cyberia';
+const NAME_APP = process.env.NAME_APP;
+
+const userRender = (req, res) => {
+  try {
+    if (req.user && req.user.admin === true) {
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'ok',
+          render: fs.readFileSync(`./src/${NAME_APP}/components/admin.js`, 'utf8'),
+        },
+      });
+    }
+    return res.status(401).json({
+      status: 'error',
+      data: {
+        message: 'user not admin',
+        render: '',
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
 
 const renderInstanceTitle = (pathObj) =>
   `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${
@@ -100,6 +129,7 @@ const httpClient = (app) => {
                   ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-event.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-remove.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/gui.js`, 'utf8')}
+                  ${fs.readFileSync(`./src/${NAME_APP}/components/logout.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/ws-client.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/touch.js`, 'utf8')}
                   ${fs.readFileSync(`./src/${NAME_APP}/components/screen-keys.js`, 'utf8')}
@@ -116,6 +146,7 @@ const httpClient = (app) => {
 
   // app.use('/', express.static('./builds/www'));
   app.use('/', express.static(dir));
+  app.post(process.env.API_BASE + '/user-render', authValidator, userRender);
 };
 
 export { httpClient };

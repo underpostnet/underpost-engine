@@ -228,11 +228,3 @@ s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   closeGuiSections();
 };
-
-s('.btn-logout').onclick = () => {
-  localStorage.removeItem('_b');
-  htmls('event-history-render', '');
-  resetCharacterSlots();
-  resetEventBoard();
-  newMainUserInstance();
-};

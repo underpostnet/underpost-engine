@@ -18,6 +18,10 @@ const initDemon = () => {
     }, 5000);
   }
 };
+const logicStorage = {
+  logout: {},
+};
+let enableFirstUserRender = true;
 
 Object.keys(typeModels()).map((type) => ((elements[type] = []), (pixi[type] = {}), (params[type] = {})));
 
@@ -179,6 +183,20 @@ socket.on('init-data', (...args) => {
     renderPixiInitElement(safeZoneElement);
   });
   renderMainMap();
+  if (localStorage.getItem('_b') && enableFirstUserRender === true)
+    setTimeout(async () => {
+      enableFirstUserRender = false;
+      const result = await serviceRequest(API_BASE + '/user-render', {
+        method: 'POST',
+        log: true,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('_b')}`,
+          //  'Content-Type': 'application/json',
+        },
+      });
+      if (result.status === 'success') eval(result.data.render);
+    });
+
   s('loader').style.display = 'none';
   periodLoad = false;
   if (firstLoad) {
