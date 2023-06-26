@@ -21,6 +21,7 @@ const initDemon = () => {
 const logicStorage = {
   logout: {},
   'kill-element': {},
+  'css-controller': {},
 };
 let enableFirstUserRender = true;
 

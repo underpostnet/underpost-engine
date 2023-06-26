@@ -129,5 +129,6 @@ setInterval(() => {
        }
     `
     );
+    Object.keys(logicStorage['css-controller']).map((keyLogic) => logicStorage['css-controller'][keyLogic](screenDim));
   }
 }, updateTimeInterval);
