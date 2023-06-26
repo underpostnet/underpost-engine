@@ -11,7 +11,7 @@ if (!logicStorage['logout']['admin'])
   };
 
 let currentColorCell = 'black';
-let currentSizeCell = 'x1';
+let currentSizeCell = 0;
 let mouseDown = false;
 
 guiSections.push('graphics-engine');
