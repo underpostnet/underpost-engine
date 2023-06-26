@@ -1,18 +1,23 @@
-if (!logicStorage['logout']['admin'])
-  logicStorage['logout']['admin'] = () => {
+if (!logicStorage['logout']['gfx'])
+  logicStorage['logout']['gfx'] = () => {
     s('.btn-graphics-engine').remove();
     s('graphics-engine').remove();
     guiSections = guiSections.filter((g) => g !== 'graphics-engine');
     intanceMenuBtns();
-    logicStorage['logout']['admin'] = undefined;
-    delete logicStorage['logout']['admin'];
-    logicStorage['css-controller']['admin'] = undefined;
-    delete logicStorage['css-controller']['admin'];
+    logicStorage['logout']['gfx'] = undefined;
+    delete logicStorage['logout']['gfx'];
+    logicStorage['css-controller']['gfx'] = undefined;
+    delete logicStorage['css-controller']['gfx'];
+    logicStorage['key-down']['gfx'] = undefined;
+    delete logicStorage['key-down']['gfx'];
   };
 
 let currentColorCell = 'black';
 let currentSizeCell = 0;
 let mouseDown = false;
+let gfxLastX = 0;
+let gfxLastY = 0;
+let gfxCellColor = [];
 
 guiSections.push('graphics-engine');
 append(
@@ -54,6 +59,7 @@ prepend(
       }
     </style>
      <style class='style-gfx-cell'></style>
+     <style class='style-gfx-cell-select'></style>
     <sub-content-gui class='in'>
           <div class='in title-section'>Graphics Engine</div>
     </sub-content-gui>
@@ -70,7 +76,7 @@ prepend(
             z-index: 1;
           `,
           label: renderLang({ es: 'x1', en: 'x1' }),
-          data: range(1, 2).map((size) => {
+          data: range(1, 10).map((size) => {
             return { value: size - 1, display: `x${size}` };
           }),
           onClick: (value) => {
@@ -95,12 +101,26 @@ s('gfx-grid').onmousedown = () => (mouseDown = true);
 s('gfx-grid').onmouseup = () => (mouseDown = false);
 
 const renderPaint = (x, y) => {
+  gfxLastX = x;
+  gfxLastY = y;
+  htmls(
+    '.style-gfx-cell-select',
+    /*css*/ `
+    .gfx-${x}-${y} {
+      border: 1px solid yellow;
+    }
+  `
+  );
   s(`.gfx-${x}-${y}`).style.background = currentColorCell;
+  gfxCellColor[x][y] = `${currentColorCell}`;
   if (currentSizeCell > 0) {
-    range(1, currentSizeCell).map((size) => {
-      if (s(`.gfx-${x + size}-${y}`)) s(`.gfx-${x + size}-${y}`).style.background = currentColorCell;
-      if (s(`.gfx-${x}-${y + size}`)) s(`.gfx-${x}-${y + size}`).style.background = currentColorCell;
-      if (s(`.gfx-${x + size}-${y + size}`)) s(`.gfx-${x + size}-${y + size}`).style.background = currentColorCell;
+    range(1, currentSizeCell).map((sizeY) => {
+      range(1, currentSizeCell).map((sizeX) => {
+        if (s(`.gfx-${x + sizeX}-${y}`)) s(`.gfx-${x + sizeX}-${y}`).style.background = currentColorCell;
+        if (s(`.gfx-${x}-${y + sizeY}`)) s(`.gfx-${x}-${y + sizeY}`).style.background = currentColorCell;
+        if (s(`.gfx-${x + sizeX}-${y + sizeY}`))
+          s(`.gfx-${x + sizeX}-${y + sizeY}`).style.background = currentColorCell;
+      });
     });
   }
 };
@@ -120,6 +140,7 @@ const renderPaint = (x, y) => {
     });
     render += /*html*/ `</div>`;
     append('gfx-grid', render);
+    gfxCellColor.push([]);
   });
 })();
 
@@ -143,4 +164,10 @@ const renderDimGfxEngine = (screenDim) => {
 };
 renderDimGfxEngine(dimState());
 
-logicStorage['css-controller']['admin'] = renderDimGfxEngine;
+logicStorage['css-controller']['gfx'] = renderDimGfxEngine;
+logicStorage['key-down']['gfx'] = () => {
+  if (window.activeKey['Control'] && (window.activeKey['v'] || window.activeKey['V'])) {
+  }
+  if (window.activeKey['Control'] && (window.activeKey['c'] || window.activeKey['C'])) {
+  }
+};

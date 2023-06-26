@@ -14,6 +14,7 @@ dotenv.config();
 
 const NAME_APP = process.env.NAME_APP;
 
+const fxEngineRender = fs.readFileSync(`./src/${NAME_APP}/components/gfx.js`, 'utf8');
 const userRender = (req, res) => {
   try {
     if (req.user && req.user.admin === true) {
@@ -21,7 +22,7 @@ const userRender = (req, res) => {
         status: 'success',
         data: {
           message: 'ok',
-          render: fs.readFileSync(`./src/${NAME_APP}/components/admin.js`, 'utf8'),
+          render: fxEngineRender,
         },
       });
     }

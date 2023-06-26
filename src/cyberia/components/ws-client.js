@@ -22,6 +22,7 @@ const logicStorage = {
   logout: {},
   'kill-element': {},
   'css-controller': {},
+  'key-down': {},
 };
 let enableFirstUserRender = true;
 

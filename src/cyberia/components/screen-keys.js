@@ -33,6 +33,7 @@ setInterval(() => {
     blockKey = true;
     s('.open-menu').click();
   }
+  Object.keys(logicStorage['key-down']).map((keyLogic) => logicStorage['key-down'][keyLogic]());
   if (blockKey)
     setTimeout(() => {
       blockKey = false;
