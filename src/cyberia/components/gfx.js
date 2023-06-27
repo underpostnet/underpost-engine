@@ -73,7 +73,7 @@ prepend(
       <div class='in gfx-content-top-menu'>
         <input type='color' class='inl gfx-input-color'>
         <button class='inl custom-cursor gfx-state'>
-          paint on
+          paint <span style='color: green'>on</span>
         </button>
         <button class='inl gfx-btn custom-cursor gfx-copy'>
           copy
@@ -85,7 +85,7 @@ prepend(
           clean
         </button>
         <button class='inl gfx-btn custom-cursor gfx-grill'>
-          grill on
+          grill <span style='color: green'>on</span>
         </button>
         <button class='inl gfx-btn custom-cursor gfx-png'>
           download png
@@ -237,18 +237,18 @@ logicStorage['key-down']['gfx'] = () => {
 s('.gfx-state').onclick = () => {
   if (paintMode) {
     paintMode = false;
-    htmls('.gfx-state', `paint off`);
+    htmls('.gfx-state', `paint <span style='color: red'>off</span>`);
     return;
   }
   paintMode = true;
-  htmls('.gfx-state', `paint on`);
+  htmls('.gfx-state', `paint <span style='color: green'>on</span>`);
 };
 
 const grillModeChange = () => {
   if (grillMode) {
     grillMode = false;
     htmls('.style-gfx-grill', '');
-    htmls('.gfx-grill', 'grill off');
+    htmls('.gfx-grill', `grill <span style='color: red'>off</span>`);
     return;
   }
   grillMode = true;
@@ -260,7 +260,7 @@ const grillModeChange = () => {
     }
   `
   );
-  htmls('.gfx-grill', 'grill on');
+  htmls('.gfx-grill', `grill <span style='color: green'>on</span>`);
 };
 grillModeChange();
 
@@ -269,4 +269,10 @@ s('.gfx-paste').onclick = () => gfxPaste();
 s('.gfx-clean').onclick = () => renderGfxGrid();
 s('.gfx-grill').onclick = () => grillModeChange();
 
-s('.gfx-png').onclick = () => html2canvas(s('gfx-grid')).then((canvas) => downloader('map.png', mimes['png'], canvas));
+// https://html2canvas.hertzen.com/configuration
+s('.gfx-png').onclick = () =>
+  html2canvas(s('gfx-grid'), {
+    width: 575,
+    height: 575,
+    backgroundColor: null,
+  }).then((canvas) => downloader('map.png', mimes['png'], canvas));

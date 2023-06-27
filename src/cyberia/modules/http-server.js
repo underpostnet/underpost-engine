@@ -55,17 +55,28 @@ const httpClient = (app) => {
   const dir = './public/' + NAME_APP;
 
   deleteFolderRecursive(`${dir}`);
-  copyDir('./node_modules/socket.io/client-dist', `${dir}/socket.io`);
-  copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
-  copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
-  copyDir('./node_modules/sortablejs', `${dir}/sortablejs`);
-  copyDir('./node_modules/html2canvas/dist', `${dir}/html2canvas`);
+  const npmModules = [
+    ['./node_modules/socket.io/client-dist', `${dir}/socket.io`, `/socket.io/socket.io.js`],
+    ['./node_modules/pixi.js/dist', `${dir}/pixi.js`, `/pixi.js/pixi.js`],
+    ['./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`, `/pathfinding/pathfinding-browser.min.js`],
+    ['./node_modules/sortablejs', `${dir}/sortablejs`, `/sortablejs/Sortable.min.js`],
+    ['./node_modules/html2canvas/dist', `${dir}/html2canvas`, `/html2canvas/html2canvas.min.js`],
+  ];
+
+  npmModules.map((mod) => copyDir(mod[0], mod[1]));
 
   copyDir(`./src/${NAME_APP}/assets`, `${dir}`);
 
   fs.mkdirSync(`${dir}/.well-known`, { recursive: true });
 
   let coreJs = `
+  ${npmModules
+    .map(
+      (mod) => `
+  import "${mod[2]}";
+  `
+    )
+    .join('')}
   const dev = ${process.env.NODE_ENV === 'dev'};
   const NAME_APP = '${NAME_APP}';
   const API_BASE = '${process.env.API_BASE}';
@@ -120,6 +131,9 @@ const httpClient = (app) => {
     coreCss = new CleanCSS().minify(coreCss).styles;
   }
 
+  fs.writeFileSync(`${dir}/app.js`, coreJs, 'utf8');
+  fs.writeFileSync(`${dir}/app.css`, coreCss, 'utf8');
+
   maps.map((pathObj) => {
     let path = pathObj.name_map;
     if (path !== '') path += '/';
@@ -141,14 +155,10 @@ const httpClient = (app) => {
                 <script src="/pathfinding/pathfinding-browser.min.js"></script>
                 <script src="/sortablejs/Sortable.min.js"></script>
                 <script src="/html2canvas/html2canvas.min.js"></script>
-                <style>
-                  ${coreCss}  
-                </style>
+                <link rel='stylesheet' href="/app.css">
             </head>
             <body>
-                <script>
-                  ${coreJs}                  
-                </script>
+                <script type="module" src="/app.js"></script>
             </body>
             </html>  
         `,
