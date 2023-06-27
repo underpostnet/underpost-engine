@@ -13,7 +13,8 @@
     "private-prod-cyberia": "env-cmd -f src/cyberia/.env.private.prod pm2 start src/cyberia/modules/server.js",
     "test-dev": "mocha",
     "prettier": "prettier --write .",
-    "install-global": "npm install -g npm@latest && npm install -g mocha && npm install -g prettier && npm install -g pm2"
+    "install-global": "npm install -g npm@latest && npm install -g mocha && npm install -g prettier && npm install -g pm2",
+    "test-lite": "nodemon src/test/server"
   },
   "repository": {
     "type": "git",
