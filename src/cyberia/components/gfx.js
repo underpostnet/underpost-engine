@@ -15,9 +15,6 @@ if (!logicStorage['logout']['gfx'])
 let currentColorCell = 'black';
 let currentSizeCell = 0;
 let mouseDown = false;
-let gfxLastX = 0;
-let gfxLastY = 0;
-let gfxCellColor = [];
 
 guiSections.push('graphics-engine');
 append(
@@ -101,8 +98,6 @@ s('gfx-grid').onmousedown = () => (mouseDown = true);
 s('gfx-grid').onmouseup = () => (mouseDown = false);
 
 const renderPaint = (x, y) => {
-  gfxLastX = x;
-  gfxLastY = y;
   htmls(
     '.style-gfx-cell-select',
     /*css*/ `
@@ -112,7 +107,7 @@ const renderPaint = (x, y) => {
   `
   );
   s(`.gfx-${x}-${y}`).style.background = currentColorCell;
-  gfxCellColor[x][y] = `${currentColorCell}`;
+
   if (currentSizeCell > 0) {
     range(1, currentSizeCell).map((sizeY) => {
       range(1, currentSizeCell).map((sizeX) => {
@@ -140,7 +135,6 @@ const renderPaint = (x, y) => {
     });
     render += /*html*/ `</div>`;
     append('gfx-grid', render);
-    gfxCellColor.push([]);
   });
 })();
 
