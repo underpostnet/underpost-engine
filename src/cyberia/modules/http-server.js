@@ -1,6 +1,8 @@
 import fs from 'fs';
 import dotenv from 'dotenv';
 import express from 'express';
+import UglifyJS from 'uglify-js';
+import CleanCSS from 'clean-css';
 
 import { commonFunctions, JSONweb } from '../../core/modules/common.js';
 import { copyDir, deleteFolderRecursive } from '../../core/modules/files.js';
@@ -9,6 +11,7 @@ import { ssrColor } from '../../core/modules/colors.js';
 import { ssrWS } from './ws-server.js';
 import { maps } from './maps.js';
 import { authValidator } from './auth.js';
+import { mimes } from '../../core/modules/mime.js';
 
 dotenv.config();
 
@@ -56,10 +59,66 @@ const httpClient = (app) => {
   copyDir('./node_modules/pixi.js/dist', `${dir}/pixi.js`);
   copyDir('./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`);
   copyDir('./node_modules/sortablejs', `${dir}/sortablejs`);
+  copyDir('./node_modules/html2canvas/dist', `${dir}/html2canvas`);
 
   copyDir(`./src/${NAME_APP}/assets`, `${dir}`);
 
   fs.mkdirSync(`${dir}/.well-known`, { recursive: true });
+
+  let coreJs = `
+  const dev = ${process.env.NODE_ENV === 'dev'};
+  const NAME_APP = '${NAME_APP}';
+  const API_BASE = '${process.env.API_BASE}';
+  const IO_HOST = '${process.env.NODE_ENV === 'prod' ? process.env.HOST : 'ws://localhost:' + process.env.PORT}';
+  ${commonFunctions()}
+  ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
+  const renderInstanceTitle = ${renderInstanceTitle};
+  if (localStorage.getItem('lang')) s('html').lang = localStorage.getItem('lang');
+  const mimes = ${JSONweb(mimes)};
+  ${ssrColor}
+  ${ssrWS}
+  if (!dev) {
+    console.log = () => null;
+    console.warn = () => null;
+  }                  
+  ${fs.readFileSync(`./src/${NAME_APP}/components/toggle-switch.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/dropdown.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/drag.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/create-account.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/login.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/koyn.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/bag.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/chat.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/quests.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/noti-circle.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/character-stats.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/css-controller.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/config.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/wiki.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/map.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/history-board.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/account.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/util.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-init.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-event.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-remove.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/gui.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/logout.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/ws-client.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/touch.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/components/screen-keys.js`, 'utf8')}
+  `;
+
+  let coreCss = `
+  ${fs.readFileSync(`./src/core/css/base.css`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
+  ${fs.readFileSync(`./src/${NAME_APP}/css/place-bar-select.css`, 'utf8')}
+  `;
+
+  if (process.env.NODE_ENV !== 'dev') {
+    coreJs = `(function(){${UglifyJS.minify(coreJs).code}})()`;
+    coreCss = new CleanCSS().minify(coreCss).styles;
+  }
 
   maps.map((pathObj) => {
     let path = pathObj.name_map;
@@ -81,62 +140,14 @@ const httpClient = (app) => {
                 <script src="/pixi.js/pixi.js"></script>
                 <script src="/pathfinding/pathfinding-browser.min.js"></script>
                 <script src="/sortablejs/Sortable.min.js"></script>
+                <script src="/html2canvas/html2canvas.min.js"></script>
                 <style>
-                  ${fs.readFileSync(`./src/core/css/base.css`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/css/place-bar-select.css`, 'utf8')}
+                  ${coreCss}  
                 </style>
             </head>
             <body>
                 <script>
-
-                ${process.env.NODE_ENV === 'dev' ? '' : `(function(){`}  
-                  
-                  const dev = ${process.env.NODE_ENV === 'dev'};
-                  const NAME_APP = '${NAME_APP}';
-                  const API_BASE = '${process.env.API_BASE}';
-                  const IO_HOST = '${
-                    process.env.NODE_ENV === 'prod' ? process.env.HOST : 'ws://localhost:' + process.env.PORT
-                  }';
-                  ${commonFunctions()}
-                  ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
-                  const renderInstanceTitle = ${renderInstanceTitle};
-                  if (localStorage.getItem('lang')) s('html').lang = localStorage.getItem('lang');
-                  ${ssrColor}
-                  ${ssrWS}
-                  if (!dev) {
-                    console.log = () => null;
-                    console.warn = () => null;
-                  }                  
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/toggle-switch.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/dropdown.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/drag.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/create-account.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/login.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/koyn.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/bag.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/chat.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/quests.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/noti-circle.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/character-stats.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/css-controller.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/config.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/wiki.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/map.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/history-board.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/account.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/util.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-init.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-event.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-remove.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/gui.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/logout.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/ws-client.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/touch.js`, 'utf8')}
-                  ${fs.readFileSync(`./src/${NAME_APP}/components/screen-keys.js`, 'utf8')}
-
-                ${process.env.NODE_ENV === 'dev' ? '' : `})()`}  
-                
+                  ${coreJs}                  
                 </script>
             </body>
             </html>  

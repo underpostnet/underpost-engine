@@ -156,3 +156,19 @@ const dimState = () =>
   window.innerWidth > window.innerHeight
     ? { minValue: window.innerHeight, maxValue: window.innerWidth, minType: 'height', maxType: 'width' }
     : { minValue: window.innerWidth, maxValue: window.innerHeight, minType: 'width', maxType: 'height' };
+
+const isElement = (element) => element instanceof Element || element instanceof HTMLDocument;
+
+const downloader = (name, mime, raw) => {
+  let content;
+  if (isElement(raw)) content = raw.toDataURL(mime);
+  else if (typeof raw === 'object') content = generateBlobSrc(JSON.stringify(raw, null, 4));
+  else if (typeof raw === 'string') content = generateBlobSrc(raw, mime);
+  else return;
+  const idDownload = 'downloader-' + s4() + s4();
+  append('body', /*html*/ `<a class='${idDownload}' style='display: none'></a>`);
+  s(`.${idDownload}`).href = content;
+  s(`.${idDownload}`).download = name;
+  s(`.${idDownload}`).click();
+  s(`.${idDownload}`).remove();
+};

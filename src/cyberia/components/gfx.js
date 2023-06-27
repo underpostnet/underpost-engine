@@ -87,6 +87,9 @@ prepend(
         <button class='inl gfx-btn custom-cursor gfx-grill'>
           grill on
         </button>
+        <button class='inl gfx-btn custom-cursor gfx-png'>
+          download png
+        </button>
       </div>
       <div class='in main-dropdown-content'>
         ${renderDropDown({
@@ -265,3 +268,5 @@ s('.gfx-copy').onclick = () => gfxCopy();
 s('.gfx-paste').onclick = () => gfxPaste();
 s('.gfx-clean').onclick = () => renderGfxGrid();
 s('.gfx-grill').onclick = () => grillModeChange();
+
+s('.gfx-png').onclick = () => html2canvas(s('gfx-grid')).then((canvas) => downloader('map.png', mimes['png'], canvas));
