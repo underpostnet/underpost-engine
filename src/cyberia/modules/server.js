@@ -8,6 +8,7 @@ import { authApi } from './auth.js';
 import { createServer } from 'http';
 import { mailerApi } from './mailer.js';
 import { itemsApi } from './items.js';
+import compression from 'compression';
 
 dotenv.config();
 console.log(process.argv);
@@ -24,6 +25,17 @@ app.use(express.urlencoded({ extended: true, limit: '20MB' }));
 
 // json formatted response
 app.set('json spaces', 2);
+
+// js compression
+function shouldCompress(req, res) {
+  if (req.headers['x-no-compression']) {
+    // don't compress responses with this request header
+    return false;
+  }
+  // fallback to standard filter function
+  return compression.filter(req, res);
+}
+app.use(compression({ filter: shouldCompress }));
 
 const internalApi = {
   getHost: (uri) =>

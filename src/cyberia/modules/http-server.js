@@ -16,6 +16,7 @@ import { mimes } from '../../core/modules/mime.js';
 dotenv.config();
 
 const NAME_APP = process.env.NAME_APP;
+const nameSrcFileApp = 'app';
 
 const fxEngineRender = fs.readFileSync(`./src/${NAME_APP}/components/gfx.js`, 'utf8');
 const userRender = (req, res) => {
@@ -56,12 +57,20 @@ const httpClient = (app) => {
 
   deleteFolderRecursive(`${dir}`);
   const npmModules = [
-    ['./node_modules/socket.io/client-dist', `${dir}/socket.io`, `/socket.io/socket.io.js`],
-    ['./node_modules/pixi.js/dist', `${dir}/pixi.js`, `/pixi.js/pixi.js`],
+    ['./node_modules/socket.io/client-dist', `${dir}/socket.io`, `/socket.io/socket.io.min.js`],
+    ['./node_modules/pixi.js/dist', `${dir}/pixi.js`, `/pixi.js/pixi.min.js`],
     ['./node_modules/pathfinding/visual/lib', `${dir}/pathfinding`, `/pathfinding/pathfinding-browser.min.js`],
     ['./node_modules/sortablejs', `${dir}/sortablejs`, `/sortablejs/Sortable.min.js`],
     ['./node_modules/html2canvas/dist', `${dir}/html2canvas`, `/html2canvas/html2canvas.min.js`],
   ];
+
+  const htmlJsTagModules = npmModules
+    .map(
+      (mod) => /*html*/ `
+              <script src="${mod[2]}"></script>
+`
+    )
+    .join('');
 
   npmModules.map((mod) => copyDir(mod[0], mod[1]));
 
@@ -70,13 +79,7 @@ const httpClient = (app) => {
   fs.mkdirSync(`${dir}/.well-known`, { recursive: true });
 
   let coreJs = `
-  ${npmModules
-    .map(
-      (mod) => `
-  import "${mod[2]}";
-  `
-    )
-    .join('')}
+
   const dev = ${process.env.NODE_ENV === 'dev'};
   const NAME_APP = '${NAME_APP}';
   const API_BASE = '${process.env.API_BASE}';
@@ -131,8 +134,8 @@ const httpClient = (app) => {
     coreCss = new CleanCSS().minify(coreCss).styles;
   }
 
-  fs.writeFileSync(`${dir}/app.js`, coreJs, 'utf8');
-  fs.writeFileSync(`${dir}/app.css`, coreCss, 'utf8');
+  fs.writeFileSync(`${dir}/${nameSrcFileApp}.js`, coreJs, 'utf8');
+  fs.writeFileSync(`${dir}/${nameSrcFileApp}.css`, coreCss, 'utf8');
 
   maps.map((pathObj) => {
     let path = pathObj.name_map;
@@ -150,18 +153,16 @@ const httpClient = (app) => {
                 <title>${renderInstanceTitle(pathObj)}</title>
                 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
                 <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-                <script src="/socket.io/socket.io.js"></script>
-                <script src="/pixi.js/pixi.js"></script>
-                <script src="/pathfinding/pathfinding-browser.min.js"></script>
-                <script src="/sortablejs/Sortable.min.js"></script>
-                <script src="/html2canvas/html2canvas.min.js"></script>
-                <link rel='stylesheet' href="/app.css">
+                ${htmlJsTagModules}
+                <link rel='stylesheet' href="/${nameSrcFileApp}.css">
             </head>
             <body>
-                <script type="module" src="/app.js"></script>
+                <script type="module" src="/${nameSrcFileApp}.js" async></script>
             </body>
             </html>  
-        `,
+        `
+        .replaceAll(`\n`, ' ')
+        .replaceAll('\t', ' '),
       'utf8'
     );
   });
