@@ -15,6 +15,7 @@ if (!logicStorage['logout']['gfx'])
 let currentColorCell = 'black';
 let currentSizeCell = 0;
 let mouseDown = false;
+let paintMode = true;
 
 guiSections.push('graphics-engine');
 append(
@@ -54,6 +55,9 @@ prepend(
         width: 100px;
         padding: 0px;
       }
+      .gfx-content-top-menu {
+        margin-bottom: 5px;
+      }
     </style>
      <style class='style-gfx-cell'></style>
      <style class='style-gfx-cell-select'></style>
@@ -62,8 +66,18 @@ prepend(
     </sub-content-gui>
     
     <div class='in gfx-content-menu'>
-      <input type='color' class='gfx-input-color'>
-      <br><br>
+      <div class='in gfx-content-top-menu'>
+        <input type='color' class='inl gfx-input-color'>
+        <button class='inl custom-cursor gfx-state'>
+          paint on
+        </button>
+        <button class='inl custom-cursor gfx-copy'>
+          copy
+        </button>
+        <button class='inl custom-cursor gfx-paste'>
+          paste
+        </button>
+      </div>
       <div class='in main-dropdown-content'>
         ${renderDropDown({
           id: 'gfx-size-dropdown',
@@ -110,6 +124,7 @@ const renderPaint = (x, y) => {
     }
   `
   );
+  if (!paintMode) return;
   s(`.gfx-${x}-${y}`).style.background = currentColorCell;
 
   if (currentSizeCell > 0) {
@@ -164,37 +179,55 @@ renderDimGfxEngine(dimState());
 
 let lastPaintClipBoard = [];
 
-logicStorage['css-controller']['gfx'] = renderDimGfxEngine;
-logicStorage['key-down']['gfx'] = () => {
-  if (window.activeKey['Control'] && (window.activeKey['v'] || window.activeKey['V'])) {
-    lastPaintClipBoard.map((pasteData) => {
-      if (s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`))
-        s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`).style.background = pasteData.v;
+const gfxCopy = () => {
+  lastPaintClipBoard = [{ x: 0, y: 0, v: s(`.gfx-${gfxLastX}-${gfxLastY}`).style.background }];
+  range(1, currentSizeCell).map((sizeY) => {
+    range(1, currentSizeCell).map((sizeX) => {
+      if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
+        lastPaintClipBoard.push({
+          x: sizeX,
+          y: 0,
+          v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`).style.background,
+        });
+      if (s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`))
+        lastPaintClipBoard.push({
+          x: 0,
+          y: sizeY,
+          v: s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`).style.background,
+        });
+      if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
+        lastPaintClipBoard.push({
+          x: sizeX,
+          y: sizeY,
+          v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY + sizeY}`).style.background,
+        });
     });
-  }
-  if (window.activeKey['Control'] && (window.activeKey['c'] || window.activeKey['C'])) {
-    lastPaintClipBoard = [{ x: 0, y: 0, v: s(`.gfx-${gfxLastX}-${gfxLastY}`).style.background }];
-    range(1, currentSizeCell).map((sizeY) => {
-      range(1, currentSizeCell).map((sizeX) => {
-        if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
-          lastPaintClipBoard.push({
-            x: sizeX,
-            y: 0,
-            v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`).style.background,
-          });
-        if (s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`))
-          lastPaintClipBoard.push({
-            x: 0,
-            y: sizeY,
-            v: s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`).style.background,
-          });
-        if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
-          lastPaintClipBoard.push({
-            x: sizeX,
-            y: sizeY,
-            v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY + sizeY}`).style.background,
-          });
-      });
-    });
-  }
+  });
 };
+
+const gfxPaste = () => {
+  lastPaintClipBoard.map((pasteData) => {
+    if (s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`))
+      s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`).style.background = pasteData.v;
+  });
+};
+
+logicStorage['css-controller']['gfx'] = renderDimGfxEngine;
+
+logicStorage['key-down']['gfx'] = () => {
+  if (window.activeKey['Control'] && (window.activeKey['v'] || window.activeKey['V'])) gfxPaste();
+  if (window.activeKey['Control'] && (window.activeKey['c'] || window.activeKey['C'])) gfxCopy();
+};
+
+s('.gfx-state').onclick = () => {
+  if (paintMode) {
+    paintMode = false;
+    htmls('.gfx-state', `paint off`);
+    return;
+  }
+  paintMode = true;
+  htmls('.gfx-state', `paint on`);
+};
+
+s('.gfx-copy').onclick = () => gfxCopy();
+s('.gfx-paste').onclick = () => gfxPaste();
