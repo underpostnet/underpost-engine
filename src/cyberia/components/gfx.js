@@ -77,6 +77,9 @@ prepend(
         <button class='inl custom-cursor gfx-paste'>
           paste
         </button>
+        <button class='inl custom-cursor gfx-clean'>
+          clean
+        </button>
       </div>
       <div class='in main-dropdown-content'>
         ${renderDropDown({
@@ -139,7 +142,8 @@ const renderPaint = (x, y) => {
   }
 };
 
-(() => {
+const renderGfxGrid = () => {
+  htmls('gfx-grid', '');
   const dim = 31;
   range(0, dim).map((y) => {
     let render = /*html*/ `<div class='fl'>`;
@@ -155,7 +159,8 @@ const renderPaint = (x, y) => {
     render += /*html*/ `</div>`;
     append('gfx-grid', render);
   });
-})();
+};
+renderGfxGrid();
 
 const newColor = () => (currentColorCell = s('.gfx-input-color').value);
 
@@ -231,3 +236,4 @@ s('.gfx-state').onclick = () => {
 
 s('.gfx-copy').onclick = () => gfxCopy();
 s('.gfx-paste').onclick = () => gfxPaste();
+s('.gfx-clean').onclick = () => renderGfxGrid();
