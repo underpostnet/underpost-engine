@@ -97,7 +97,11 @@ intanceMenuBtns();
 s('gfx-grid').onmousedown = () => (mouseDown = true);
 s('gfx-grid').onmouseup = () => (mouseDown = false);
 
+let gfxLastX = 0;
+let gfxLastY = 0;
 const renderPaint = (x, y) => {
+  gfxLastX = x;
+  gfxLastY = y;
   htmls(
     '.style-gfx-cell-select',
     /*css*/ `
@@ -158,10 +162,39 @@ const renderDimGfxEngine = (screenDim) => {
 };
 renderDimGfxEngine(dimState());
 
+let lastPaintClipBoard = [];
+
 logicStorage['css-controller']['gfx'] = renderDimGfxEngine;
 logicStorage['key-down']['gfx'] = () => {
   if (window.activeKey['Control'] && (window.activeKey['v'] || window.activeKey['V'])) {
+    lastPaintClipBoard.map((pasteData) => {
+      if (s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`))
+        s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`).style.background = pasteData.v;
+    });
   }
   if (window.activeKey['Control'] && (window.activeKey['c'] || window.activeKey['C'])) {
+    lastPaintClipBoard = [{ x: 0, y: 0, v: s(`.gfx-${gfxLastX}-${gfxLastY}`).style.background }];
+    range(1, currentSizeCell).map((sizeY) => {
+      range(1, currentSizeCell).map((sizeX) => {
+        if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
+          lastPaintClipBoard.push({
+            x: sizeX,
+            y: 0,
+            v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`).style.background,
+          });
+        if (s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`))
+          lastPaintClipBoard.push({
+            x: 0,
+            y: sizeY,
+            v: s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`).style.background,
+          });
+        if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
+          lastPaintClipBoard.push({
+            x: sizeX,
+            y: sizeY,
+            v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY + sizeY}`).style.background,
+          });
+      });
+    });
   }
 };
