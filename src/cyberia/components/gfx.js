@@ -16,6 +16,7 @@ let currentColorCell = 'black';
 let currentSizeCell = 0;
 let mouseDown = false;
 let paintMode = true;
+let grillMode = false;
 
 guiSections.push('graphics-engine');
 append(
@@ -41,7 +42,6 @@ prepend(
         margin-bottom: 10px;
       }
       gfx-cell {
-        border: 1px solid gray;
         box-sizing: border-box;
         background: black;
       }
@@ -58,9 +58,13 @@ prepend(
       .gfx-content-top-menu {
         margin-bottom: 5px;
       }
+      .gfx-btn {
+        margin: 3px;
+      }
     </style>
      <style class='style-gfx-cell'></style>
      <style class='style-gfx-cell-select'></style>
+     <style class='style-gfx-grill'></style>
     <sub-content-gui class='in'>
           <div class='in title-section'>Graphics Engine</div>
     </sub-content-gui>
@@ -71,14 +75,17 @@ prepend(
         <button class='inl custom-cursor gfx-state'>
           paint on
         </button>
-        <button class='inl custom-cursor gfx-copy'>
+        <button class='inl gfx-btn custom-cursor gfx-copy'>
           copy
         </button>
-        <button class='inl custom-cursor gfx-paste'>
+        <button class='inl gfx-btn custom-cursor gfx-paste'>
           paste
         </button>
-        <button class='inl custom-cursor gfx-clean'>
+        <button class='inl gfx-btn custom-cursor gfx-clean'>
           clean
+        </button>
+        <button class='inl gfx-btn custom-cursor gfx-grill'>
+          grill on
         </button>
       </div>
       <div class='in main-dropdown-content'>
@@ -234,6 +241,27 @@ s('.gfx-state').onclick = () => {
   htmls('.gfx-state', `paint on`);
 };
 
+const grillModeChange = () => {
+  if (grillMode) {
+    grillMode = false;
+    htmls('.style-gfx-grill', '');
+    htmls('.gfx-grill', 'grill off');
+    return;
+  }
+  grillMode = true;
+  htmls(
+    '.style-gfx-grill',
+    /*css*/ `
+    gfx-cell {
+      border: 1px solid gray;
+    }
+  `
+  );
+  htmls('.gfx-grill', 'grill on');
+};
+grillModeChange();
+
 s('.gfx-copy').onclick = () => gfxCopy();
 s('.gfx-paste').onclick = () => gfxPaste();
 s('.gfx-clean').onclick = () => renderGfxGrid();
+s('.gfx-grill').onclick = () => grillModeChange();
