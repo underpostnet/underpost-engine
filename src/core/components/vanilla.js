@@ -162,7 +162,7 @@ const isElement = (element) => element instanceof Element || element instanceof 
 const downloader = (name, mime, raw) => {
   let content;
   if (isElement(raw)) content = raw.toDataURL(mime);
-  else if (typeof raw === 'object') content = generateBlobSrc(JSON.stringify(raw, null, 4));
+  else if (typeof raw === 'object') content = generateBlobSrc(JSON.stringify(raw, null, 4), mime);
   else if (typeof raw === 'string') content = generateBlobSrc(raw, mime);
   else return;
   const idDownload = 'downloader-' + s4() + s4();
