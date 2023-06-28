@@ -170,12 +170,15 @@ prepend(
             width: ${maxPxAdjacentMapRender}px;
             height: ${maxPxAdjacentMapRender}px;
             `;
+            s('gfx-grid').style.top = null;
+            s('gfx-grid').style.left = null;
             switch (value) {
               case 'top':
                 renderStyle += `
                   top: -${maxPxAdjacentMapRender}px;
                   left: 0px;
                 `;
+                s('gfx-grid').style.top = `${maxPxAdjacentMapRender}px`;
                 break;
               case 'bottom':
                 renderStyle += `
@@ -194,6 +197,7 @@ prepend(
                   top: 0px;
                   left: -${maxPxAdjacentMapRender}px;
                 `;
+                s('gfx-grid').style.left = `${maxPxAdjacentMapRender}px`;
                 break;
               default:
                 break;
@@ -297,6 +301,8 @@ const renderPaint = (x, y) => {
 
 const renderGfxGrid = () => {
   htmls('gfx-grid', '');
+  s('gfx-grid').style.top = null;
+  s('gfx-grid').style.left = null;
   globalPaintStorage = {};
   globalSolidStorage = {};
   const dim = maxRangeMap() * gfxCellPixelFactor - 1;
