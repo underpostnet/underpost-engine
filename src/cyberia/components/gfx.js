@@ -50,6 +50,7 @@ prepend(
       }
       .gfx-content-menu {
         margin: 5px;
+        z-index: 1;
       }
       .gfx-input-color {
         width: 100px;
@@ -60,6 +61,12 @@ prepend(
       }
       .gfx-btn {
         margin: 3px;
+      }
+      .map-adjacent-engine-content {
+        border: 1px solid gray;
+        max-height: 80px;
+        margin: 40px 3px 3px 3px;
+        padding: 5px;
       }
     </style>
      <style class='style-gfx-cell'></style>
@@ -112,9 +119,75 @@ prepend(
           },
         })}
       </div>
+      <div class='in main-dropdown-content map-adjacent-engine-content'>
+          adjacent map engine
+        <br>
+        <input type='text' placeholder='name adjacent map' class='gfx-name-adjacent-map'>
+        ${renderDropDown({
+          id: 'gfx-adjancent-map-dropdown',
+          optionCustomClass: 'custom-cursor',
+          style_dropdown_option: `
+            background: black;
+            z-index: 1;
+          `,
+          label: 'type adjacent map',
+          data: [
+            { value: 'top', display: `top` },
+            { value: 'bottom', display: `bottom` },
+            { value: 'right', display: `right` },
+            { value: 'left', display: `left` },
+          ],
+          onClick: (value) => {
+            const baseDim = s('.gfx-0-0').offsetHeight * 1.025;
+            const maxPxAdjacentMapRender = baseDim * (maxRangeMap() - 1) * 2 + baseDim;
+            let renderStyle = `
+            width: ${maxPxAdjacentMapRender}px;
+            height: ${maxPxAdjacentMapRender}px;
+            `;
+            switch (value) {
+              case 'top':
+                renderStyle += `
+                  top: -${maxPxAdjacentMapRender}px;
+                  left: 0px;
+                `;
+                break;
+              case 'bottom':
+                renderStyle += `
+                  bottom: -${maxPxAdjacentMapRender}px;
+                  left: 0px;
+                `;
+                break;
+              case 'right':
+                renderStyle += `
+                  top: 0px;
+                  left: ${maxPxAdjacentMapRender}px;
+                `;
+                break;
+              case 'left':
+                renderStyle += `
+                  top: 0px;
+                  left: -${maxPxAdjacentMapRender}px;
+                `;
+                break;
+              default:
+                break;
+            }
+            const renderAdjMap = /*html*/ `
+              <img
+              style='${renderStyle}'
+              class='abs gfx-img-adjacent-map' 
+              src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
+              >
+            `;
+            if (s('.gfx-img-adjacent-map')) s('.gfx-img-adjacent-map').remove();
+            append('gfx-grid', renderAdjMap);
+          },
+        })}
+      </div>
     </div>
     <br>
-    <gfx-grid class='custom-cursor'></gfx-grid>
+    <gfx-grid class='in custom-cursor'></gfx-grid>
+    <br><br><br>
 
   </graphics-engine>
 
@@ -172,6 +245,7 @@ const renderPaint = (x, y) => {
 
 const renderGfxGrid = () => {
   htmls('gfx-grid', '');
+  globalPaintStorage = {};
   const dim = 31;
   range(0, dim).map((y) => {
     let render = /*html*/ `<div class='fl'>`;
