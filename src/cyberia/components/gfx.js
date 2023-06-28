@@ -146,7 +146,7 @@ prepend(
           ],
           onClick: (value) => {
             const baseDim = s('.gfx-0-0').offsetHeight;
-            const maxPxAdjacentMapRender = baseDim * (maxRangeMap() - 1) * gfxCellPixelFactor + baseDim * 2;
+            const maxPxAdjacentMapRender = baseDim * maxRangeMap() * gfxCellPixelFactor + baseDim;
             let renderStyle = `
             width: ${maxPxAdjacentMapRender}px;
             height: ${maxPxAdjacentMapRender}px;
