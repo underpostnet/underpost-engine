@@ -90,6 +90,9 @@ prepend(
         <button class='inl gfx-btn custom-cursor gfx-png'>
           download png
         </button>
+        <button class='inl gfx-btn custom-cursor gfx-svg'>
+          download svg
+        </button>
       </div>
       <div class='in main-dropdown-content'>
         ${renderDropDown({
@@ -126,6 +129,8 @@ s('gfx-grid').onmouseup = () => (mouseDown = false);
 
 let gfxLastX = 0;
 let gfxLastY = 0;
+let globalPaintStorage = {};
+
 const renderPaint = (x, y) => {
   gfxLastX = x;
   gfxLastY = y;
@@ -140,13 +145,26 @@ const renderPaint = (x, y) => {
   if (!paintMode) return;
   s(`.gfx-${x}-${y}`).style.background = currentColorCell;
 
+  if (!globalPaintStorage[x]) globalPaintStorage[x] = {};
+  globalPaintStorage[x][y] = currentColorCell;
+
   if (currentSizeCell > 0) {
     range(1, currentSizeCell).map((sizeY) => {
       range(1, currentSizeCell).map((sizeX) => {
-        if (s(`.gfx-${x + sizeX}-${y}`)) s(`.gfx-${x + sizeX}-${y}`).style.background = currentColorCell;
-        if (s(`.gfx-${x}-${y + sizeY}`)) s(`.gfx-${x}-${y + sizeY}`).style.background = currentColorCell;
-        if (s(`.gfx-${x + sizeX}-${y + sizeY}`))
+        if (!globalPaintStorage[x + sizeX]) globalPaintStorage[x + sizeX] = {};
+
+        if (s(`.gfx-${x + sizeX}-${y}`)) {
+          s(`.gfx-${x + sizeX}-${y}`).style.background = currentColorCell;
+          globalPaintStorage[x + sizeX][y] = currentColorCell;
+        }
+        if (s(`.gfx-${x}-${y + sizeY}`)) {
+          s(`.gfx-${x}-${y + sizeY}`).style.background = currentColorCell;
+          globalPaintStorage[x][y + sizeY] = currentColorCell;
+        }
+        if (s(`.gfx-${x + sizeX}-${y + sizeY}`)) {
           s(`.gfx-${x + sizeX}-${y + sizeY}`).style.background = currentColorCell;
+          globalPaintStorage[x + sizeX][y + sizeY] = currentColorCell;
+        }
       });
     });
   }
@@ -276,3 +294,36 @@ s('.gfx-png').onclick = () =>
     height: 575,
     backgroundColor: null,
   }).then((canvas) => downloader('map.png', mimes['png'], canvas));
+
+s('.gfx-svg').onclick = () => {
+  const renderDim = 575;
+  const recDim = renderDim / (maxRangeMap() * 2);
+  const maxRange = maxRangeMap() * 2 - 1;
+  const svgRender = /*html*/ `
+  <svg title="cyberia-map" version="1.1" xmlns="http://www.w3.org/2000/svg" width="${renderDim}" height="${renderDim}">
+    ${range(0, maxRange)
+      .map((x) =>
+        range(0, maxRange)
+          .map(
+            (y) => /*html*/ `
+          <rect 
+          width="${recDim}" 
+          height="${recDim}"
+          stroke="${
+            globalPaintStorage[x] && globalPaintStorage[x][y] !== undefined ? globalPaintStorage[x][y] : '#000000'
+          }" 
+          stroke-width="1" 
+          stroke-linecap="square"
+          x="${x * recDim}" y="${y * recDim}" style="fill: ${
+              globalPaintStorage[x] && globalPaintStorage[x][y] !== undefined ? globalPaintStorage[x][y] : '#000000'
+            }" />
+          `
+          )
+          .join('')
+      )
+      .join('')}
+  </svg>
+`;
+  // htmls(, svgRender);
+  downloader('map.svg', mimes['svg'], svgRender);
+};
