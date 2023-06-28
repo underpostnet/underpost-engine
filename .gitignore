@@ -4,3 +4,4 @@
 /data
 /src/cyberia/.env.private.dev
 /src/cyberia/.env.private.prod
+/src/test/private
