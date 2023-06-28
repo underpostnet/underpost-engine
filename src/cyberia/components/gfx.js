@@ -79,6 +79,12 @@ prepend(
         width: 100%;
         height: 100%;
       }
+      .adjacent-map-cell {
+        border: 2px solid yellow;
+      }
+      .adjacent-map-cell:hover {
+        border: 2px solid white;
+      }
     </style>
      <style class='style-gfx-cell'></style>
      <style class='style-gfx-cell-select'></style>
@@ -192,12 +198,33 @@ prepend(
               default:
                 break;
             }
+            const maxRange = maxRangeMap();
+            const recDim = 100 / maxRange;
             const renderAdjMap = /*html*/ `
             <div class='abs gfx-content-img-adjacent-map' style='${renderStyle}'>
               <img
               class='abs img-adj-map' 
               src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
               >
+
+              ${range(0, maxRange - 1)
+                .map((x) =>
+                  range(0, maxRange - 1)
+                    .map(
+                      (y) => /*html*/ `
+                    <div class='abs adjacent-map-cell cursor-pointer' style='
+                    width: ${recDim}%; 
+                    height: ${recDim}%;
+                    left: ${x * recDim}%; 
+                    top: ${y * recDim}%; 
+                    '>
+                    </div>
+                    `
+                    )
+                    .join('')
+                )
+                .join('')}
+            </div>
             `;
             if (s('.gfx-content-img-adjacent-map')) s('.gfx-content-img-adjacent-map').remove();
             append('gfx-grid', renderAdjMap);
