@@ -17,6 +17,10 @@ let currentSizeCell = 0;
 let mouseDown = false;
 let paintMode = true;
 let grillMode = false;
+let solidMode = false;
+let gfxLastX = 0;
+let gfxLastY = 0;
+let globalPaintStorage = {};
 const gfxCellPixelFactor = 3;
 
 guiSections.push('graphics-engine');
@@ -105,6 +109,9 @@ prepend(
         </button>
         <button class='inl gfx-btn custom-cursor gfx-svg'>
           download svg
+        </button>
+        <button class='inl gfx-btn custom-cursor gfx-solid'>
+          solid <span style='color: red'>off</span>
         </button>
       </div>
       <div class='in main-dropdown-content'>
@@ -216,10 +223,6 @@ intanceMenuBtns();
 s('gfx-grid').onmousedown = () => (mouseDown = true);
 s('gfx-grid').onmouseup = () => (mouseDown = false);
 
-let gfxLastX = 0;
-let gfxLastY = 0;
-let globalPaintStorage = {};
-
 const renderPaint = (x, y) => {
   gfxLastX = x;
   gfxLastY = y;
@@ -330,8 +333,11 @@ const gfxCopy = () => {
 
 const gfxPaste = () => {
   lastPaintClipBoard.map((pasteData) => {
-    if (s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`))
+    if (s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`)) {
       s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`).style.background = pasteData.v;
+      if (!globalPaintStorage[gfxLastX + pasteData.x]) globalPaintStorage[gfxLastX + pasteData.x] = {};
+      globalPaintStorage[gfxLastX + pasteData.x][gfxLastY + pasteData.y] = pasteData.v;
+    }
   });
 };
 
@@ -350,6 +356,16 @@ s('.gfx-state').onclick = () => {
   }
   paintMode = true;
   htmls('.gfx-state', `paint <span style='color: green'>on</span>`);
+};
+
+s('.gfx-solid').onclick = () => {
+  if (solidMode) {
+    solidMode = false;
+    htmls('.gfx-solid', `solid <span style='color: red'>off</span>`);
+    return;
+  }
+  solidMode = true;
+  htmls('.gfx-solid', `solid <span style='color: green'>on</span>`);
 };
 
 const grillModeChange = () => {
