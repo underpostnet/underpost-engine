@@ -201,7 +201,7 @@ prepend(
     <br>
     <gfx-grid class='in custom-cursor'></gfx-grid>
     <br><br>
-    <pre class='in gfx-json-display'></pre>
+    <div class='in gfx-json-display'></div>
     <br><br><br>
 
   </graphics-engine>
@@ -455,12 +455,20 @@ s('.gfx-json').onclick = () => {
       dataJSON[y][x] = globalSolidStorage[x] !== undefined && globalSolidStorage[x][y] === 1 ? 1 : 0;
     })
   );
-  const renderJSON = JSONmatrix(dataJSON);
+  const renderJSON = JSONmatrix(
+    dataJSON
+      .map((y, iy) =>
+        iy % gfxCellPixelFactor === 0
+          ? y.map((x, ix) => (ix % gfxCellPixelFactor === 0 ? x : null)).filter((c) => c !== null)
+          : null
+      )
+      .filter((c) => c !== null)
+  );
   htmls(
     '.gfx-json-display',
     /*html*/ `
     <div class='in'>
-        <button class='gfx-copy-json custom-cursor'>
+        <button class='inl gfx-copy-json custom-cursor'>
             copy json
         </button>
     </div>
