@@ -17,6 +17,7 @@ let currentSizeCell = 0;
 let mouseDown = false;
 let paintMode = true;
 let grillMode = false;
+const gfxCellPixelFactor = 3;
 
 guiSections.push('graphics-engine');
 append(
@@ -64,9 +65,14 @@ prepend(
       }
       .map-adjacent-engine-content {
         border: 1px solid gray;
-        max-height: 80px;
+        max-height: 360px;
         margin: 40px 3px 3px 3px;
         padding: 5px;
+        text-align: right;
+      }
+      .map-adjacent-preview-img {
+        width: 300px;
+        height: 300px;
       }
     </style>
      <style class='style-gfx-cell'></style>
@@ -120,6 +126,7 @@ prepend(
         })}
       </div>
       <div class='in main-dropdown-content map-adjacent-engine-content'>
+          <div class='in map-adjacent-preview-content'></div>
           adjacent map engine
         <br>
         <input type='text' placeholder='name adjacent map' class='gfx-name-adjacent-map'>
@@ -138,8 +145,8 @@ prepend(
             { value: 'left', display: `left` },
           ],
           onClick: (value) => {
-            const baseDim = s('.gfx-0-0').offsetHeight * 1.025;
-            const maxPxAdjacentMapRender = baseDim * (maxRangeMap() - 1) * 2 + baseDim;
+            const baseDim = s('.gfx-0-0').offsetHeight;
+            const maxPxAdjacentMapRender = baseDim * (maxRangeMap() - 1) * gfxCellPixelFactor + baseDim * 2;
             let renderStyle = `
             width: ${maxPxAdjacentMapRender}px;
             height: ${maxPxAdjacentMapRender}px;
@@ -179,6 +186,15 @@ prepend(
               src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
               >
             `;
+            htmls(
+              '.map-adjacent-preview-content',
+              /*html*/ `
+            <img
+            class='inl map-adjacent-preview-img' 
+            src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
+            >
+            `
+            );
             if (s('.gfx-img-adjacent-map')) s('.gfx-img-adjacent-map').remove();
             append('gfx-grid', renderAdjMap);
           },
@@ -246,7 +262,7 @@ const renderPaint = (x, y) => {
 const renderGfxGrid = () => {
   htmls('gfx-grid', '');
   globalPaintStorage = {};
-  const dim = 31;
+  const dim = maxRangeMap() * gfxCellPixelFactor - 1;
   range(0, dim).map((y) => {
     let render = /*html*/ `<div class='fl'>`;
     range(0, dim).map((x) => {
@@ -270,7 +286,7 @@ s('.gfx-input-color').onblur = newColor;
 s('.gfx-input-color').oninput = newColor;
 
 const renderDimGfxEngine = (screenDim) => {
-  const dim = screenDim.minValue * 0.03;
+  const dim = screenDim.minValue * 0.02;
   htmls(
     '.style-gfx-cell',
     /*css*/ `
@@ -371,8 +387,8 @@ s('.gfx-png').onclick = () =>
 
 s('.gfx-svg').onclick = () => {
   const renderDim = 575;
-  const recDim = renderDim / (maxRangeMap() * 2);
-  const maxRange = maxRangeMap() * 2 - 1;
+  const recDim = renderDim / (maxRangeMap() * gfxCellPixelFactor);
+  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
   const svgRender = /*html*/ `
   <svg title="cyberia-map" version="1.1" xmlns="http://www.w3.org/2000/svg" width="${renderDim}" height="${renderDim}">
     ${range(0, maxRange)
