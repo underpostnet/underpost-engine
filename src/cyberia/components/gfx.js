@@ -17,10 +17,11 @@ let currentSizeCell = 0;
 let mouseDown = false;
 let paintMode = true;
 let grillMode = false;
-let solidMode = false;
+let solidMode = 0;
 let gfxLastX = 0;
 let gfxLastY = 0;
 let globalPaintStorage = {};
+let globalSolidStorage = {};
 const gfxCellPixelFactor = 3;
 
 guiSections.push('graphics-engine');
@@ -74,10 +75,6 @@ prepend(
         padding: 5px;
         text-align: right;
       }
-      .map-adjacent-preview-img {
-        width: 300px;
-        height: 300px;
-      }
     </style>
      <style class='style-gfx-cell'></style>
      <style class='style-gfx-cell-select'></style>
@@ -113,6 +110,9 @@ prepend(
         <button class='inl gfx-btn custom-cursor gfx-solid'>
           solid <span style='color: red'>off</span>
         </button>
+        <button class='inl gfx-btn custom-cursor gfx-json'>
+          generate json
+        </button>
       </div>
       <div class='in main-dropdown-content'>
         ${renderDropDown({
@@ -133,7 +133,6 @@ prepend(
         })}
       </div>
       <div class='in main-dropdown-content map-adjacent-engine-content'>
-          <div class='in map-adjacent-preview-content'></div>
           adjacent map engine
         <br>
         <input type='text' placeholder='name adjacent map' class='gfx-name-adjacent-map'>
@@ -193,15 +192,6 @@ prepend(
               src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
               >
             `;
-            htmls(
-              '.map-adjacent-preview-content',
-              /*html*/ `
-            <img
-            class='inl map-adjacent-preview-img' 
-            src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
-            >
-            `
-            );
             if (s('.gfx-img-adjacent-map')) s('.gfx-img-adjacent-map').remove();
             append('gfx-grid', renderAdjMap);
           },
@@ -210,6 +200,8 @@ prepend(
     </div>
     <br>
     <gfx-grid class='in custom-cursor'></gfx-grid>
+    <br><br>
+    <pre class='in gfx-json-display'></pre>
     <br><br><br>
 
   </graphics-engine>
@@ -240,22 +232,29 @@ const renderPaint = (x, y) => {
   if (!globalPaintStorage[x]) globalPaintStorage[x] = {};
   globalPaintStorage[x][y] = currentColorCell;
 
+  if (!globalSolidStorage[x]) globalSolidStorage[x] = {};
+  globalSolidStorage[x][y] = solidMode;
+
   if (currentSizeCell > 0) {
     range(1, currentSizeCell).map((sizeY) => {
       range(1, currentSizeCell).map((sizeX) => {
         if (!globalPaintStorage[x + sizeX]) globalPaintStorage[x + sizeX] = {};
+        if (!globalSolidStorage[x + sizeX]) globalSolidStorage[x + sizeX] = {};
 
         if (s(`.gfx-${x + sizeX}-${y}`)) {
           s(`.gfx-${x + sizeX}-${y}`).style.background = currentColorCell;
           globalPaintStorage[x + sizeX][y] = currentColorCell;
+          globalSolidStorage[x + sizeX][y] = solidMode;
         }
         if (s(`.gfx-${x}-${y + sizeY}`)) {
           s(`.gfx-${x}-${y + sizeY}`).style.background = currentColorCell;
           globalPaintStorage[x][y + sizeY] = currentColorCell;
+          globalSolidStorage[x][y + sizeY] = solidMode;
         }
         if (s(`.gfx-${x + sizeX}-${y + sizeY}`)) {
           s(`.gfx-${x + sizeX}-${y + sizeY}`).style.background = currentColorCell;
           globalPaintStorage[x + sizeX][y + sizeY] = currentColorCell;
+          globalSolidStorage[x + sizeX][y + sizeY] = solidMode;
         }
       });
     });
@@ -265,6 +264,7 @@ const renderPaint = (x, y) => {
 const renderGfxGrid = () => {
   htmls('gfx-grid', '');
   globalPaintStorage = {};
+  globalSolidStorage = {};
   const dim = maxRangeMap() * gfxCellPixelFactor - 1;
   range(0, dim).map((y) => {
     let render = /*html*/ `<div class='fl'>`;
@@ -306,7 +306,14 @@ renderDimGfxEngine(dimState());
 let lastPaintClipBoard = [];
 
 const gfxCopy = () => {
-  lastPaintClipBoard = [{ x: 0, y: 0, v: s(`.gfx-${gfxLastX}-${gfxLastY}`).style.background }];
+  lastPaintClipBoard = [
+    {
+      x: 0,
+      y: 0,
+      v: s(`.gfx-${gfxLastX}-${gfxLastY}`).style.background,
+      s: globalSolidStorage[gfxLastX] && globalSolidStorage[gfxLastX][gfxLastY] ? 1 : 0,
+    },
+  ];
   range(1, currentSizeCell).map((sizeY) => {
     range(1, currentSizeCell).map((sizeX) => {
       if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
@@ -314,18 +321,21 @@ const gfxCopy = () => {
           x: sizeX,
           y: 0,
           v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`).style.background,
+          s: globalSolidStorage[gfxLastX + sizeX] && globalSolidStorage[gfxLastX + sizeX][gfxLastY] ? 1 : 0,
         });
       if (s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`))
         lastPaintClipBoard.push({
           x: 0,
           y: sizeY,
           v: s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`).style.background,
+          s: globalSolidStorage[gfxLastX] && globalSolidStorage[gfxLastX][gfxLastY + sizeY] ? 1 : 0,
         });
       if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
         lastPaintClipBoard.push({
           x: sizeX,
           y: sizeY,
           v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY + sizeY}`).style.background,
+          s: globalSolidStorage[gfxLastX + sizeX] && globalSolidStorage[gfxLastX + sizeX][gfxLastY + sizeY] ? 1 : 0,
         });
     });
   });
@@ -337,6 +347,8 @@ const gfxPaste = () => {
       s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`).style.background = pasteData.v;
       if (!globalPaintStorage[gfxLastX + pasteData.x]) globalPaintStorage[gfxLastX + pasteData.x] = {};
       globalPaintStorage[gfxLastX + pasteData.x][gfxLastY + pasteData.y] = pasteData.v;
+      if (!globalSolidStorage[gfxLastX + pasteData.x]) globalSolidStorage[gfxLastX + pasteData.x] = {};
+      globalSolidStorage[gfxLastX + pasteData.x][gfxLastY + pasteData.y] = pasteData.s;
     }
   });
 };
@@ -359,12 +371,12 @@ s('.gfx-state').onclick = () => {
 };
 
 s('.gfx-solid').onclick = () => {
-  if (solidMode) {
-    solidMode = false;
+  if (solidMode === 1) {
+    solidMode = 0;
     htmls('.gfx-solid', `solid <span style='color: red'>off</span>`);
     return;
   }
-  solidMode = true;
+  solidMode = 1;
   htmls('.gfx-solid', `solid <span style='color: green'>on</span>`);
 };
 
@@ -432,4 +444,29 @@ s('.gfx-svg').onclick = () => {
 `;
   // htmls(, svgRender);
   downloader('map.svg', mimes['svg'], svgRender);
+};
+
+s('.gfx-json').onclick = () => {
+  let dataJSON = [];
+  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  range(0, maxRange).map((x) =>
+    range(0, maxRange).map((y) => {
+      if (!dataJSON[y]) dataJSON[y] = [];
+      dataJSON[y][x] = globalSolidStorage[x] !== undefined && globalSolidStorage[x][y] === 1 ? 1 : 0;
+    })
+  );
+  const renderJSON = JSONmatrix(dataJSON);
+  htmls(
+    '.gfx-json-display',
+    /*html*/ `
+    <div class='in'>
+        <button class='gfx-copy-json custom-cursor'>
+            copy json
+        </button>
+    </div>
+    <pre class='in'>${renderJSON}</pre>
+  
+  `
+  );
+  s('.gfx-copy-json').onclick = () => copyData(renderJSON);
 };
