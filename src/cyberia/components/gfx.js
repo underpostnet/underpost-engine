@@ -68,12 +68,16 @@ prepend(
       .gfx-btn {
         margin: 3px;
       }
-      .map-adjacent-engine-content {
+      .gfx-engine-content {
         border: 1px solid gray;
         max-height: 360px;
         margin: 40px 3px 3px 3px;
         padding: 5px;
         text-align: right;
+      }
+      .img-adj-map {
+        width: 100%;
+        height: 100%;
       }
     </style>
      <style class='style-gfx-cell'></style>
@@ -132,7 +136,10 @@ prepend(
           },
         })}
       </div>
-      <div class='in main-dropdown-content map-adjacent-engine-content'>
+      <div class='in gfx-engine-content'>
+          link engine
+      </div>
+      <div class='in main-dropdown-content gfx-engine-content'>
           adjacent map engine
         <br>
         <input type='text' placeholder='name adjacent map' class='gfx-name-adjacent-map'>
@@ -186,13 +193,13 @@ prepend(
                 break;
             }
             const renderAdjMap = /*html*/ `
+            <div class='abs gfx-content-img-adjacent-map' style='${renderStyle}'>
               <img
-              style='${renderStyle}'
-              class='abs gfx-img-adjacent-map' 
+              class='abs img-adj-map' 
               src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
               >
             `;
-            if (s('.gfx-img-adjacent-map')) s('.gfx-img-adjacent-map').remove();
+            if (s('.gfx-content-img-adjacent-map')) s('.gfx-content-img-adjacent-map').remove();
             append('gfx-grid', renderAdjMap);
           },
         })}
