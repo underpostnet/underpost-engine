@@ -163,9 +163,9 @@ const httpClient = (app) => {
                 <script type="module" src="/${nameSrcFileApp}.js" async></script>
             </body>
             </html>  
-        `
-        .replaceAll(`\n`, ' ')
-        .replaceAll('\t', ' '),
+        `,
+      // .replaceAll(`\n`, ' ')
+      // .replaceAll('\t', ' '),
       'utf8'
     );
   });

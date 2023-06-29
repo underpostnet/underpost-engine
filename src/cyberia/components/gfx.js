@@ -444,17 +444,28 @@ s('.gfx-quadrant').onclick = () => {
         ${range(0, maxRange - 1)
           .map((x) =>
             range(0, maxRange - 1)
-              .map(
-                (y) => /*html*/ `
-              <div class='abs adjacent-map-cell cursor-pointer' style='
+              .map((y) => {
+                setTimeout(() => {
+                  s(`.quadrant-map-cell-${x}-${y}`).onclick = () => {
+                    const baseX = x * gfxCellPixelFactor;
+                    const baseY = y * gfxCellPixelFactor;
+                    range(0, gfxCellPixelFactor - 1).map((sumX) =>
+                      range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                        renderPaint(baseX + sumX, baseY + sumY);
+                      })
+                    );
+                  };
+                });
+                return /*html*/ `
+              <div class='abs adjacent-map-cell cursor-pointer quadrant-map-cell-${x}-${y}' style='
               width: ${recDim}px; 
               height: ${recDim}px;
               left: ${x * recDim}px; 
               top: ${y * recDim}px; 
               '>
               </div>
-              `
-              )
+              `;
+              })
               .join('')
           )
           .join('')}
