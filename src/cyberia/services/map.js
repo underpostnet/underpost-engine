@@ -6,6 +6,5 @@ const mapServices = {
         Authorization: `Bearer ${localStorage.getItem('_b')}`,
         //  'Content-Type': 'application/json',
       },
-      log: true,
     }),
 };

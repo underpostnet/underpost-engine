@@ -227,17 +227,29 @@ prepend(
               ${range(0, maxRange - 1)
                 .map((x) =>
                   range(0, maxRange - 1)
-                    .map(
-                      (y) => /*html*/ `
-                    <div class='abs adjacent-map-cell cursor-pointer' style='
-                    width: ${recDim}%; 
-                    height: ${recDim}%;
-                    left: ${x * recDim}%; 
-                    top: ${y * recDim}%; 
-                    '>
-                    </div>
-                    `
-                    )
+                    .map((y) => {
+                      setTimeout(() => {
+                        s(`.adjacent-map-cell-${x}-${y}`).onclick = () => null;
+                      });
+                      return /*html*/ `
+                        <div class='abs adjacent-map-cell cursor-pointer adjacent-map-cell-${x}-${y}' style='
+                        width: ${recDim}%; 
+                        height: ${recDim}%;
+                        left: ${x * recDim}%; 
+                        top: ${y * recDim}%; 
+                        font-size: 8px;
+                        '>
+                            ${mapData.data.matrix[y][x] === 0 ? 0 : 1}
+                            ${
+                              typeof mapData.data.matrix[y][x] === 'object' && mapData.data.matrix[y][x][0] === 'tmi'
+                                ? `
+                            <br> <span style='color: red'>T-${mapData.data.matrix[y][x][1]}</span>
+                            `
+                                : ''
+                            }
+                        </div>
+                        `;
+                    })
                     .join('')
                 )
                 .join('')}
