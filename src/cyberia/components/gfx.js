@@ -134,24 +134,8 @@ prepend(
         <button class='inl gfx-btn custom-cursor gfx-quadrant'>
           quadrant <span style='color: red'>off</span>
         </button>
-      </div>
-      <div class='in main-dropdown-content'>
-        ${renderDropDown({
-          id: 'gfx-size-dropdown',
-          optionCustomClass: 'custom-cursor',
-          style_dropdown_option: `
-            background: black;
-            z-index: 1;
-          `,
-          label: renderLang({ es: 'x1', en: 'x1' }),
-          data: range(1, 10).map((size) => {
-            return { value: size - 1, display: `x${size}` };
-          }),
-          onClick: (value) => {
-            console.log('gfx-size-dropdown onclick ->', value);
-            currentSizeCell = value;
-          },
-        })}
+        size
+        <input type='number' class='inl gfx-size-paint' value=${currentSizeCell + 1}>
       </div>
       <div class='in gfx-engine-content'>
           link engine
@@ -274,6 +258,11 @@ prepend(
 );
 
 intanceMenuBtns();
+
+const changeSizeCell = () => (currentSizeCell = s('.gfx-size-paint').value - 1);
+
+s('.gfx-size-paint').onblur = () => changeSizeCell();
+s('.gfx-size-paint').oninput = () => changeSizeCell();
 
 s('gfx-grid').onmousedown = () => (mouseDown = true);
 s('gfx-grid').onmouseup = () => (mouseDown = false);
@@ -447,6 +436,8 @@ s('.gfx-quadrant').onclick = () => {
               .map((y) => {
                 setTimeout(() => {
                   s(`.quadrant-map-cell-${x}-${y}`).onclick = () => {
+                    s('.gfx-size-paint').value = 1;
+                    s('.gfx-size-paint').oninput();
                     const baseX = x * gfxCellPixelFactor;
                     const baseY = y * gfxCellPixelFactor;
                     range(0, gfxCellPixelFactor - 1).map((sumX) =>
