@@ -65,7 +65,7 @@ const getItemData = async (item) => {
       data: localItem,
     };
   } else {
-    result = await serviceRequest(API_BASE + `/items/${item.id}`);
+    result = await itemServices.getItem(item);
     localItemsStorage.push({
       ...result.data,
       count: () =>
@@ -529,7 +529,7 @@ const renderDisplayItems = (element, singleItem) => {
     if (singleItem !== undefined && itemId !== singleItem.id) return;
     let item = localItemsRenderStorage.find((i) => i.id === itemId);
     if (!item) {
-      const result = await serviceRequest(API_BASE + `/items/render/${itemId}`);
+      const result = await itemServices.getItemRender(itemId);
       if (result.data && result.data.id) {
         localItemsRenderStorage.push(result.data);
         item = result.data;

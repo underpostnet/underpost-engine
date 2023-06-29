@@ -9,6 +9,7 @@ import { createServer } from 'http';
 import { mailerApi } from './mailer.js';
 import { itemsApi } from './items.js';
 import compression from 'compression';
+import { mapsApi } from './maps.js';
 
 dotenv.config();
 console.log(process.argv);
@@ -47,6 +48,8 @@ httpClient(app);
 mailerApi(internalApi);
 
 authApi(app, internalApi);
+
+mapsApi(app);
 
 itemsApi(app);
 

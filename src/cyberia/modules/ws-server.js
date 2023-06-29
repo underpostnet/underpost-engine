@@ -912,9 +912,12 @@ const wsServer = (httpServer, app, internalApi) => {
       } else if (eventObj.token) {
         const user = await internalApi.getUserByToken(eventObj.token);
         // console.log('set user token', user);
-        if (user) element = validateSchemeElement(internalApi.instanceInitElementByUser(user));
-        user.headers = headers;
-        user.ip = ip;
+        if (user) {
+          element = validateSchemeElement(internalApi.instanceInitElementByUser(user));
+          user.headers = headers;
+          user.ip = ip;
+        }
+
         internalApi.updateUser(user);
       }
 

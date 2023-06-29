@@ -14,15 +14,6 @@ const account = () => {
       }
       if (value !== '') htmls('.session-account-label-email', 'Email');
       else htmls('.session-account-label-email', '');
-      // if (validEmail === true) {
-      //   const result = await serviceRequest(API_BASE + '/auth/validate/email/' + value);
-      //   if (result.status === 'error' && result.data.errors) {
-      //     validEmail = false;
-      //     result.data.errors.map((error) => {
-      //       htmls('.session-account-warn-' + error.type, error.result.msg);
-      //     });
-      //   }
-      // }
     };
     s('.session-account-input-email').onblur = checkEmail;
     s('.session-account-input-email').oninput = checkEmail;
@@ -36,19 +27,7 @@ const account = () => {
       s('.session-account-warn-email').style.display = 'none';
       s('.account-email-loading').style.display = 'block';
 
-      const body = JSON.stringify({});
-      const headers = {
-        Authorization: `Bearer ${localStorage.getItem('_b')}`,
-        'Content-Type': 'application/json',
-        // 'content-type': 'application/octet-stream'
-        //  'content-length': CHUNK.length,
-      };
-      const result = await serviceRequest(API_BASE + '/auth/confirm/email', {
-        method: 'POST',
-        headers,
-        body,
-        log: true,
-      });
+      const result = await authServices.sendConfirmEmail();
 
       s('.account-email-loading').style.display = 'none';
       s('.account-email-btns').style.display = 'block';

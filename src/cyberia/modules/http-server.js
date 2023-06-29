@@ -94,7 +94,10 @@ const httpClient = (app) => {
   if (!dev) {
     console.log = () => null;
     console.warn = () => null;
-  }                  
+  }
+  ${fs.readFileSync(`./src/${NAME_APP}/components/auth-services.js`, 'utf8')}     
+  ${fs.readFileSync(`./src/${NAME_APP}/components/item-services.js`, 'utf8')}      
+  ${fs.readFileSync(`./src/${NAME_APP}/components/map-services.js`, 'utf8')}          
   ${fs.readFileSync(`./src/${NAME_APP}/components/toggle-switch.js`, 'utf8')}
   ${fs.readFileSync(`./src/${NAME_APP}/components/dropdown.js`, 'utf8')}
   ${fs.readFileSync(`./src/${NAME_APP}/components/drag.js`, 'utf8')}

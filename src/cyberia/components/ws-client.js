@@ -189,13 +189,7 @@ socket.on('init-data', (...args) => {
   if (localStorage.getItem('_b') && enableFirstUserRender === true)
     setTimeout(async () => {
       enableFirstUserRender = false;
-      const result = await serviceRequest(API_BASE + '/user-render', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('_b')}`,
-          //  'Content-Type': 'application/json',
-        },
-      });
+      const result = await authServices.getUserRender();
       if (result.status === 'success') eval(result.data.render);
     });
 

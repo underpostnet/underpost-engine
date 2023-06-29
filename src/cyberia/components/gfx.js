@@ -174,7 +174,9 @@ prepend(
             { value: 'right', display: `right` },
             { value: 'left', display: `left` },
           ],
-          onClick: (value) => {
+          onClick: async (value) => {
+            const mapData = await mapServices.getMap(s('.gfx-name-adjacent-map').value);
+
             const baseDim = s('.gfx-0-0').offsetHeight;
             const maxPxAdjacentMapRender = baseDim * maxRangeMap() * gfxCellPixelFactor + baseDim;
             let renderStyle = `

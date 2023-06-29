@@ -30,7 +30,7 @@ const createAccount = () => {
       if (value !== '') htmls('.create-account-label-email', 'Email');
       else htmls('.create-account-label-email', '');
       if (validEmail === true) {
-        const result = await serviceRequest(API_BASE + '/auth/validate/email/' + value);
+        const result = await authServices.validateEmail(value);
         if (result.status === 'error' && result.data.errors) {
           validEmail = false;
           result.data.errors.map((error) => {
@@ -64,7 +64,7 @@ const createAccount = () => {
         );
       else htmls('.create-account-label-username', '');
       if (validUsername === true) {
-        const result = await serviceRequest(API_BASE + '/auth/validate/username/' + value);
+        const result = await authServices.validateUsername(value);
         if (result.status === 'error' && result.data.errors) {
           validUsername = false;
           result.data.errors.map((error) => {
@@ -141,27 +141,17 @@ const createAccount = () => {
       console.log('validPassword', validPassword);
       console.log('validRepeatPassword', validRepeatPassword);
 
-      const body = JSON.stringify({
+      const body = {
         username: s('.create-account-input-username').value,
         email: s('.create-account-input-email').value,
         password: s('.create-account-input-password').value,
         repeat_password: s('.create-account-input-repeat-password').value,
         id: socket.id,
-      });
-      const headers = {
-        // 'Authorization': renderAuthBearer(),
-        'Content-Type': 'application/json',
-        // 'content-type': 'application/octet-stream'
-        //  'content-length': CHUNK.length,
       };
+
       console.log('.submit-create-account body', body);
       if (validEmail && validUsername && validPassword && validRepeatPassword) {
-        const result = await serviceRequest(API_BASE + '/auth/register', {
-          method: 'POST',
-          headers,
-          body,
-          log: true,
-        });
+        const result = await authServices.registerUser(body);
         if (result.status === 'error') {
           if (result.data.errors)
             result.data.errors.map((error) => {

@@ -63,25 +63,15 @@ const logIn = () => {
       console.log('validEmail', validEmail);
       console.log('validPassword', validPassword);
 
-      const body = JSON.stringify({
+      const body = {
         email: s('.login-input-email').value,
         password: s('.login-input-password').value,
-      });
-      const headers = {
-        // 'Authorization': renderAuthBearer(),
-        'Content-Type': 'application/json',
-        // 'content-type': 'application/octet-stream'
-        //  'content-length': CHUNK.length,
       };
+
       console.log('.submit-login body', body);
       if (validEmail && validPassword) {
         // const result = { status: 'success', data: { message: 'test' } };
-        const result = await serviceRequest(API_BASE + '/auth/login', {
-          method: 'POST',
-          headers,
-          body,
-          log: true,
-        });
+        const result = await authServices.logIn(body);
         if (result.status === 'error') {
           if (result.data.errors)
             result.data.errors.map((error) => {

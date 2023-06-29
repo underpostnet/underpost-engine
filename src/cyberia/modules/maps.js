@@ -1,3 +1,5 @@
+import { authValidator } from './auth.js';
+
 const maps = [
   { name_map: '', matrix: [], safe_cords: [] },
   {
@@ -913,4 +915,33 @@ const maps = [
   },
 ];
 
-export { maps };
+const getMapGfxEngineData = (req, res) => {
+  try {
+    const map = maps.find((i) => i.name_map == req.params.mapId);
+    if (map) {
+      return res.status(200).json({
+        status: 'success',
+        data: map,
+      });
+    }
+    return res.status(400).json({
+      status: 'error',
+      data: {
+        message: renderLang({ en: 'Map not found', es: 'Map no encontrado' }, req),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
+const mapsApi = (app) => {
+  app.get(process.env.API_BASE + '/maps/:mapId', authValidator, (req, res) => getMapGfxEngineData(req, res));
+};
+
+export { maps, mapsApi };
