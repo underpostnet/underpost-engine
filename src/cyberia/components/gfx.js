@@ -17,6 +17,7 @@ let currentSizeCell = 0;
 let mouseDown = false;
 let paintMode = true;
 let grillMode = false;
+let quadrantMode = false;
 let solidMode = 0;
 let gfxLastX = 0;
 let gfxLastY = 0;
@@ -81,9 +82,16 @@ prepend(
       }
       .adjacent-map-cell {
         border: 2px solid yellow;
+        box-sizing: border-box;
       }
       .adjacent-map-cell:hover {
         border: 2px solid white;
+      }
+      quadrant-grid {
+        width: 100%;
+        height: 100%;
+        top: 0%;
+        left: 0%;
       }
     </style>
      <style class='style-gfx-cell'></style>
@@ -122,6 +130,9 @@ prepend(
         </button>
         <button class='inl gfx-btn custom-cursor gfx-json'>
           generate json
+        </button>
+        <button class='inl gfx-btn custom-cursor gfx-quadrant'>
+          quadrant <span style='color: red'>off</span>
         </button>
       </div>
       <div class='in main-dropdown-content'>
@@ -300,6 +311,7 @@ const renderPaint = (x, y) => {
 };
 
 const renderGfxGrid = () => {
+  if (s('quadrant-grid')) s('.gfx-quadrant').click();
   htmls('gfx-grid', '');
   s('gfx-grid').style.top = null;
   s('gfx-grid').style.left = null;
@@ -398,6 +410,43 @@ logicStorage['css-controller']['gfx'] = renderDimGfxEngine;
 logicStorage['key-down']['gfx'] = () => {
   if (window.activeKey['Control'] && (window.activeKey['v'] || window.activeKey['V'])) gfxPaste();
   if (window.activeKey['Control'] && (window.activeKey['c'] || window.activeKey['C'])) gfxCopy();
+};
+
+s('.gfx-quadrant').onclick = () => {
+  if (quadrantMode) {
+    quadrantMode = false;
+    htmls('.gfx-quadrant', `quadrant <span style='color: red'>off</span>`);
+    s('quadrant-grid').remove();
+    return;
+  }
+  quadrantMode = true;
+  htmls('.gfx-quadrant', `quadrant <span style='color: green'>on</span>`);
+  const maxRange = maxRangeMap();
+  const recDim = s('.gfx-0-0').offsetHeight * gfxCellPixelFactor * 1.025;
+  append(
+    'gfx-grid',
+    /*html*/ `
+        <quadrant-grid class='abs'>
+        ${range(0, maxRange - 1)
+          .map((x) =>
+            range(0, maxRange - 1)
+              .map(
+                (y) => /*html*/ `
+              <div class='abs adjacent-map-cell cursor-pointer' style='
+              width: ${recDim}px; 
+              height: ${recDim}px;
+              left: ${x * recDim}px; 
+              top: ${y * recDim}px; 
+              '>
+              </div>
+              `
+              )
+              .join('')
+          )
+          .join('')}
+        </quadrant-grid>
+  `
+  );
 };
 
 s('.gfx-state').onclick = () => {
