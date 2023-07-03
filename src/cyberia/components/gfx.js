@@ -223,11 +223,28 @@ prepend(
                         top: ${y * recDim}%; 
                         font-size: 8px;
                         '>
-                            ${mapData.data.matrix[y][x] === 0 ? 0 : 1}
+                            ${
+                              mapData.data.matrix[y][x] === 0 ||
+                              (typeof mapData.data.matrix[y][x] === 'object' &&
+                                (mapData.data.matrix[y][x][0] === 'tmi' || mapData.data.matrix[y][x][0] === 'to-map'))
+                                ? 0
+                                : 1
+                            }
                             ${
                               typeof mapData.data.matrix[y][x] === 'object' && mapData.data.matrix[y][x][0] === 'tmi'
                                 ? `
-                            <br> <span style='color: red'>T-${mapData.data.matrix[y][x][1]}</span>
+                            <br> <span style='color: red; ${borderChar(1, 'white')}'>T-${
+                                    mapData.data.matrix[y][x][1]
+                                  }</span>
+                            `
+                                : ''
+                            }
+                            ${
+                              typeof mapData.data.matrix[y][x] === 'object' && mapData.data.matrix[y][x][0] === 'to-map'
+                                ? `
+                            <br> <span style='color: blue; ${borderChar(1, 'white')}'>G-${
+                                    mapData.data.matrix[y][x][3]
+                                  }-${mapData.data.matrix[y][x][1]}</span>
                             `
                                 : ''
                             }
@@ -246,10 +263,9 @@ prepend(
       </div>
     </div>
     <br>
+    <div class='in gfx-json-display'></div>
     <gfx-grid class='in custom-cursor'></gfx-grid>
     <br><br>
-    <div class='in gfx-json-display'></div>
-    <br><br><br>
 
   </graphics-engine>
 
