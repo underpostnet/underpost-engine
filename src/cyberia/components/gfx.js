@@ -18,11 +18,16 @@ let mouseDown = false;
 let paintMode = true;
 let grillMode = false;
 let quadrantMode = false;
+let objectQuadrantMode = false;
+let currentObjectQuadrant = 'gate';
+let currentDirectionAdjacentMap = undefined;
+let currentAdjacentMapData = undefined;
 let solidMode = 0;
 let gfxLastX = 0;
 let gfxLastY = 0;
 let globalPaintStorage = {};
 let globalSolidStorage = {};
+let globalMapObjectStorage = {};
 const gfxCellPixelFactor = 3;
 
 guiSections.push('graphics-engine');
@@ -38,6 +43,28 @@ append(
 
 `
 );
+
+const renderMapObjectData = (point) => {
+  return /*html*/ `
+  <div style='font-size: 8px;'>
+    ${point === 0 || (typeof point === 'object' && (point[0] === 'tmi' || point[0] === 'to-map')) ? 0 : 1}
+    ${
+      typeof point === 'object' && point[0] === 'tmi'
+        ? `
+    <br> <span style='color: red; ${borderChar(1, 'white')}'>T-${point[1]}</span>
+    `
+        : ''
+    }
+    ${
+      typeof point === 'object' && point[0] === 'to-map'
+        ? `
+    <br> <span style='color: blue; ${borderChar(1, 'white')}'>G-${point[3]}-${point[1]}</span>
+    `
+        : ''
+    }
+  </div>
+  `;
+};
 
 prepend(
   'gui-layer',
@@ -70,11 +97,17 @@ prepend(
         margin: 3px;
       }
       .gfx-engine-content {
-        border: 1px solid gray;
+        border: 2px solid yellow;
         max-height: 360px;
         margin: 40px 3px 3px 3px;
         padding: 5px;
         text-align: right;
+      }
+      .gfx-engine-content-title {
+        padding: 10px;
+        color: black;
+        text-transform: uppercase;
+        ${borderChar(1, 'yellow')}
       }
       .img-adj-map {
         width: 100%;
@@ -138,12 +171,39 @@ prepend(
         <input type='number' class='inl gfx-size-paint' value=${currentSizeCell + 1}>
       </div>
       <div class='in gfx-engine-content'>
-          link engine
+          <div class='in gfx-engine-content-title'>link engine</div>
+          <button class='inl gfx-btn custom-cursor gfx-object-quadrant'>
+            quadrant object <span style='color: red'>off</span>
+          </button>
+          <div class='in main-dropdown-content'>
+            select quadrant object
+            ${renderDropDown({
+              id: 'gfx-object-quadrant-dropdown',
+              optionCustomClass: 'custom-cursor',
+              style_dropdown_option: `
+                background: black;
+                z-index: 2;
+              `,
+              label: 'gate',
+              data: [
+                { value: 'gate', display: `gate` },
+                { value: 'terminal', display: `terminal` },
+              ],
+              onClick: async (value) => {
+                currentObjectQuadrant = value;
+              },
+            })}
+          </div>
+          <br>
+          object id number
+          <input type='number'  class='inl gfx-object-id-number'>
       </div>
       <div class='in main-dropdown-content gfx-engine-content'>
-          adjacent map engine
-        <br>
-        <input type='text' placeholder='name adjacent map' class='gfx-name-adjacent-map'>
+      <div class='in gfx-engine-content-title'>adjacent map engine</div>
+        <div class='in'>
+          name map <input type='text' class='inl gfx-name-adjacent-map'>
+        </div>
+        <div class='in main-dropdown-content'>
         ${renderDropDown({
           id: 'gfx-adjancent-map-dropdown',
           optionCustomClass: 'custom-cursor',
@@ -160,6 +220,7 @@ prepend(
           ],
           onClick: async (value) => {
             const mapData = await mapServices.getMap(s('.gfx-name-adjacent-map').value);
+            currentAdjacentMapData = mapData;
 
             const baseDim = s('.gfx-0-0').offsetHeight;
             const maxPxAdjacentMapRender = baseDim * maxRangeMap() * gfxCellPixelFactor + baseDim;
@@ -176,18 +237,21 @@ prepend(
                   left: 0px;
                 `;
                 s('gfx-grid').style.top = `${maxPxAdjacentMapRender}px`;
+                currentDirectionAdjacentMap = 'up';
                 break;
               case 'bottom':
                 renderStyle += `
                   bottom: -${maxPxAdjacentMapRender}px;
                   left: 0px;
                 `;
+                currentDirectionAdjacentMap = 'down';
                 break;
               case 'right':
                 renderStyle += `
                   top: 0px;
                   left: ${maxPxAdjacentMapRender}px;
                 `;
+                currentDirectionAdjacentMap = 'right';
                 break;
               case 'left':
                 renderStyle += `
@@ -195,6 +259,7 @@ prepend(
                   left: -${maxPxAdjacentMapRender}px;
                 `;
                 s('gfx-grid').style.left = `${maxPxAdjacentMapRender}px`;
+                currentDirectionAdjacentMap = 'left';
                 break;
               default:
                 break;
@@ -221,33 +286,8 @@ prepend(
                         height: ${recDim}%;
                         left: ${x * recDim}%; 
                         top: ${y * recDim}%; 
-                        font-size: 8px;
                         '>
-                            ${
-                              mapData.data.matrix[y][x] === 0 ||
-                              (typeof mapData.data.matrix[y][x] === 'object' &&
-                                (mapData.data.matrix[y][x][0] === 'tmi' || mapData.data.matrix[y][x][0] === 'to-map'))
-                                ? 0
-                                : 1
-                            }
-                            ${
-                              typeof mapData.data.matrix[y][x] === 'object' && mapData.data.matrix[y][x][0] === 'tmi'
-                                ? `
-                            <br> <span style='color: red; ${borderChar(1, 'white')}'>T-${
-                                    mapData.data.matrix[y][x][1]
-                                  }</span>
-                            `
-                                : ''
-                            }
-                            ${
-                              typeof mapData.data.matrix[y][x] === 'object' && mapData.data.matrix[y][x][0] === 'to-map'
-                                ? `
-                            <br> <span style='color: blue; ${borderChar(1, 'white')}'>G-${
-                                    mapData.data.matrix[y][x][3]
-                                  }-${mapData.data.matrix[y][x][1]}</span>
-                            `
-                                : ''
-                            }
+                            ${renderMapObjectData(mapData.data.matrix[y][x])}
                         </div>
                         `;
                     })
@@ -258,8 +298,15 @@ prepend(
             `;
             if (s('.gfx-content-img-adjacent-map')) s('.gfx-content-img-adjacent-map').remove();
             append('gfx-grid', renderAdjMap);
+
+            const mapDataModal = mapMetaData.globalInstancesMapData.find(
+              (m) => m.name === s('.gfx-name-adjacent-map').value
+            );
+            if (mapDataModal) renderMapModal(mapDataModal);
           },
         })}
+        </div>
+        <br><br>
       </div>
     </div>
     <br>
@@ -334,8 +381,10 @@ const renderGfxGrid = () => {
   htmls('gfx-grid', '');
   s('gfx-grid').style.top = null;
   s('gfx-grid').style.left = null;
+  currentDirectionAdjacentMap = undefined;
   globalPaintStorage = {};
   globalSolidStorage = {};
+  globalMapObjectStorage = {};
   const dim = maxRangeMap() * gfxCellPixelFactor - 1;
   range(0, dim).map((y) => {
     let render = /*html*/ `<div class='fl'>`;
@@ -461,6 +510,35 @@ s('.gfx-quadrant').onclick = () => {
                         renderPaint(baseX + sumX, baseY + sumY);
                       })
                     );
+                    if (objectQuadrantMode) {
+                      let ocjectInsert;
+                      switch (currentObjectQuadrant) {
+                        case 'gate':
+                          ocjectInsert = [
+                            'to-map',
+                            currentAdjacentMapData.data.name_map,
+                            currentDirectionAdjacentMap,
+                            parseInt(s('.gfx-object-id-number').value),
+                          ];
+                          break;
+                        case 'terminal':
+                          ocjectInsert = ['tmi', parseInt(s('.gfx-object-id-number').value)];
+                          break;
+                        default:
+                          break;
+                      }
+                      console.log('ocjectInsert', ocjectInsert);
+                      if (ocjectInsert !== undefined) {
+                        range(0, gfxCellPixelFactor - 1).map((sumX) =>
+                          range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                            if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
+                            globalMapObjectStorage[baseX + sumX][baseY + sumY] = ocjectInsert;
+                          })
+                        );
+                      }
+                    }
+                    s('.gfx-quadrant').click();
+                    s('.gfx-quadrant').click();
                   };
                 });
                 return /*html*/ `
@@ -470,6 +548,9 @@ s('.gfx-quadrant').onclick = () => {
               left: ${x * recDim}px; 
               top: ${y * recDim}px; 
               '>
+
+                    ${renderMapObjectData(getCurrentJSONmap()[y][x])}
+
               </div>
               `;
               })
@@ -479,6 +560,16 @@ s('.gfx-quadrant').onclick = () => {
         </quadrant-grid>
   `
   );
+};
+
+s('.gfx-object-quadrant').onclick = () => {
+  if (objectQuadrantMode) {
+    objectQuadrantMode = false;
+    htmls('.gfx-object-quadrant', `quadrant object <span style='color: red'>off</span>`);
+    return;
+  }
+  objectQuadrantMode = true;
+  htmls('.gfx-object-quadrant', `quadrant object <span style='color: green'>on</span>`);
 };
 
 s('.gfx-state').onclick = () => {
@@ -567,24 +658,30 @@ s('.gfx-svg').onclick = () => {
   downloader('map.svg', mimes['svg'], svgRender);
 };
 
-s('.gfx-json').onclick = () => {
+const getCurrentJSONmap = (pixelfactor) => {
+  if (pixelfactor === undefined) pixelfactor = gfxCellPixelFactor;
   let dataJSON = [];
-  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  const maxRange = maxRangeMap() * pixelfactor - 1;
   range(0, maxRange).map((x) =>
     range(0, maxRange).map((y) => {
       if (!dataJSON[y]) dataJSON[y] = [];
-      dataJSON[y][x] = globalSolidStorage[x] !== undefined && globalSolidStorage[x][y] === 1 ? 1 : 0;
+      if (globalMapObjectStorage[x] !== undefined && globalMapObjectStorage[x][y] !== undefined) {
+        dataJSON[y][x] = globalMapObjectStorage[x][y];
+      } else {
+        dataJSON[y][x] =
+          globalSolidStorage[x] !== undefined && globalSolidStorage[x][y] !== undefined ? globalSolidStorage[x][y] : 0;
+      }
     })
   );
-  const renderJSON = JSONmatrix(
-    dataJSON
-      .map((y, iy) =>
-        iy % gfxCellPixelFactor === 0
-          ? y.map((x, ix) => (ix % gfxCellPixelFactor === 0 ? x : null)).filter((c) => c !== null)
-          : null
-      )
-      .filter((c) => c !== null)
-  );
+  return dataJSON
+    .map((y, iy) =>
+      iy % pixelfactor === 0 ? y.map((x, ix) => (ix % pixelfactor === 0 ? x : null)).filter((c) => c !== null) : null
+    )
+    .filter((c) => c !== null);
+};
+
+s('.gfx-json').onclick = () => {
+  const renderJSON = JSONmatrix(getCurrentJSONmap());
   htmls(
     '.gfx-json-display',
     /*html*/ `
