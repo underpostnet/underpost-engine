@@ -19,6 +19,7 @@ let paintMode = true;
 let grillMode = false;
 let quadrantMode = false;
 let objectQuadrantMode = false;
+let cleanQuadranObject = false;
 let currentObjectQuadrant = 'gate';
 let currentDirectionAdjacentMap = undefined;
 let currentAdjacentMapData = undefined;
@@ -174,6 +175,9 @@ prepend(
           <div class='in gfx-engine-content-title'>link engine</div>
           <button class='inl gfx-btn custom-cursor gfx-object-quadrant'>
             quadrant object <span style='color: red'>off</span>
+          </button>
+          <button class='inl gfx-btn custom-cursor gfx-clean-object'>
+            clean object <span style='color: red'>off</span>
           </button>
           <div class='in main-dropdown-content'>
             select quadrant object
@@ -502,15 +506,25 @@ s('.gfx-quadrant').onclick = () => {
               .map((y) => {
                 setTimeout(() => {
                   s(`.quadrant-map-cell-${x}-${y}`).onclick = () => {
-                    s('.gfx-size-paint').value = 1;
-                    s('.gfx-size-paint').oninput();
                     const baseX = x * gfxCellPixelFactor;
                     const baseY = y * gfxCellPixelFactor;
-                    range(0, gfxCellPixelFactor - 1).map((sumX) =>
-                      range(0, gfxCellPixelFactor - 1).map((sumY) => {
-                        renderPaint(baseX + sumX, baseY + sumY);
-                      })
-                    );
+                    if (cleanQuadranObject) {
+                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
+                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                          if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
+                          globalMapObjectStorage[baseX + sumX][baseY + sumY] = undefined;
+                        })
+                      );
+                    }
+                    if (paintMode) {
+                      s('.gfx-size-paint').value = 1;
+                      s('.gfx-size-paint').oninput();
+                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
+                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                          renderPaint(baseX + sumX, baseY + sumY);
+                        })
+                      );
+                    }
                     if (objectQuadrantMode) {
                       let ocjectInsert;
                       switch (currentObjectQuadrant) {
@@ -571,6 +585,7 @@ s('.gfx-object-quadrant').onclick = () => {
   }
   objectQuadrantMode = true;
   htmls('.gfx-object-quadrant', `quadrant object <span style='color: green'>on</span>`);
+  if (cleanQuadranObject) s('.gfx-clean-object').click();
 };
 
 s('.gfx-state').onclick = () => {
@@ -591,6 +606,17 @@ s('.gfx-solid').onclick = () => {
   }
   solidMode = 1;
   htmls('.gfx-solid', `solid <span style='color: green'>on</span>`);
+};
+
+s('.gfx-clean-object').onclick = () => {
+  if (cleanQuadranObject) {
+    cleanQuadranObject = false;
+    htmls('.gfx-clean-object', `clean object <span style='color: red'>off</span>`);
+    return;
+  }
+  cleanQuadranObject = true;
+  htmls('.gfx-clean-object', `clean object <span style='color: green'>on</span>`);
+  if (objectQuadrantMode) s('.gfx-object-quadrant').click();
 };
 
 const grillModeChange = () => {
