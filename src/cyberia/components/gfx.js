@@ -341,14 +341,15 @@ const renderPaint = (x, y) => {
     }
   `
   );
+
+  if (!globalSolidStorage[x]) globalSolidStorage[x] = {};
+  globalSolidStorage[x][y] = solidMode;
+
   if (!paintMode) return;
   s(`.gfx-${x}-${y}`).style.background = currentColorCell;
 
   if (!globalPaintStorage[x]) globalPaintStorage[x] = {};
   globalPaintStorage[x][y] = currentColorCell;
-
-  if (!globalSolidStorage[x]) globalSolidStorage[x] = {};
-  globalSolidStorage[x][y] = solidMode;
 
   if (currentSizeCell > 0) {
     range(1, currentSizeCell).map((sizeY) => {
