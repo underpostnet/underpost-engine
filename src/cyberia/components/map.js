@@ -81,6 +81,45 @@ const map = () => {
 
                 <div class='in title-section'>${renderLang({ es: 'Mapa', en: 'Map' })}</div>
                 
+                <div class='in config-row'>
+                  <div class='fl'>
+                    <div class='in fll config-col'>
+                      <div class='in config-col-content'>
+                          ${renderLang({ es: 'Información de Mapa', en: 'Map Info' })}
+                      </div>
+                    </div>
+                    <div class='in fll config-col'>
+                      <div class='in config-col-content'>
+                        <div class='inl toggle-switch-content custom-cursor'>
+                            ${renderToggleSwitch({
+                              factor: 35,
+                              id: 'map-info-toggle',
+                              checked: true,
+                              label: ['', ''],
+                              activeColor: 'yellow',
+                              onChange: (state) => {
+                                if (state) {
+                                  if (s('.style-hide-map-cell-info')) s('.style-hide-map-cell-info').remove();
+                                  return;
+                                }
+                                append(
+                                  'body',
+                                  /*html*/ `
+                                  <style class='style-hide-map-cell-info'>
+                                  .map-hover-gfx {
+                                    display: none !important;
+                                  }
+                                  </style>
+                                `
+                                );
+                              },
+                            })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
                 <div class='in main-map-render-content'>
 
                 </div>
