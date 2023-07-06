@@ -346,9 +346,6 @@ const renderPaint = (x, y) => {
   `
   );
 
-  if (!globalSolidStorage[x]) globalSolidStorage[x] = {};
-  globalSolidStorage[x][y] = solidMode;
-
   if (!paintMode) return;
   s(`.gfx-${x}-${y}`).style.background = currentColorCell;
 
@@ -359,22 +356,18 @@ const renderPaint = (x, y) => {
     range(1, currentSizeCell).map((sizeY) => {
       range(1, currentSizeCell).map((sizeX) => {
         if (!globalPaintStorage[x + sizeX]) globalPaintStorage[x + sizeX] = {};
-        if (!globalSolidStorage[x + sizeX]) globalSolidStorage[x + sizeX] = {};
 
         if (s(`.gfx-${x + sizeX}-${y}`)) {
           s(`.gfx-${x + sizeX}-${y}`).style.background = currentColorCell;
           globalPaintStorage[x + sizeX][y] = currentColorCell;
-          globalSolidStorage[x + sizeX][y] = solidMode;
         }
         if (s(`.gfx-${x}-${y + sizeY}`)) {
           s(`.gfx-${x}-${y + sizeY}`).style.background = currentColorCell;
           globalPaintStorage[x][y + sizeY] = currentColorCell;
-          globalSolidStorage[x][y + sizeY] = solidMode;
         }
         if (s(`.gfx-${x + sizeX}-${y + sizeY}`)) {
           s(`.gfx-${x + sizeX}-${y + sizeY}`).style.background = currentColorCell;
           globalPaintStorage[x + sizeX][y + sizeY] = currentColorCell;
-          globalSolidStorage[x + sizeX][y + sizeY] = solidMode;
         }
       });
     });
@@ -513,6 +506,14 @@ s('.gfx-quadrant').onclick = () => {
                         range(0, gfxCellPixelFactor - 1).map((sumY) => {
                           if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
                           globalMapObjectStorage[baseX + sumX][baseY + sumY] = undefined;
+                        })
+                      );
+                    }
+                    if (quadrantMode) {
+                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
+                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                          if (!globalSolidStorage[baseX + sumX]) globalSolidStorage[baseX + sumX] = {};
+                          globalSolidStorage[baseX + sumX][baseY + sumY] = solidMode;
                         })
                       );
                     }
