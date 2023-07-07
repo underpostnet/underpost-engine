@@ -66,7 +66,7 @@ const renderMainMap = (selector) => {
     'map-type-status',
     'map-type-status-content-gui',
     /*html*/ `
-    <span style='font-size: 5px; color: white'>C Y B E R I A</span>
+    <span style='font-size: 5px; color: white'>${getInstanceName()}</span>
     <br><br>
     `
   );

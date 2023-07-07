@@ -13,7 +13,6 @@ import {
   getDirection,
   reOrderIntArray,
   JSONweb,
-  JSONmatrix,
 } from '../../core/modules/common.js';
 import { maps } from './maps.js';
 import { mapBots } from './bots.js';
@@ -32,7 +31,7 @@ const dontCrossCorners = true;
 const minBotsMap = 3;
 const rangeMapView = 2;
 const centerMapPosition = [1, 1];
-const currentInstance = 'cyberia';
+let currentInstance = 'seed-city';
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 const characterSlots = ['skin', 'helmet', 'faction-symbol', 'breastplate', 'weapon', 'legs', 'talisman'];
@@ -246,6 +245,9 @@ const typeModels = () => {
     },
   };
 };
+
+const getInstanceName = (idName) =>
+  (idName ? idName : currentInstance).replaceAll('_', ' ').replaceAll('-', ' ').toUpperCase();
 
 const maxRangeMap = (arg) =>
   maxRangeMapParam - (arg !== undefined ? (typeof arg === 'string' ? typeModels()[arg].render().dim() : arg) : 0);
@@ -464,6 +466,8 @@ const ssrWS = `
     const skillTypes = ${JSONweb(skillTypes)};
     const rangeMapView = ${JSONweb(rangeMapView)};
     const centerMapPosition = ${JSONweb(centerMapPosition)};
+    const getInstanceName = ${getInstanceName};
+    const currentInstance = ${JSONweb(currentInstance)};
 `;
 
 const rebirdElement = (clients, element, internalApi) => {
