@@ -1,6 +1,6 @@
 const renderMainMap = (selector) => {
   if (selector === undefined) selector = '.main-map-render-content';
-  // const centerMapPosition = mapMetaData.position;
+  const centerMapPosition = mapMetaData.position;
   htmls(
     selector,
     range(centerMapPosition[1] - rangeMapView, centerMapPosition[1] + rangeMapView)
@@ -66,7 +66,7 @@ const renderMainMap = (selector) => {
     'map-type-status',
     'map-type-status-content-gui',
     /*html*/ `
-    <span style='font-size: 5px; color: white'>${getInstanceName()}</span>
+    <span style='font-size: 5px; color: white'>C Y B E R I A</span>
     <br><br>
     `
   );
@@ -119,7 +119,7 @@ const map = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div class='in main-map-render-content'>
 
                 </div>

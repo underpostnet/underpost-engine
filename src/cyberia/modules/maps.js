@@ -5,7 +5,6 @@ const maps = [
   {
     name_map: 'b4db',
     position: [-1, 1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -81,7 +80,6 @@ const maps = [
   {
     name_map: 'ecc0',
     position: [-1, 0],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -157,7 +155,6 @@ const maps = [
   {
     name_map: 'orange-over-purple',
     position: [0, 1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -267,7 +264,6 @@ const maps = [
   {
     name_map: 'zax-shop',
     position: [1, 1],
-    instance: 'seed-city',
     types: ['safe'],
     safe_cords: [],
     matrix: [
@@ -363,7 +359,6 @@ const maps = [
     types: ['pvp', 'pve'],
     safe_cords: [],
     position: undefined,
-    instance: 'seed-city',
     matrix: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -386,7 +381,6 @@ const maps = [
   {
     name_map: 'cy03-station',
     position: [1, 0],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -496,7 +490,6 @@ const maps = [
   {
     name_map: 'buro',
     position: [0, 0],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -538,7 +531,6 @@ const maps = [
   {
     name_map: 'todarp',
     position: [0, 2],
-    instance: 'seed-city',
     types: ['safe'], // 'pvp', 'pve'
     safe_cords: [[8, 10]],
     matrix: [
@@ -597,7 +589,6 @@ const maps = [
   {
     name_map: 'yupark',
     position: [1, 2],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -656,7 +647,6 @@ const maps = [
   {
     name_map: 'redpark',
     position: [2, 2],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -715,7 +705,6 @@ const maps = [
   {
     name_map: 'mont',
     position: [2, 1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -774,7 +763,6 @@ const maps = [
   {
     name_map: 'ubrig',
     position: [2, 0],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -867,7 +855,6 @@ const maps = [
   {
     name_map: 'a225',
     position: [3, 0],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -927,7 +914,6 @@ const maps = [
   {
     name_map: 'cd89',
     position: [2, -1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -952,7 +938,6 @@ const maps = [
   {
     name_map: 'cy-stadium',
     position: [3, -1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -994,7 +979,6 @@ const maps = [
   {
     name_map: 'fe17',
     position: [-1, 2],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1053,7 +1037,6 @@ const maps = [
   {
     name_map: 'hu6r',
     position: [1, -1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1095,7 +1078,6 @@ const maps = [
   {
     name_map: 'jf2b',
     position: [0, -1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1120,7 +1102,6 @@ const maps = [
   {
     name_map: 'cxfr',
     position: [-1, -1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1162,7 +1143,6 @@ const maps = [
   {
     name_map: 'trvc',
     position: [3, 1],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1221,7 +1201,6 @@ const maps = [
   {
     name_map: 'gyr8',
     position: [3, 2],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1280,7 +1259,6 @@ const maps = [
   {
     name_map: 'wen6x',
     position: [3, 3],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1322,7 +1300,6 @@ const maps = [
   {
     name_map: '74fp9',
     position: [2, 3],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1364,7 +1341,6 @@ const maps = [
   {
     name_map: 'b43de',
     position: [1, 3],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1406,7 +1382,6 @@ const maps = [
   {
     name_map: 'bx-park',
     position: [0, 3],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1448,7 +1423,6 @@ const maps = [
   {
     name_map: 'or865',
     position: [-1, 3],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [
@@ -1490,7 +1464,6 @@ const maps = [
   {
     name_map: 'lim01',
     position: [3, 4],
-    instance: 'seed-city',
     types: ['pvp', 'pve'],
     safe_cords: [],
     matrix: [

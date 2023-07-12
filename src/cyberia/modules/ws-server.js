@@ -29,9 +29,9 @@ const elements = {};
 const allowDiagonal = true;
 const dontCrossCorners = true;
 const minBotsMap = 3;
-const rangeMapView = 3;
-const centerMapPosition = [1, 1];
-let currentInstance = 'seed-city';
+
+const rangeMapView = 1;
+
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
 const characterSlots = ['skin', 'helmet', 'faction-symbol', 'breastplate', 'weapon', 'legs', 'talisman'];
@@ -245,9 +245,6 @@ const typeModels = () => {
     },
   };
 };
-
-const getInstanceName = (idName) =>
-  (idName ? idName : currentInstance).replaceAll('_', ' ').replaceAll('-', ' ').toUpperCase();
 
 const maxRangeMap = (arg) =>
   maxRangeMapParam - (arg !== undefined ? (typeof arg === 'string' ? typeModels()[arg].render().dim() : arg) : 0);
@@ -465,9 +462,6 @@ const ssrWS = `
     const characterSlots = ${JSONweb(characterSlots)};
     const skillTypes = ${JSONweb(skillTypes)};
     const rangeMapView = ${JSONweb(rangeMapView)};
-    const centerMapPosition = ${JSONweb(centerMapPosition)};
-    const getInstanceName = ${getInstanceName};
-    const currentInstance = ${JSONweb(currentInstance)};
 `;
 
 const rebirdElement = (clients, element, internalApi) => {
@@ -836,7 +830,7 @@ const unEquipItem = (clients, clientElement, clientElementIndex, eventElement) =
 
 const validateMapViewRange = (dataMapIter, dataMap) => {
   if (dataMapIter.position === undefined || dataMap.position === undefined) return false;
-  // const centerMapPosition = dataMap.position;
+  const centerMapPosition = dataMap.position;
   return (
     dataMapIter.position[0] >= centerMapPosition[0] - rangeMapView &&
     dataMapIter.position[0] <= centerMapPosition[0] + rangeMapView &&
@@ -1021,8 +1015,7 @@ const wsServer = (httpServer, app, internalApi) => {
             globalInstancesMapData: maps
               .filter(
                 (x) =>
-                  x.instance === currentInstance &&
-                  (validateMapViewRange(x, parentMapData ? parentMapData : dataMap) || x.name_map === dataMap.name_map)
+                  validateMapViewRange(x, parentMapData ? parentMapData : dataMap) || x.name_map === dataMap.name_map
               )
               .map((mapData) => {
                 return {
