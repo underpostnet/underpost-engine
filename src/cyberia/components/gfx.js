@@ -172,6 +172,13 @@ prepend(
         <input type='number' class='inl gfx-size-paint' value=${currentSizeCell + 1}>
       </div>
       <div class='in gfx-engine-content'>
+        <div class='in gfx-engine-content-title'>biome engine</div>
+          <button class='inl gfx-btn custom-cursor gfx-gen-biome'>
+               generate biome
+          </button>
+        </div>
+      </div>
+      <div class='in gfx-engine-content'>
           <div class='in gfx-engine-content-title'>link engine</div>
           <button class='inl gfx-btn custom-cursor gfx-object-quadrant'>
             quadrant object <span style='color: red'>off</span>
@@ -723,4 +730,48 @@ s('.gfx-json').onclick = () => {
   `
   );
   s('.gfx-copy-json').onclick = () => copyData(renderJSON);
+};
+
+s('.gfx-gen-biome').onclick = () => {
+  const maxRangeMapParam = maxRangeMap() * gfxCellPixelFactor - 1;
+  const centerIndex = random(0, colors.length - 1 - 2);
+  const matrixColorBiome = {};
+
+  range(0, maxRangeMapParam).map((y) => {
+    range(0, maxRangeMapParam).map((x) => {
+      const probColor = random(0, 99);
+      if (probColor <= 1) {
+        currentColorCell = colors[centerIndex - 2].hex;
+      } else if (probColor <= 10) {
+        currentColorCell = colors[centerIndex - 1].hex;
+        // } else if (probColor <= 30) {
+        //   currentColorCell = colors[centerIndex].hex;
+        // } else if (probColor <= 60) {
+        //   currentColorCell = colors[centerIndex + 1].hex;
+      } else {
+        currentColorCell = colors[centerIndex + 2].hex;
+      }
+
+      if (!matrixColorBiome[y]) matrixColorBiome[y] = {};
+      matrixColorBiome[y][x] = newInstance(currentColorCell);
+
+      renderPaint(x, y);
+    });
+  });
+
+  currentColorCell = colors[centerIndex - 2].hex;
+  Object.keys(matrixColorBiome).map((y) => {
+    Object.keys(matrixColorBiome[y]).map((x) => {
+      x = parseInt(x);
+      y = parseInt(y);
+      if (matrixColorBiome[y][x] === currentColorCell) {
+        range(-1, 1).map((sumX) =>
+          range(-3, 3).map((sumY) => {
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+          })
+        );
+      }
+    });
+  });
 };
