@@ -157,17 +157,25 @@ prepend(
         <button class='inl gfx-btn custom-cursor gfx-svg'>
           download svg
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-solid'>
-          solid <span style='color: red'>off</span>
-        </button>
-        <button class='inl gfx-btn custom-cursor gfx-json'>
-          generate json
-        </button>
         <button class='inl gfx-btn custom-cursor gfx-quadrant'>
           quadrant <span style='color: red'>off</span>
         </button>
         size
         <input type='number' class='inl gfx-size-paint' value=${currentSizeCell + 1}>
+      </div>
+      <div class='in gfx-engine-content'>
+        <div class='in gfx-engine-content-title'>SOLID ENGINE</div>
+        <div class='in'>
+            <button class='inl gfx-btn custom-cursor gfx-json'>
+              generate json
+            </button>
+            <button class='inl gfx-btn custom-cursor gfx-solid'>
+              solid <span style='color: red'>off</span>
+            </button>
+            <button class='inl gfx-btn custom-cursor gfx-load-solid'>
+              load json solid 
+            </button>
+          </div>
       </div>
       <div class='in gfx-engine-content'>
         <div class='in gfx-engine-content-title'>biome engine</div>
@@ -783,3 +791,31 @@ s('.gfx-load-color-json').onclick = () => {
   s('.gfx-input-color').oninput();
 };
 s('.gfx-paste-color-json').onclick = async () => (s('.gfx-input-json-color').value = await pasteData());
+
+s('.gfx-load-solid').onclick = async () => {
+  const inputJSON = JSON.parse(await pasteData());
+  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+
+  console.log('inputJSON', JSONmatrix(inputJSON));
+  let inputX = 0;
+  let inputY = 0;
+  range(0, maxRange).map((x) => {
+    if (x !== 0 && x % gfxCellPixelFactor === 0) inputX++;
+    range(0, maxRange).map((y) => {
+      if (y !== 0 && y % gfxCellPixelFactor === 0) inputY++;
+
+      if (!globalMapObjectStorage[x]) globalMapObjectStorage[x] = {};
+      if (!globalSolidStorage[x]) globalSolidStorage[x] = {};
+
+      if (typeof inputJSON[inputY][inputX] === 'object') {
+        globalMapObjectStorage[x][y] = inputJSON[inputY][inputX];
+        globalSolidStorage[x][y] = 0;
+      } else globalSolidStorage[x][y] = inputJSON[inputY][inputX];
+    });
+    inputY = 0;
+  });
+  if (quadrantMode) {
+    s('.gfx-quadrant').click();
+    s('.gfx-quadrant').click();
+  }
+};
