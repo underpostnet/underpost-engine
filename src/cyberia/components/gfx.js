@@ -84,7 +84,6 @@ prepend(
       }
       .gfx-content-menu {
         margin: 5px;
-        z-index: 1;
       }
       .gfx-input-color {
         width: 100px;
@@ -174,6 +173,24 @@ prepend(
         <div class='in gfx-engine-content-title'>biome engine</div>
           <button class='inl gfx-btn custom-cursor gfx-gen-biome'>
                generate biome
+          </button>
+        </div>
+      </div>
+      <div class='in gfx-engine-content'>
+        <div class='in gfx-engine-content-title'>JSON COLOR BACKUP</div>
+        <div class='in'>
+            json color
+            <input type='text'  class='inl gfx-input-json-color'>
+        </div>
+        <div class='in'>
+          <button class='inl gfx-btn custom-cursor gfx-copy-color-json'>
+            copy matrix color json
+          </button>         
+          <button class='inl gfx-btn custom-cursor gfx-paste-color-json'>
+            paste matrix color json
+          </button>
+          <button class='inl gfx-btn custom-cursor gfx-load-color-json'>
+            load matrix color json
           </button>
         </div>
       </div>
@@ -686,7 +703,10 @@ s('.gfx-json').onclick = () => {
   
   `
   );
-  s('.gfx-copy-json').onclick = () => copyData(renderJSON);
+  s('.gfx-copy-json').onclick = async () => {
+    await copyData(renderJSON);
+    renderNotification('success', 'json copy to clipboard');
+  };
 };
 
 s('.gfx-gen-biome').onclick = () => {
@@ -732,3 +752,34 @@ s('.gfx-gen-biome').onclick = () => {
     });
   });
 };
+
+s('.gfx-copy-color-json').onclick = async () => {
+  const renderJSON = [];
+  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  range(0, maxRange).map((x) =>
+    range(0, maxRange).map((y) => {
+      if (!renderJSON[y]) renderJSON[y] = [];
+      renderJSON[y][x] =
+        globalPaintStorage[x] && globalPaintStorage[x][y] !== undefined ? globalPaintStorage[x][y] : '#000000';
+    })
+  );
+  await copyData(JSONmatrix(renderJSON));
+  renderNotification('success', 'json copy to clipboard');
+};
+
+s('.gfx-load-color-json').onclick = () => {
+  const inputJSON = JSON.parse(s('.gfx-input-json-color').value);
+  s('.gfx-size-paint').value = 1;
+  s('.gfx-size-paint').oninput();
+  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  range(0, maxRange).map((x) =>
+    range(0, maxRange).map((y) => {
+      if (!globalPaintStorage[x]) globalPaintStorage[x] = {};
+      currentColorCell = inputJSON[y][x];
+      renderPaint(x, y);
+    })
+  );
+  s('.gfx-input-color').value = currentColorCell;
+  s('.gfx-input-color').oninput();
+};
+s('.gfx-paste-color-json').onclick = async () => (s('.gfx-input-json-color').value = await pasteData());
