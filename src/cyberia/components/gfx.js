@@ -20,7 +20,6 @@ let grillMode = false;
 let quadrantMode = false;
 let objectQuadrantMode = false;
 let cleanQuadranObject = false;
-let currentObjectQuadrant = 'gate';
 let currentDirectionAdjacentMap = undefined;
 let currentAdjacentMapData = undefined;
 let solidMode = 0;
@@ -186,28 +185,8 @@ prepend(
           <button class='inl gfx-btn custom-cursor gfx-clean-object'>
             clean object <span style='color: red'>off</span>
           </button>
-          <div class='in main-dropdown-content'>
-            select quadrant object
-            ${renderDropDown({
-              id: 'gfx-object-quadrant-dropdown',
-              optionCustomClass: 'custom-cursor',
-              style_dropdown_option: `
-                background: black;
-                z-index: 2;
-              `,
-              label: 'gate',
-              data: [
-                { value: 'gate', display: `gate` },
-                { value: 'terminal', display: `terminal` },
-              ],
-              onClick: async (value) => {
-                currentObjectQuadrant = value;
-              },
-            })}
-          </div>
-          <br>
-          object id number
-          <input type='number'  class='inl gfx-object-id-number'>
+            json link
+          <input type='text'  class='inl gfx-json-link'>
       </div>
       <div class='in main-dropdown-content gfx-engine-content'>
       <div class='in gfx-engine-content-title'>adjacent map engine</div>
@@ -508,6 +487,11 @@ s('.gfx-quadrant').onclick = () => {
                   s(`.quadrant-map-cell-${x}-${y}`).onclick = () => {
                     const baseX = x * gfxCellPixelFactor;
                     const baseY = y * gfxCellPixelFactor;
+                    if (paintMode) {
+                      s('.gfx-size-paint').value = gfxCellPixelFactor;
+                      s('.gfx-size-paint').oninput();
+                      renderPaint(baseX, baseY);
+                    }
                     if (cleanQuadranObject) {
                       range(0, gfxCellPixelFactor - 1).map((sumX) =>
                         range(0, gfxCellPixelFactor - 1).map((sumY) => {
@@ -515,8 +499,16 @@ s('.gfx-quadrant').onclick = () => {
                           globalMapObjectStorage[baseX + sumX][baseY + sumY] = undefined;
                         })
                       );
-                    }
-                    if (quadrantMode) {
+                    } else if (objectQuadrantMode) {
+                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
+                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                          if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
+                          globalMapObjectStorage[baseX + sumX][baseY + sumY] = JSON.parse(
+                            s('.gfx-json-link').value.replaceAll("'", `"`).replaceAll('`', `"`)
+                          );
+                        })
+                      );
+                    } else {
                       range(0, gfxCellPixelFactor - 1).map((sumX) =>
                         range(0, gfxCellPixelFactor - 1).map((sumY) => {
                           if (!globalSolidStorage[baseX + sumX]) globalSolidStorage[baseX + sumX] = {};
@@ -524,42 +516,7 @@ s('.gfx-quadrant').onclick = () => {
                         })
                       );
                     }
-                    if (paintMode) {
-                      s('.gfx-size-paint').value = 1;
-                      s('.gfx-size-paint').oninput();
-                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
-                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
-                          renderPaint(baseX + sumX, baseY + sumY);
-                        })
-                      );
-                    }
-                    if (objectQuadrantMode) {
-                      let ocjectInsert;
-                      switch (currentObjectQuadrant) {
-                        case 'gate':
-                          ocjectInsert = [
-                            'to-map',
-                            currentAdjacentMapData.data.name_map,
-                            currentDirectionAdjacentMap,
-                            parseInt(s('.gfx-object-id-number').value),
-                          ];
-                          break;
-                        case 'terminal':
-                          ocjectInsert = ['tmi', parseInt(s('.gfx-object-id-number').value)];
-                          break;
-                        default:
-                          break;
-                      }
-                      console.log('ocjectInsert', ocjectInsert);
-                      if (ocjectInsert !== undefined) {
-                        range(0, gfxCellPixelFactor - 1).map((sumX) =>
-                          range(0, gfxCellPixelFactor - 1).map((sumY) => {
-                            if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
-                            globalMapObjectStorage[baseX + sumX][baseY + sumY] = ocjectInsert;
-                          })
-                        );
-                      }
-                    }
+
                     s('.gfx-quadrant').click();
                     s('.gfx-quadrant').click();
                   };
