@@ -98,9 +98,8 @@ prepend(
       .gfx-engine-content {
         border: 2px solid yellow;
         max-height: 360px;
-        margin: 40px 3px 3px 3px;
+        margin: 3px 3px 3px 3px;
         padding: 5px;
-        text-align: right;
       }
       .gfx-engine-content-title {
         padding: 10px;
@@ -136,8 +135,11 @@ prepend(
     <div class='in gfx-content-menu'>
       <div class='in gfx-content-top-menu'>
         <input type='color' class='inl gfx-input-color'>
-        <button class='inl custom-cursor gfx-state'>
+        <button class='inl custom-cursor gfx-paint-mode'>
           paint <span style='color: green'>on</span>
+        </button>
+        <button class='inl gfx-btn custom-cursor gfx-solid'>
+          solid <span style='color: red'>off</span>
         </button>
         <button class='inl gfx-btn custom-cursor gfx-copy'>
           copy
@@ -160,58 +162,51 @@ prepend(
         <button class='inl gfx-btn custom-cursor gfx-quadrant'>
           quadrant <span style='color: red'>off</span>
         </button>
-        size
-        <input type='number' class='inl gfx-size-paint' value=${currentSizeCell + 1}>
-      </div>
-      <div class='in gfx-engine-content'>
-        <div class='in gfx-engine-content-title'>SOLID ENGINE</div>
         <div class='in'>
-            <button class='inl gfx-btn custom-cursor gfx-json'>
-              generate json
+          size <input type='number' class='inl gfx-size-paint' value=${currentSizeCell + 1}>
+        </div> 
+      </div>
+      <div class='inl gfx-engine-content'>
+        <div class='in gfx-engine-content-title'>solid json</div>
+        <div class='in'>
+            <button class='inl gfx-btn custom-cursor gfx-copy-solid-json'>
+              copy
             </button>
-            <button class='inl gfx-btn custom-cursor gfx-solid'>
-              solid <span style='color: red'>off</span>
+        
+            <button class='inl gfx-btn custom-cursor gfx-load-solid-json'>
+              load 
             </button>
-            <button class='inl gfx-btn custom-cursor gfx-load-solid'>
-              load json solid 
-            </button>
+            <div class='in gfx-json-display'></div>
           </div>
       </div>
-      <div class='in gfx-engine-content'>
+      <div class='inl gfx-engine-content'>
         <div class='in gfx-engine-content-title'>biome engine</div>
           <button class='inl gfx-btn custom-cursor gfx-gen-biome'>
                generate biome
           </button>
         </div>
       </div>
-      <div class='in gfx-engine-content'>
-        <div class='in gfx-engine-content-title'>JSON COLOR BACKUP</div>
-        <div class='in'>
-            json color
-            <input type='text'  class='inl gfx-input-json-color'>
-        </div>
+      <div class='inl gfx-engine-content'>
+        <div class='in gfx-engine-content-title'>color json</div>
         <div class='in'>
           <button class='inl gfx-btn custom-cursor gfx-copy-color-json'>
-            copy matrix color json
-          </button>         
-          <button class='inl gfx-btn custom-cursor gfx-paste-color-json'>
-            paste matrix color json
+            copy
           </button>
           <button class='inl gfx-btn custom-cursor gfx-load-color-json'>
-            load matrix color json
+            load
           </button>
         </div>
       </div>
-      <div class='in gfx-engine-content'>
-          <div class='in gfx-engine-content-title'>link engine</div>
+      <div class='inl gfx-engine-content'>
+          <div class='in gfx-engine-content-title'>object engine</div>
           <button class='inl gfx-btn custom-cursor gfx-object-quadrant'>
             quadrant object <span style='color: red'>off</span>
           </button>
           <button class='inl gfx-btn custom-cursor gfx-clean-object'>
             clean object <span style='color: red'>off</span>
           </button>
-            json link
-          <input type='text'  class='inl gfx-json-link'>
+            json
+          <input type='text'  class='inl gfx-json-object'>
       </div>
       <div class='in main-dropdown-content gfx-engine-content'>
       <div class='in gfx-engine-content-title'>adjacent map engine</div>
@@ -324,8 +319,7 @@ prepend(
         <br><br>
       </div>
     </div>
-    <br>
-    <div class='in gfx-json-display'></div>
+   
     <gfx-grid class='in custom-cursor'></gfx-grid>
     <br><br>
 
@@ -391,6 +385,7 @@ const renderGfxGrid = () => {
   s('gfx-grid').style.top = null;
   s('gfx-grid').style.left = null;
   currentDirectionAdjacentMap = undefined;
+  htmls('.gfx-json-display', '');
   globalPaintStorage = {};
   globalSolidStorage = {};
   globalMapObjectStorage = {};
@@ -529,7 +524,7 @@ s('.gfx-quadrant').onclick = () => {
                         range(0, gfxCellPixelFactor - 1).map((sumY) => {
                           if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
                           globalMapObjectStorage[baseX + sumX][baseY + sumY] = JSON.parse(
-                            s('.gfx-json-link').value.replaceAll("'", `"`).replaceAll('`', `"`)
+                            s('.gfx-json-object').value.replaceAll("'", `"`).replaceAll('`', `"`)
                           );
                         })
                       );
@@ -578,14 +573,14 @@ s('.gfx-object-quadrant').onclick = () => {
   if (cleanQuadranObject) s('.gfx-clean-object').click();
 };
 
-s('.gfx-state').onclick = () => {
+s('.gfx-paint-mode').onclick = () => {
   if (paintMode) {
     paintMode = false;
-    htmls('.gfx-state', `paint <span style='color: red'>off</span>`);
+    htmls('.gfx-paint-mode', `paint <span style='color: red'>off</span>`);
     return;
   }
   paintMode = true;
-  htmls('.gfx-state', `paint <span style='color: green'>on</span>`);
+  htmls('.gfx-paint-mode', `paint <span style='color: green'>on</span>`);
 };
 
 s('.gfx-solid').onclick = () => {
@@ -697,24 +692,17 @@ const getCurrentJSONmap = (pixelfactor) => {
     .filter((c) => c !== null);
 };
 
-s('.gfx-json').onclick = () => {
+s('.gfx-copy-solid-json').onclick = async () => {
   const renderJSON = JSONmatrix(getCurrentJSONmap());
   htmls(
     '.gfx-json-display',
     /*html*/ `
-    <div class='in'>
-        <button class='inl gfx-copy-json custom-cursor'>
-            copy json
-        </button>
-    </div>
     <pre class='in'>${renderJSON}</pre>
   
   `
   );
-  s('.gfx-copy-json').onclick = async () => {
-    await copyData(renderJSON);
-    renderNotification('success', 'json copy to clipboard');
-  };
+  await copyData(renderJSON);
+  renderNotification('success', 'json copy to clipboard');
 };
 
 s('.gfx-gen-biome').onclick = () => {
@@ -775,8 +763,9 @@ s('.gfx-copy-color-json').onclick = async () => {
   renderNotification('success', 'json copy to clipboard');
 };
 
-s('.gfx-load-color-json').onclick = () => {
-  const inputJSON = JSON.parse(s('.gfx-input-json-color').value);
+s('.gfx-load-color-json').onclick = async () => {
+  const inputJSON = JSON.parse(await pasteData());
+  if (!paintMode) s('.gfx-paint-mode').click();
   s('.gfx-size-paint').value = 1;
   s('.gfx-size-paint').oninput();
   const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
@@ -790,9 +779,8 @@ s('.gfx-load-color-json').onclick = () => {
   s('.gfx-input-color').value = currentColorCell;
   s('.gfx-input-color').oninput();
 };
-s('.gfx-paste-color-json').onclick = async () => (s('.gfx-input-json-color').value = await pasteData());
 
-s('.gfx-load-solid').onclick = async () => {
+s('.gfx-load-solid-json').onclick = async () => {
   const inputJSON = JSON.parse(await pasteData());
   const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
 
