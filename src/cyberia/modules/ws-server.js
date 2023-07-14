@@ -30,7 +30,7 @@ const allowDiagonal = true;
 const dontCrossCorners = true;
 const minBotsMap = 3;
 
-const rangeMapView = 3;
+const rangeMapView = 2;
 
 const directions = ['South East', 'East', 'North East', 'South', 'North', 'South West', 'West', 'North West'];
 const spriteDirs = ['08', '06', '04', '02', '18', '16', '14', '12'];
