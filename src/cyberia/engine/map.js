@@ -844,4 +844,7 @@ s('.engineMap-upload').onclick = async () => {
     },
   };
   console.log('engineMap Upload', body);
+
+  const result = await mapServices.upload(body);
+  renderNotification(result.status, result.data.message);
 };
