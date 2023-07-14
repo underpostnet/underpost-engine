@@ -18,7 +18,7 @@ dotenv.config();
 const NAME_APP = process.env.NAME_APP;
 const nameSrcFileApp = 'app';
 
-const fxEngineRender = fs.readFileSync(`./src/${NAME_APP}/components/gfx.js`, 'utf8');
+const fxEngineRender = fs.readFileSync(`./src/${NAME_APP}/engine/map.js`, 'utf8');
 const userRender = (req, res) => {
   try {
     if (req.user && req.user.admin === true) {
