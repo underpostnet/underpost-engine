@@ -187,17 +187,24 @@ prepend(
         </div>
       </div>
       <div class='inl engineMap-engine-content'>
-        <button class='inl engineMap-btn custom-cursor engineMap-upload'>
-          upload map
-        </button>
-        <textarea class="engineMap-metadata-json-input" rows="7" cols="50">
+          <button class='inl engineMap-btn custom-cursor engineMap-upload'>
+            upload map
+          </button>
+          <textarea class='engineMap-metadata-json-input' rows='7' cols='50'>
 {
   "name_map": "or56m",
   "position": [5, 3],
   "types": ["pvp", "pve"],
   "safe_cords": []
 }
-        </textarea>
+          </textarea>
+        </div>
+      <div class='inl engineMap-engine-content'>
+           name map
+          <input type='text' class='engineMap-input-name-map-load'>
+          <button class='inl engineMap-btn custom-cursor engineMap-load-map'>
+            load map
+          </button>
       </div>
       <div class='inl engineMap-engine-content'>
         <div class='in engineMap-engine-content-title'>color json</div>
@@ -787,8 +794,7 @@ s('.engineMap-copy-color-json').onclick = async () => {
   renderNotification('success', 'json copy to clipboard');
 };
 
-s('.engineMap-load-color-json').onclick = async () => {
-  const inputJSON = JSON.parse(await pasteData());
+const loadColorMap = (inputJSON) => {
   if (!paintMode) s('.engineMap-paint-mode').click();
   s('.engineMap-size-paint').value = 1;
   s('.engineMap-size-paint').oninput();
@@ -804,8 +810,9 @@ s('.engineMap-load-color-json').onclick = async () => {
   s('.engineMap-input-color').oninput();
 };
 
-s('.engineMap-load-solid-json').onclick = async () => {
-  const inputJSON = JSON.parse(await pasteData());
+s('.engineMap-load-color-json').onclick = async () => loadColorMap(JSON.parse(await pasteData()));
+
+const loadSolidMap = (inputJSON) => {
   const maxRange = maxRangeMap() * engineMapCellPixelFactor - 1;
 
   console.log('inputJSON', JSONmatrix(inputJSON));
@@ -831,6 +838,7 @@ s('.engineMap-load-solid-json').onclick = async () => {
     s('.engineMap-quadrant').click();
   }
 };
+s('.engineMap-load-solid-json').onclick = async () => loadSolidMap(JSON.parse(await pasteData()));
 
 s('.engineMap-upload').onclick = async () => {
   const body = {
@@ -847,4 +855,22 @@ s('.engineMap-upload').onclick = async () => {
 
   const result = await mapServices.upload(body);
   renderNotification(result.status, result.data.message);
+};
+
+s('.engineMap-load-map').onclick = async () => {
+  const result = await mapServices.getMapDataEngine(s('.engineMap-input-name-map-load').value);
+  renderNotification(result.status, result.data.message);
+  loadColorMap(result.data.color);
+  loadSolidMap(result.data.map.matrix);
+  s('.engineMap-metadata-json-input').value = JSON.stringify(
+    {
+      name_map: result.data.map.name_map,
+      position: result.data.map.position,
+      types: result.data.map.types,
+      safe_cords: result.data.map.safe_cords,
+      parent: result.data.map.parent,
+    },
+    null,
+    4
+  );
 };

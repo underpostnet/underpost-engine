@@ -44,17 +44,47 @@ const getMapGfxEngineData = (req, res) => {
   }
 };
 
+const getMapEngineData = (req, res) => {
+  try {
+    const mapData = maps.find((i) => i.name_map == req.params.mapId);
+    if (mapData) {
+      const { name_map } = mapData;
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'map load successfully',
+          map: JSON.parse(fs.readFileSync(`./src/cyberia/assets/tiles/${name_map}.metadata.json`, 'utf8')),
+          color: JSON.parse(fs.readFileSync(`./src/cyberia/assets/tiles/${name_map}.json`, 'utf8')),
+        },
+      });
+    }
+    return res.status(400).json({
+      status: 'error',
+      data: {
+        message: renderLang({ en: 'Map not found', es: 'Mapa no encontrado' }, req),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
+
 const uploadMap = async (req, res) => {
   try {
     const { name_map } = req.body.mapData;
 
-    if (maps.find((m) => m.name_map === name_map))
-      return res.status(400).json({
-        status: 'error',
-        data: {
-          message: `map with name <span style='color: yellow'>${name_map}</span> already exists`,
-        },
-      });
+    // if (maps.find((m) => m.name_map === name_map))
+    //   return res.status(400).json({
+    //     status: 'error',
+    //     data: {
+    //       message: `map with name <span style='color: yellow'>${name_map}</span> already exists`,
+    //     },
+    //   });
 
     fs.writeFileSync(
       `./src/cyberia/assets/tiles/${name_map}.json`,
@@ -95,6 +125,7 @@ const uploadMap = async (req, res) => {
 const mapsApi = (app) => {
   app.get(process.env.API_BASE + '/maps/:mapId', authValidator, (req, res) => getMapGfxEngineData(req, res));
   app.post(process.env.API_BASE + '/maps/upload', authValidator, (req, res) => uploadMap(req, res));
+  app.get(process.env.API_BASE + '/maps/engine/:mapId', authValidator, (req, res) => getMapEngineData(req, res));
 };
 
 export { maps, mapsApi };
