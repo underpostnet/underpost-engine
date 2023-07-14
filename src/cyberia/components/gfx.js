@@ -1,15 +1,15 @@
-if (!logicStorage['logout']['gfx'])
-  logicStorage['logout']['gfx'] = () => {
+if (!logicStorage['logout']['engineMap'])
+  logicStorage['logout']['engineMap'] = () => {
     s('.btn-graphics-engine').remove();
     s('graphics-engine').remove();
     guiSections = guiSections.filter((g) => g !== 'graphics-engine');
     intanceMenuBtns();
-    logicStorage['logout']['gfx'] = undefined;
-    delete logicStorage['logout']['gfx'];
-    logicStorage['css-controller']['gfx'] = undefined;
-    delete logicStorage['css-controller']['gfx'];
-    logicStorage['key-down']['gfx'] = undefined;
-    delete logicStorage['key-down']['gfx'];
+    logicStorage['logout']['engineMap'] = undefined;
+    delete logicStorage['logout']['engineMap'];
+    logicStorage['css-controller']['engineMap'] = undefined;
+    delete logicStorage['css-controller']['engineMap'];
+    logicStorage['key-down']['engineMap'] = undefined;
+    delete logicStorage['key-down']['engineMap'];
   };
 
 let currentColorCell = 'black';
@@ -23,12 +23,12 @@ let cleanQuadranObject = false;
 let currentDirectionAdjacentMap = undefined;
 let currentAdjacentMapData = undefined;
 let solidMode = 0;
-let gfxLastX = 0;
-let gfxLastY = 0;
+let engineMapLastX = 0;
+let engineMapLastY = 0;
 let globalPaintStorage = {};
 let globalSolidStorage = {};
 let globalMapObjectStorage = {};
-const gfxCellPixelFactor = 3;
+const engineMapCellPixelFactor = 3;
 
 guiSections.push('graphics-engine');
 append(
@@ -72,36 +72,36 @@ prepend(
 
   <graphics-engine style='display: none'>
     <style>
-      gfx-grid {
+      engineMap-grid {
         margin-bottom: 10px;
       }
-      gfx-cell {
+      engineMap-cell {
         box-sizing: border-box;
         background: black;
       }
-      gfx-cell:hover {
+      engineMap-cell:hover {
         border: 1px solid white;
       }
-      .gfx-content-menu {
+      .engineMap-content-menu {
         margin: 5px;
       }
-      .gfx-input-color {
+      .engineMap-input-color {
         width: 100px;
         padding: 0px;
       }
-      .gfx-content-top-menu {
+      .engineMap-content-top-menu {
         margin-bottom: 5px;
       }
-      .gfx-btn {
+      .engineMap-btn {
         margin: 3px;
       }
-      .gfx-engine-content {
+      .engineMap-engine-content {
         border: 2px solid yellow;
         max-height: 360px;
         margin: 3px 3px 3px 3px;
         padding: 5px;
       }
-      .gfx-engine-content-title {
+      .engineMap-engine-content-title {
         padding: 10px;
         color: black;
         text-transform: uppercase;
@@ -125,97 +125,97 @@ prepend(
         left: 0%;
       }
     </style>
-     <style class='style-gfx-cell'></style>
-     <style class='style-gfx-cell-select'></style>
-     <style class='style-gfx-grill'></style>
+     <style class='style-engineMap-cell'></style>
+     <style class='style-engineMap-cell-select'></style>
+     <style class='style-engineMap-grill'></style>
     <sub-content-gui class='in'>
           <div class='in title-section'>Graphics Engine</div>
     </sub-content-gui>
     
-    <div class='in gfx-content-menu'>
-      <div class='in gfx-content-top-menu'>
-        <input type='color' class='inl gfx-input-color'>
-        <button class='inl custom-cursor gfx-paint-mode'>
+    <div class='in engineMap-content-menu'>
+      <div class='in engineMap-content-top-menu'>
+        <input type='color' class='inl engineMap-input-color'>
+        <button class='inl custom-cursor engineMap-paint-mode'>
           paint <span style='color: green'>on</span>
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-solid'>
+        <button class='inl engineMap-btn custom-cursor engineMap-solid'>
           solid <span style='color: red'>off</span>
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-copy'>
+        <button class='inl engineMap-btn custom-cursor engineMap-copy'>
           copy
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-paste'>
+        <button class='inl engineMap-btn custom-cursor engineMap-paste'>
           paste
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-clean'>
+        <button class='inl engineMap-btn custom-cursor engineMap-clean'>
           clean
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-grill'>
+        <button class='inl engineMap-btn custom-cursor engineMap-grill'>
           grill <span style='color: green'>on</span>
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-png'>
+        <button class='inl engineMap-btn custom-cursor engineMap-png'>
           download png
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-svg'>
+        <button class='inl engineMap-btn custom-cursor engineMap-svg'>
           download svg
         </button>
-        <button class='inl gfx-btn custom-cursor gfx-quadrant'>
+        <button class='inl engineMap-btn custom-cursor engineMap-quadrant'>
           quadrant <span style='color: red'>off</span>
         </button>
         <div class='in'>
-          size <input type='number' class='inl gfx-size-paint' value=${currentSizeCell + 1}>
+          size <input type='number' class='inl engineMap-size-paint' value=${currentSizeCell + 1}>
         </div> 
       </div>
-      <div class='inl gfx-engine-content'>
-        <div class='in gfx-engine-content-title'>solid json</div>
+      <div class='inl engineMap-engine-content'>
+        <div class='in engineMap-engine-content-title'>solid json</div>
         <div class='in'>
-            <button class='inl gfx-btn custom-cursor gfx-copy-solid-json'>
+            <button class='inl engineMap-btn custom-cursor engineMap-copy-solid-json'>
               copy
             </button>
         
-            <button class='inl gfx-btn custom-cursor gfx-load-solid-json'>
+            <button class='inl engineMap-btn custom-cursor engineMap-load-solid-json'>
               load 
             </button>
-            <div class='in gfx-json-display'></div>
+            <div class='in engineMap-json-display'></div>
           </div>
       </div>
-      <div class='inl gfx-engine-content'>
-        <div class='in gfx-engine-content-title'>biome engine</div>
-          <button class='inl gfx-btn custom-cursor gfx-gen-biome'>
+      <div class='inl engineMap-engine-content'>
+        <div class='in engineMap-engine-content-title'>biome engine</div>
+          <button class='inl engineMap-btn custom-cursor engineMap-gen-biome'>
                generate biome
           </button>
         </div>
       </div>
-      <div class='inl gfx-engine-content'>
-        <div class='in gfx-engine-content-title'>color json</div>
+      <div class='inl engineMap-engine-content'>
+        <div class='in engineMap-engine-content-title'>color json</div>
         <div class='in'>
-          <button class='inl gfx-btn custom-cursor gfx-copy-color-json'>
+          <button class='inl engineMap-btn custom-cursor engineMap-copy-color-json'>
             copy
           </button>
-          <button class='inl gfx-btn custom-cursor gfx-load-color-json'>
+          <button class='inl engineMap-btn custom-cursor engineMap-load-color-json'>
             load
           </button>
         </div>
       </div>
-      <div class='inl gfx-engine-content'>
-          <div class='in gfx-engine-content-title'>object engine</div>
-          <button class='inl gfx-btn custom-cursor gfx-object-quadrant'>
+      <div class='inl engineMap-engine-content'>
+          <div class='in engineMap-engine-content-title'>object engine</div>
+          <button class='inl engineMap-btn custom-cursor engineMap-object-quadrant'>
             quadrant object <span style='color: red'>off</span>
           </button>
-          <button class='inl gfx-btn custom-cursor gfx-clean-object'>
+          <button class='inl engineMap-btn custom-cursor engineMap-clean-object'>
             clean object <span style='color: red'>off</span>
           </button>
             json
-          <input type='text'  class='inl gfx-json-object'>
+          <input type='text'  class='inl engineMap-json-object'>
       </div>
-      <div class='in main-dropdown-content gfx-engine-content'>
-      <div class='in gfx-engine-content-title'>adjacent map engine</div>
+      <div class='in main-dropdown-content engineMap-engine-content'>
+      <div class='in engineMap-engine-content-title'>adjacent map engine</div>
         <div class='in'>
-          name map <input type='text' class='inl gfx-name-adjacent-map'>
+          name map <input type='text' class='inl engineMap-name-adjacent-map'>
         </div>
         <div class='in main-dropdown-content'>
         ${renderDropDown({
-          id: 'gfx-adjancent-map-dropdown',
+          id: 'engineMap-adjancent-map-dropdown',
           optionCustomClass: 'custom-cursor',
           style_dropdown_option: `
             background: black;
@@ -229,24 +229,24 @@ prepend(
             { value: 'left', display: `left` },
           ],
           onClick: async (value) => {
-            const mapData = await mapServices.getMap(s('.gfx-name-adjacent-map').value);
+            const mapData = await mapServices.getMap(s('.engineMap-name-adjacent-map').value);
             currentAdjacentMapData = mapData;
 
-            const baseDim = s('.gfx-0-0').offsetHeight;
-            const maxPxAdjacentMapRender = baseDim * maxRangeMap() * gfxCellPixelFactor + baseDim;
+            const baseDim = s('.engineMap-0-0').offsetHeight;
+            const maxPxAdjacentMapRender = baseDim * maxRangeMap() * engineMapCellPixelFactor + baseDim;
             let renderStyle = `
             width: ${maxPxAdjacentMapRender}px;
             height: ${maxPxAdjacentMapRender}px;
             `;
-            s('gfx-grid').style.top = null;
-            s('gfx-grid').style.left = null;
+            s('engineMap-grid').style.top = null;
+            s('engineMap-grid').style.left = null;
             switch (value) {
               case 'top':
                 renderStyle += `
                   top: -${maxPxAdjacentMapRender}px;
                   left: 0px;
                 `;
-                s('gfx-grid').style.top = `${maxPxAdjacentMapRender}px`;
+                s('engineMap-grid').style.top = `${maxPxAdjacentMapRender}px`;
                 currentDirectionAdjacentMap = 'up';
                 break;
               case 'bottom':
@@ -268,7 +268,7 @@ prepend(
                   top: 0px;
                   left: -${maxPxAdjacentMapRender}px;
                 `;
-                s('gfx-grid').style.left = `${maxPxAdjacentMapRender}px`;
+                s('engineMap-grid').style.left = `${maxPxAdjacentMapRender}px`;
                 currentDirectionAdjacentMap = 'left';
                 break;
               default:
@@ -277,10 +277,10 @@ prepend(
             const maxRange = maxRangeMap();
             const recDim = 100 / maxRange;
             const renderAdjMap = /*html*/ `
-            <div class='abs gfx-content-img-adjacent-map' style='${renderStyle}'>
+            <div class='abs engineMap-content-img-adjacent-map' style='${renderStyle}'>
               <img
               class='abs img-adj-map' 
-              src='/tiles/${s('.gfx-name-adjacent-map').value}.png'
+              src='/tiles/${s('.engineMap-name-adjacent-map').value}.png'
               >
 
               ${range(0, maxRange - 1)
@@ -306,11 +306,11 @@ prepend(
                 .join('')}
             </div>
             `;
-            if (s('.gfx-content-img-adjacent-map')) s('.gfx-content-img-adjacent-map').remove();
-            append('gfx-grid', renderAdjMap);
+            if (s('.engineMap-content-img-adjacent-map')) s('.engineMap-content-img-adjacent-map').remove();
+            append('engineMap-grid', renderAdjMap);
 
             const mapDataModal = mapMetaData.globalInstancesMapData.find(
-              (m) => m.name === s('.gfx-name-adjacent-map').value
+              (m) => m.name === s('.engineMap-name-adjacent-map').value
             );
             if (mapDataModal) renderMapModal(mapDataModal);
           },
@@ -320,7 +320,7 @@ prepend(
       </div>
     </div>
    
-    <gfx-grid class='in custom-cursor'></gfx-grid>
+    <engineMap-grid class='in custom-cursor'></engineMap-grid>
     <br><br>
 
   </graphics-engine>
@@ -331,28 +331,28 @@ prepend(
 
 intanceMenuBtns();
 
-const changeSizeCell = () => (currentSizeCell = s('.gfx-size-paint').value - 1);
+const changeSizeCell = () => (currentSizeCell = s('.engineMap-size-paint').value - 1);
 
-s('.gfx-size-paint').onblur = () => changeSizeCell();
-s('.gfx-size-paint').oninput = () => changeSizeCell();
+s('.engineMap-size-paint').onblur = () => changeSizeCell();
+s('.engineMap-size-paint').oninput = () => changeSizeCell();
 
-s('gfx-grid').onmousedown = () => (mouseDown = true);
-s('gfx-grid').onmouseup = () => (mouseDown = false);
+s('engineMap-grid').onmousedown = () => (mouseDown = true);
+s('engineMap-grid').onmouseup = () => (mouseDown = false);
 
 const renderPaint = (x, y) => {
-  gfxLastX = x;
-  gfxLastY = y;
+  engineMapLastX = x;
+  engineMapLastY = y;
   htmls(
-    '.style-gfx-cell-select',
+    '.style-engineMap-cell-select',
     /*css*/ `
-    .gfx-${x}-${y} {
+    .engineMap-${x}-${y} {
       border: 1px solid yellow;
     }
   `
   );
 
   if (!paintMode) return;
-  s(`.gfx-${x}-${y}`).style.background = currentColorCell;
+  s(`.engineMap-${x}-${y}`).style.background = currentColorCell;
 
   if (!globalPaintStorage[x]) globalPaintStorage[x] = {};
   globalPaintStorage[x][y] = currentColorCell;
@@ -362,16 +362,16 @@ const renderPaint = (x, y) => {
       range(1, currentSizeCell).map((sizeX) => {
         if (!globalPaintStorage[x + sizeX]) globalPaintStorage[x + sizeX] = {};
 
-        if (s(`.gfx-${x + sizeX}-${y}`)) {
-          s(`.gfx-${x + sizeX}-${y}`).style.background = currentColorCell;
+        if (s(`.engineMap-${x + sizeX}-${y}`)) {
+          s(`.engineMap-${x + sizeX}-${y}`).style.background = currentColorCell;
           globalPaintStorage[x + sizeX][y] = currentColorCell;
         }
-        if (s(`.gfx-${x}-${y + sizeY}`)) {
-          s(`.gfx-${x}-${y + sizeY}`).style.background = currentColorCell;
+        if (s(`.engineMap-${x}-${y + sizeY}`)) {
+          s(`.engineMap-${x}-${y + sizeY}`).style.background = currentColorCell;
           globalPaintStorage[x][y + sizeY] = currentColorCell;
         }
-        if (s(`.gfx-${x + sizeX}-${y + sizeY}`)) {
-          s(`.gfx-${x + sizeX}-${y + sizeY}`).style.background = currentColorCell;
+        if (s(`.engineMap-${x + sizeX}-${y + sizeY}`)) {
+          s(`.engineMap-${x + sizeX}-${y + sizeY}`).style.background = currentColorCell;
           globalPaintStorage[x + sizeX][y + sizeY] = currentColorCell;
         }
       });
@@ -380,44 +380,44 @@ const renderPaint = (x, y) => {
 };
 
 const renderGfxGrid = () => {
-  if (s('quadrant-grid')) s('.gfx-quadrant').click();
-  htmls('gfx-grid', '');
-  s('gfx-grid').style.top = null;
-  s('gfx-grid').style.left = null;
+  if (s('quadrant-grid')) s('.engineMap-quadrant').click();
+  htmls('engineMap-grid', '');
+  s('engineMap-grid').style.top = null;
+  s('engineMap-grid').style.left = null;
   currentDirectionAdjacentMap = undefined;
-  htmls('.gfx-json-display', '');
+  htmls('.engineMap-json-display', '');
   globalPaintStorage = {};
   globalSolidStorage = {};
   globalMapObjectStorage = {};
-  const dim = maxRangeMap() * gfxCellPixelFactor - 1;
+  const dim = maxRangeMap() * engineMapCellPixelFactor - 1;
   range(0, dim).map((y) => {
     let render = /*html*/ `<div class='fl'>`;
     range(0, dim).map((x) => {
       setTimeout(() => {
-        s(`.gfx-${x}-${y}`).onmouseover = () => (mouseDown ? renderPaint(x, y) : null);
-        s(`.gfx-${x}-${y}`).onclick = () => renderPaint(x, y);
+        s(`.engineMap-${x}-${y}`).onmouseover = () => (mouseDown ? renderPaint(x, y) : null);
+        s(`.engineMap-${x}-${y}`).onclick = () => renderPaint(x, y);
       });
       render += /*html*/ `
-   <gfx-cell class='in fll gfx-${x}-${y}'></gfx-cell> 
+   <engineMap-cell class='in fll engineMap-${x}-${y}'></engineMap-cell> 
 `;
     });
     render += /*html*/ `</div>`;
-    append('gfx-grid', render);
+    append('engineMap-grid', render);
   });
 };
 renderGfxGrid();
 
-const newColor = () => (currentColorCell = s('.gfx-input-color').value);
+const newColor = () => (currentColorCell = s('.engineMap-input-color').value);
 
-s('.gfx-input-color').onblur = newColor;
-s('.gfx-input-color').oninput = newColor;
+s('.engineMap-input-color').onblur = newColor;
+s('.engineMap-input-color').oninput = newColor;
 
 const renderDimGfxEngine = (screenDim) => {
   const dim = screenDim.minValue * 0.02;
   htmls(
-    '.style-gfx-cell',
+    '.style-engineMap-cell',
     /*css*/ `
-    gfx-cell {
+    engineMap-cell {
       width: ${dim}px;
       height: ${dim}px;
     }
@@ -429,74 +429,81 @@ renderDimGfxEngine(dimState());
 
 let lastPaintClipBoard = [];
 
-const gfxCopy = () => {
+const engineMapCopy = () => {
   lastPaintClipBoard = [
     {
       x: 0,
       y: 0,
-      v: s(`.gfx-${gfxLastX}-${gfxLastY}`).style.background,
-      s: globalSolidStorage[gfxLastX] && globalSolidStorage[gfxLastX][gfxLastY] ? 1 : 0,
+      v: s(`.engineMap-${engineMapLastX}-${engineMapLastY}`).style.background,
+      s: globalSolidStorage[engineMapLastX] && globalSolidStorage[engineMapLastX][engineMapLastY] ? 1 : 0,
     },
   ];
   range(1, currentSizeCell).map((sizeY) => {
     range(1, currentSizeCell).map((sizeX) => {
-      if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
+      if (s(`.engineMap-${engineMapLastX + sizeX}-${engineMapLastY}`))
         lastPaintClipBoard.push({
           x: sizeX,
           y: 0,
-          v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`).style.background,
-          s: globalSolidStorage[gfxLastX + sizeX] && globalSolidStorage[gfxLastX + sizeX][gfxLastY] ? 1 : 0,
+          v: s(`.engineMap-${engineMapLastX + sizeX}-${engineMapLastY}`).style.background,
+          s:
+            globalSolidStorage[engineMapLastX + sizeX] && globalSolidStorage[engineMapLastX + sizeX][engineMapLastY]
+              ? 1
+              : 0,
         });
-      if (s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`))
+      if (s(`.engineMap-${engineMapLastX}-${engineMapLastY + sizeY}`))
         lastPaintClipBoard.push({
           x: 0,
           y: sizeY,
-          v: s(`.gfx-${gfxLastX}-${gfxLastY + sizeY}`).style.background,
-          s: globalSolidStorage[gfxLastX] && globalSolidStorage[gfxLastX][gfxLastY + sizeY] ? 1 : 0,
+          v: s(`.engineMap-${engineMapLastX}-${engineMapLastY + sizeY}`).style.background,
+          s: globalSolidStorage[engineMapLastX] && globalSolidStorage[engineMapLastX][engineMapLastY + sizeY] ? 1 : 0,
         });
-      if (s(`.gfx-${gfxLastX + sizeX}-${gfxLastY}`))
+      if (s(`.engineMap-${engineMapLastX + sizeX}-${engineMapLastY}`))
         lastPaintClipBoard.push({
           x: sizeX,
           y: sizeY,
-          v: s(`.gfx-${gfxLastX + sizeX}-${gfxLastY + sizeY}`).style.background,
-          s: globalSolidStorage[gfxLastX + sizeX] && globalSolidStorage[gfxLastX + sizeX][gfxLastY + sizeY] ? 1 : 0,
+          v: s(`.engineMap-${engineMapLastX + sizeX}-${engineMapLastY + sizeY}`).style.background,
+          s:
+            globalSolidStorage[engineMapLastX + sizeX] &&
+            globalSolidStorage[engineMapLastX + sizeX][engineMapLastY + sizeY]
+              ? 1
+              : 0,
         });
     });
   });
 };
 
-const gfxPaste = () => {
+const engineMapPaste = () => {
   lastPaintClipBoard.map((pasteData) => {
-    if (s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`)) {
-      s(`.gfx-${gfxLastX + pasteData.x}-${gfxLastY + pasteData.y}`).style.background = pasteData.v;
-      if (!globalPaintStorage[gfxLastX + pasteData.x]) globalPaintStorage[gfxLastX + pasteData.x] = {};
-      globalPaintStorage[gfxLastX + pasteData.x][gfxLastY + pasteData.y] = pasteData.v;
-      if (!globalSolidStorage[gfxLastX + pasteData.x]) globalSolidStorage[gfxLastX + pasteData.x] = {};
-      globalSolidStorage[gfxLastX + pasteData.x][gfxLastY + pasteData.y] = pasteData.s;
+    if (s(`.engineMap-${engineMapLastX + pasteData.x}-${engineMapLastY + pasteData.y}`)) {
+      s(`.engineMap-${engineMapLastX + pasteData.x}-${engineMapLastY + pasteData.y}`).style.background = pasteData.v;
+      if (!globalPaintStorage[engineMapLastX + pasteData.x]) globalPaintStorage[engineMapLastX + pasteData.x] = {};
+      globalPaintStorage[engineMapLastX + pasteData.x][engineMapLastY + pasteData.y] = pasteData.v;
+      if (!globalSolidStorage[engineMapLastX + pasteData.x]) globalSolidStorage[engineMapLastX + pasteData.x] = {};
+      globalSolidStorage[engineMapLastX + pasteData.x][engineMapLastY + pasteData.y] = pasteData.s;
     }
   });
 };
 
-logicStorage['css-controller']['gfx'] = renderDimGfxEngine;
+logicStorage['css-controller']['engineMap'] = renderDimGfxEngine;
 
-logicStorage['key-down']['gfx'] = () => {
-  if (window.activeKey['Control'] && (window.activeKey['v'] || window.activeKey['V'])) gfxPaste();
-  if (window.activeKey['Control'] && (window.activeKey['c'] || window.activeKey['C'])) gfxCopy();
+logicStorage['key-down']['engineMap'] = () => {
+  if (window.activeKey['Control'] && (window.activeKey['v'] || window.activeKey['V'])) engineMapPaste();
+  if (window.activeKey['Control'] && (window.activeKey['c'] || window.activeKey['C'])) engineMapCopy();
 };
 
-s('.gfx-quadrant').onclick = () => {
+s('.engineMap-quadrant').onclick = () => {
   if (quadrantMode) {
     quadrantMode = false;
-    htmls('.gfx-quadrant', `quadrant <span style='color: red'>off</span>`);
+    htmls('.engineMap-quadrant', `quadrant <span style='color: red'>off</span>`);
     s('quadrant-grid').remove();
     return;
   }
   quadrantMode = true;
-  htmls('.gfx-quadrant', `quadrant <span style='color: green'>on</span>`);
+  htmls('.engineMap-quadrant', `quadrant <span style='color: green'>on</span>`);
   const maxRange = maxRangeMap();
-  const recDim = s('.gfx-0-0').offsetHeight * gfxCellPixelFactor * 1.025;
+  const recDim = s('.engineMap-0-0').offsetHeight * engineMapCellPixelFactor * 1.025;
   append(
-    'gfx-grid',
+    'engineMap-grid',
     /*html*/ `
         <quadrant-grid class='abs'>
         ${range(0, maxRange - 1)
@@ -505,40 +512,40 @@ s('.gfx-quadrant').onclick = () => {
               .map((y) => {
                 setTimeout(() => {
                   s(`.quadrant-map-cell-${x}-${y}`).onclick = () => {
-                    const baseX = x * gfxCellPixelFactor;
-                    const baseY = y * gfxCellPixelFactor;
+                    const baseX = x * engineMapCellPixelFactor;
+                    const baseY = y * engineMapCellPixelFactor;
                     if (paintMode) {
-                      s('.gfx-size-paint').value = gfxCellPixelFactor;
-                      s('.gfx-size-paint').oninput();
+                      s('.engineMap-size-paint').value = engineMapCellPixelFactor;
+                      s('.engineMap-size-paint').oninput();
                       renderPaint(baseX, baseY);
                     }
                     if (cleanQuadranObject) {
-                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
-                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                      range(0, engineMapCellPixelFactor - 1).map((sumX) =>
+                        range(0, engineMapCellPixelFactor - 1).map((sumY) => {
                           if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
                           globalMapObjectStorage[baseX + sumX][baseY + sumY] = undefined;
                         })
                       );
                     } else if (objectQuadrantMode) {
-                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
-                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                      range(0, engineMapCellPixelFactor - 1).map((sumX) =>
+                        range(0, engineMapCellPixelFactor - 1).map((sumY) => {
                           if (!globalMapObjectStorage[baseX + sumX]) globalMapObjectStorage[baseX + sumX] = {};
                           globalMapObjectStorage[baseX + sumX][baseY + sumY] = JSON.parse(
-                            s('.gfx-json-object').value.replaceAll("'", `"`).replaceAll('`', `"`)
+                            s('.engineMap-json-object').value.replaceAll("'", `"`).replaceAll('`', `"`)
                           );
                         })
                       );
                     } else {
-                      range(0, gfxCellPixelFactor - 1).map((sumX) =>
-                        range(0, gfxCellPixelFactor - 1).map((sumY) => {
+                      range(0, engineMapCellPixelFactor - 1).map((sumX) =>
+                        range(0, engineMapCellPixelFactor - 1).map((sumY) => {
                           if (!globalSolidStorage[baseX + sumX]) globalSolidStorage[baseX + sumX] = {};
                           globalSolidStorage[baseX + sumX][baseY + sumY] = solidMode;
                         })
                       );
                     }
 
-                    s('.gfx-quadrant').click();
-                    s('.gfx-quadrant').click();
+                    s('.engineMap-quadrant').click();
+                    s('.engineMap-quadrant').click();
                   };
                 });
                 return /*html*/ `
@@ -562,85 +569,85 @@ s('.gfx-quadrant').onclick = () => {
   );
 };
 
-s('.gfx-object-quadrant').onclick = () => {
+s('.engineMap-object-quadrant').onclick = () => {
   if (objectQuadrantMode) {
     objectQuadrantMode = false;
-    htmls('.gfx-object-quadrant', `quadrant object <span style='color: red'>off</span>`);
+    htmls('.engineMap-object-quadrant', `quadrant object <span style='color: red'>off</span>`);
     return;
   }
   objectQuadrantMode = true;
-  htmls('.gfx-object-quadrant', `quadrant object <span style='color: green'>on</span>`);
-  if (cleanQuadranObject) s('.gfx-clean-object').click();
+  htmls('.engineMap-object-quadrant', `quadrant object <span style='color: green'>on</span>`);
+  if (cleanQuadranObject) s('.engineMap-clean-object').click();
 };
 
-s('.gfx-paint-mode').onclick = () => {
+s('.engineMap-paint-mode').onclick = () => {
   if (paintMode) {
     paintMode = false;
-    htmls('.gfx-paint-mode', `paint <span style='color: red'>off</span>`);
+    htmls('.engineMap-paint-mode', `paint <span style='color: red'>off</span>`);
     return;
   }
   paintMode = true;
-  htmls('.gfx-paint-mode', `paint <span style='color: green'>on</span>`);
+  htmls('.engineMap-paint-mode', `paint <span style='color: green'>on</span>`);
 };
 
-s('.gfx-solid').onclick = () => {
+s('.engineMap-solid').onclick = () => {
   if (solidMode === 1) {
     solidMode = 0;
-    htmls('.gfx-solid', `solid <span style='color: red'>off</span>`);
+    htmls('.engineMap-solid', `solid <span style='color: red'>off</span>`);
     return;
   }
   solidMode = 1;
-  htmls('.gfx-solid', `solid <span style='color: green'>on</span>`);
+  htmls('.engineMap-solid', `solid <span style='color: green'>on</span>`);
 };
 
-s('.gfx-clean-object').onclick = () => {
+s('.engineMap-clean-object').onclick = () => {
   if (cleanQuadranObject) {
     cleanQuadranObject = false;
-    htmls('.gfx-clean-object', `clean object <span style='color: red'>off</span>`);
+    htmls('.engineMap-clean-object', `clean object <span style='color: red'>off</span>`);
     return;
   }
   cleanQuadranObject = true;
-  htmls('.gfx-clean-object', `clean object <span style='color: green'>on</span>`);
-  if (objectQuadrantMode) s('.gfx-object-quadrant').click();
+  htmls('.engineMap-clean-object', `clean object <span style='color: green'>on</span>`);
+  if (objectQuadrantMode) s('.engineMap-object-quadrant').click();
 };
 
 const grillModeChange = () => {
   if (grillMode) {
     grillMode = false;
-    htmls('.style-gfx-grill', '');
-    htmls('.gfx-grill', `grill <span style='color: red'>off</span>`);
+    htmls('.style-engineMap-grill', '');
+    htmls('.engineMap-grill', `grill <span style='color: red'>off</span>`);
     return;
   }
   grillMode = true;
   htmls(
-    '.style-gfx-grill',
+    '.style-engineMap-grill',
     /*css*/ `
-    gfx-cell {
+    engineMap-cell {
       border: 1px solid gray;
     }
   `
   );
-  htmls('.gfx-grill', `grill <span style='color: green'>on</span>`);
+  htmls('.engineMap-grill', `grill <span style='color: green'>on</span>`);
 };
 grillModeChange();
 
-s('.gfx-copy').onclick = () => gfxCopy();
-s('.gfx-paste').onclick = () => gfxPaste();
-s('.gfx-clean').onclick = () => renderGfxGrid();
-s('.gfx-grill').onclick = () => grillModeChange();
+s('.engineMap-copy').onclick = () => engineMapCopy();
+s('.engineMap-paste').onclick = () => engineMapPaste();
+s('.engineMap-clean').onclick = () => renderGfxGrid();
+s('.engineMap-grill').onclick = () => grillModeChange();
 
 // https://html2canvas.hertzen.com/configuration
-s('.gfx-png').onclick = () =>
-  html2canvas(s('gfx-grid'), {
+s('.engineMap-png').onclick = () =>
+  html2canvas(s('engineMap-grid'), {
     width: 575,
     height: 575,
     backgroundColor: null,
   }).then((canvas) => downloader('map.png', mimes['png'], canvas));
 
-s('.gfx-svg').onclick = () => {
+s('.engineMap-svg').onclick = () => {
   const renderDim = 575;
-  const recDim = renderDim / (maxRangeMap() * gfxCellPixelFactor);
-  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  const recDim = renderDim / (maxRangeMap() * engineMapCellPixelFactor);
+  const maxRange = maxRangeMap() * engineMapCellPixelFactor - 1;
   const svgRender = /*html*/ `
   <svg title="cyberia-map" version="1.1" xmlns="http://www.w3.org/2000/svg" width="${renderDim}" height="${renderDim}">
     ${range(0, maxRange)
@@ -671,7 +678,7 @@ s('.gfx-svg').onclick = () => {
 };
 
 const getCurrentJSONmap = (pixelfactor) => {
-  if (pixelfactor === undefined) pixelfactor = gfxCellPixelFactor;
+  if (pixelfactor === undefined) pixelfactor = engineMapCellPixelFactor;
   let dataJSON = [];
   const maxRange = maxRangeMap() * pixelfactor - 1;
   range(0, maxRange).map((x) =>
@@ -692,10 +699,10 @@ const getCurrentJSONmap = (pixelfactor) => {
     .filter((c) => c !== null);
 };
 
-s('.gfx-copy-solid-json').onclick = async () => {
+s('.engineMap-copy-solid-json').onclick = async () => {
   const renderJSON = JSONmatrix(getCurrentJSONmap());
   htmls(
-    '.gfx-json-display',
+    '.engineMap-json-display',
     /*html*/ `
     <pre class='in'>${renderJSON}</pre>
   
@@ -705,8 +712,8 @@ s('.gfx-copy-solid-json').onclick = async () => {
   renderNotification('success', 'json copy to clipboard');
 };
 
-s('.gfx-gen-biome').onclick = () => {
-  const maxRangeMapParam = maxRangeMap() * gfxCellPixelFactor - 1;
+s('.engineMap-gen-biome').onclick = () => {
+  const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
   const centerIndex = random(0, colors.length - 1 - 2);
   const matrixColorBiome = {};
 
@@ -749,9 +756,9 @@ s('.gfx-gen-biome').onclick = () => {
   });
 };
 
-s('.gfx-copy-color-json').onclick = async () => {
+s('.engineMap-copy-color-json').onclick = async () => {
   const renderJSON = [];
-  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  const maxRange = maxRangeMap() * engineMapCellPixelFactor - 1;
   range(0, maxRange).map((x) =>
     range(0, maxRange).map((y) => {
       if (!renderJSON[y]) renderJSON[y] = [];
@@ -763,12 +770,12 @@ s('.gfx-copy-color-json').onclick = async () => {
   renderNotification('success', 'json copy to clipboard');
 };
 
-s('.gfx-load-color-json').onclick = async () => {
+s('.engineMap-load-color-json').onclick = async () => {
   const inputJSON = JSON.parse(await pasteData());
-  if (!paintMode) s('.gfx-paint-mode').click();
-  s('.gfx-size-paint').value = 1;
-  s('.gfx-size-paint').oninput();
-  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  if (!paintMode) s('.engineMap-paint-mode').click();
+  s('.engineMap-size-paint').value = 1;
+  s('.engineMap-size-paint').oninput();
+  const maxRange = maxRangeMap() * engineMapCellPixelFactor - 1;
   range(0, maxRange).map((x) =>
     range(0, maxRange).map((y) => {
       if (!globalPaintStorage[x]) globalPaintStorage[x] = {};
@@ -776,21 +783,21 @@ s('.gfx-load-color-json').onclick = async () => {
       renderPaint(x, y);
     })
   );
-  s('.gfx-input-color').value = currentColorCell;
-  s('.gfx-input-color').oninput();
+  s('.engineMap-input-color').value = currentColorCell;
+  s('.engineMap-input-color').oninput();
 };
 
-s('.gfx-load-solid-json').onclick = async () => {
+s('.engineMap-load-solid-json').onclick = async () => {
   const inputJSON = JSON.parse(await pasteData());
-  const maxRange = maxRangeMap() * gfxCellPixelFactor - 1;
+  const maxRange = maxRangeMap() * engineMapCellPixelFactor - 1;
 
   console.log('inputJSON', JSONmatrix(inputJSON));
   let inputX = 0;
   let inputY = 0;
   range(0, maxRange).map((x) => {
-    if (x !== 0 && x % gfxCellPixelFactor === 0) inputX++;
+    if (x !== 0 && x % engineMapCellPixelFactor === 0) inputX++;
     range(0, maxRange).map((y) => {
-      if (y !== 0 && y % gfxCellPixelFactor === 0) inputY++;
+      if (y !== 0 && y % engineMapCellPixelFactor === 0) inputY++;
 
       if (!globalMapObjectStorage[x]) globalMapObjectStorage[x] = {};
       if (!globalSolidStorage[x]) globalSolidStorage[x] = {};
@@ -803,7 +810,7 @@ s('.gfx-load-solid-json').onclick = async () => {
     inputY = 0;
   });
   if (quadrantMode) {
-    s('.gfx-quadrant').click();
-    s('.gfx-quadrant').click();
+    s('.engineMap-quadrant').click();
+    s('.engineMap-quadrant').click();
   }
 };
