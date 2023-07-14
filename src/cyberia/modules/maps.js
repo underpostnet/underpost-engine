@@ -1779,7 +1779,7 @@ const uploadMap = async (req, res) => {
       return res.status(400).json({
         status: 'error',
         data: {
-          message: `map with name '${name_map}' already exists`,
+          message: `map with name <span style='color: yellow'>${name_map}</span> already exists`,
         },
       });
 
@@ -1806,7 +1806,7 @@ const uploadMap = async (req, res) => {
     return res.status(200).json({
       status: 'success',
       data: {
-        message: `map '${name_map}' uploaded successfully`,
+        message: `map <span style='color: yellow'>${name_map}</span> uploaded successfully`,
       },
     });
   } catch (error) {
