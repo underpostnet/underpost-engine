@@ -187,6 +187,19 @@ prepend(
         </div>
       </div>
       <div class='inl engineMap-engine-content'>
+        <button class='inl engineMap-btn custom-cursor engineMap-upload'>
+          upload map
+        </button>
+        <textarea class="engineMap-metadata-json-input" rows="7" cols="50">
+{
+  "name_map": "or56m",
+  "position": [5, 3],
+  "types": ["pvp", "pve"],
+  "safe_cords": []
+}
+        </textarea>
+      </div>
+      <div class='inl engineMap-engine-content'>
         <div class='in engineMap-engine-content-title'>color json</div>
         <div class='in'>
           <button class='inl engineMap-btn custom-cursor engineMap-copy-color-json'>
@@ -644,11 +657,11 @@ s('.engineMap-png').onclick = () =>
     backgroundColor: null,
   }).then((canvas) => downloader('map.png', mimes['png'], canvas));
 
-s('.engineMap-svg').onclick = () => {
+const getSvgRender = () => {
   const renderDim = 575;
   const recDim = renderDim / (maxRangeMap() * engineMapCellPixelFactor);
   const maxRange = maxRangeMap() * engineMapCellPixelFactor - 1;
-  const svgRender = /*html*/ `
+  return /*html*/ `
   <svg title="cyberia-map" version="1.1" xmlns="http://www.w3.org/2000/svg" width="${renderDim}" height="${renderDim}">
     ${range(0, maxRange)
       .map((x) =>
@@ -673,9 +686,9 @@ s('.engineMap-svg').onclick = () => {
       .join('')}
   </svg>
 `;
-  // htmls(, svgRender);
-  downloader('map.svg', mimes['svg'], svgRender);
 };
+
+s('.engineMap-svg').onclick = () => downloader('map.svg', mimes['svg'], getSvgRender());
 
 const getCurrentJSONmap = (pixelfactor) => {
   if (pixelfactor === undefined) pixelfactor = engineMapCellPixelFactor;
@@ -756,7 +769,7 @@ s('.engineMap-gen-biome').onclick = () => {
   });
 };
 
-s('.engineMap-copy-color-json').onclick = async () => {
+const getMapColorJSON = () => {
   const renderJSON = [];
   const maxRange = maxRangeMap() * engineMapCellPixelFactor - 1;
   range(0, maxRange).map((x) =>
@@ -766,7 +779,11 @@ s('.engineMap-copy-color-json').onclick = async () => {
         globalPaintStorage[x] && globalPaintStorage[x][y] !== undefined ? globalPaintStorage[x][y] : '#000000';
     })
   );
-  await copyData(JSONmatrix(renderJSON));
+  return renderJSON;
+};
+
+s('.engineMap-copy-color-json').onclick = async () => {
+  await copyData(JSONmatrix(getMapColorJSON()));
   renderNotification('success', 'json copy to clipboard');
 };
 
@@ -813,4 +830,18 @@ s('.engineMap-load-solid-json').onclick = async () => {
     s('.engineMap-quadrant').click();
     s('.engineMap-quadrant').click();
   }
+};
+
+s('.engineMap-upload').onclick = async () => {
+  const body = {
+    colorData: {
+      svg: getSvgRender(),
+      json: getMapColorJSON(),
+    },
+    mapData: {
+      matrix: getCurrentJSONmap(),
+      ...JSON.parse(s('.engineMap-metadata-json-input').value),
+    },
+  };
+  console.log('engineMap Upload', body);
 };
