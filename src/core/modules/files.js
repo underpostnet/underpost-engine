@@ -17,7 +17,7 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
       arrayOfFiles.push(path.join(dirPath, '/', file));
     }
   });
-
+  // .replace(/\\/g, "/");
   return arrayOfFiles;
 };
 
