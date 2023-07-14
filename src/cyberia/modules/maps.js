@@ -1,6 +1,7 @@
 import { renderLang } from '../../core/modules/common.js';
 import { authValidator } from './auth.js';
 import fs from 'fs';
+import sharp from 'sharp';
 
 const maps = [
   { name_map: '', matrix: [], safe_cords: [] },
@@ -1770,7 +1771,7 @@ const getMapGfxEngineData = (req, res) => {
   }
 };
 
-const uploadMap = (req, res) => {
+const uploadMap = async (req, res) => {
   try {
     const { name_map } = req.body.mapData;
 
@@ -1781,6 +1782,7 @@ const uploadMap = (req, res) => {
           message: `map with name '${name_map}' already exists`,
         },
       });
+
     fs.writeFileSync(
       `./src/cyberia/assets/tiles/${name_map}.json`,
       JSON.stringify(req.body.colorData.json, null, 1),
@@ -1792,6 +1794,15 @@ const uploadMap = (req, res) => {
       JSON.stringify(req.body.mapData, null, 1),
       'utf8'
     );
+
+    const svgToPng = await new Promise((resolve, reject) => {
+      sharp(`./src/cyberia/assets/tiles/${name_map}.svg`)
+        .png()
+        .toFile(`./src/cyberia/assets/tiles/${name_map}.png`)
+        .then((info) => resolve(info))
+        .catch((err) => reject(err));
+    });
+
     return res.status(200).json({
       status: 'success',
       data: {
