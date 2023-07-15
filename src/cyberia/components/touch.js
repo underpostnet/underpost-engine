@@ -48,8 +48,6 @@ function getJoystickDirection(x1, y1, x2, y2) {
     direction = 'North East';
   }
 
-  console.error(direction);
-
   return direction;
 }
 
@@ -91,7 +89,6 @@ s('touch-layer').onclick = (e, subPath) => {
         renderPixiEventElement(element);
       }
       currenTimeEffect = newTimeEffect;
-      console.log('validateEffect', validateEffect);
       if (validateEffect) return;
     }
 
