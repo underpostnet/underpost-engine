@@ -52,11 +52,13 @@ const account = () => {
                     <div class='in title-section'>${renderLang({ es: 'Cuenta', en: 'Account' })}</div>
                     <div class='in account-section'>
                         <label class='in session-account-label-email'></label>
-                        <input type='email' disabled class='session-account-input-email' placeholder='${renderLang({
-                          es: 'Email',
-                          en: 'Email',
-                          placeholder: '.session-account-input-email',
-                        })}'>                       
+                        <input type='email' autocomplete='on' disabled class='session-account-input-email' placeholder='${renderLang(
+                          {
+                            es: 'Email',
+                            en: 'Email',
+                            placeholder: '.session-account-input-email',
+                          }
+                        )}'>                       
                         <div class='in account-email-btns'>
                             <button class='inl btn-account-section custom-cursor'>
                                 ${renderLang({ es: 'Cambiar Email', en: 'Change Email' })}

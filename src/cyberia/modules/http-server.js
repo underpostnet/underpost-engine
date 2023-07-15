@@ -25,6 +25,7 @@ const socialImgPath = '/social/CYBERIA.jpg';
 const nameSrcFileApp = 'app';
 const dir = './public/' + nameApp;
 const keywords = 'cyberia, MMORPG, browser, free';
+const microdata = JSON.parse(fs.readFileSync(`./src/${nameApp}/assets/microdata.json`, 'utf8'));
 
 const fxEngineRender = fs.readFileSync(`./src/${nameApp}/engine/map.js`, 'utf8');
 const userRender = (req, res) => {
@@ -162,16 +163,27 @@ const httpClient = (app, internalApi) => {
                 <meta charset='UTF-8'>
                 <title>${renderInstanceTitle(pathObj)}</title>
                 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
+                <link rel='icon' type='image/png' href='/social/favicon-white-on-black.png' />
+                
                 <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
                 <meta name='author' content='${author}' />
                 <meta name='keywords' content='${keywords}'>
                 <meta name ='description' content='${description.en}' />
                 <meta name ='theme-color' content = '${themeColor}' />
                 <link rel='canonical' href='${canonicalURL}' />
-        
-               
+                    ${microdata.map(
+                      (jsonld) => /*html*/ `
+                    <script type='application/ld+json'>
+                          ${JSON.stringify(jsonld, null, 4)}
+                    </script>
+                    `
+                    ).join(`
+                      `)}
+                       
+                <link rel='icon' type='image/png' sizes='16x16' href='/pwa/favicon-16x16.png'>
                 <link rel='icon' type='image/png' sizes='32x32' href='/pwa/favicon-32x32.png'>
-                <link rel='icon' type='image/png' sizes='194x194' href='/pwa/favicon-194x194.png'>        
+                <link rel='icon' type='image/png' sizes='194x194' href='/pwa/favicon-194x194.png'>    
+
                 <link rel='icon' type='image/png' sizes='36x36' href='/pwa/android-chrome-36x36.png'>
                 <link rel='icon' type='image/png' sizes='48x48' href='/pwa/android-chrome-48x48.png'>
                 <link rel='icon' type='image/png' sizes='72x72' href='/pwa/android-chrome-72x72.png'>
@@ -180,8 +192,7 @@ const httpClient = (app, internalApi) => {
                 <link rel='icon' type='image/png' sizes='192x192' href='/pwa/android-chrome-192x192.png'>
                 <link rel='icon' type='image/png' sizes='256x256' href='/pwa/android-chrome-256x256.png'>
                 <link rel='icon' type='image/png' sizes='384x384' href='/pwa/android-chrome-384x384.png'>
-                <link rel='icon' type='image/png' sizes='512x512' href='/pwa/android-chrome-512x512.png'>        
-                <link rel='icon' type='image/png' sizes='16x16' href='/pwa/favicon-16x16.png'>
+                <link rel='icon' type='image/png' sizes='512x512' href='/pwa/android-chrome-512x512.png'>
 
                 <link rel='manifest' href='/site.webmanifest'>
 

@@ -192,7 +192,7 @@ const createAccount = () => {
         <input-warn class='in create-account-warn-username'></input-warn>
       
         <label class='in create-account-label-email'></label>
-        <input type='email' class='create-account-input-email' placeholder='${renderLang({
+        <input type='email' autocomplete='on' class='create-account-input-email' placeholder='${renderLang({
           es: 'Email',
           en: 'Email',
           placeholder: '.create-account-input-email',

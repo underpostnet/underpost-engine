@@ -106,7 +106,7 @@ const logIn = () => {
                 <div class='in title-section'>   ${renderLang({ es: 'Ingresar', en: 'Login' })} </div>
                 
                 <label class='in login-label-email'></label>
-                <input type='email' class='login-input-email' placeholder='${renderLang({
+                <input type='email' autocomplete='on' class='login-input-email' placeholder='${renderLang({
                   es: 'Email',
                   en: 'Email',
                   placeholder: '.login-input-email',
