@@ -291,7 +291,7 @@ socket.on('event', (...args) => {
           });
         if (s(`.item-modal-${eventElement.item.id}`)) {
           s(`.item-equip-${eventElement.item.id}`).style.display = 'none';
-          if (eventElement.item.displayLogic === 'skins')
+          if (eventElement.item.displayLogic === 'skins' || eventElement.item.itemType === 'skill_basic')
             s(`.item-unequip-${eventElement.item.id}`).style.display = 'none';
           else s(`.item-unequip-${eventElement.item.id}`).style.display = 'inline-table';
         }

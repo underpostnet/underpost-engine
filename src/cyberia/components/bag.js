@@ -176,7 +176,8 @@ const renderItemModal = (item) => {
         elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id) &&
         elements['user'].find((e) => e.id === socket.id).items.find((i) => i.id === item.id).active === true
       ) {
-        if (item.displayLogic === 'skins') s(`.item-unequip-${item.id}`).style.display = 'none';
+        if (item.displayLogic === 'skins' || item.itemType === 'skill_basic')
+          s(`.item-unequip-${item.id}`).style.display = 'none';
         else s(`.item-unequip-${item.id}`).style.display = 'inline-table';
         s(`.item-equip-${item.id}`).style.display = 'none';
       }
