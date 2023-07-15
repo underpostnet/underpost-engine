@@ -41,9 +41,10 @@ app.use(compression({ filter: shouldCompress }));
 const internalApi = {
   getHost: (uri) =>
     (process.env.NODE_ENV === 'dev' ? `http://localhost:${process.env.PORT}` : process.env.HOST) + (uri ? uri : ''),
+  getIoHost: () => (process.env.NODE_ENV === 'prod' ? process.env.HOST : 'ws://localhost:' + process.env.PORT),
 };
 
-httpClient(app);
+httpClient(app, internalApi);
 
 mailerApi(internalApi);
 

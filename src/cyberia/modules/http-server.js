@@ -14,11 +14,19 @@ import { authValidator } from './auth.js';
 import { mimes } from '../../core/modules/mime.js';
 
 dotenv.config();
-
-const NAME_APP = process.env.NAME_APP;
+const nameApp = process.env.NAME_APP;
+const description = {
+  en: 'Cyberia OnLine Massively Multiplayer OnLine Role-Playing Game',
+  es: 'Cyberia OnLine Juego de Rol Multijugador OnLine',
+};
+const themeColor = '#1a1a1a';
+const author = 'https://github.com/underpostnet';
+const socialImgPath = '/social/CYBERIA.jpg';
 const nameSrcFileApp = 'app';
+const dir = './public/' + nameApp;
+const keywords = 'cyberia, MMORPG, browser, free';
 
-const fxEngineRender = fs.readFileSync(`./src/${NAME_APP}/engine/map.js`, 'utf8');
+const fxEngineRender = fs.readFileSync(`./src/${nameApp}/engine/map.js`, 'utf8');
 const userRender = (req, res) => {
   try {
     if (req.user && req.user.admin === true) {
@@ -50,11 +58,9 @@ const userRender = (req, res) => {
 const renderInstanceTitle = (pathObj) =>
   `${pathObj.name_map.replaceAll('-', ' ').toUpperCase()}${
     pathObj.name_map === '' ? '' : ' | '
-  }${NAME_APP.toUpperCase()}`;
+  }${nameApp.toUpperCase()}`;
 
-const httpClient = (app) => {
-  const dir = './public/' + NAME_APP;
-
+const httpClient = (app, internalApi) => {
   deleteFolderRecursive(`${dir}`);
   const npmModules = [
     ['./node_modules/socket.io/client-dist', `${dir}/socket.io`, `/socket.io/socket.io.min.js`],
@@ -67,23 +73,23 @@ const httpClient = (app) => {
   const htmlJsTagModules = npmModules
     .map(
       (mod) => /*html*/ `
-              <script src="${mod[2]}"></script>
+              <script src='${mod[2]}'></script>
 `
     )
     .join('');
 
   npmModules.map((mod) => copyDir(mod[0], mod[1]));
 
-  copyDir(`./src/${NAME_APP}/assets`, `${dir}`);
+  copyDir(`./src/${nameApp}/assets`, `${dir}`);
 
   fs.mkdirSync(`${dir}/.well-known`, { recursive: true });
 
   let coreJs = `
 
   const dev = ${process.env.NODE_ENV === 'dev'};
-  const NAME_APP = '${NAME_APP}';
+  const nameApp = '${nameApp}';
   const API_BASE = '${process.env.API_BASE}';
-  const IO_HOST = '${process.env.NODE_ENV === 'prod' ? process.env.HOST : 'ws://localhost:' + process.env.PORT}';
+  const IO_HOST = '${internalApi.getIoHost()}';
   ${commonFunctions()}
   ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
   const renderInstanceTitle = ${renderInstanceTitle};
@@ -95,41 +101,41 @@ const httpClient = (app) => {
     console.log = () => null;
     console.warn = () => null;
   }
-  ${fs.readFileSync(`./src/${NAME_APP}/services/auth.js`, 'utf8')}     
-  ${fs.readFileSync(`./src/${NAME_APP}/services/item.js`, 'utf8')}      
-  ${fs.readFileSync(`./src/${NAME_APP}/services/map.js`, 'utf8')}          
-  ${fs.readFileSync(`./src/${NAME_APP}/components/toggle-switch.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/dropdown.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/drag.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/create-account.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/login.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/koyn.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/bag.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/chat.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/quests.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/noti-circle.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/character-stats.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/css-controller.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/config.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/wiki.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/map.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/history-board.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/account.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/util.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-init.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-event.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/pixi-remove.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/gui.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/logout.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/ws-client.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/touch.js`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/components/screen-keys.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/services/auth.js`, 'utf8')}     
+  ${fs.readFileSync(`./src/${nameApp}/services/item.js`, 'utf8')}      
+  ${fs.readFileSync(`./src/${nameApp}/services/map.js`, 'utf8')}          
+  ${fs.readFileSync(`./src/${nameApp}/components/toggle-switch.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/dropdown.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/drag.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/create-account.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/login.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/koyn.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/bag.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/chat.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/quests.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/noti-circle.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/character-stats.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/css-controller.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/config.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/wiki.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/map.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/history-board.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/account.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/util.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/pixi-init.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/pixi-event.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/pixi-remove.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/gui.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/logout.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/ws-client.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/touch.js`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/components/screen-keys.js`, 'utf8')}
   `;
 
   let coreCss = `
   ${fs.readFileSync(`./src/core/css/base.css`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/css/global.css`, 'utf8')}
-  ${fs.readFileSync(`./src/${NAME_APP}/css/place-bar-select.css`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/css/global.css`, 'utf8')}
+  ${fs.readFileSync(`./src/${nameApp}/css/place-bar-select.css`, 'utf8')}
   `;
 
   if (process.env.NODE_ENV !== 'dev') {
@@ -145,22 +151,63 @@ const httpClient = (app) => {
     if (path !== '') path += '/';
     if (!fs.existsSync(`${dir}/${path}`)) fs.mkdirSync(`${dir}/${path}`, { recursive: true });
     console.log('render: ', path);
+    const canonicalURL = `${internalApi.getHost()}/${path}`;
 
     fs.writeFileSync(
       `${dir}/${path}index.html`,
       /*html*/ `
             <!DOCTYPE html>
-            <html>
+            <html dir='ltr'>
             <head>
-                <meta charset="UTF-8">
+                <meta charset='UTF-8'>
                 <title>${renderInstanceTitle(pathObj)}</title>
                 <link rel='icon' type='image/x-icon' href='/favicon.ico'>
-                <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+                <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
+                <meta name='author' content='${author}' />
+                <meta name='keywords' content='${keywords}'>
+                <meta name ='description' content='${description.en}' />
+                <meta name ='theme-color' content = '${themeColor}' />
+                <link rel='canonical' href='${canonicalURL}' />
+        
+               
+                <link rel='icon' type='image/png' sizes='32x32' href='/pwa/favicon-32x32.png'>
+                <link rel='icon' type='image/png' sizes='194x194' href='/pwa/favicon-194x194.png'>        
+                <link rel='icon' type='image/png' sizes='36x36' href='/pwa/android-chrome-36x36.png'>
+                <link rel='icon' type='image/png' sizes='48x48' href='/pwa/android-chrome-48x48.png'>
+                <link rel='icon' type='image/png' sizes='72x72' href='/pwa/android-chrome-72x72.png'>
+                <link rel='icon' type='image/png' sizes='96x96' href='/pwa/android-chrome-96x96.png'>
+                <link rel='icon' type='image/png' sizes='144x144' href='/pwa/android-chrome-144x144.png'>
+                <link rel='icon' type='image/png' sizes='192x192' href='/pwa/android-chrome-192x192.png'>
+                <link rel='icon' type='image/png' sizes='256x256' href='/pwa/android-chrome-256x256.png'>
+                <link rel='icon' type='image/png' sizes='384x384' href='/pwa/android-chrome-384x384.png'>
+                <link rel='icon' type='image/png' sizes='512x512' href='/pwa/android-chrome-512x512.png'>        
+                <link rel='icon' type='image/png' sizes='16x16' href='/pwa/favicon-16x16.png'>
+
+                <link rel='manifest' href='/site.webmanifest'>
+
+                <link rel='apple-touch-icon' sizes='180x180' href='/pwa/apple-touch-icon.png'>
+                <link rel='mask-icon' href='/pwa/safari-pinned-tab.svg' color='${themeColor}'>
+                <meta name='apple-mobile-web-app-title' content='${renderInstanceTitle(pathObj)}'>
+                
+                <meta name='application-name' content='${renderInstanceTitle(pathObj)}'>
+
+                <meta name='msapplication-config' content='${internalApi.getHost()}/browserconfig.xml' />
+                <meta name='msapplication-TileColor' content='${themeColor}'>
+                <meta name='msapplication-TileImage' content='${internalApi.getHost()}/pwa/mstile-144x144.png'>
+                <meta name='theme-color' content='${themeColor}'>
+        
+                <meta property='og:title' content='${renderInstanceTitle(pathObj)}' />
+                <meta property='og:description' content='${description.en}' />
+                <meta property='og:image' content='${internalApi.getHost()}${socialImgPath}' />
+                <meta property='og:url' content='${canonicalURL}' />
+                <meta name='twitter:card' content='summary_large_image' />
+        
                 ${htmlJsTagModules}
-                <link rel='stylesheet' href="/${nameSrcFileApp}.css">
+
+                <link rel='stylesheet' href='/${nameSrcFileApp}.css'>
             </head>
             <body>
-                <script type="module" src="/${nameSrcFileApp}.js" async></script>
+                <script type='module' src='/${nameSrcFileApp}.js' async></script>
             </body>
             </html>  
         `,
