@@ -1,3 +1,5 @@
+let originRangeMapView;
+let originMapMetaDataPosition;
 const renderMainMap = (selector) => {
   if (selector === undefined) selector = '.main-map-render-content';
   const centerMapPosition = mapMetaData.position;
@@ -119,6 +121,42 @@ const map = () => {
                     </div>
                   </div>
                 </div>
+
+                <div class='in config-row'>
+                  <div class='fl'>
+                    <div class='in fll config-col'>
+                      <div class='in config-col-content'>
+                          ${renderLang({ es: 'Mapa Global', en: 'Global Map' })}
+                      </div>
+                    </div>
+                    <div class='in fll config-col'>
+                      <div class='in config-col-content'>
+                        <div class='inl toggle-switch-content custom-cursor'>
+                            ${renderToggleSwitch({
+                              factor: 35,
+                              id: 'map-global-toggle',
+                              checked: false,
+                              label: ['', ''],
+                              activeColor: 'yellow',
+                              onChange: (state) => {
+                                if (state) {
+                                  originRangeMapView = newInstance(rangeMapView);
+                                  originMapMetaDataPosition = newInstance(mapMetaData.position);
+                                  rangeMapView = 4;
+                                  mapMetaData.position = [1, 1];
+                                } else {
+                                  rangeMapView = originRangeMapView;
+                                  mapMetaData.position = originMapMetaDataPosition;
+                                }
+                                execCssController(dimState());
+                                renderMainMap();
+                              },
+                            })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
 
                 <div class='in main-map-render-content'>
 

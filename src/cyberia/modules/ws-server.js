@@ -461,7 +461,7 @@ const ssrWS = `
     const statsItems = ${JSONweb(Object.keys(items[0].stats))}
     const characterSlots = ${JSONweb(characterSlots)};
     const skillTypes = ${JSONweb(skillTypes)};
-    const rangeMapView = ${JSONweb(rangeMapView)};
+    let rangeMapView = ${JSONweb(rangeMapView)};
 `;
 
 const rebirdElement = (clients, element, internalApi) => {
@@ -1013,10 +1013,10 @@ const wsServer = (httpServer, app, internalApi) => {
                 })()
               : undefined,
             globalInstancesMapData: maps
-              .filter(
-                (x) =>
-                  validateMapViewRange(x, parentMapData ? parentMapData : dataMap) || x.name_map === dataMap.name_map
-              )
+              // .filter(
+              //   (x) =>
+              //     validateMapViewRange(x, parentMapData ? parentMapData : dataMap) || x.name_map === dataMap.name_map
+              // )
               .map((mapData) => {
                 return {
                   name: mapData.name_map,

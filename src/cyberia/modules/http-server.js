@@ -24,7 +24,7 @@ const author = 'https://github.com/underpostnet';
 const socialImgPath = '/social/CYBERIA.jpg';
 const nameSrcFileApp = 'app';
 const dir = './public/' + nameApp;
-const keywords = 'cyberia, MMORPG, browser, free';
+const keywords = 'cyberia, MMORPG, browser, free, MMO';
 const microdata = JSON.parse(fs.readFileSync(`./src/${nameApp}/assets/microdata.json`, 'utf8'));
 
 const fxEngineRender = fs.readFileSync(`./src/${nameApp}/engine/map.js`, 'utf8');
