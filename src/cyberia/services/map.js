@@ -15,7 +15,7 @@ const mapServices = {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
-      log: true,
+      log: false,
     }),
   getMapDataEngine: async (name_map) =>
     await serviceRequest(API_BASE + '/maps/engine/' + name_map, {
@@ -24,6 +24,15 @@ const mapServices = {
         Authorization: `Bearer ${localStorage.getItem('_b')}`,
         //  'Content-Type': 'application/json',
       },
-      log: true,
+      log: false,
+    }),
+  getAdjMaps: async (name_map) =>
+    await serviceRequest(API_BASE + '/maps/adjacents/' + name_map, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('_b')}`,
+        //  'Content-Type': 'application/json',
+      },
+      log: false,
     }),
 };

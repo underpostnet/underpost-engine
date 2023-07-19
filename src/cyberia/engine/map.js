@@ -935,6 +935,7 @@ s('.engineMap-load-map').onclick = async () => {
   );
 };
 
-s(`.adjacent-link-btn`).onclick = () => {
-  console.error(s(`.adjacent-link-input`).value);
+s(`.adjacent-link-btn`).onclick = async () => {
+  const result = await mapServices.getAdjMaps(s(`.adjacent-link-input`).value);
+  renderNotification(result.status, result.data.message);
 };
