@@ -1,5 +1,10 @@
 let originRangeMapView;
 let originMapMetaDataPosition;
+let positionGlobalMapView = [1, 1];
+const updateOriginMapPosition = () => {
+  originMapMetaDataPosition = newInstance(mapMetaData.position);
+  mapMetaData.position = positionGlobalMapView;
+};
 const renderMainMap = (selector) => {
   if (selector === undefined) selector = '.main-map-render-content';
   const centerMapPosition = mapMetaData.position;
@@ -141,12 +146,13 @@ const map = () => {
                               onChange: (state) => {
                                 if (state) {
                                   originRangeMapView = newInstance(rangeMapView);
-                                  originMapMetaDataPosition = newInstance(mapMetaData.position);
+                                  updateOriginMapPosition();
                                   rangeMapView = 4;
-                                  mapMetaData.position = [1, 1];
                                 } else {
-                                  rangeMapView = originRangeMapView;
-                                  mapMetaData.position = originMapMetaDataPosition;
+                                  rangeMapView = newInstance(originRangeMapView);
+                                  mapMetaData.position = newInstance(originMapMetaDataPosition);
+                                  originRangeMapView = undefined;
+                                  originMapMetaDataPosition = undefined;
                                 }
                                 execCssController(dimState());
                                 renderMainMap();

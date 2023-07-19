@@ -145,6 +145,7 @@ socket.on('init-data', (...args) => {
   console.log('initData', initData);
   changeMapsPoints = initData.changeMapsPoints;
   mapMetaData = initData.mapMetaData;
+  if (originMapMetaDataPosition) updateOriginMapPosition();
   changeMapsPoints.map((mapData) => {
     (() => {
       const type = 'to-map';
