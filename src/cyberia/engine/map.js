@@ -1,8 +1,8 @@
 if (!logicStorage['logout']['engineMap'])
   logicStorage['logout']['engineMap'] = () => {
-    s('.btn-graphics-engine').remove();
-    s('graphics-engine').remove();
-    guiSections = guiSections.filter((g) => g !== 'graphics-engine');
+    s('.btn-map-graphics-engine').remove();
+    s('map-graphics-engine').remove();
+    guiSections = guiSections.filter((g) => g !== 'map-graphics-engine');
     intanceMenuBtns();
     logicStorage['logout']['engineMap'] = undefined;
     delete logicStorage['logout']['engineMap'];
@@ -31,14 +31,14 @@ let globalMapObjectStorage = {};
 const engineMapCellPixelFactor = 3;
 const dimAjcMap = 500;
 
-guiSections.push('graphics-engine');
+guiSections.push('map-graphics-engine');
 append(
   'common-menu',
   /*html*/ `
 
-<menu-button class='in custom-cursor btn-graphics-engine'>
+<menu-button class='in custom-cursor btn-map-graphics-engine'>
     <div class='abs center'>
-        Graphics Engine
+        Map Engine
     </div>
 </menu-button>
 
@@ -93,7 +93,7 @@ prepend(
   'gui-layer',
   /*html*/ `
 
-  <graphics-engine style='display: none'>
+  <map-graphics-engine style='display: none'>
     <style>
       engineMap-grid {
         margin-bottom: 10px;
@@ -172,7 +172,7 @@ prepend(
      <style class='style-engineMap-cell-select'></style>
      <style class='style-engineMap-grill'></style>
     <sub-content-gui class='in'>
-          <div class='in title-section'>Graphics Engine</div>
+          <div class='in title-section'>Map Engine</div>
     </sub-content-gui>
     
     <div class='in engineMap-content-menu'>
@@ -403,7 +403,7 @@ prepend(
     <engineMap-grid class='in custom-cursor'></engineMap-grid>
     <br><br>
 
-  </graphics-engine>
+  </map-graphics-engine>
 
 
 `
