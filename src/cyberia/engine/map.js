@@ -124,6 +124,11 @@ prepend(
         top: 0%;
         left: 0%;
       }
+      .map-admin-position-view {
+        background: black;
+        display: block !important;
+        padding: 3px;
+      }
     </style>
      <style class='style-engineMap-cell'></style>
      <style class='style-engineMap-cell-select'></style>

@@ -744,3 +744,7 @@ event-board {
 .map-cell {
     background: black;
 }
+
+.map-admin-position-view {
+    display: none;
+}

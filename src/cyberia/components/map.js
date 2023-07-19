@@ -46,6 +46,9 @@ const renderMainMap = (selector) => {
                         </div>
                         <div class='noti-content-map-${mapData.name}'>
                         </div>
+                        <div class='map-admin-position-view'>
+                            ${mapData.position}
+                        </div>
                   </div>
                 `
                     : ''
