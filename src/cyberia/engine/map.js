@@ -29,6 +29,7 @@ let globalPaintStorage = {};
 let globalSolidStorage = {};
 let globalMapObjectStorage = {};
 const engineMapCellPixelFactor = 3;
+const dimAjcMap = 500;
 
 guiSections.push('graphics-engine');
 append(
@@ -66,6 +67,28 @@ const renderMapObjectData = (point) => {
   `;
 };
 
+const renderAjcLinkGrid = (i) => {
+  const maxRange = maxRangeMap() - 1;
+  return range(0, maxRange)
+    .map(
+      (y) => /*html*/ `
+        <div class='fl'>
+        ${range(0, maxRange)
+          .map(
+            (x) => /*html*/ `
+                <div class='in fll cell-adj-link custom-cursor'>
+                   <!-- ${x},${y} -->
+                </div>    
+    `
+          )
+          .join('')}
+            
+        </div>
+        `
+    )
+    .join('');
+};
+
 prepend(
   'gui-layer',
   /*html*/ `
@@ -97,7 +120,6 @@ prepend(
       }
       .engineMap-engine-content {
         border: 2px solid yellow;
-        max-height: 360px;
         margin: 3px 3px 3px 3px;
         padding: 5px;
       }
@@ -128,6 +150,22 @@ prepend(
         background: black;
         display: block !important;
         padding: 3px;
+      }
+      adjancen-map-link {
+        width: ${dimAjcMap / 3}px;
+        height: ${dimAjcMap / 3}px;
+        border: 1px solid yellow;
+        box-sizing: border-box;
+      }
+      .cell-adj-link {
+        width: ${(dimAjcMap / 3 / maxRangeMap()) * 0.98}px;
+        height: ${(dimAjcMap / 3 / maxRangeMap()) * 0.98}px;
+        border: 1px solid yellow;
+        box-sizing: border-box;
+        font-size: 7px;
+      }
+      .cell-adj-link:hover {
+        border: 1px solid red;
       }
     </style>
      <style class='style-engineMap-cell'></style>
@@ -233,7 +271,24 @@ prepend(
             json
           <input type='text'  class='inl engineMap-json-object'>
       </div>
-      <div class='in main-dropdown-content engineMap-engine-content'>
+      <div class='in engineMap-engine-content'>
+        <div class='in'>
+          name map <input type='text' class='adjacent-link-input'>
+          <button class='inl custom-cursor adjacent-link-btn'>load</button>
+        </div>
+        <div class='fl'>
+          ${range(1, 9)
+            .map(
+              (i) => /*html*/ `
+              <adjancen-map-link class='in fll'>
+                  ${[2, 4, 5, 6, 8].includes(i) ? renderAjcLinkGrid(i) : ''}
+              </adjancen-map-link>
+          `
+            )
+            .join('')}
+        </div>          
+      </div>
+      <div class='in engineMap-engine-content'>
       <div class='in engineMap-engine-content-title'>adjacent map engine</div>
         <div class='in'>
           name map <input type='text' class='inl engineMap-name-adjacent-map'>
@@ -878,4 +933,8 @@ s('.engineMap-load-map').onclick = async () => {
     null,
     4
   );
+};
+
+s(`.adjacent-link-btn`).onclick = () => {
+  console.error(s(`.adjacent-link-input`).value);
 };
