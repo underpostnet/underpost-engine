@@ -30,6 +30,7 @@ let globalSolidStorage = {};
 let globalMapObjectStorage = {};
 const engineMapCellPixelFactor = 3;
 const dimAjcMap = 500;
+const adjMapEngineIndex = [2, 4, 5, 6, 8];
 
 guiSections.push('map-graphics-engine');
 append(
@@ -160,12 +161,18 @@ prepend(
       .cell-adj-link {
         width: ${(dimAjcMap / 3 / maxRangeMap()) * 0.98}px;
         height: ${(dimAjcMap / 3 / maxRangeMap()) * 0.98}px;
-        border: 1px solid yellow;
+       /* border: 1px solid #d6d6d6; */
         box-sizing: border-box;
         font-size: 7px;
       }
       .cell-adj-link:hover {
-        border: 1px solid red;
+        border: 1px solid yellow;
+      }
+      .adjancen-map-link-img {
+        top: 0%;
+        left: 0%;
+        width: 100%;
+        height: 100%;
       }
     </style>
      <style class='style-engineMap-cell'></style>
@@ -281,7 +288,8 @@ prepend(
             .map(
               (i) => /*html*/ `
               <adjancen-map-link class='in fll'>
-                  ${[2, 4, 5, 6, 8].includes(i) ? renderAjcLinkGrid(i) : ''}
+                  <img class='abs adjancen-map-link-img adjancen-map-link-img-${i}' style='display: none'>
+                  ${adjMapEngineIndex.includes(i) ? renderAjcLinkGrid(i) : ''}
               </adjancen-map-link>
           `
             )
@@ -936,6 +944,43 @@ s('.engineMap-load-map').onclick = async () => {
 };
 
 s(`.adjacent-link-btn`).onclick = async () => {
-  const result = await mapServices.getAdjMaps(s(`.adjacent-link-input`).value);
+  const nameSelectMap = s(`.adjacent-link-input`).value;
+  const result = await mapServices.getAdjMaps(nameSelectMap);
   renderNotification(result.status, result.data.message);
+  const mainDataMap = result.data.maps.find((m) => m.name_map === nameSelectMap);
+  if (!mainDataMap) return;
+  adjMapEngineIndex.map((i) => {
+    let mapData;
+    switch (i) {
+      case 2:
+        mapData = result.data.maps.find(
+          (m) => mainDataMap.position[0] === m.position[0] && mainDataMap.position[1] === m.position[1] + 1
+        );
+        break;
+      case 8:
+        mapData = result.data.maps.find(
+          (m) => mainDataMap.position[0] === m.position[0] && mainDataMap.position[1] === m.position[1] - 1
+        );
+        break;
+      case 6:
+        mapData = result.data.maps.find(
+          (m) => mainDataMap.position[0] === m.position[0] - 1 && mainDataMap.position[1] === m.position[1]
+        );
+        break;
+      case 4:
+        mapData = result.data.maps.find(
+          (m) => mainDataMap.position[0] === m.position[0] + 1 && mainDataMap.position[1] === m.position[1]
+        );
+        break;
+      case 5:
+        mapData = mainDataMap;
+        break;
+      default:
+        break;
+    }
+    if (mapData) {
+      s(`.adjancen-map-link-img-${i}`).src = `/tiles/${mapData.name_map}.PNG`;
+      s(`.adjancen-map-link-img-${i}`).style.display = 'block';
+    } else s(`.adjancen-map-link-img-${i}`).style.display = 'none';
+  });
 };
