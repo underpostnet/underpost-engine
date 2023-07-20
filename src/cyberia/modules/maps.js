@@ -174,12 +174,58 @@ const getAdjMaps = (req, res) => {
     });
   }
 };
+const setOriginGate = (req, res) => {
+  try {
+    const fromGateMapData = maps.find((m) => m.name_map === req.body.gate.from.name_map);
+    const fromTerminalMapData = maps.find((m) => m.name_map === req.body.terminal.from.name_map);
+    if (!fromGateMapData || !fromTerminalMapData)
+      return res.status(400).json({
+        status: 'error',
+        data: {
+          message: renderLang({ en: 'Map not found', es: 'Mapa no encontrado' }, req),
+        },
+      });
+
+    // console.log('fromGateMapData', fromGateMapData);
+    // console.log('fromTerminalMapData', fromTerminalMapData);
+
+    fromGateMapData.matrix[req.body.gate.from.y][req.body.gate.from.x] = req.body.gate.to;
+    fromTerminalMapData.matrix[req.body.terminal.from.y][req.body.terminal.from.x] = req.body.terminal.to;
+
+    fs.writeFileSync(
+      `./src/cyberia/assets/tiles/${fromGateMapData.name_map}.metadata.json`,
+      JSON.stringify(fromGateMapData, null, 1),
+      'utf8'
+    );
+
+    fs.writeFileSync(
+      `./src/cyberia/assets/tiles/${fromTerminalMapData.name_map}.metadata.json`,
+      JSON.stringify(fromTerminalMapData, null, 1),
+      'utf8'
+    );
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        message: 'ok',
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 'error',
+      data: {
+        message: error.message,
+      },
+    });
+  }
+};
 
 const mapsApi = (app) => {
   app.get(process.env.API_BASE + '/maps/:mapId', authValidator, (req, res) => getMapGfxEngineData(req, res));
   app.post(process.env.API_BASE + '/maps/upload', authValidator, (req, res) => uploadMap(req, res));
   app.get(process.env.API_BASE + '/maps/engine/:mapId', authValidator, (req, res) => getMapEngineData(req, res));
   app.get(process.env.API_BASE + '/maps/adjacents/:mapId', authValidator, (req, res) => getAdjMaps(req, res));
+  app.put(process.env.API_BASE + '/maps/origin-gate', authValidator, (req, res) => setOriginGate(req, res));
 };
 
 export { maps, mapsApi };

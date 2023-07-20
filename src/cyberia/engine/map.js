@@ -84,7 +84,7 @@ const renderAjcLinkGrid = (i) => {
         ${range(0, maxRange)
           .map((x) => {
             setTimeout(() => {
-              s(`.cell-adj-link-${i}-${x}-${y}`).onclick = () => {
+              s(`.cell-adj-link-${i}-${x}-${y}`).onclick = async () => {
                 let currentMapData;
                 let maxIdTerminal = -1;
                 let toMapData = ['to-map'];
@@ -144,26 +144,28 @@ const renderAjcLinkGrid = (i) => {
                   maxIdTerminal++;
                   toMapData.push(maxIdTerminal);
 
-                  console.error(
-                    JSON.stringify(
-                      {
-                        gate: {
-                          from: inputGateData,
-                          to: toMapData,
-                        },
-                        terminal: {
-                          from: {
-                            name_map: currentMapData.name_map,
-                            x,
-                            y,
-                          },
-                          to: ['tmi', toMapData[3]],
-                        },
+                  const bodyRequest = {
+                    gate: {
+                      from: inputGateData,
+                      to: toMapData,
+                    },
+                    terminal: {
+                      from: {
+                        name_map: currentMapData.name_map,
+                        x,
+                        y,
                       },
-                      null,
-                      4
-                    )
-                  );
+                      to: ['tmi', toMapData[3]],
+                    },
+                  };
+
+                  htmls('.gate-terminal-json-info', JSON.stringify(bodyRequest, null, 4));
+                  const result = await mapServices.setOriginGatea(bodyRequest);
+                  renderNotification(result.status, result.data.message);
+
+                  s(`.adjacent-link-input`).value = inputGateData.name_map;
+                  s(`.adjacent-link-btn`).click();
+
                   s(`.engineMap-set-origin-gate`).click();
                 }
                 htmls(
@@ -391,6 +393,8 @@ prepend(
             set origin gate <span style='color: red'>off</span>
           </button>
           <pre class='in info-adj-map-click'>
+          </pre>
+          <pre class='in gate-terminal-json-info'>
           </pre>
         </div>
         <div class='fl'>

@@ -35,4 +35,14 @@ const mapServices = {
       },
       log: false,
     }),
+  setOriginGatea: async (body) =>
+    await serviceRequest(API_BASE + '/maps/origin-gate', {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('_b')}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      log: false,
+    }),
 };
