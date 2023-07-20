@@ -33,6 +33,12 @@ const dimAjcMap = 500;
 const adjMapEngineIndex = [2, 4, 5, 6, 8];
 let currentAjcLinkGridData = {};
 
+let setOriginGateMode = false;
+
+let setFromOriginGate = true;
+let setToOriginGate = false;
+let inputGateData;
+
 guiSections.push('map-graphics-engine');
 append(
   'common-menu',
@@ -79,41 +85,100 @@ const renderAjcLinkGrid = (i) => {
           .map((x) => {
             setTimeout(() => {
               s(`.cell-adj-link-${i}-${x}-${y}`).onclick = () => {
+                let currentMapData;
+                let maxIdTerminal = -1;
                 let toMapData = ['to-map'];
                 switch (i) {
                   case 2:
                     if (currentAjcLinkGridData[2]) {
                       toMapData.push(currentAjcLinkGridData[2].name_map);
                       toMapData.push('up');
+                      currentMapData = currentAjcLinkGridData[2];
                     }
                     break;
                   case 8:
                     if (currentAjcLinkGridData[8]) {
                       toMapData.push(currentAjcLinkGridData[8].name_map);
                       toMapData.push('down');
+                      currentMapData = currentAjcLinkGridData[8];
                     }
                     break;
                   case 6:
                     if (currentAjcLinkGridData[6]) {
                       toMapData.push(currentAjcLinkGridData[6].name_map);
                       toMapData.push('right');
+                      currentMapData = currentAjcLinkGridData[6];
                     }
                     break;
                   case 4:
                     if (currentAjcLinkGridData[4]) {
                       toMapData.push(currentAjcLinkGridData[4].name_map);
                       toMapData.push('left');
+                      currentMapData = currentAjcLinkGridData[4];
                     }
                     break;
                   case 5:
                     if (currentAjcLinkGridData[5]) {
                       toMapData.push(currentAjcLinkGridData[5].name_map);
+                      currentMapData = currentAjcLinkGridData[5];
                     }
                     break;
                   default:
                     break;
                 }
-                htmls('.info-adj-map-click', JSON.stringify(toMapData, null, 4));
+                if (setOriginGateMode && setFromOriginGate) {
+                  setFromOriginGate = false;
+                  setToOriginGate = true;
+
+                  inputGateData = newInstance({
+                    name_map: currentMapData.name_map,
+                    x,
+                    y,
+                  });
+                } else if (setOriginGateMode && setToOriginGate) {
+                  currentMapData.matrix.map((y) =>
+                    y.map((x) => {
+                      if (typeof x === 'object' && x[0] === 'tmi' && maxIdTerminal < x[1]) maxIdTerminal = x[1];
+                    })
+                  );
+                  maxIdTerminal++;
+                  toMapData.push(maxIdTerminal);
+
+                  console.error(
+                    JSON.stringify(
+                      {
+                        gate: {
+                          from: inputGateData,
+                          to: toMapData,
+                        },
+                        terminal: {
+                          from: {
+                            name_map: currentMapData.name_map,
+                            x,
+                            y,
+                          },
+                          to: ['tmi', toMapData[3]],
+                        },
+                      },
+                      null,
+                      4
+                    )
+                  );
+                  s(`.engineMap-set-origin-gate`).click();
+                }
+                htmls(
+                  '.info-adj-map-click',
+                  `
+                ---------------------------------------------
+                TO MAP DATA:
+                ---------------------------------------------
+                ${JSON.stringify(toMapData, null, 4)}
+                ---------------------------------------------
+                FROM ORIGIGIN GATE:
+                ---------------------------------------------
+                ${JSON.stringify([x, y], null, 4)}
+                `
+                );
               };
             });
             return /*html*/ `
@@ -322,6 +387,9 @@ prepend(
         <div class='in'>
           name map <input type='text' class='adjacent-link-input'>
           <button class='inl custom-cursor adjacent-link-btn'>load</button>
+          <button class='inl engineMap-btn custom-cursor engineMap-set-origin-gate'>
+            set origin gate <span style='color: red'>off</span>
+          </button>
           <pre class='in info-adj-map-click'>
           </pre>
         </div>
@@ -739,6 +807,18 @@ s('.engineMap-clean-object').onclick = () => {
   cleanQuadranObject = true;
   htmls('.engineMap-clean-object', `clean object <span style='color: green'>on</span>`);
   if (objectQuadrantMode) s('.engineMap-object-quadrant').click();
+};
+
+s(`.engineMap-set-origin-gate`).onclick = () => {
+  setFromOriginGate = true;
+  setToOriginGate = false;
+  if (setOriginGateMode) {
+    setOriginGateMode = false;
+    htmls(`.engineMap-set-origin-gate`, `set origin gate <span style='color: red'>off</span>`);
+    return;
+  }
+  setOriginGateMode = true;
+  htmls(`.engineMap-set-origin-gate`, `set origin gate <span style='color: green'>on</span>`);
 };
 
 const grillModeChange = () => {
