@@ -464,6 +464,7 @@ const commonFunctions = () => `
     const JSONweb = ${JSONweb};
     ${merge};
     ${objectEquals};
+    ${getJoystickDirection};
 `;
 
 export {
@@ -500,4 +501,5 @@ export {
   renderLang,
   JSONweb,
   objectEquals,
+  getJoystickDirection,
 };
