@@ -180,14 +180,6 @@ const getYouTubeID = (url) => {
 
 const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
-const logDataManage = (arg, html) => {
-  const rawLog = JSON.stringify(typeof arg == 'function' ? arg() : arg, null, 4);
-  if (html) return `<pre>${rawLog}</pre>`;
-  else console.log(rawLog);
-};
-
-const arrayInstanceLog = (arr) => arr.map((x) => console.log(`${x}`));
-
 const reOrderIntArray = (array) => {
   /* shuffle */
   let currentIndex = array.length,
@@ -446,12 +438,10 @@ const commonFunctions = () => `
     // decodeURIComponent
     const getYouTubeID = ${getYouTubeID};
     const timer = ${timer};
-    const logDataManage = ${logDataManage};
     const capFirst = ${capFirst};
     const orderAbc = ${orderAbc};
     const getDirection = ${getDirection};
     const getDistance = ${getDistance};
-    const arrayInstanceLog = ${arrayInstanceLog};
     const decimalAdjust= ${decimalAdjust};
     const round10 = ${round10};
     const floor10 = ${floor10};
@@ -482,13 +472,11 @@ export {
   getYouTubeID,
   timer,
   getRawCsvFromArray,
-  logDataManage,
   reOrderIntArray,
   capFirst,
   orderAbc,
   getDirection,
   getDistance,
-  arrayInstanceLog,
   decimalAdjust,
   round10,
   floor10,
