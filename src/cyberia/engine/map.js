@@ -31,6 +31,7 @@ let globalMapObjectStorage = {};
 const engineMapCellPixelFactor = 3;
 const dimAjcMap = 500;
 const adjMapEngineIndex = [2, 4, 5, 6, 8];
+let currentAjcLinkGridData = {};
 
 guiSections.push('map-graphics-engine');
 append(
@@ -75,13 +76,52 @@ const renderAjcLinkGrid = (i) => {
       (y) => /*html*/ `
         <div class='fl'>
         ${range(0, maxRange)
-          .map(
-            (x) => /*html*/ `
-                <div class='in fll cell-adj-link custom-cursor'>
-                   <!-- ${x},${y} -->
-                </div>    
-    `
-          )
+          .map((x) => {
+            setTimeout(() => {
+              s(`.cell-adj-link-${i}-${x}-${y}`).onclick = () => {
+                let toMapData = ['to-map'];
+                switch (i) {
+                  case 2:
+                    if (currentAjcLinkGridData[2]) {
+                      toMapData.push(currentAjcLinkGridData[2].name_map);
+                      toMapData.push('up');
+                    }
+                    break;
+                  case 8:
+                    if (currentAjcLinkGridData[8]) {
+                      toMapData.push(currentAjcLinkGridData[8].name_map);
+                      toMapData.push('down');
+                    }
+                    break;
+                  case 6:
+                    if (currentAjcLinkGridData[6]) {
+                      toMapData.push(currentAjcLinkGridData[6].name_map);
+                      toMapData.push('right');
+                    }
+                    break;
+                  case 4:
+                    if (currentAjcLinkGridData[4]) {
+                      toMapData.push(currentAjcLinkGridData[4].name_map);
+                      toMapData.push('left');
+                    }
+                    break;
+                  case 5:
+                    if (currentAjcLinkGridData[5]) {
+                      toMapData.push(currentAjcLinkGridData[5].name_map);
+                    }
+                    break;
+                  default:
+                    break;
+                }
+                htmls('.info-adj-map-click', JSON.stringify(toMapData, null, 4));
+              };
+            });
+            return /*html*/ `
+              <div class='in fll cell-adj-link custom-cursor cell-adj-link-${i}-${x}-${y}'>
+                 <!-- ${x},${y} -->
+              </div>    
+  `;
+          })
           .join('')}
             
         </div>
@@ -282,6 +322,8 @@ prepend(
         <div class='in'>
           name map <input type='text' class='adjacent-link-input'>
           <button class='inl custom-cursor adjacent-link-btn'>load</button>
+          <pre class='in info-adj-map-click'>
+          </pre>
         </div>
         <div class='fl'>
           ${range(1, 9)
@@ -979,6 +1021,7 @@ s(`.adjacent-link-btn`).onclick = async () => {
         break;
     }
     if (mapData) {
+      currentAjcLinkGridData[i] = newInstance(mapData);
       s(`.adjancen-map-link-img-${i}`).src = `/tiles/${mapData.name_map}.PNG`;
       s(`.adjancen-map-link-img-${i}`).style.display = 'block';
     } else s(`.adjancen-map-link-img-${i}`).style.display = 'none';
