@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import json
 
 
 def plot_color_matrix(matrix):
@@ -59,16 +60,21 @@ def extract_hex_colors(image_path):
 
 
 def load_images(folder_path):
+    data = []
     for filename in os.listdir(folder_path):
         if filename.endswith('.png') or filename.endswith('.PNG'):
             try:
                 hex_matrix = extract_hex_colors(
                     os.path.join(folder_path, filename))
                 # print(hex_matrix)
-                plot_color_matrix(hex_matrix)
+                # plot_color_matrix(hex_matrix)
+                data.append(hex_matrix)
             except Exception as error:
                 print("An error occurred:", type(error).__name__,
                       error)  # An error occurred: NameError
 
+    return data
 
-load_images("../assets/tiles")
+
+json.dump(load_images("../assets/tiles"),
+          open("hex-maps.json", "w"), indent=2, sort_keys=True)
