@@ -1,4 +1,9 @@
-const containerWidth = 700;
+const globalWidth = 770;
+const globalLeftPadding = 13;
+const valueGB = 4;
+const lineTableBold = valueGB;
+
+const containerWidth = globalWidth;
 const containerColSeparator = 400;
 const containerRowTop = 70;
 const containerHeight = 250;
@@ -16,7 +21,7 @@ const text0LeftPadding = 420;
 const text0FontSize = containerRowFontSize;
 const text0Top = containerRowTextTop;
 
-const container0Width = 700;
+const container0Width = globalWidth;
 const container0Height = 60;
 const container0Top = 300;
 const container0RowTextTop = 25;
@@ -27,7 +32,7 @@ const text1LeftPadding = 70;
 const text1FontSize = container0RowFontSize;
 const text1Top = container0RowTextTop;
 
-const container1Width = 700;
+const container1Width = globalWidth;
 const container1Height = 250;
 const container1Top = 360;
 const container1RowTextTop = 25;
@@ -48,16 +53,25 @@ const text4LeftPadding = 70;
 const text4FontSize = container1RowFontSize;
 const text4Top = container1RowTextTop + 80 * 2;
 
+const container3Width = globalWidth;
+const container3Height = 250;
+const container3Top = 630;
+const container3RowTextTop = 25;
+const container3RowFontSize = 27;
+
+const container3ColSeparator = 360;
+const container3ColSeparator0 = 550;
+
 const zpl = `
 ^XA
 
 
 
-^FO${containerColSeparator},${containerTop}^GB0,${containerHeight},2^FS
+^FO${containerColSeparator},${containerTop}^GB${valueGB},${containerHeight},${lineTableBold}^FS
 
-^FO50,${containerTop}^GB${containerWidth},${containerHeight},2^FS
+^FO${globalLeftPadding},${containerTop}^GB${containerWidth},${containerHeight},${lineTableBold}^FS
 
-^FO50,${containerTop + containerRowTop}^GB${containerWidth},0,2^FS
+^FO${globalLeftPadding},${containerTop + containerRowTop}^GB${containerWidth},${valueGB},${lineTableBold}^FS
 
 
    
@@ -66,17 +80,23 @@ const zpl = `
 ^FO${text0LeftPadding},${containerTop + text0Top}^A0N,${text0FontSize},${text0FontSize}^FD${text0}^FS
 
 
-^FO50,${container0Top}^GB${container0Width},${container0Height},2^FS
+^FO${globalLeftPadding},${container0Top}^GB${container0Width},${container0Height},${lineTableBold}^FS
 
 ^FO${text1LeftPadding},${container0Top + text1Top}^A0N,${text1FontSize},${text1FontSize}^FD${text1}^FS
 
 
-^FO50,${container1Top}^GB${container1Width},${container1Height},2^FS
+^FO${globalLeftPadding},${container1Top}^GB${container1Width},${container1Height},${lineTableBold}^FS
 
 ^FO${text2LeftPadding},${container1Top + text2Top}^A0N,${text2FontSize},${text2FontSize}^FD${text2}^FS
 ^FO${text3LeftPadding},${container1Top + text3Top}^A0N,${text3FontSize},${text3FontSize}^FD${text3}^FS
 ^FO${text4LeftPadding},${container1Top + text4Top}^A0N,${text4FontSize},${text4FontSize}^FD${text4}^FS
 
+
+^FO${globalLeftPadding},${container3Top}^GB${container3Width},${container3Height},${lineTableBold}^FS
+
+^FO${container3ColSeparator},${container3Top}^GB${valueGB},${container3Height},${lineTableBold}^FS
+
+^FO${container3ColSeparator0},${container3Top}^GB${valueGB},${container3Height},${lineTableBold}^FS
 
 
 ^XZ
