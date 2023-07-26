@@ -225,6 +225,7 @@ prepend(
       }
       .engineMap-btn {
         margin: 3px;
+        font-size: 8px;
       }
       .engineMap-engine-content {
         border: 2px solid yellow;
@@ -235,6 +236,7 @@ prepend(
         padding: 10px;
         color: black;
         text-transform: uppercase;
+        font-size: 9px;
         ${borderChar(1, 'yellow')}
       }
       .img-adj-map {
@@ -281,6 +283,16 @@ prepend(
         width: 100%;
         height: 100%;
       }
+      .engineMap-content-util-color-board {
+        top: 10px;
+        left: 56px;
+        /* background: black; */
+        padding: 10px;
+        /* border: 2px solid yellow; */
+        z-index: 1;
+        /* font-size: 10px !important; */
+      }
+      
     </style>
      <style class='style-engineMap-cell'></style>
      <style class='style-engineMap-cell-select'></style>
@@ -291,8 +303,25 @@ prepend(
     
     <div class='in engineMap-content-menu'>
       <div class='in engineMap-content-top-menu'>
-        <input type='color' class='inl engineMap-input-color'>
-        <button class='inl custom-cursor engineMap-paint-mode'>
+        <div class='fix engineMap-content-util-color-board'>
+          <input type='color' class='inl engineMap-input-color'>
+          <button class='inl custom-cursor engineMap-btn engineMap-copy-current-hex-color'>
+              copy current hex color
+          </button>
+
+          <div class='inl engineMap-engine-content'>
+            <div class='inl engineMap-engine-content-title'>biome engine</div>
+              <button class='inl engineMap-btn custom-cursor engineMap-gen-biome'>
+                  test
+              </button>
+              <button class='inl engineMap-btn custom-cursor engineMap-biome-deciduous-temperate-forest'>
+                  deciduous temperate forest
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <button class='inl engineMap-btn custom-cursor engineMap-paint-mode'>
           paint <span style='color: green'>on</span>
         </button>
         <button class='inl engineMap-btn custom-cursor engineMap-solid'>
@@ -336,13 +365,7 @@ prepend(
             <div class='in engineMap-json-display'></div>
           </div>
       </div>
-      <div class='inl engineMap-engine-content'>
-        <div class='in engineMap-engine-content-title'>biome engine</div>
-          <button class='inl engineMap-btn custom-cursor engineMap-gen-biome'>
-               generate biome
-          </button>
-        </div>
-      </div>
+      
       <div class='inl engineMap-engine-content'>
           <button class='inl engineMap-btn custom-cursor engineMap-upload'>
             upload map
@@ -388,7 +411,7 @@ prepend(
       <div class='in engineMap-engine-content'>
         <div class='in'>
           name map <input type='text' class='adjacent-link-input'>
-          <button class='inl custom-cursor adjacent-link-btn'>load</button>
+          <button class='inl engineMap-btn custom-cursor adjacent-link-btn'>load</button>
           <button class='inl engineMap-btn custom-cursor engineMap-set-origin-gate'>
             set origin gate <span style='color: red'>off</span>
           </button>
@@ -926,6 +949,11 @@ s('.engineMap-copy-solid-json').onclick = async () => {
   renderNotification('success', 'json copy to clipboard');
 };
 
+s('.engineMap-copy-current-hex-color').onclick = async () => {
+  await copyData(s('.engineMap-input-color').value);
+  renderNotification('success', 'hex color to clipboard');
+};
+
 s('.engineMap-gen-biome').onclick = () => {
   const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
   const centerIndex = random(0, colors.length - 1 - 2);
@@ -963,6 +991,66 @@ s('.engineMap-gen-biome').onclick = () => {
           range(-3, 3).map((sumY) => {
             if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
               renderPaint(x + sumX, y + sumY);
+          })
+        );
+      }
+    });
+  });
+};
+
+s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
+  const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
+  const centerIndex = random(0, colors.length - 1 - 2);
+  const matrixColorBiome = {};
+
+  range(0, maxRangeMapParam).map((y) => {
+    range(0, maxRangeMapParam).map((x) => {
+      const probColor = random(0, 700);
+      if (probColor <= 1) {
+        // currentColorCell = colors[centerIndex - 2].hex;
+        currentColorCell = '#AF5E06';
+      } else if (probColor <= 6) {
+        // currentColorCell = colors[centerIndex - 1].hex;
+        currentColorCell = '#df463e';
+        // } else if (probColor <= 30) {
+        //   currentColorCell = colors[centerIndex].hex;
+        // } else if (probColor <= 60) {
+        //   currentColorCell = colors[centerIndex + 1].hex;
+      } else {
+        // currentColorCell = colors[centerIndex + 2].hex;
+        currentColorCell = '#339966';
+      }
+
+      if (!matrixColorBiome[y]) matrixColorBiome[y] = {};
+      matrixColorBiome[y][x] = newInstance(currentColorCell);
+
+      renderPaint(x, y);
+    });
+  });
+
+  currentColorCell = '#AF5E06';
+  Object.keys(matrixColorBiome).map((y) => {
+    Object.keys(matrixColorBiome[y]).map((x) => {
+      x = parseInt(x);
+      y = parseInt(y);
+      if (matrixColorBiome[y][x] === currentColorCell) {
+        range(0, 0).map((sumX) =>
+          range(-3, 3).map((sumY) => {
+            if (random(0, 1) === 0) currentColorCell = '#975206';
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
+          })
+        );
+        [-1, 1].map((sumX) =>
+          range(-3, 3).map((sumY) => {
+            if (random(0, 1) === 0) return;
+            if (random(0, 1) === 0) currentColorCell = '#975206';
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
           })
         );
       }
