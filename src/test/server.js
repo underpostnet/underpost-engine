@@ -16,7 +16,7 @@ app.get('/', (req, res) =>
                     </style>
                 </head>
                 <body>
-                    <script>
+                    <script type='module' async>
                           ${commonFunctions()}
                           ${fs.readFileSync('./src/core/components/vanilla.js', 'utf8')}
                           ${fs.readFileSync('./src/test/client.js', 'utf8')}
