@@ -1,3 +1,5 @@
+// http://labelary.com/viewer.html
+
 const globalWidth = 770;
 const globalLeftPadding = 13;
 const valueGB = 4;
@@ -42,6 +44,7 @@ const text2 = 'Nombre Cliente OS';
 const text2LeftPadding = 70;
 const text2FontSize = container1RowFontSize;
 const text2Top = container1RowTextTop;
+// const text2 = '${text2}';
 
 const text3 = 'Direccion Cliente OS';
 const text3LeftPadding = 70;
@@ -55,12 +58,29 @@ const text4Top = container1RowTextTop + 80 * 2;
 
 const container3Width = globalWidth;
 const container3Height = 250;
-const container3Top = 630;
+const container3Top = 690;
 const container3RowTextTop = 25;
 const container3RowFontSize = 27;
 
 const container3ColSeparator = 360;
 const container3ColSeparator0 = 550;
+
+const text5 = 'Codigo Empresa Sitiio';
+const text5LeftPadding = 70;
+const text5FontSize = container3RowFontSize;
+const text5Top = container3RowTextTop;
+
+const text6 = 'Codigo Sitio - Nombre Sitio'; // Nombre Sitio
+const text6LeftPadding = 70;
+const text6FontSize = container3RowFontSize;
+const text6Top = container3RowTextTop + 80;
+
+const text7 = 'DireccionSitio';
+const text7LeftPadding = 70;
+const text7FontSize = container3RowFontSize;
+const text7Top = container3RowTextTop + 80 * 2;
+
+const barCodeValue = 'test';
 
 const zpl = `
 ^XA
@@ -99,16 +119,26 @@ const zpl = `
 ^FO${container3ColSeparator0},${container3Top}^GB${valueGB},${container3Height},${lineTableBold}^FS
 
 
+
+^FO${text2LeftPadding},${container3Top + text5Top}^A0N,${text5FontSize},${text5FontSize}^FD${text5}^FS
+^FO${text3LeftPadding},${container3Top + text6Top}^A0N,${text6FontSize},${text6FontSize}^FD${text6}^FS
+^FO${text4LeftPadding},${container3Top + text7Top}^A0N,${text7FontSize},${text7FontSize}^FD${text7}^FS
+
+
+^FO50, 140^BY2,2,1^BCN,100,N,N,N^FD${barCodeValue}^FS
+
+
 ^XZ
 `;
 
-const render = /*html*/ `
+append(
+  'body',
+  /*html*/ `
 <button class='copy-zpl'>copy</button>
 <pre>
         ${zpl}
 </pre>
-`;
-
-append('body', render);
+`
+);
 
 s('.copy-zpl').onclick = () => copyData(zpl);
