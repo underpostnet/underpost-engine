@@ -92,11 +92,11 @@ const serviceRequest = (url, options) => {
       })
       .then((res) => {
         if (options && options.log) console.log('fetch success', url, res);
-        resolve(res);
+        return resolve(res);
       })
       .catch((error) => {
         if (options && options.log) console.error('fetch error ', url, error);
-        reject(error);
+        return reject(error);
       });
   });
 };
