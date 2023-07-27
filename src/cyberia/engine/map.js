@@ -1018,7 +1018,7 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
         //   currentColorCell = colors[centerIndex + 1].hex;
       } else {
         // currentColorCell = colors[centerIndex + 2].hex;
-        currentColorCell = '#339966';
+        currentColorCell = '#3bb177'; // '#339966';
       }
 
       if (!matrixColorBiome[y]) matrixColorBiome[y] = {};
@@ -1034,30 +1034,19 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
       x = parseInt(x);
       y = parseInt(y);
       if (matrixColorBiome[y][x] === currentColorCell) {
-        // rhizome
-        range(0, 0).map((sumX) =>
-          range(-3, 3).map((sumY) => {
-            if (random(0, 1) === 0) currentColorCell = '#975206';
-            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
-              renderPaint(x + sumX, y + sumY);
-
-            currentColorCell = '#AF5E06';
-          })
-        );
-        // roots
-        [-1, 1].map((sumX) =>
-          range(-3, 3).map((sumY) => {
-            if (random(0, 1) === 0) return;
-            if (random(0, 1) === 0) currentColorCell = '#975206';
-            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
-              renderPaint(x + sumX, y + sumY);
-
-            currentColorCell = '#AF5E06';
-          })
-        );
         // shadow
         range(-2, 2).map((sumX) =>
-          [4, 5].map((sumY) => {
+          range(4, 5).map((sumY) => {
+            // if (random(0, 1) === 0) return;
+            currentColorCell = '#29714c';
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
+          })
+        );
+        range(-3, 3).map((sumX) =>
+          range(3, 6).map((sumY) => {
             if (random(0, 1) === 0) return;
             currentColorCell = '#29714c';
             if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
@@ -1067,9 +1056,46 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
           })
         );
         // tree leaves
+        const treePhenotype = [
+          ['#c41919', '#810202'],
+          ['#aaf93e', '#e7ef46'],
+        ];
+        const selectPhenotype = treePhenotype[random(0, treePhenotype.length - 1)];
+        range(-3, 3).map((sumX) =>
+          range(-6, -1).map((sumY) => {
+            if (random(1, 0) === 1 && (sumX > 1 || sumX < -1) && (sumY > -3 || sumY < -4)) return;
+            currentColorCell = selectPhenotype[0];
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
+          })
+        );
         range(-4, 4).map((sumX) =>
-          range(-6, -4).map((sumY) => {
-            currentColorCell = '#810202';
+          range(-5, 0).map((sumY) => {
+            if (random(1, 4) === 4) return;
+            currentColorCell = selectPhenotype[1];
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
+          })
+        );
+        // rhizome
+        range(0, 0).map((sumX) =>
+          range(-1, 3).map((sumY) => {
+            if (random(0, 1) === 0) currentColorCell = '#975206';
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
+          })
+        );
+        // roots
+        [-1, 1].map((sumX) =>
+          range(-1, 3).map((sumY) => {
+            if (random(0, 1) === 0) return;
+            if (random(0, 1) === 0) currentColorCell = '#975206';
             if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
               renderPaint(x + sumX, y + sumY);
 
