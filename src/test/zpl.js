@@ -2,6 +2,8 @@
 
 const globalWidth = 770;
 const globalLeftPadding = 13;
+const globalLeftTextPadding = 30;
+
 const valueGB = 4;
 const lineTableBold = valueGB;
 
@@ -14,7 +16,7 @@ const containerRowTextTop = 25;
 const containerRowFontSize = 27;
 
 const text = 'Orden de Salida / Referencia';
-const textLeftPadding = 70;
+const textLeftPadding = globalLeftTextPadding;
 const textFontSize = containerRowFontSize;
 const textTop = containerRowTextTop;
 
@@ -30,7 +32,7 @@ const container0RowTextTop = 25;
 const container0RowFontSize = 27;
 
 const text1 = 'Destinatario Ship / To';
-const text1LeftPadding = 70;
+const text1LeftPadding = globalLeftTextPadding;
 const text1FontSize = container0RowFontSize;
 const text1Top = container0RowTextTop;
 
@@ -41,20 +43,26 @@ const container1RowTextTop = 25;
 const container1RowFontSize = 27;
 
 const text2 = 'Nombre Cliente OS';
-const text2LeftPadding = 70;
+const text2LeftPadding = globalLeftTextPadding;
 const text2FontSize = container1RowFontSize;
 const text2Top = container1RowTextTop;
 // const text2 = '${text2}';
 
 const text3 = 'Direccion Cliente OS';
-const text3LeftPadding = 70;
+const text3LeftPadding = globalLeftTextPadding;
 const text3FontSize = container1RowFontSize;
 const text3Top = container1RowTextTop + 80;
 
 const text4 = 'Ciudad Cliente OS';
-const text4LeftPadding = 70;
+const text4LeftPadding = globalLeftTextPadding;
 const text4FontSize = container1RowFontSize;
 const text4Top = container1RowTextTop + 80 * 2;
+
+const container2Width = globalWidth;
+const container2Height = 60;
+const container2Top = 630;
+const container2RowTextTop = 25;
+const container2RowFontSize = 27;
 
 const container3Width = globalWidth;
 const container3Height = 250;
@@ -63,22 +71,37 @@ const container3RowTextTop = 25;
 const container3RowFontSize = 27;
 
 const container3ColSeparator = 360;
-const container3ColSeparator0 = 550;
+const container3ColSeparator0 = 630;
 
 const text5 = 'Codigo Empresa Sitiio';
-const text5LeftPadding = 70;
+const text5LeftPadding = globalLeftTextPadding;
 const text5FontSize = container3RowFontSize;
 const text5Top = container3RowTextTop;
 
 const text6 = 'Codigo Sitio - Nombre Sitio'; // Nombre Sitio
-const text6LeftPadding = 70;
+const text6LeftPadding = globalLeftTextPadding;
 const text6FontSize = container3RowFontSize;
 const text6Top = container3RowTextTop + 80;
 
 const text7 = 'DireccionSitio';
-const text7LeftPadding = 70;
+const text7LeftPadding = globalLeftTextPadding;
 const text7FontSize = container3RowFontSize;
 const text7Top = container3RowTextTop + 80 * 2;
+
+const text8 = 'Origen / Remitente';
+const text8LeftPadding = globalLeftTextPadding;
+const text8FontSize = container2RowFontSize;
+const text8Top = container2RowTextTop;
+
+const text9 = 'Medida Bulto';
+const text9LeftPadding = 380;
+const text9FontSize = container2RowFontSize;
+const text9Top = container2RowTextTop;
+
+const text10 = 'Bulto';
+const text10LeftPadding = 650;
+const text10FontSize = container2RowFontSize;
+const text10Top = container2RowTextTop;
 
 const barCodeValue = 'test';
 
@@ -112,12 +135,18 @@ const zpl = `
 ^FO${text4LeftPadding},${container1Top + text4Top}^A0N,${text4FontSize},${text4FontSize}^FD${text4}^FS
 
 
+^FO${globalLeftPadding},${container2Top}^GB${container2Width},${container2Height},${lineTableBold}^FS
+
 ^FO${globalLeftPadding},${container3Top}^GB${container3Width},${container3Height},${lineTableBold}^FS
 
-^FO${container3ColSeparator},${container3Top}^GB${valueGB},${container3Height},${lineTableBold}^FS
+^FO${container3ColSeparator},${container2Top}^GB${valueGB},${container2Height + container3Height},${lineTableBold}^FS
 
-^FO${container3ColSeparator0},${container3Top}^GB${valueGB},${container3Height},${lineTableBold}^FS
+^FO${container3ColSeparator0},${container2Top}^GB${valueGB},${container2Height + container3Height},${lineTableBold}^FS
 
+
+^FO${text8LeftPadding},${container2Top + text8Top}^A0N,${text8FontSize},${text8FontSize}^FD${text8}^FS
+^FO${text9LeftPadding},${container2Top + text9Top}^A0N,${text9FontSize},${text9FontSize}^FD${text9}^FS
+^FO${text10LeftPadding},${container2Top + text10Top}^A0N,${text10FontSize},${text10FontSize}^FD${text10}^FS
 
 
 ^FO${text2LeftPadding},${container3Top + text5Top}^A0N,${text5FontSize},${text5FontSize}^FD${text5}^FS
