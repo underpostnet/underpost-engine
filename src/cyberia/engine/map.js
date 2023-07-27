@@ -1003,6 +1003,11 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
   const centerIndex = random(0, colors.length - 1 - 2);
   const matrixColorBiome = {};
 
+  const treePhenotype = [
+    ['#c41919', '#810202'],
+    ['#aaf93e', '#e7ef46'],
+  ];
+
   range(0, maxRangeMapParam).map((y) => {
     range(0, maxRangeMapParam).map((x) => {
       const probColor = random(0, 700);
@@ -1013,7 +1018,7 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
         currentColorCell = '#29714c';
       } else if (probColor <= 30) {
         // currentColorCell = colors[centerIndex - 1].hex;
-        currentColorCell = '#df463e';
+        currentColorCell = treePhenotype[random(0, treePhenotype.length - 1)][0];
         // } else if (probColor <= 30) {
         //   currentColorCell = colors[centerIndex].hex;
         // } else if (probColor <= 60) {
@@ -1029,6 +1034,7 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
       renderPaint(x, y);
     });
   });
+  // dark lawn
   currentColorCell = '#29714c';
   Object.keys(matrixColorBiome).map((y) => {
     Object.keys(matrixColorBiome[y]).map((x) => {
@@ -1052,6 +1058,25 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
         );
         currentColorCell = '#29714c';
       }
+    });
+  });
+  // flowers
+  Object.keys(matrixColorBiome).map((y) => {
+    Object.keys(matrixColorBiome[y]).map((x) => {
+      x = parseInt(x);
+      y = parseInt(y);
+      treePhenotype.map((phenoType) => {
+        if (matrixColorBiome[y][x] === phenoType[0]) {
+          range(-2, 2).map((sumX) =>
+            range(1, 1).map((sumY) => {
+              if (random(0, 1) === 0) return;
+              currentColorCell = phenoType[random(0, phenoType.length - 1)];
+              if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+                renderPaint(x + sumX, y + sumY);
+            })
+          );
+        }
+      });
     });
   });
 
@@ -1086,10 +1111,6 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
           })
         );
         // tree leaves
-        const treePhenotype = [
-          ['#c41919', '#810202'],
-          ['#aaf93e', '#e7ef46'],
-        ];
         const selectPhenotype = treePhenotype[random(0, treePhenotype.length - 1)];
         range(-4, 4).map((sumX) =>
           range(-6, -1).map((sumY) => {
