@@ -42,18 +42,17 @@ const container1Top = 360;
 const container1RowTextTop = 25;
 const container1RowFontSize = 27;
 
-const text2 = 'Nombre Cliente OS';
+const text2 = '${nombreCliente}';
 const text2LeftPadding = globalLeftTextPadding;
 const text2FontSize = container1RowFontSize;
 const text2Top = container1RowTextTop;
-// const text2 = '${text2}';
 
-const text3 = 'Direccion Cliente OS';
+const text3 = '${direccionCliente}';
 const text3LeftPadding = globalLeftTextPadding;
 const text3FontSize = container1RowFontSize;
 const text3Top = container1RowTextTop + 80;
 
-const text4 = 'Ciudad Cliente OS';
+const text4 = '${ciudadCliente}';
 const text4LeftPadding = globalLeftTextPadding;
 const text4FontSize = container1RowFontSize;
 const text4Top = container1RowTextTop + 80 * 2;
@@ -73,17 +72,22 @@ const container3RowFontSize = 27;
 const container3ColSeparator = 360;
 const container3ColSeparator0 = 630;
 
-const text5 = 'Codigo Empresa Sitiio';
+const text5 = '${codigoEmpresa}';
 const text5LeftPadding = globalLeftTextPadding;
 const text5FontSize = container3RowFontSize;
 const text5Top = container3RowTextTop;
 
-const text6 = 'Codigo Sitio - Nombre Sitio'; // Nombre Sitio
+const text6 = '${codigoSitio}';
 const text6LeftPadding = globalLeftTextPadding;
 const text6FontSize = container3RowFontSize;
-const text6Top = container3RowTextTop + 80;
+const text6Top = container3RowTextTop + 60;
 
-const text7 = 'DireccionSitio';
+const text15 = '${nombreSitio}';
+const text15LeftPadding = globalLeftTextPadding;
+const text15FontSize = container3RowFontSize;
+const text15Top = container3RowTextTop + 80 + 30;
+
+const text7 = '${direccionSitio}';
 const text7LeftPadding = globalLeftTextPadding;
 const text7FontSize = container3RowFontSize;
 const text7Top = container3RowTextTop + 80 * 2;
@@ -103,7 +107,52 @@ const text10LeftPadding = 650;
 const text10FontSize = container2RowFontSize;
 const text10Top = container2RowTextTop;
 
+const paddingLeftContainer3text = 380;
+
+const text11 = 'LARGO: ${largo}';
+const text11LeftPadding = paddingLeftContainer3text;
+const text11FontSize = container3RowFontSize;
+const text11Top = container3RowTextTop + 70;
+
+const text12 = 'ANCHO: ${ancho}';
+const text12LeftPadding = paddingLeftContainer3text;
+const text12FontSize = container3RowFontSize;
+const text12Top = container3RowTextTop + 60 * 2;
+
+const text13 = 'ALTO: ${alto}';
+const text13LeftPadding = paddingLeftContainer3text;
+const text13FontSize = container3RowFontSize;
+const text13Top = container3RowTextTop + 60 * 3;
+
+const text14 = 'PESO: ${peso}';
+const text14LeftPadding = paddingLeftContainer3text;
+const text14FontSize = container3RowFontSize;
+const text14Top = container3RowTextTop + 60 * 4;
+
+const text16 = '${currentBult} /';
+const text16LeftPadding = 650;
+const text16FontSize = 30;
+const text16Top = container3RowTextTop + 60 + 60;
+
+const text17 = '${totalBulto}';
+const text17LeftPadding = 650;
+const text17FontSize = 30;
+const text17Top = container3RowTextTop + 60 + 60 * 2;
+
 const barCodeValue = 'test';
+const barCodeTop = 130;
+const barCodeLeftPadding = 50;
+const barCodeHeight = 100;
+
+const text18 = '${barCodeValue}';
+const text18LeftPadding = 50;
+const text18FontSize = 30;
+const text18Top = container3RowTextTop + 60 + 60 * 2;
+
+const text19 = '${fechaPicking}';
+const text19LeftPadding = 480;
+const text19FontSize = 30;
+const text19Top = container3RowTextTop + 60 * 2;
 
 const zpl = `
 ^XA
@@ -152,9 +201,22 @@ const zpl = `
 ^FO${text2LeftPadding},${container3Top + text5Top}^A0N,${text5FontSize},${text5FontSize}^FD${text5}^FS
 ^FO${text3LeftPadding},${container3Top + text6Top}^A0N,${text6FontSize},${text6FontSize}^FD${text6}^FS
 ^FO${text4LeftPadding},${container3Top + text7Top}^A0N,${text7FontSize},${text7FontSize}^FD${text7}^FS
+^FO${text15LeftPadding},${container3Top + text15Top}^A0N,${text15FontSize},${text15FontSize}^FD${text15}^FS
 
 
-^FO50, 140^BY2,2,1^BCN,100,N,N,N^FD${barCodeValue}^FS
+^FO${text11LeftPadding},${container2Top + text11Top}^A0N,${text11FontSize},${text11FontSize}^FD${text11}^FS
+^FO${text12LeftPadding},${container2Top + text12Top}^A0N,${text12FontSize},${text12FontSize}^FD${text12}^FS
+^FO${text13LeftPadding},${container2Top + text13Top}^A0N,${text13FontSize},${text13FontSize}^FD${text13}^FS
+^FO${text14LeftPadding},${container2Top + text14Top}^A0N,${text14FontSize},${text14FontSize}^FD${text14}^FS
+
+^FO${text16LeftPadding},${container2Top + text16Top}^A0N,${text16FontSize},${text16FontSize}^FD${text16}^FS
+^FO${text17LeftPadding},${container2Top + text17Top}^A0N,${text17FontSize},${text17FontSize}^FD${text17}^FS
+
+
+^FO${barCodeLeftPadding}, ${barCodeTop}^BY2,2,1^BCN,${barCodeHeight},N,N,N^FD${barCodeValue}^FS
+^FO${text18LeftPadding},${containerTop + text18Top}^A0N,${text18FontSize},${text18FontSize}^FD${text18}^FS
+
+^FO${text19LeftPadding},${containerTop + text19Top}^A0N,${text19FontSize},${text19FontSize}^FD${text19}^FS
 
 
 ^XZ
