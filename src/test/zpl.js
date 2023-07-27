@@ -183,6 +183,11 @@ const barCode0LeftPadding = 50;
 const barCode0Height = 80;
 const barCode0Width = 4;
 
+const text22 = '${barCodeValue}';
+const text22LeftPadding = globalLeftTextPadding + 50;
+const text22FontSize = container6RowFontSize;
+const text22Top = 1170;
+
 const zpl = `
 ^XA
 
@@ -259,6 +264,8 @@ ${barCodeWidth},${barCodeWidth}^BCN,${barCodeHeight},N,N,N^FD${barCodeValue}^FS
 
 ^FO${barCode0LeftPadding}, ${barCode0Top}^BY${barCode0Width},
 ${barCode0Width},${barCode0Width}^BCN,${barCode0Height},N,N,N^FD${barCode0Value}^FS
+
+^FO${text22LeftPadding},${text22Top}^A0N,${text22FontSize},${text22FontSize}^FD${text22}^FS
 
 
 ^XZ
