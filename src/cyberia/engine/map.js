@@ -1034,6 +1034,7 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
       x = parseInt(x);
       y = parseInt(y);
       if (matrixColorBiome[y][x] === currentColorCell) {
+        // rhizome
         range(0, 0).map((sumX) =>
           range(-3, 3).map((sumY) => {
             if (random(0, 1) === 0) currentColorCell = '#975206';
@@ -1043,10 +1044,32 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
             currentColorCell = '#AF5E06';
           })
         );
+        // roots
         [-1, 1].map((sumX) =>
           range(-3, 3).map((sumY) => {
             if (random(0, 1) === 0) return;
             if (random(0, 1) === 0) currentColorCell = '#975206';
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
+          })
+        );
+        // shadow
+        range(-2, 2).map((sumX) =>
+          [4, 5].map((sumY) => {
+            if (random(0, 1) === 0) return;
+            currentColorCell = '#29714c';
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+              renderPaint(x + sumX, y + sumY);
+
+            currentColorCell = '#AF5E06';
+          })
+        );
+        // tree leaves
+        range(-4, 4).map((sumX) =>
+          range(-6, -4).map((sumY) => {
+            currentColorCell = '#810202';
             if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
               renderPaint(x + sumX, y + sumY);
 
