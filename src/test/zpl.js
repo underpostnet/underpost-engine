@@ -143,6 +143,7 @@ const barCodeValue = 'test';
 const barCodeTop = 130;
 const barCodeLeftPadding = 50;
 const barCodeHeight = 100;
+const barCodeWidth = 2;
 
 const text18 = '${barCodeValue}';
 const text18LeftPadding = 50;
@@ -153,6 +154,34 @@ const text19 = '${fechaPicking}';
 const text19LeftPadding = 480;
 const text19FontSize = 30;
 const text19Top = container3RowTextTop + 60 * 2;
+
+const container5Width = globalWidth;
+const container5Height = 60;
+const container5Top = 955;
+const container5RowTextTop = 25;
+const container5RowFontSize = 27;
+
+const container6Width = globalWidth;
+const container6Height = 60;
+const container6Top = 955 + 60;
+const container6RowTextTop = 25;
+const container6RowFontSize = 27;
+
+const text20 = 'Transporte / Courier: ${medioEnvioOs}';
+const text20LeftPadding = globalLeftTextPadding;
+const text20FontSize = container5RowFontSize;
+const text20Top = container5RowTextTop;
+
+const text21 = 'RUTA: ${codigoRutaOS} - ${nombreRutaOs}';
+const text21LeftPadding = globalLeftTextPadding;
+const text21FontSize = container6RowFontSize;
+const text21Top = container6RowTextTop;
+
+const barCode0Value = 'test';
+const barCode0Top = 1085;
+const barCode0LeftPadding = 50;
+const barCode0Height = 80;
+const barCode0Width = 4;
 
 const zpl = `
 ^XA
@@ -213,10 +242,23 @@ const zpl = `
 ^FO${text17LeftPadding},${container2Top + text17Top}^A0N,${text17FontSize},${text17FontSize}^FD${text17}^FS
 
 
-^FO${barCodeLeftPadding}, ${barCodeTop}^BY2,2,1^BCN,${barCodeHeight},N,N,N^FD${barCodeValue}^FS
+^FO${barCodeLeftPadding}, ${barCodeTop}^BY${barCodeWidth},
+${barCodeWidth},${barCodeWidth}^BCN,${barCodeHeight},N,N,N^FD${barCodeValue}^FS
+
 ^FO${text18LeftPadding},${containerTop + text18Top}^A0N,${text18FontSize},${text18FontSize}^FD${text18}^FS
 
 ^FO${text19LeftPadding},${containerTop + text19Top}^A0N,${text19FontSize},${text19FontSize}^FD${text19}^FS
+
+
+^FO${globalLeftPadding},${container5Top}^GB${container5Width},${container5Height},${lineTableBold}^FS
+
+^FO${globalLeftPadding},${container6Top}^GB${container6Width},${container6Height},${lineTableBold}^FS
+
+^FO${text20LeftPadding},${container5Top + text20Top}^A0N,${text20FontSize},${text20FontSize}^FD${text20}^FS
+^FO${text21LeftPadding},${container6Top + text21Top}^A0N,${text21FontSize},${text21FontSize}^FD${text21}^FS
+
+^FO${barCode0LeftPadding}, ${barCode0Top}^BY${barCode0Width},
+${barCode0Width},${barCode0Width}^BCN,${barCode0Height},N,N,N^FD${barCode0Value}^FS
 
 
 ^XZ
