@@ -1004,17 +1004,42 @@ s('.engineMap-gen-biome').onclick = () => {
 s('.engineMap-biome-color-city').onclick = () => {
   const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
   const matrixColorBiome = {};
+  const buildingStyles = [
+    ['#000c2d', '#001a5e'], // blue
+    ['#4f004f', '#620062'], // purple
+  ];
   // biome seeds
   range(0, maxRangeMapParam).map((y) => {
     range(0, maxRangeMapParam).map((x) => {
-      if (x % engineMapCellPixelFactor === 0 && y % engineMapCellPixelFactor === 0 && random(0, 700) < 100) {
-        currentColorCell = 'red';
+      if (x % engineMapCellPixelFactor === 0 && y % engineMapCellPixelFactor === 0 && random(0, 700) < 10) {
+        currentColorCell = buildingStyles[random(0, buildingStyles.length - 1)][0];
       } else {
-        currentColorCell = 'black';
+        currentColorCell = '#1d1d1d';
       }
       if (!matrixColorBiome[y]) matrixColorBiome[y] = {};
       matrixColorBiome[y][x] = newInstance(currentColorCell);
       renderPaint(x, y);
+    });
+  });
+
+  Object.keys(matrixColorBiome).map((y) => {
+    Object.keys(matrixColorBiome[y]).map((x) => {
+      x = parseInt(x);
+      y = parseInt(y);
+      buildingStyles.map((buildStyle) => {
+        if (matrixColorBiome[y][x] === buildStyle[0]) {
+          const xFactor = random(4, 8);
+          const yFactor = random(3, 10);
+          range(0, engineMapCellPixelFactor * xFactor - 1).map((sumX) =>
+            range(0, engineMapCellPixelFactor * yFactor - 1).map((sumY) => {
+              if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam) {
+                currentColorCell = buildStyle[random(0, 500) < 100 || x + sumX <= x + random(3, 7) ? 0 : 1];
+                renderPaint(x + sumX, y + sumY);
+              }
+            })
+          );
+        }
+      });
     });
   });
 };
