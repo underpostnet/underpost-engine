@@ -1030,7 +1030,7 @@ s('.engineMap-biome-color-city').onclick = () => {
     });
   });
 
-  const baseCordValidator = (x, y) => x >= 0 && y >= 0 && x <= maxRangeMapParam && y <= maxRangeMapParam;
+  const baseCordValidator = (x, y, maxLimitX, maxLimitY) => x >= 0 && y >= 0 && x <= maxLimitX && y <= maxLimitY;
 
   Object.keys(matrixColorBiome).map((y) => {
     Object.keys(matrixColorBiome[y]).map((x) => {
@@ -1042,20 +1042,37 @@ s('.engineMap-biome-color-city').onclick = () => {
           // body
           const xFactor = random(4, 8);
           const yFactor = random(3, 10);
-          range(0, engineMapCellPixelFactor * xFactor - 1).map((sumX) =>
-            range(0, engineMapCellPixelFactor * yFactor - 1).map((sumY) => {
-              if (baseCordValidator(x + sumX, y + sumY)) {
+          const buildLimitX = engineMapCellPixelFactor * xFactor - 1;
+          const buildLimitY = engineMapCellPixelFactor * yFactor - 1;
+
+          range(0, buildLimitX).map((sumX) =>
+            range(0, buildLimitY).map((sumY) => {
+              if (baseCordValidator(x + sumX, y + sumY, maxRangeMapParam, maxRangeMapParam)) {
                 currentColorCell = buildStyle.body[random(0, 500) < 100 || x + sumX <= x + random(3, 7) ? 0 : 1];
                 renderPaint(x + sumX, y + sumY);
               }
             })
           );
           // window
-          range(0, engineMapCellPixelFactor * xFactor - 1).map((sumX) =>
-            range(0, engineMapCellPixelFactor * yFactor - 1).map((sumY) => {
-              if (baseCordValidator(x + sumX, y + sumY) && (x + sumX) % 4 === 0 && (y + sumY) % 4 === 0) {
-                currentColorCell = buildStyle.window[0];
-                renderPaint(x + sumX, y + sumY);
+          range(0, buildLimitX).map((sumX) =>
+            range(0, buildLimitY).map((sumY) => {
+              if (random(0, 1) === 0) return;
+              if (
+                baseCordValidator(x + sumX, y + sumY, maxRangeMapParam, maxRangeMapParam) &&
+                (x + sumX) % 4 === 0 &&
+                (y + sumY) % 4 === 0
+              ) {
+                // single window area
+                const xFactorWindow = random(1, 2);
+                const yFactorWindow = random(1, 2);
+                range(0, xFactorWindow).map((sumX0) =>
+                  range(0, yFactorWindow).map((sumY0) => {
+                    if (baseCordValidator(x + sumX + sumX0, y + sumY + sumY0, x + buildLimitX, y + buildLimitY)) {
+                      currentColorCell = buildStyle.window[random(0, 2)];
+                      renderPaint(x + sumX + sumX0, y + sumY + sumY0);
+                    }
+                  })
+                );
               }
             })
           );
