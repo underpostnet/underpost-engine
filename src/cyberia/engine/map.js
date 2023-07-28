@@ -1030,6 +1030,8 @@ s('.engineMap-biome-color-city').onclick = () => {
     });
   });
 
+  const baseCordValidator = (x, y) => x >= 0 && y >= 0 && x <= maxRangeMapParam && y <= maxRangeMapParam;
+
   Object.keys(matrixColorBiome).map((y) => {
     Object.keys(matrixColorBiome[y]).map((x) => {
       x = parseInt(x);
@@ -1042,13 +1044,16 @@ s('.engineMap-biome-color-city').onclick = () => {
           const yFactor = random(3, 10);
           range(0, engineMapCellPixelFactor * xFactor - 1).map((sumX) =>
             range(0, engineMapCellPixelFactor * yFactor - 1).map((sumY) => {
-              const baseCordValidator =
-                x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam;
-              if (baseCordValidator) {
+              if (baseCordValidator(x + sumX, y + sumY)) {
                 currentColorCell = buildStyle.body[random(0, 500) < 100 || x + sumX <= x + random(3, 7) ? 0 : 1];
                 renderPaint(x + sumX, y + sumY);
               }
-              if (baseCordValidator && (x + sumX) % 4 === 0 && (y + sumY) % 4 === 0) {
+            })
+          );
+          // window
+          range(0, engineMapCellPixelFactor * xFactor - 1).map((sumX) =>
+            range(0, engineMapCellPixelFactor * yFactor - 1).map((sumY) => {
+              if (baseCordValidator(x + sumX, y + sumY) && (x + sumX) % 4 === 0 && (y + sumY) % 4 === 0) {
                 currentColorCell = buildStyle.window[0];
                 renderPaint(x + sumX, y + sumY);
               }
