@@ -317,6 +317,9 @@ prepend(
               <button class='inl engineMap-btn custom-cursor engineMap-biome-deciduous-temperate-forest'>
                   deciduous temperate forest
               </button>
+              <button class='inl engineMap-btn custom-cursor engineMap-biome-color-city'>
+                  color city
+              </button>
             </div>
           </div>
 
@@ -998,16 +1001,34 @@ s('.engineMap-gen-biome').onclick = () => {
   });
 };
 
+s('.engineMap-biome-color-city').onclick = () => {
+  const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
+  const matrixColorBiome = {};
+  // biome seeds
+  range(0, maxRangeMapParam).map((y) => {
+    range(0, maxRangeMapParam).map((x) => {
+      if (x % engineMapCellPixelFactor === 0 && y % engineMapCellPixelFactor === 0 && random(0, 700) < 100) {
+        currentColorCell = 'red';
+      } else {
+        currentColorCell = 'black';
+      }
+      if (!matrixColorBiome[y]) matrixColorBiome[y] = {};
+      matrixColorBiome[y][x] = newInstance(currentColorCell);
+      renderPaint(x, y);
+    });
+  });
+};
+
 s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
   const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
   const centerIndex = random(0, colors.length - 1 - 2);
   const matrixColorBiome = {};
-
+  // phenotypes
   const treePhenotype = [
     ['#c41919', '#810202'],
     ['#aaf93e', '#e7ef46'],
   ];
-
+  // biome seeds
   range(0, maxRangeMapParam).map((y) => {
     range(0, maxRangeMapParam).map((x) => {
       const probColor = random(0, 700);
