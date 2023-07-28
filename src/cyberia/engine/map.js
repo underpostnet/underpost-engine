@@ -1005,14 +1005,22 @@ s('.engineMap-biome-color-city').onclick = () => {
   const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
   const matrixColorBiome = {};
   const buildingStyles = [
-    ['#000c2d', '#001a5e'], // blue
-    ['#4f004f', '#620062'], // purple
+    {
+      name: 'blue',
+      body: ['#000c2d', '#001a5e'],
+      window: ['#ccce41', '#ffff4a', '#ffff99'],
+    },
+    {
+      name: 'purple',
+      body: ['#4f004f', '#620062'],
+      window: ['#b83e0a', '#e44d0c', '#f47239'],
+    },
   ];
   // biome seeds
   range(0, maxRangeMapParam).map((y) => {
     range(0, maxRangeMapParam).map((x) => {
       if (x % engineMapCellPixelFactor === 0 && y % engineMapCellPixelFactor === 0 && random(0, 700) < 10) {
-        currentColorCell = buildingStyles[random(0, buildingStyles.length - 1)][0];
+        currentColorCell = buildingStyles[random(0, buildingStyles.length - 1)].body[0];
       } else {
         currentColorCell = '#1d1d1d';
       }
@@ -1027,13 +1035,21 @@ s('.engineMap-biome-color-city').onclick = () => {
       x = parseInt(x);
       y = parseInt(y);
       buildingStyles.map((buildStyle) => {
-        if (matrixColorBiome[y][x] === buildStyle[0]) {
+        // builging
+        if (matrixColorBiome[y][x] === buildStyle.body[0]) {
+          // body
           const xFactor = random(4, 8);
           const yFactor = random(3, 10);
           range(0, engineMapCellPixelFactor * xFactor - 1).map((sumX) =>
             range(0, engineMapCellPixelFactor * yFactor - 1).map((sumY) => {
-              if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam) {
-                currentColorCell = buildStyle[random(0, 500) < 100 || x + sumX <= x + random(3, 7) ? 0 : 1];
+              const baseCordValidator =
+                x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam;
+              if (baseCordValidator) {
+                currentColorCell = buildStyle.body[random(0, 500) < 100 || x + sumX <= x + random(3, 7) ? 0 : 1];
+                renderPaint(x + sumX, y + sumY);
+              }
+              if (baseCordValidator && (x + sumX) % 4 === 0 && (y + sumY) % 4 === 0) {
+                currentColorCell = buildStyle.window[0];
                 renderPaint(x + sumX, y + sumY);
               }
             })
