@@ -58,7 +58,7 @@ socket.on('disconnect', (reason) => {
   // console.log(`socket.io event: disconnect | reason: ${reason}`);
   // setTimeout(() => location.reload(), 2000);
   resetsElements();
-  if (dev) setTimeout(() => location.reload(), 5000);
+  if (dev) setTimeout(() => location.reload(), 20000);
 });
 
 let userPositionAvailablePoints = [];

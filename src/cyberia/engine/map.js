@@ -287,9 +287,10 @@ prepend(
         top: 10px;
         left: 56px;
         /* background: black; */
+        background: rgba(0,0,0,0.8);
         padding: 10px;
         /* border: 2px solid yellow; */
-        z-index: 1;
+        z-index: 2;
         /* font-size: 10px !important; */
       }
       
@@ -303,7 +304,7 @@ prepend(
     
     <div class='in engineMap-content-menu'>
       <div class='in engineMap-content-top-menu'>
-        <div class='fix engineMap-content-util-color-board'>
+        <div class='fix engineMap-content-util-color-board custom-cursor'>
           <input type='color' class='inl engineMap-input-color'>
           <button class='inl custom-cursor engineMap-btn engineMap-copy-current-hex-color'>
               copy current hex color
@@ -313,6 +314,12 @@ prepend(
           </button>
           <button class='inl engineMap-btn custom-cursor engineMap-quadrant'>
              quadrant <span style='color: red'>off</span>
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-paint-mode'>
+            paint <span style='color: green'>on</span>
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-solid'>
+            solid <span style='color: red'>off</span>
           </button>
 
           <div class='inl engineMap-engine-content'>
@@ -330,12 +337,6 @@ prepend(
           </div>
 
         </div>
-        <button class='inl engineMap-btn custom-cursor engineMap-paint-mode'>
-          paint <span style='color: green'>on</span>
-        </button>
-        <button class='inl engineMap-btn custom-cursor engineMap-solid'>
-          solid <span style='color: red'>off</span>
-        </button>
         <button class='inl engineMap-btn custom-cursor engineMap-copy'>
           copy
         </button>
@@ -558,6 +559,8 @@ prepend(
 );
 
 intanceMenuBtns();
+
+dragDrop(`.engineMap-content-util-color-board`);
 
 const changeSizeCell = () => (currentSizeCell = s('.engineMap-size-paint').value - 1);
 
