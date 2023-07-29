@@ -16,7 +16,7 @@ let currentColorCell = 'black';
 let currentSizeCell = 0;
 let mouseDown = false;
 let paintMode = true;
-let grillMode = false;
+let gridMode = false;
 let quadrantMode = false;
 let objectQuadrantMode = false;
 let cleanQuadranObject = false;
@@ -296,7 +296,7 @@ prepend(
     </style>
      <style class='style-engineMap-cell'></style>
      <style class='style-engineMap-cell-select'></style>
-     <style class='style-engineMap-grill'></style>
+     <style class='style-engineMap-grid'></style>
     <sub-content-gui class='in'>
           <div class='in title-section'>Map Engine</div>
     </sub-content-gui>
@@ -307,6 +307,12 @@ prepend(
           <input type='color' class='inl engineMap-input-color'>
           <button class='inl custom-cursor engineMap-btn engineMap-copy-current-hex-color'>
               copy current hex color
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-grid'>
+             grid <span style='color: red'>off</span>
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-quadrant'>
+             quadrant <span style='color: red'>off</span>
           </button>
 
           <div class='inl engineMap-engine-content'>
@@ -339,17 +345,11 @@ prepend(
         <button class='inl engineMap-btn custom-cursor engineMap-clean'>
           clean
         </button>
-        <button class='inl engineMap-btn custom-cursor engineMap-grill'>
-          grill <span style='color: green'>on</span>
-        </button>
         <button class='inl engineMap-btn custom-cursor engineMap-png'>
           download png
         </button>
         <button class='inl engineMap-btn custom-cursor engineMap-svg'>
           download svg
-        </button>
-        <button class='inl engineMap-btn custom-cursor engineMap-quadrant'>
-          quadrant <span style='color: red'>off</span>
         </button>
         <div class='in'>
           size <input type='number' class='inl engineMap-size-paint' value=${currentSizeCell + 1}>
@@ -851,30 +851,29 @@ s(`.engineMap-set-origin-gate`).onclick = () => {
   htmls(`.engineMap-set-origin-gate`, `set origin gate <span style='color: green'>on</span>`);
 };
 
-const grillModeChange = () => {
-  if (grillMode) {
-    grillMode = false;
-    htmls('.style-engineMap-grill', '');
-    htmls('.engineMap-grill', `grill <span style='color: red'>off</span>`);
+const gridModeChange = () => {
+  if (gridMode) {
+    gridMode = false;
+    htmls('.style-engineMap-grid', '');
+    htmls('.engineMap-grid', `grid <span style='color: red'>off</span>`);
     return;
   }
-  grillMode = true;
+  gridMode = true;
   htmls(
-    '.style-engineMap-grill',
+    '.style-engineMap-grid',
     /*css*/ `
     engineMap-cell {
       border: 1px solid gray;
     }
   `
   );
-  htmls('.engineMap-grill', `grill <span style='color: green'>on</span>`);
+  htmls('.engineMap-grid', `grid <span style='color: green'>on</span>`);
 };
-grillModeChange();
 
 s('.engineMap-copy').onclick = () => engineMapCopy();
 s('.engineMap-paste').onclick = () => engineMapPaste();
 s('.engineMap-clean').onclick = () => renderGfxGrid();
-s('.engineMap-grill').onclick = () => grillModeChange();
+s('.engineMap-grid').onclick = () => gridModeChange();
 
 // https://html2canvas.hertzen.com/configuration
 s('.engineMap-png').onclick = () =>
@@ -1067,12 +1066,35 @@ s('.engineMap-biome-color-city').onclick = () => {
                 const yFactorWindow = random(1, 2);
                 range(0, xFactorWindow).map((sumX0) =>
                   range(0, yFactorWindow).map((sumY0) => {
-                    if (baseCordValidator(x + sumX + sumX0, y + sumY + sumY0, x + buildLimitX, y + buildLimitY)) {
+                    if (
+                      baseCordValidator(x + sumX + sumX0, y + sumY + sumY0, x + buildLimitX, y + buildLimitY) &&
+                      y + sumY + sumY0 < y + buildLimitY - 4 &&
+                      y + sumY + sumY0 > y
+                    ) {
                       currentColorCell = buildStyle.window[random(0, 2)];
                       renderPaint(x + sumX + sumX0, y + sumY + sumY0);
                     }
                   })
                 );
+              }
+            })
+          );
+          // door
+          const dimDoor = 2;
+          const xDoorPadding = 2;
+          const xDoorCords = range(x + xDoorPadding, x + buildLimitX - xDoorPadding - dimDoor).filter(
+            (n) => n % engineMapCellPixelFactor === 0
+          );
+          const xDoor = xDoorCords[random(0, xDoorCords.length - 1)];
+          const yDoor = y + buildLimitY;
+          currentColorCell = 'black';
+          range(0, dimDoor).map((deltaX) =>
+            range(0, dimDoor).map((deltaY) => {
+              if (
+                baseCordValidator(xDoor + deltaX, yDoor - deltaY, maxRangeMapParam, maxRangeMapParam) &&
+                baseCordValidator(xDoor + deltaX, yDoor - deltaY, x + buildLimitX, y + buildLimitY)
+              ) {
+                renderPaint(xDoor + deltaX, yDoor - deltaY);
               }
             })
           );
