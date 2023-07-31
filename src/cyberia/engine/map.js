@@ -1018,13 +1018,23 @@ s('.engineMap-biome-color-city').onclick = () => {
       window: ['#b83e0a', '#e44d0c', '#f47239'],
     },
   ];
+  const pavementStyle = ['#373737', '#282828', '#1d1d1d', 'black'];
   // biome seeds
   range(0, maxRangeMapParam).map((y) => {
     range(0, maxRangeMapParam).map((x) => {
       if (x % engineMapCellPixelFactor === 0 && y % engineMapCellPixelFactor === 0 && random(0, 700) < 10) {
         currentColorCell = buildingStyles[random(0, buildingStyles.length - 1)].body[0];
       } else {
-        currentColorCell = '#1d1d1d';
+        const probPavement = random(0, 700);
+        if (probPavement < 10) {
+          currentColorCell = pavementStyle[pavementStyle.length - 1];
+        } else if (probPavement < 100) {
+          currentColorCell = pavementStyle[pavementStyle.length - 2];
+        } else if (probPavement < 300) {
+          currentColorCell = pavementStyle[pavementStyle.length - 3];
+        } else {
+          currentColorCell = pavementStyle[pavementStyle.length - 4];
+        }
       }
       if (!matrixColorBiome[y]) matrixColorBiome[y] = {};
       matrixColorBiome[y][x] = newInstance(currentColorCell);
@@ -1034,6 +1044,7 @@ s('.engineMap-biome-color-city').onclick = () => {
 
   const baseCordValidator = (x, y, maxLimitX, maxLimitY) => x >= 0 && y >= 0 && x <= maxLimitX && y <= maxLimitY;
 
+  const buildLimitStorage = {};
   Object.keys(matrixColorBiome).map((y) => {
     Object.keys(matrixColorBiome[y]).map((x) => {
       x = parseInt(x);
@@ -1046,6 +1057,12 @@ s('.engineMap-biome-color-city').onclick = () => {
           const yFactor = random(3, 10);
           const buildLimitX = engineMapCellPixelFactor * xFactor - 1;
           const buildLimitY = engineMapCellPixelFactor * yFactor - 1;
+
+          if (!buildLimitStorage[x]) buildLimitStorage[x] = {};
+          buildLimitStorage[x][y] = {
+            buildLimitX,
+            buildLimitY,
+          };
 
           range(0, buildLimitX).map((sumX) =>
             range(0, buildLimitY).map((sumY) => {
@@ -1082,6 +1099,19 @@ s('.engineMap-biome-color-city').onclick = () => {
               }
             })
           );
+        }
+      });
+    });
+  });
+
+  Object.keys(matrixColorBiome).map((y) => {
+    Object.keys(matrixColorBiome[y]).map((x) => {
+      x = parseInt(x);
+      y = parseInt(y);
+      buildingStyles.map((buildStyle) => {
+        // builging
+        if (matrixColorBiome[y][x] === buildStyle.body[0]) {
+          const { buildLimitX, buildLimitY } = buildLimitStorage[x][y];
           // door
           const dimDoor = 2;
           const xDoorPadding = 2;
@@ -1090,6 +1120,24 @@ s('.engineMap-biome-color-city').onclick = () => {
           );
           const xDoor = xDoorCords[random(0, xDoorCords.length - 1)];
           const yDoor = y + buildLimitY;
+          let validDoor = true;
+          // currentColorCell = 'red';
+          range(0, dimDoor).map((deltaX) =>
+            range(1, dimDoor + 1).map((deltaY) => {
+              if (
+                !baseCordValidator(xDoor + deltaX, yDoor + deltaY, maxRangeMapParam, maxRangeMapParam) ||
+                !baseCordValidator(xDoor + deltaX, yDoor + deltaY, x + buildLimitX, y + buildLimitY + dimDoor + 1)
+              ) {
+                validDoor = false;
+                return;
+              }
+              if (!pavementStyle.includes(globalPaintStorage[xDoor + deltaX][yDoor + deltaY])) {
+                // renderPaint(xDoor + deltaX, yDoor + deltaY);
+                validDoor = false;
+              }
+            })
+          );
+          if (!validDoor) return;
           currentColorCell = 'black';
           range(0, dimDoor).map((deltaX) =>
             range(0, dimDoor).map((deltaY) => {
