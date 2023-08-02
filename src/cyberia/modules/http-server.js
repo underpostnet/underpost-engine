@@ -15,6 +15,7 @@ import { mimes } from '../../core/modules/mime.js';
 
 dotenv.config();
 const nameApp = process.env.NAME_APP;
+const macromap = process.env.MACROMAP;
 const description = {
   en: 'Cyberia OnLine Massively Multiplayer OnLine Role-Playing Game',
   es: 'Cyberia OnLine Juego de Rol Multijugador OnLine',
@@ -82,6 +83,8 @@ const httpClient = (app, internalApi) => {
   npmModules.map((mod) => copyDir(mod[0], mod[1]));
 
   copyDir(`./src/${nameApp}/assets`, `${dir}`);
+
+  copyDir(`./src/${nameApp}/macromaps/${macromap}`, `${dir}/tiles`);
 
   fs.mkdirSync(`${dir}/.well-known`, { recursive: true });
 

@@ -15,7 +15,7 @@ const maps = [{ name_map: '', matrix: [], safe_cords: [] }];
 //   );
 // });
 
-getAllFiles(`./src/cyberia/assets/tiles`).map((filePath) => {
+getAllFiles(`./src/${process.env.NAME_APP}/macromaps/${process.env.MACROMAP}`).map((filePath) => {
   if (filePath.slice(-14) === '.metadata.json') maps.push(JSON.parse(fs.readFileSync(`./${filePath}`, 'utf8')));
 });
 
