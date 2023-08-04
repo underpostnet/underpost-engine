@@ -940,7 +940,7 @@ const wsServer = (httpServer, app, internalApi) => {
 
       if (eventObj.path || eventObj.path === '') {
         let map;
-        map = eventObj.path.replaceAll('/', '');
+        map = eventObj.path ? eventObj.path.replaceAll('/', '') : '';
         if (map === '') map = maps[random(0, maps.length - 1)].name_map;
         const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building', 'object', 'object-frames'], map));
         const { color, render } = getParamsType(type);
@@ -957,6 +957,7 @@ const wsServer = (httpServer, app, internalApi) => {
           },
         });
       }
+      // TODO: macromap redirect validator
       const map = element.map;
       getAllElements().map((element) => {
         if (element.map === map) socket.emit('update', JSON.stringify(element));
@@ -979,6 +980,7 @@ const wsServer = (httpServer, app, internalApi) => {
           changeMapsPoints: changeMapsPoints.filter((mapData) => mapData.fromMap === map),
           mapMetaData: {
             quests: quests
+              .filter((q) => q.macromap === process.env.MACROMAP)
               .filter((q) => q.maps === 'all' || q.maps.includes(map))
               .map((q) => {
                 if (!q.logic) {
@@ -1022,6 +1024,7 @@ const wsServer = (httpServer, app, internalApi) => {
                   name: mapData.name_map,
                   position: mapData.position,
                   quests: quests
+                    .filter((q) => q.macromap === process.env.MACROMAP)
                     .filter((m) => m.targetsMaps.includes(mapData.name_map))
                     .map((m) => {
                       const { id, title } = m;
