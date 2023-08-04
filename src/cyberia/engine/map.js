@@ -1068,6 +1068,8 @@ s('.engineMap-biome-color-city').onclick = () => {
             range(0, buildLimitY).map((sumY) => {
               if (baseCordValidator(x + sumX, y + sumY, maxRangeMapParam, maxRangeMapParam)) {
                 currentColorCell = buildStyle.body[random(0, 500) < 100 || x + sumX <= x + random(3, 7) ? 0 : 1];
+                if (!globalMapObjectStorage[x + sumX]) globalMapObjectStorage[x + sumX] = {};
+                globalMapObjectStorage[x + sumX][y + sumY] = 1;
                 renderPaint(x + sumX, y + sumY);
               }
             })
@@ -1146,6 +1148,8 @@ s('.engineMap-biome-color-city').onclick = () => {
                 baseCordValidator(xDoor + deltaX, yDoor - deltaY, x + buildLimitX, y + buildLimitY)
               ) {
                 renderPaint(xDoor + deltaX, yDoor - deltaY);
+                if (!globalMapObjectStorage[xDoor + deltaX]) globalMapObjectStorage[xDoor + deltaX] = {};
+                globalMapObjectStorage[xDoor + deltaX][yDoor - deltaY] = 0;
               }
             })
           );
@@ -1273,8 +1277,11 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
           range(-6, -1).map((sumY) => {
             if (random(1, 0) === 1 && (sumX > 3 || sumX < -3) && (sumY > -3 || sumY < -4)) return;
             currentColorCell = selectPhenotype[0];
-            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam) {
               renderPaint(x + sumX, y + sumY);
+              if (!globalMapObjectStorage[x + sumX]) globalMapObjectStorage[x + sumX] = {};
+              globalMapObjectStorage[x + sumX][y + sumY] = 1;
+            }
           })
         );
         range(-5, 5).map((sumX) =>
@@ -1290,8 +1297,11 @@ s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
         range(0, 0).map((sumX) =>
           range(-1, 3).map((sumY) => {
             if (random(0, 1) === 0) currentColorCell = '#975206';
-            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam)
+            if (x + sumX >= 0 && y + sumY >= 0 && x + sumX <= maxRangeMapParam && y + sumY <= maxRangeMapParam) {
               renderPaint(x + sumX, y + sumY);
+              if (!globalMapObjectStorage[x + sumX]) globalMapObjectStorage[x + sumX] = {};
+              globalMapObjectStorage[x + sumX][y + sumY] = 1;
+            }
 
             currentColorCell = '#AF5E06';
           })
