@@ -322,6 +322,10 @@ prepend(
             solid <span style='color: red'>off</span>
           </button>
 
+          <button class='inl engineMap-btn custom-cursor engineMap-generate-macro-map'>
+            generate macro map
+          </button>
+
           <div class='inl engineMap-engine-content'>
             <div class='inl engineMap-engine-content-title'>biome engine</div>
               <button class='inl engineMap-btn custom-cursor engineMap-gen-biome'>
@@ -1462,4 +1466,38 @@ s(`.adjacent-link-btn`).onclick = async () => {
       s(`.adjancen-map-link-img-${i}`).style.display = 'block';
     } else s(`.adjancen-map-link-img-${i}`).style.display = 'none';
   });
+};
+
+s(`.engineMap-generate-macro-map`).onclick = async () => {
+  const macroMapDim = 2;
+  const macromaps = [];
+  for (const y of range(0, macroMapDim)) {
+    for (const x of range(0, macroMapDim)) {
+      if (y === 0 && x === 0) continue;
+      renderGfxGrid();
+      if (random(0, 1) === 1) s('.engineMap-biome-color-city').click();
+      else s('.engineMap-biome-deciduous-temperate-forest').click();
+      const mapMetaData = {
+        name_map: `m${s4() + s4()}`,
+        position: [x, y],
+        types: ['pvp', 'pve'],
+        safe_cords: [],
+        parent: undefined,
+      };
+      const body = {
+        colorData: {
+          svg: getSvgRender(),
+          json: getMapColorJSON(),
+        },
+        mapData: {
+          ...mapMetaData,
+          matrix: getCurrentJSONmap(),
+        },
+      };
+      macromaps.push(body);
+      s('.engineMap-metadata-json-input').value = JSON.stringify(mapMetaData, null, 4);
+      await s('.engineMap-upload').click();
+    }
+  }
+  console.log('macromaps', macromaps);
 };
