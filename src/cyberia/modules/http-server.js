@@ -160,70 +160,72 @@ const httpClient = (app, internalApi) => {
     fs.writeFileSync(
       `${dir}/${path}index.html`,
       /*html*/ `
-            <!DOCTYPE html>
-            <html dir='ltr'>
-            <head>
-                <meta charset='UTF-8'>
-                <title>${renderInstanceTitle(pathObj)}</title>
-                <link rel='icon' type='image/x-icon' href='/favicon.ico'>
-                <link rel='icon' type='image/png' href='/social/favicon-white-on-black.png' />
-                
-                <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, user-scalable=0'>
-                <meta name='author' content='${author}' />
-                <meta name='keywords' content='${keywords}'>
-                <meta name ='description' content='${description.en}' />
-                <meta name ='theme-color' content = '${themeColor}' />
-                <link rel='canonical' href='${canonicalURL}' />
-                    ${microdata.map(
-                      (jsonld) => /*html*/ `
-                    <script type='application/ld+json'>
-                          ${JSON.stringify(jsonld, null, 4)}
-                    </script>
-                    `
-                    ).join(`
-                      `)}
-                       
-                <link rel='icon' type='image/png' sizes='16x16' href='/pwa/favicon-16x16.png'>
-                <link rel='icon' type='image/png' sizes='32x32' href='/pwa/favicon-32x32.png'>
-                <link rel='icon' type='image/png' sizes='194x194' href='/pwa/favicon-194x194.png'>    
+      <!DOCTYPE html>
+      <html dir="ltr">
+        <head>
+          <meta charset="UTF-8" />
+          <title>${renderInstanceTitle(pathObj)}</title>
+          <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+          <link rel="icon" type="image/png" href="/social/favicon-white-on-black.png" />
+          <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 
-                <link rel='icon' type='image/png' sizes='36x36' href='/pwa/android-chrome-36x36.png'>
-                <link rel='icon' type='image/png' sizes='48x48' href='/pwa/android-chrome-48x48.png'>
-                <link rel='icon' type='image/png' sizes='72x72' href='/pwa/android-chrome-72x72.png'>
-                <link rel='icon' type='image/png' sizes='96x96' href='/pwa/android-chrome-96x96.png'>
-                <link rel='icon' type='image/png' sizes='144x144' href='/pwa/android-chrome-144x144.png'>
-                <link rel='icon' type='image/png' sizes='192x192' href='/pwa/android-chrome-192x192.png'>
-                <link rel='icon' type='image/png' sizes='256x256' href='/pwa/android-chrome-256x256.png'>
-                <link rel='icon' type='image/png' sizes='384x384' href='/pwa/android-chrome-384x384.png'>
-                <link rel='icon' type='image/png' sizes='512x512' href='/pwa/android-chrome-512x512.png'>
+          <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+          <meta name="author" content="${author}" />
+          <meta name="keywords" content="${keywords}" />
+          <meta name="description" content="${description.en}" />
+          <meta name="theme-color" content="${themeColor}" />
+          <link rel="canonical" href="${canonicalURL}" />
+          ${microdata
+            .map(
+              (jsonld) => /*html*/ `
+          <script type="application/ld+json">
+            ${JSON.stringify(jsonld, null, 4)}
+          </script>
+          `
+            )
+            .join(` `)}
 
-                <link rel='manifest' href='/site.webmanifest'>
+          <link rel="icon" type="image/png" sizes="16x16" href="/pwa/favicon-16x16.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/pwa/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="194x194" href="/pwa/favicon-194x194.png" />
 
-                <link rel='apple-touch-icon' sizes='180x180' href='/pwa/apple-touch-icon.png'>
-                <link rel='mask-icon' href='/pwa/safari-pinned-tab.svg' color='${themeColor}'>
-                <meta name='apple-mobile-web-app-title' content='${renderInstanceTitle(pathObj)}'>
-                
-                <meta name='application-name' content='${renderInstanceTitle(pathObj)}'>
+          <link rel="icon" type="image/png" sizes="36x36" href="/pwa/android-chrome-36x36.png" />
+          <link rel="icon" type="image/png" sizes="48x48" href="/pwa/android-chrome-48x48.png" />
+          <link rel="icon" type="image/png" sizes="72x72" href="/pwa/android-chrome-72x72.png" />
+          <link rel="icon" type="image/png" sizes="96x96" href="/pwa/android-chrome-96x96.png" />
+          <link rel="icon" type="image/png" sizes="144x144" href="/pwa/android-chrome-144x144.png" />
+          <link rel="icon" type="image/png" sizes="192x192" href="/pwa/android-chrome-192x192.png" />
+          <link rel="icon" type="image/png" sizes="256x256" href="/pwa/android-chrome-256x256.png" />
+          <link rel="icon" type="image/png" sizes="384x384" href="/pwa/android-chrome-384x384.png" />
+          <link rel="icon" type="image/png" sizes="512x512" href="/pwa/android-chrome-512x512.png" />
 
-                <meta name='msapplication-config' content='${internalApi.getHost()}/browserconfig.xml' />
-                <meta name='msapplication-TileColor' content='${themeColor}'>
-                <meta name='msapplication-TileImage' content='${internalApi.getHost()}/pwa/mstile-144x144.png'>
-                <meta name='theme-color' content='${themeColor}'>
-        
-                <meta property='og:title' content='${renderInstanceTitle(pathObj)}' />
-                <meta property='og:description' content='${description.en}' />
-                <meta property='og:image' content='${internalApi.getHost()}${socialImgPath}' />
-                <meta property='og:url' content='${canonicalURL}' />
-                <meta name='twitter:card' content='summary_large_image' />
-        
-                ${htmlJsTagModules}
+          <link rel="manifest" href="/site.webmanifest" />
 
-                <link rel='stylesheet' href='/${nameSrcFileApp}.css'>
-            </head>
-            <body>
-                <script type='module' src='/${nameSrcFileApp}.js' async></script>
-            </body>
-            </html>  
+          <link rel="apple-touch-icon" sizes="180x180" href="/pwa/apple-touch-icon.png" />
+          <link rel="mask-icon" href="/pwa/safari-pinned-tab.svg" color="${themeColor}" />
+          <meta name="apple-mobile-web-app-title" content="${renderInstanceTitle(pathObj)}" />
+
+          <meta name="application-name" content="${renderInstanceTitle(pathObj)}" />
+
+          <meta name="msapplication-config" content="${internalApi.getHost()}/browserconfig.xml" />
+          <meta name="msapplication-TileColor" content="${themeColor}" />
+          <meta name="msapplication-TileImage" content="${internalApi.getHost()}/pwa/mstile-144x144.png" />
+          <meta name="theme-color" content="${themeColor}" />
+
+          <meta property="og:title" content="${renderInstanceTitle(pathObj)}" />
+          <meta property="og:description" content="${description.en}" />
+          <meta property="og:image" content="${internalApi.getHost()}${socialImgPath}" />
+          <meta property="og:url" content="${canonicalURL}" />
+          <meta name="twitter:card" content="summary_large_image" />
+
+          ${htmlJsTagModules}
+
+          <link rel="stylesheet" href="/${nameSrcFileApp}.css" />
+        </head>
+        <body>
+          <script type="module" src="/${nameSrcFileApp}.js" async></script>
+        </body>
+      </html> 
         `,
       // .replaceAll(`\n`, ' ')
       // .replaceAll('\t', ' '),
