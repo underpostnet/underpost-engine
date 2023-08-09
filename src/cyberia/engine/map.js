@@ -1008,6 +1008,7 @@ s('.engineMap-gen-biome').onclick = () => {
 };
 
 s('.engineMap-biome-color-city').onclick = () => {
+  renderGfxGrid();
   const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
   const matrixColorBiome = {};
   const buildingStyles = [
@@ -1164,6 +1165,7 @@ s('.engineMap-biome-color-city').onclick = () => {
 };
 
 s('.engineMap-biome-deciduous-temperate-forest').onclick = () => {
+  renderGfxGrid();
   const maxRangeMapParam = maxRangeMap() * engineMapCellPixelFactor - 1;
   const centerIndex = random(0, colors.length - 1 - 2);
   const matrixColorBiome = {};
@@ -1474,7 +1476,6 @@ s(`.engineMap-generate-macro-map`).onclick = async () => {
   for (const y of range(0, macroMapDim)) {
     for (const x of range(0, macroMapDim)) {
       if (y === 0 && x === 0) continue;
-      renderGfxGrid();
       if (random(0, 1) === 1) s('.engineMap-biome-color-city').click();
       else s('.engineMap-biome-deciduous-temperate-forest').click();
       const mapMetaData = {
