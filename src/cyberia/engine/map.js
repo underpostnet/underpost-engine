@@ -971,8 +971,16 @@ const getCurrentJSONmap = (pixelfactor) => {
           yi < ya.length - 1 &&
           x === 0
         ) {
-          x = ['tmi', tmi];
-          tmi++;
+          // TODO: BUILDING DOOR VALIDATOR
+          if (
+            (yi === 1 && dataJSON[yi - 1][xi] === 0) ||
+            (yi === ya.length - 2 && dataJSON[yi + 1][xi] === 0) ||
+            (xi === 1 && dataJSON[yi][xi - 1] === 0) ||
+            (xi === xa.length - 2 && dataJSON[yi][xi + 1] === 0)
+          ) {
+            x = ['tmi', tmi];
+            tmi++;
+          }
         }
         return x;
       })
