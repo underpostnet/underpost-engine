@@ -20,6 +20,7 @@ let gridMode = false;
 let quadrantMode = false;
 let objectQuadrantMode = false;
 let cleanQuadranObject = false;
+let autoTmiMode = false;
 let currentDirectionAdjacentMap = undefined;
 let currentAdjacentMapData = undefined;
 let solidMode = 0;
@@ -324,6 +325,10 @@ prepend(
 
           <button class='inl engineMap-btn custom-cursor engineMap-generate-macro-map'>
             generate macro map
+          </button>
+
+          <button class='inl engineMap-btn custom-cursor engineMap-set-auto-tmi'>
+           set auto tmi <span style='color: red'>off</span>
           </button>
 
           <div class='inl engineMap-engine-content'>
@@ -835,6 +840,16 @@ s('.engineMap-solid').onclick = () => {
   htmls('.engineMap-solid', `solid <span style='color: green'>on</span>`);
 };
 
+s('.engineMap-set-auto-tmi').onclick = () => {
+  if (autoTmiMode) {
+    autoTmiMode = false;
+    htmls('.engineMap-set-auto-tmi', `set auto tmi <span style='color: red'>off</span>`);
+    return;
+  }
+  autoTmiMode = true;
+  htmls('.engineMap-set-auto-tmi', `set auto tmi <span style='color: green'>on</span>`);
+};
+
 s('.engineMap-clean-object').onclick = () => {
   if (cleanQuadranObject) {
     cleanQuadranObject = false;
@@ -938,11 +953,32 @@ const getCurrentJSONmap = (pixelfactor) => {
       }
     })
   );
-  return dataJSON
+  dataJSON = dataJSON
     .map((y, iy) =>
       iy % pixelfactor === 0 ? y.map((x, ix) => (ix % pixelfactor === 0 ? x : null)).filter((c) => c !== null) : null
     )
     .filter((c) => c !== null);
+
+  if (autoTmiMode) {
+    let tmi = 0;
+    dataJSON = dataJSON.map((y, yi, ya) =>
+      y.map((x, xi, xa) => {
+        if (
+          (yi === 1 || yi === ya.length - 2 || xi === 1 || xi === xa.length - 2) &&
+          xi > 0 &&
+          xi < xa.length - 1 &&
+          yi > 0 &&
+          yi < ya.length - 1 &&
+          x === 0
+        ) {
+          x = ['tmi', tmi];
+          tmi++;
+        }
+        return x;
+      })
+    );
+  }
+  return dataJSON;
 };
 
 s('.engineMap-copy-solid-json').onclick = async () => {
