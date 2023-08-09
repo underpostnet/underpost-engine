@@ -277,6 +277,8 @@ const id = () => {
   return _id;
 };
 
+const getRandonNameMap = () => maps[random(1, maps.length - 1)].name_map;
+
 const matrixIterator = (fn, maxMapArg) =>
   range(0, maxRangeMap(maxMapArg)).map((y) => range(0, maxRangeMap(maxMapArg)).map((x) => fn(x, y)));
 
@@ -941,7 +943,7 @@ const wsServer = (httpServer, app, internalApi) => {
       if (eventObj.path || eventObj.path === '') {
         let map;
         map = eventObj.path ? eventObj.path.replaceAll('/', '') : '';
-        if (map === '') map = maps[random(1, maps.length - 1)].name_map;
+        if (map === '') map = getRandonNameMap();
         const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building', 'object', 'object-frames'], map));
         const { color, render } = getParamsType(type);
         const { dim } = render;
@@ -957,8 +959,17 @@ const wsServer = (httpServer, app, internalApi) => {
           },
         });
       }
-      // TODO: macromap redirect validator
-      const map = element.map;
+      let map;
+      let dataMap = maps.find((m) => m.name_map === element.map);
+      // macromap redirect validator
+      if (dataMap === undefined) {
+        map = getRandonNameMap();
+        const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building', 'object', 'object-frames'], map));
+        element.render.x = x;
+        element.render.y = y;
+        element.map = map;
+        dataMap = maps.find((m) => m.name_map === element.map);
+      } else map = element.map;
       getAllElements().map((element) => {
         if (element.map === map) socket.emit('update', JSON.stringify(element));
       });
@@ -972,7 +983,6 @@ const wsServer = (httpServer, app, internalApi) => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
         if (clientIndex > -1 && elements[type][clientIndex].map === map) client.emit('update', JSON.stringify(element));
       });
-      const dataMap = maps.find((m) => m.name_map === map);
       const parentMapData = dataMap.parent ? maps.find((m) => m.name_map === dataMap.parent) : false;
 
       const initData = {
