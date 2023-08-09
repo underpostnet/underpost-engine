@@ -941,7 +941,7 @@ const wsServer = (httpServer, app, internalApi) => {
       if (eventObj.path || eventObj.path === '') {
         let map;
         map = eventObj.path ? eventObj.path.replaceAll('/', '') : '';
-        if (map === '') map = maps[random(0, maps.length - 1)].name_map;
+        if (map === '') map = maps[random(1, maps.length - 1)].name_map;
         const { x, y } = getRandomPoint('', getAvailablePoints(type, ['building', 'object', 'object-frames'], map));
         const { color, render } = getParamsType(type);
         const { dim } = render;
@@ -974,71 +974,71 @@ const wsServer = (httpServer, app, internalApi) => {
       });
       const dataMap = maps.find((m) => m.name_map === map);
       const parentMapData = dataMap.parent ? maps.find((m) => m.name_map === dataMap.parent) : false;
-      socket.emit(
-        'init-data',
-        JSON.stringify({
-          changeMapsPoints: changeMapsPoints.filter((mapData) => mapData.fromMap === map),
-          mapMetaData: {
-            quests: quests
-              .filter((q) => q.macromap === process.env.MACROMAP)
-              .filter((q) => q.maps === 'all' || q.maps.includes(map))
-              .map((q) => {
-                if (!q.logic) {
-                  q.eval = `
-                  questRenderCard = () => '';
-                  `;
-                } else {
-                  q.eval = `
-              questRenderCard = ${q.logic};
-              `;
-                }
-                if (q.setSuccessQuest) {
-                  q.eval += `
-                  setSuccessQuest = ${q.setSuccessQuest};
-                  `;
-                } else {
-                  q.eval += `
-                  setSuccessQuest = () => '';
-                  `;
-                }
-                return q;
-              }),
-            types: dataMap.types,
-            safe_cords: dataMap.safe_cords,
-            map,
-            position: parentMapData ? parentMapData.position : dataMap.position,
-            parentMapData: parentMapData
-              ? (() => {
-                  return {
-                    name_map: parentMapData.name_map,
-                  };
-                })()
-              : undefined,
-            globalInstancesMapData: maps
-              // .filter(
-              //   (x) =>
-              //     validateMapViewRange(x, parentMapData ? parentMapData : dataMap) || x.name_map === dataMap.name_map
-              // )
-              .map((mapData) => {
+
+      const initData = {
+        changeMapsPoints: changeMapsPoints.filter((mapData) => mapData.fromMap === map),
+        mapMetaData: {
+          quests: quests
+            .filter((q) => q.macromap === process.env.MACROMAP)
+            .filter((q) => q.maps === 'all' || q.maps.includes(map))
+            .map((q) => {
+              if (!q.logic) {
+                q.eval = `
+                questRenderCard = () => '';
+                `;
+              } else {
+                q.eval = `
+            questRenderCard = ${q.logic};
+            `;
+              }
+              if (q.setSuccessQuest) {
+                q.eval += `
+                setSuccessQuest = ${q.setSuccessQuest};
+                `;
+              } else {
+                q.eval += `
+                setSuccessQuest = () => '';
+                `;
+              }
+              return q;
+            }),
+          types: dataMap.types,
+          safe_cords: dataMap.safe_cords,
+          map,
+          position: parentMapData ? parentMapData.position : dataMap.position,
+          parentMapData: parentMapData
+            ? (() => {
                 return {
-                  name: mapData.name_map,
-                  position: mapData.position,
-                  quests: quests
-                    .filter((q) => q.macromap === process.env.MACROMAP)
-                    .filter((m) => m.targetsMaps.includes(mapData.name_map))
-                    .map((m) => {
-                      const { id, title } = m;
-                      return {
-                        id,
-                        title,
-                      };
-                    }),
-                  types: mapData.types,
+                  name_map: parentMapData.name_map,
                 };
-              }),
-          },
-        })
-      );
+              })()
+            : undefined,
+          globalInstancesMapData: maps
+            // .filter(
+            //   (x) =>
+            //     validateMapViewRange(x, parentMapData ? parentMapData : dataMap) || x.name_map === dataMap.name_map
+            // )
+            .map((mapData) => {
+              return {
+                name: mapData.name_map,
+                position: mapData.position,
+                quests: quests
+                  .filter((q) => q.macromap === process.env.MACROMAP)
+                  .filter((m) => m.targetsMaps.includes(mapData.name_map))
+                  .map((m) => {
+                    const { id, title } = m;
+                    return {
+                      id,
+                      title,
+                    };
+                  }),
+                types: mapData.types,
+              };
+            }),
+        },
+      };
+      // console.log('emit init-data', initData);
+      socket.emit('init-data', JSON.stringify(initData));
     });
 
     socket.on('update', (args) => {
