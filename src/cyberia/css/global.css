@@ -748,12 +748,3 @@ event-board {
 .map-admin-position-view {
     display: none;
 }
-
-touch-over-layer {
-    border: 2px solid yellow;
-    box-sizing: border-box;
-}
-
-touch-over-layer:hover {
-    border: 2px solid white;
-}
