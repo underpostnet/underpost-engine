@@ -1515,15 +1515,16 @@ s(`.adjacent-link-btn`).onclick = async () => {
 };
 
 s(`.engineMap-generate-macro-map`).onclick = async () => {
+  if (!autoTmiMode) s('.engineMap-set-auto-tmi').click();
   const macroMapDim = 2;
-  const macromaps = [];
+  const macromaps = {};
   for (const y of range(0, macroMapDim)) {
     for (const x of range(0, macroMapDim)) {
-      if (y === 0 && x === 0) continue;
+      // if (y === 0 && x === 0) continue;
       if (random(0, 1) === 1) s('.engineMap-biome-color-city').click();
       else s('.engineMap-biome-deciduous-temperate-forest').click();
       const mapMetaData = {
-        name_map: `m${s4() + s4()}`,
+        name_map: y === 0 && x === 0 ? 'test' : `m${x}-${y}`,
         position: [x, y],
         types: ['pvp', 'pve'],
         safe_cords: [],
@@ -1539,10 +1540,42 @@ s(`.engineMap-generate-macro-map`).onclick = async () => {
           matrix: getCurrentJSONmap(),
         },
       };
-      macromaps.push(body);
-      s('.engineMap-metadata-json-input').value = JSON.stringify(mapMetaData, null, 4);
-      await s('.engineMap-upload').click();
+      if (!macromaps[y]) macromaps[y] = {};
+      macromaps[y][x] = body;
+      // s('.engineMap-metadata-json-input').value = JSON.stringify(mapMetaData, null, 4);
+      // await s('.engineMap-upload').click();
     }
   }
   console.log('macromaps', macromaps);
+  Object.keys(macromaps).map((y, yi) =>
+    Object.keys(macromaps[y]).map((x, xi) => {
+      // right link
+      if (macromaps[yi] && macromaps[yi][xi + 1]) {
+        macromaps[y][x].mapData.matrix.map((my, myi, mya) =>
+          my.map((mx, mxi, mxa) => {
+            if (mxi === mxa.length - 2 && typeof mx === 'object' && mx[0] === 'tmi') {
+              const targetGate = macromaps[yi][xi + 1].mapData.matrix[myi][1];
+              if (typeof targetGate === 'object' && targetGate[0] === 'tmi') {
+                macromaps[y][x].mapData.matrix[myi][mxi + 1] = [
+                  'to-map',
+                  macromaps[yi][xi + 1].mapData.name_map,
+                  'right',
+                  targetGate[1],
+                ];
+              }
+            }
+          })
+        );
+      }
+    })
+  );
+  console.log('macromaps', macromaps);
+
+  for (const row of Object.values(macromaps)) {
+    for (const body of Object.values(row)) {
+      console.log(body.mapData.name_map, body.mapData.position, JSONmatrix(body.mapData.matrix));
+      // const result = await mapServices.upload(body);
+      // renderNotification(result.status, result.data.message);
+    }
+  }
 };
