@@ -125,6 +125,26 @@ const execCssController = (screenDim) => {
      main-menu {
       height: ${screenDim.maxType === 'height' ? screenDim.maxValue * 0.9 : screenDim.minValue * 0.9}px;
      }
+
+     ${
+       screenDim.maxType === 'height'
+         ? /*css*/ `
+         effect-board-direction {
+          width: 100%;
+          height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+          left: 0%;
+          top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+         }
+     `
+         : /*css*/ `
+         effect-board-direction {
+          width:${(screenDim.maxValue - screenDim.minValue) / 2}px;
+          height:  100%;
+          left: 0%;
+          top: 0%;
+         }
+     `
+     }
       
   `
   );

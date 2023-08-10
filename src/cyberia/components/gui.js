@@ -37,6 +37,10 @@ append(
           ${renderSpinner()}
         </loader>
       </touch-layer>
+
+      <effect-board-direction class='fix'>
+
+      </effect-board-direction>
   
       <gui-layer class='abs' style='display: none'>
           ${createAccount()}
