@@ -282,6 +282,40 @@ range(0, 7).map((ti) => {
           break;
       }
     } else {
+      switch (ti) {
+        case 0:
+          element.direction = 'North West';
+          params[element.type][element.id].direction = 'North West';
+          break;
+        case 1:
+          element.direction = 'West';
+          params[element.type][element.id].direction = 'West';
+          break;
+        case 2:
+          element.direction = 'South West';
+          params[element.type][element.id].direction = 'South West';
+          break;
+        case 3:
+          element.direction = 'North East';
+          params[element.type][element.id].direction = 'North East';
+          break;
+        case 4:
+          element.direction = 'East';
+          params[element.type][element.id].direction = 'East';
+          break;
+        case 5:
+          element.direction = 'South East';
+          params[element.type][element.id].direction = 'South East';
+          break;
+        case 6:
+          element.direction = 'South';
+          params[element.type][element.id].direction = 'South';
+          break;
+        case 7:
+          element.direction = 'North';
+          params[element.type][element.id].direction = 'North';
+          break;
+      }
     }
     effect(element);
   };
