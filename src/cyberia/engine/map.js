@@ -1585,6 +1585,42 @@ s(`.engineMap-generate-macro-map`).onclick = async () => {
           })
         );
       }
+      // bot link
+      if (macromaps[yi + 1] && macromaps[yi + 1][xi]) {
+        macromaps[y][x].mapData.matrix.map((my, myi, mya) =>
+          my.map((mx, mxi, mxa) => {
+            if (myi === mya.length - 2 && typeof mx === 'object' && mx[0] === 'tmi') {
+              const targetGate = macromaps[yi + 1][xi].mapData.matrix[1][mxi];
+              if (typeof targetGate === 'object' && targetGate[0] === 'tmi') {
+                macromaps[y][x].mapData.matrix[myi + 1][mxi] = [
+                  'to-map',
+                  macromaps[yi + 1][xi].mapData.name_map,
+                  'down',
+                  targetGate[1],
+                ];
+              }
+            }
+          })
+        );
+      }
+      // top link
+      if (macromaps[yi - 1] && macromaps[yi - 1][xi]) {
+        macromaps[y][x].mapData.matrix.map((my, myi, mya) =>
+          my.map((mx, mxi, mxa) => {
+            if (myi === 1 && typeof mx === 'object' && mx[0] === 'tmi') {
+              const targetGate = macromaps[yi - 1][xi].mapData.matrix[mya.length - 2][mxi];
+              if (typeof targetGate === 'object' && targetGate[0] === 'tmi') {
+                macromaps[y][x].mapData.matrix[myi - 1][mxi] = [
+                  'to-map',
+                  macromaps[yi - 1][xi].mapData.name_map,
+                  'up',
+                  targetGate[1],
+                ];
+              }
+            }
+          })
+        );
+      }
     })
   );
   console.log('macromaps', macromaps);
@@ -1592,8 +1628,8 @@ s(`.engineMap-generate-macro-map`).onclick = async () => {
   for (const row of Object.values(macromaps)) {
     for (const body of Object.values(row)) {
       console.log(body.mapData.name_map, body.mapData.position, JSONmatrix(body.mapData.matrix));
-      // const result = await mapServices.upload(body);
-      // renderNotification(result.status, result.data.message);
+      const result = await mapServices.upload(body);
+      renderNotification(result.status, result.data.message);
     }
   }
 };
