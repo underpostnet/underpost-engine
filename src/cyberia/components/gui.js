@@ -30,9 +30,6 @@ append(
           
       </event-board>
   
-      <map-type-status class='custom-cursor'>
-      </map-type-status>
-  
       <dead-count></dead-count>
   
       <touch-layer class='fix custom-cursor'>
@@ -40,6 +37,15 @@ append(
           ${renderSpinner()}
         </loader>
       </touch-layer>
+
+      <touch-over-layer class='fix tol-0 custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-1 custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-2 custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-3 custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-4 custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-5 custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-6 center custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-7 center custom-cursor'></touch-over-layer>
   
       <gui-layer class='abs' style='display: none'>
           ${createAccount()}
@@ -59,6 +65,9 @@ append(
               </div>
           </div>
       </gui-layer>
+      
+      <map-type-status class='custom-cursor'>
+      </map-type-status>
       
       <div class='fix open-menu custom-cursor hover-button' style='display: none'>
           <div class='abs center'>
@@ -231,3 +240,49 @@ s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   closeGuiSections();
 };
+
+range(0, 7).map((ti) => {
+  s(`.tol-${ti}`).onclick = () => {
+    const screenDim = dimState();
+    const element = elements['user'].find((u) => u.id === socket.id);
+    if (!element) return;
+    if (screenDim.maxType === 'height') {
+      switch (ti) {
+        case 0:
+          element.direction = 'North West';
+          params[element.type][element.id].direction = 'North West';
+          break;
+        case 1:
+          element.direction = 'North';
+          params[element.type][element.id].direction = 'North';
+          break;
+        case 2:
+          element.direction = 'North East';
+          params[element.type][element.id].direction = 'North East';
+          break;
+        case 3:
+          element.direction = 'South West';
+          params[element.type][element.id].direction = 'South West';
+          break;
+        case 4:
+          element.direction = 'South';
+          params[element.type][element.id].direction = 'South';
+          break;
+        case 5:
+          element.direction = 'South East';
+          params[element.type][element.id].direction = 'South East';
+          break;
+        case 6:
+          element.direction = 'East';
+          params[element.type][element.id].direction = 'East';
+          break;
+        case 7:
+          element.direction = 'West';
+          params[element.type][element.id].direction = 'West';
+          break;
+      }
+    } else {
+    }
+    effect(element);
+  };
+});

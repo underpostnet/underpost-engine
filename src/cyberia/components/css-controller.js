@@ -125,6 +125,107 @@ const execCssController = (screenDim) => {
      main-menu {
       height: ${screenDim.maxType === 'height' ? screenDim.maxValue * 0.9 : screenDim.minValue * 0.9}px;
      }
+
+     ${
+       screenDim.maxType === 'height'
+         ? /*css*/ `
+     .tol-0 {
+        width: 33.33%;
+        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        top: 0%;
+        left: 0%;
+     }
+     .tol-1 {
+        width: 33.33%;
+        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        top: 0%;
+        left: 33.33%;
+     }
+     .tol-2 {
+        width: 33.33%;
+        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        top: 0%;
+        left: 66.66%;
+     }
+     .tol-3 {
+        width: 33.3%;
+        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+        left: 0%;
+      }
+      .tol-4 {
+        width: 33.33%;
+        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+        left: 33.33%;
+      }
+      .tol-5 {
+        width: 33.33%;
+        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+        left: 66.66%;
+      }
+      .tol-6 {
+        width: 80px;
+        height: 80px;
+        left: 95%;
+      }
+      .tol-7 {
+        width: 80px;
+        height: 80px;
+        left: 5%;
+      }
+     `
+         : /*css*/ `
+     .tol-0 {
+        left: 0%;
+        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: 33.33%;
+        top: 0%;
+     }
+     .tol-1 {
+        left: 0%;
+        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: 33.33%;
+        top: 33.33%;
+     }
+     .tol-2 {
+        left: 0%;
+        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: 33.33%;
+        top: 66.66%;
+     }
+     .tol-3 {
+        left: ${screenDim.maxValue - (screenDim.maxValue - screenDim.minValue) / 2}px;
+        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: 33.33%;
+        top: 0%;
+     }
+     .tol-4 {
+        left: ${screenDim.maxValue - (screenDim.maxValue - screenDim.minValue) / 2}px;
+        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: 33.33%;
+        top: 33.33%;
+     }
+     .tol-5 {
+        left: ${screenDim.maxValue - (screenDim.maxValue - screenDim.minValue) / 2}px;
+        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: 33.33%;
+        top: 66.66%;
+     }
+     .tol-6 {
+       width: 80px;
+       height: 80px;
+       top: 95%;
+     }
+     .tol-7 {
+       width: 80px;
+       height: 80px;
+       top: 5%;
+     }
+     `
+     }
+      
   `
   );
   Object.keys(logicStorage['css-controller']).map((keyLogic) => logicStorage['css-controller'][keyLogic](screenDim));
