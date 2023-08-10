@@ -1567,6 +1567,24 @@ s(`.engineMap-generate-macro-map`).onclick = async () => {
           })
         );
       }
+      // left link
+      if (macromaps[yi] && macromaps[yi][xi - 1]) {
+        macromaps[y][x].mapData.matrix.map((my, myi, mya) =>
+          my.map((mx, mxi, mxa) => {
+            if (mxi === 1 && typeof mx === 'object' && mx[0] === 'tmi') {
+              const targetGate = macromaps[yi][xi - 1].mapData.matrix[myi][mxa.length - 2];
+              if (typeof targetGate === 'object' && targetGate[0] === 'tmi') {
+                macromaps[y][x].mapData.matrix[myi][mxi - 1] = [
+                  'to-map',
+                  macromaps[yi][xi - 1].mapData.name_map,
+                  'left',
+                  targetGate[1],
+                ];
+              }
+            }
+          })
+        );
+      }
     })
   );
   console.log('macromaps', macromaps);
