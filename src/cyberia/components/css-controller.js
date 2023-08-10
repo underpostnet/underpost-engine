@@ -131,97 +131,129 @@ const execCssController = (screenDim) => {
          ? /*css*/ `
      .tol-0 {
         width: 33.33%;
-        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         top: 0%;
         left: 0%;
      }
      .tol-1 {
         width: 33.33%;
-        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         top: 0%;
         left: 33.33%;
      }
      .tol-2 {
         width: 33.33%;
-        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         top: 0%;
         left: 66.66%;
      }
      .tol-3 {
         width: 33.3%;
-        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
-        top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
+        top: ${
+          screenDim.minValue +
+          (screenDim.maxValue - screenDim.minValue) / 2 +
+          ((screenDim.maxValue - screenDim.minValue) / 2) * 0.4
+        }px;
         left: 0%;
       }
       .tol-4 {
         width: 33.33%;
-        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
-        top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
+        top: ${
+          screenDim.minValue +
+          (screenDim.maxValue - screenDim.minValue) / 2 +
+          ((screenDim.maxValue - screenDim.minValue) / 2) * 0.4
+        }px;
         left: 33.33%;
       }
       .tol-5 {
         width: 33.33%;
-        height: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
-        top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+        height: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
+        top: ${
+          screenDim.minValue +
+          (screenDim.maxValue - screenDim.minValue) / 2 +
+          ((screenDim.maxValue - screenDim.minValue) / 2) * 0.4
+        }px;
         left: 66.66%;
       }
       .tol-6 {
-        width: 80px;
-        height: 80px;
-        left: 95%;
+        width: 33.33%;
+        height: ${
+          (screenDim.maxValue - screenDim.minValue) / 2 - ((screenDim.maxValue - screenDim.minValue) / 2) * 0.6
+        }px;
+        top: ${screenDim.minValue + (screenDim.maxValue - screenDim.minValue) / 2}px;
+        left: 66.66%;
       }
       .tol-7 {
-        width: 80px;
-        height: 80px;
-        left: 5%;
+        width: 33.33%;
+        height: ${
+          (screenDim.maxValue - screenDim.minValue) / 2 - ((screenDim.maxValue - screenDim.minValue) / 2) * 0.6
+        }px;
+        top: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
+        left: 0%;
       }
      `
          : /*css*/ `
      .tol-0 {
         left: 0%;
-        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         height: 33.33%;
         top: 0%;
      }
      .tol-1 {
         left: 0%;
-        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         height: 33.33%;
         top: 33.33%;
      }
      .tol-2 {
         left: 0%;
-        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         height: 33.33%;
         top: 66.66%;
      }
      .tol-3 {
-        left: ${screenDim.maxValue - (screenDim.maxValue - screenDim.minValue) / 2}px;
-        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        left: ${
+          screenDim.maxValue -
+          (screenDim.maxValue - screenDim.minValue) / 2 +
+          ((screenDim.maxValue - screenDim.minValue) / 2) * 0.4
+        }px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         height: 33.33%;
         top: 0%;
      }
      .tol-4 {
-        left: ${screenDim.maxValue - (screenDim.maxValue - screenDim.minValue) / 2}px;
-        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        left: ${
+          screenDim.maxValue -
+          (screenDim.maxValue - screenDim.minValue) / 2 +
+          ((screenDim.maxValue - screenDim.minValue) / 2) * 0.4
+        }px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         height: 33.33%;
         top: 33.33%;
      }
      .tol-5 {
-        left: ${screenDim.maxValue - (screenDim.maxValue - screenDim.minValue) / 2}px;
-        width: ${(screenDim.maxValue - screenDim.minValue) / 2}px;
+        left: ${
+          screenDim.maxValue -
+          (screenDim.maxValue - screenDim.minValue) / 2 +
+          ((screenDim.maxValue - screenDim.minValue) / 2) * 0.4
+        }px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
         height: 33.33%;
         top: 66.66%;
      }
      .tol-6 {
-       width: 80px;
-       height: 80px;
-       top: 95%;
+        left: ${screenDim.maxValue - (screenDim.maxValue - screenDim.minValue) / 2}px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.4}px;
+        height: 33.33%;
+        top: 66.66%;
      }
      .tol-7 {
-       width: 80px;
-       height: 80px;
-       top: 5%;
+        left: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.6}px;
+        width: ${((screenDim.maxValue - screenDim.minValue) / 2) * 0.4}px;
+        height: 33.33%;
+        top: 0%;
      }
      `
      }

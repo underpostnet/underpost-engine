@@ -44,8 +44,8 @@ append(
       <touch-over-layer class='fix tol-3 custom-cursor'></touch-over-layer>
       <touch-over-layer class='fix tol-4 custom-cursor'></touch-over-layer>
       <touch-over-layer class='fix tol-5 custom-cursor'></touch-over-layer>
-      <touch-over-layer class='fix tol-6 center custom-cursor'></touch-over-layer>
-      <touch-over-layer class='fix tol-7 center custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-6 custom-cursor'></touch-over-layer>
+      <touch-over-layer class='fix tol-7 custom-cursor'></touch-over-layer>
   
       <gui-layer class='abs' style='display: none'>
           ${createAccount()}
