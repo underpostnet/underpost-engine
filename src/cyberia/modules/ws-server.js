@@ -936,6 +936,7 @@ const wsServer = (httpServer, app, internalApi) => {
               type: 'duplicate-user-delete',
             });
             duplicateUserClient.emit('event', emitEvent);
+            duplicateUserClient.disconnect(true);
           }
         }
       } else if (!eventObj.path) eventObj.path = '';
@@ -1254,6 +1255,7 @@ const wsServer = (httpServer, app, internalApi) => {
       }
       clients.map((client) => {
         const clientIndex = elements[type].findIndex((element) => element.id === client.id);
+        if (!elements[type][clientIndex]) return;
         if (elements[type][clientIndex].map === elements[type][elementIndex].map)
           client.emit('close', JSON.stringify({ id: socket.id, type }));
       });

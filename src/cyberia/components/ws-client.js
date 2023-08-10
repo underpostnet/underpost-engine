@@ -4,6 +4,7 @@ const pixi = {};
 const params = {};
 const hashIntervals = {};
 let changeMapsPoints = [];
+let duplicateUserClient = false;
 let mapMetaData = {
   types: ['pve', 'pvp'],
 };
@@ -14,7 +15,7 @@ const initDemon = () => {
     currentDemonHash = `demon-${s4()}-${s4()}`;
     const friceDemonHash = `${currentDemonHash}`;
     setTimeout(() => {
-      if (periodLoad && friceDemonHash === currentDemonHash) location.reload();
+      if (periodLoad && friceDemonHash === currentDemonHash && !duplicateUserClient) location.reload();
     }, 5000);
   }
 };
@@ -58,7 +59,7 @@ socket.on('disconnect', (reason) => {
   // console.log(`socket.io event: disconnect | reason: ${reason}`);
   // setTimeout(() => location.reload(), 2000);
   resetsElements();
-  if (dev) setTimeout(() => location.reload(), 20000);
+  if (dev && !duplicateUserClient) setTimeout(() => location.reload(), 20000);
 });
 
 let userPositionAvailablePoints = [];
@@ -256,7 +257,8 @@ socket.on('event', (...args) => {
       renderDeadCount(eventElement);
       break;
     case 'duplicate-user-delete':
-      socket.disconnect();
+      // socket.disconnect();
+      duplicateUserClient = true;
       htmls(
         'body',
         /*html*/ `
