@@ -750,6 +750,23 @@ event-board {
 }
 
 effect-board-direction {
-    border: 2px solid yellow;
+    /* border: 2px solid yellow; */
     box-sizing: border-box;
+}
+
+.row-board-direction {
+    height: 33.33%;
+}
+
+.cell-board-direction {
+    height: 100%;
+    width: 33.33%;
+    border: 2px solid yellow;
+    color: yellow;
+    box-sizing: border-box;
+}
+
+.cell-board-direction:hover {
+    border: 2px solid white;
+    color: white;
 }

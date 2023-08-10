@@ -39,7 +39,57 @@ append(
       </touch-layer>
 
       <effect-board-direction class='fix'>
-
+            <div class='fl row-board-direction'>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      ↖
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      ↑
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      ↗
+                    </div>
+              </div>
+            </div>
+            <div class='fl row-board-direction'>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      ←
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      *
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      →
+                    </div>
+              </div>
+            </div>
+            <div class='fl row-board-direction'>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      ↙
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                     ↓
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction'>
+                    <div class='abs center'>
+                      ↘
+                    </div>
+              </div>
+            </div>
       </effect-board-direction>
   
       <gui-layer class='abs' style='display: none'>
