@@ -40,53 +40,53 @@ append(
 
       <effect-board-direction class='fix'>
             <div class='fl row-board-direction'>
-              <div class='in fll cell-board-direction'>
+              <div class='in fll cell-board-direction custom-cursor cbd-0'>
                     <div class='abs center'>
-                      ↖
+                        <img class='inl effect-arrow' src='/images/effect-arrows/0.png'>
                     </div>
               </div>
-              <div class='in fll cell-board-direction'>
+              <div class='in fll cell-board-direction custom-cursor cbd-1'>
                     <div class='abs center'>
-                      ↑
+                        <img class='inl effect-arrow' src='/images/effect-arrows/1.png'>
                     </div>
               </div>
-              <div class='in fll cell-board-direction'>
+              <div class='in fll cell-board-direction custom-cursor cbd-2'>
                     <div class='abs center'>
-                      ↗
-                    </div>
-              </div>
-            </div>
-            <div class='fl row-board-direction'>
-              <div class='in fll cell-board-direction'>
-                    <div class='abs center'>
-                      ←
-                    </div>
-              </div>
-              <div class='in fll cell-board-direction'>
-                    <div class='abs center'>
-                      *
-                    </div>
-              </div>
-              <div class='in fll cell-board-direction'>
-                    <div class='abs center'>
-                      →
+                        <img class='inl effect-arrow' src='/images/effect-arrows/2.png'>
                     </div>
               </div>
             </div>
             <div class='fl row-board-direction'>
-              <div class='in fll cell-board-direction'>
+              <div class='in fll cell-board-direction custom-cursor cbd-3'>
                     <div class='abs center'>
-                      ↙
+                      <img class='inl effect-arrow' src='/images/effect-arrows/3.png'>
                     </div>
               </div>
-              <div class='in fll cell-board-direction'>
+              <div class='in fll cell-board-direction custom-cursor cbd-4'>
                     <div class='abs center'>
-                     ↓
+                       SKILL
                     </div>
               </div>
-              <div class='in fll cell-board-direction'>
+              <div class='in fll cell-board-direction custom-cursor cbd-5'>
                     <div class='abs center'>
-                      ↘
+                      <img class='inl effect-arrow' src='/images/effect-arrows/5.png'>
+                    </div>
+              </div>
+            </div>
+            <div class='fl row-board-direction'>
+              <div class='in fll cell-board-direction custom-cursor cbd-6'>
+                    <div class='abs center'>
+                      <img class='inl effect-arrow' src='/images/effect-arrows/6.png'>
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction custom-cursor cbd-7'>
+                    <div class='abs center'>
+                      <img class='inl effect-arrow' src='/images/effect-arrows/7.png'>
+                    </div>
+              </div>
+              <div class='in fll cell-board-direction custom-cursor cbd-8'>
+                    <div class='abs center'>
+                      <img class='inl effect-arrow' src='/images/effect-arrows/8.png'>
                     </div>
               </div>
             </div>
@@ -285,3 +285,40 @@ s('.close-gui').onclick = () => {
   s('gui-layer').style.display = 'none';
   closeGuiSections();
 };
+
+range(0, 8).map((ti) => {
+  s(`.cbd-${ti}`).onclick = () => {
+    const element = elements['user'].find((e) => e.id === socket.id);
+    if (!element) return;
+    switch (ti) {
+      case 0:
+        element.direction = 'North West';
+        break;
+      case 1:
+        element.direction = 'North';
+        break;
+      case 2:
+        element.direction = 'North East';
+        break;
+      case 3:
+        element.direction = 'West';
+        break;
+      case 4:
+        break;
+      case 5:
+        element.direction = 'East';
+        break;
+      case 6:
+        element.direction = 'South West';
+        break;
+      case 7:
+        element.direction = 'South';
+        break;
+      case 8:
+        element.direction = 'South East';
+        break;
+    }
+    effect(element);
+    renderPixiEventElement(element);
+  };
+});
