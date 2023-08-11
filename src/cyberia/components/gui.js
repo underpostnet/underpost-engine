@@ -41,53 +41,53 @@ append(
       <effect-board-direction class='fix'>
             <div class='fl row-board-direction'>
               <div class='in fll cell-board-direction custom-cursor cbd-0'>
-                    <div class='abs center'>
-                        <img class='inl effect-arrow' src='/images/effect-arrows/0.png'>
-                    </div>
+
+                        <img class='abs center effect-arrow' src='/images/effect-arrows/0.png'>
+                    
               </div>
               <div class='in fll cell-board-direction custom-cursor cbd-1'>
-                    <div class='abs center'>
-                        <img class='inl effect-arrow' src='/images/effect-arrows/1.png'>
-                    </div>
+
+                        <img class='abs center effect-arrow' src='/images/effect-arrows/1.png'>
+                   
               </div>
               <div class='in fll cell-board-direction custom-cursor cbd-2'>
-                    <div class='abs center'>
-                        <img class='inl effect-arrow' src='/images/effect-arrows/2.png'>
-                    </div>
+
+                        <img class='abs center effect-arrow' src='/images/effect-arrows/2.png'>
+                   
               </div>
             </div>
             <div class='fl row-board-direction'>
               <div class='in fll cell-board-direction custom-cursor cbd-3'>
-                    <div class='abs center'>
-                      <img class='inl effect-arrow' src='/images/effect-arrows/3.png'>
-                    </div>
+
+                      <img class='abs center effect-arrow' src='/images/effect-arrows/3.png'>
+                   
               </div>
               <div class='in fll cell-board-direction custom-cursor cbd-4'>
-                    <div class='abs center'>
-                       SKILL
-                    </div>
+
+                               <!-- CENTER -->
+              
               </div>
               <div class='in fll cell-board-direction custom-cursor cbd-5'>
-                    <div class='abs center'>
-                      <img class='inl effect-arrow' src='/images/effect-arrows/5.png'>
-                    </div>
+
+                      <img class='abs center effect-arrow' src='/images/effect-arrows/5.png'>
+                    
               </div>
             </div>
             <div class='fl row-board-direction'>
               <div class='in fll cell-board-direction custom-cursor cbd-6'>
-                    <div class='abs center'>
-                      <img class='inl effect-arrow' src='/images/effect-arrows/6.png'>
-                    </div>
+
+                      <img class='abs center effect-arrow' src='/images/effect-arrows/6.png'>
+                   
               </div>
               <div class='in fll cell-board-direction custom-cursor cbd-7'>
-                    <div class='abs center'>
-                      <img class='inl effect-arrow' src='/images/effect-arrows/7.png'>
-                    </div>
+
+                      <img class='abs center effect-arrow' src='/images/effect-arrows/7.png'>
+                  
               </div>
               <div class='in fll cell-board-direction custom-cursor cbd-8'>
-                    <div class='abs center'>
-                      <img class='inl effect-arrow' src='/images/effect-arrows/8.png'>
-                    </div>
+
+                      <img class='abs center effect-arrow' src='/images/effect-arrows/8.png'>
+                   
               </div>
             </div>
       </effect-board-direction>
@@ -221,6 +221,8 @@ append(
   
   `
 );
+
+dragDrop('effect-board-direction');
 
 let guiSections = [
   'create-account',

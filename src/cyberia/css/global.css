@@ -750,8 +750,12 @@ event-board {
 }
 
 effect-board-direction {
-    /* border: 2px solid yellow; */
-    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    bottom: 10px;
+    left: 10px;
 }
 
 .row-board-direction {
@@ -761,7 +765,7 @@ effect-board-direction {
 .cell-board-direction {
     height: 100%;
     width: 33.33%;
-    color: yellow;
+    text-align: center;
 }
 
 .effect-arrow {
