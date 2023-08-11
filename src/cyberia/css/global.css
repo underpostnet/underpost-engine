@@ -751,7 +751,6 @@ event-board {
 
 effect-board-direction {
     background: rgba(0, 0, 0, 0.7);
-    border-radius: 50%;
     width: 150px;
     height: 150px;
     bottom: 10px;
