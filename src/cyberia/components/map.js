@@ -1,6 +1,7 @@
 let originRangeMapView;
 let originMapMetaDataPosition;
-let positionGlobalMapView = [1, 1];
+const factorMacroDim = parseInt(macroMapDim / 2);
+let positionGlobalMapView = [factorMacroDim, factorMacroDim];
 const updateOriginMapPosition = () => {
   originMapMetaDataPosition = newInstance(mapMetaData.position);
   mapMetaData.position = positionGlobalMapView;

@@ -464,6 +464,7 @@ const ssrWS = `
     const characterSlots = ${JSONweb(characterSlots)};
     const skillTypes = ${JSONweb(skillTypes)};
     let rangeMapView = ${JSONweb(rangeMapView)};
+    const macroMapDim = ${process.env.MACRO_MAP_DIM};
 `;
 
 const rebirdElement = (clients, element, internalApi) => {
@@ -550,6 +551,8 @@ const effect = (clients, eventElement, map, targets, internalApi) => {
       });
       targets.map((type) =>
         elements[type].map((element) => {
+          // TODO: ERROR
+          if (!element.render) return;
           if (
             validateCollision(element.render, {
               dim: ceil10(bullet.render.dim),

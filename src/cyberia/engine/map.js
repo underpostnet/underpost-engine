@@ -1516,7 +1516,8 @@ s(`.adjacent-link-btn`).onclick = async () => {
 
 s(`.engineMap-generate-macro-map`).onclick = async () => {
   if (!autoTmiMode) s('.engineMap-set-auto-tmi').click();
-  const macroMapDim = 2;
+  // const macroMapDim = 6;
+  disabledReload = true;
   const macromaps = {};
   for (const y of range(0, macroMapDim)) {
     for (const x of range(0, macroMapDim)) {
@@ -1632,4 +1633,5 @@ s(`.engineMap-generate-macro-map`).onclick = async () => {
       renderNotification(result.status, result.data.message);
     }
   }
+  disabledReload = false;
 };
