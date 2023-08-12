@@ -37,6 +37,9 @@ append(
           ${renderSpinner()}
         </loader>
       </touch-layer>
+      
+      <map-type-status class='custom-cursor'>
+      </map-type-status>
 
       <effect-board-direction class='fix'>
             <div class='fl row-board-direction'>
@@ -110,9 +113,7 @@ append(
               </div>
           </div>
       </gui-layer>
-      
-      <map-type-status class='custom-cursor'>
-      </map-type-status>
+
       
       <div class='fix open-menu custom-cursor hover-button' style='display: none'>
           <div class='abs center'>
