@@ -28,7 +28,11 @@ const dir = './public/' + nameApp;
 const keywords = 'cyberia, MMORPG, browser, free, MMO';
 const microdata = JSON.parse(fs.readFileSync(`./src/${nameApp}/assets/microdata.json`, 'utf8'));
 
-const fxEngineRender = fs.readFileSync(`./src/${nameApp}/engine/map.js`, 'utf8');
+const fxEngineRender = `
+${fs.readFileSync(`./src/${nameApp}/engine/map.js`, 'utf8')}
+${fs.readFileSync(`./src/${nameApp}/engine/avatar.js`, 'utf8')}
+`;
+
 const userRender = (req, res) => {
   try {
     if (req.user && req.user.admin === true) {

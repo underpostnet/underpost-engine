@@ -223,7 +223,8 @@ append(
   `
 );
 
-dragDrop('effect-board-direction');
+// dragDrop('effect-board-direction');
+s('effect-board-direction').style.display = 'none';
 
 let guiSections = [
   'create-account',
