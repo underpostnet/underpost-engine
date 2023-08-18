@@ -1,21 +1,22 @@
-if (!logicStorage['logout']['engineAvatar'])
-  logicStorage['logout']['engineAvatar'] = () => {
-    s('.btn-avatar-graphics-engine').remove();
-    s('avatar-graphics-engine').remove();
-    guiSections = guiSections.filter((g) => g !== 'avatar-graphics-engine');
-    intanceMenuBtns();
-    // logicStorage['logout']['engineAvatar'] = undefined;
-    // delete logicStorage['logout']['engineAvatar'];
-    // logicStorage['css-controller']['engineAvatar'] = undefined;
-    // delete logicStorage['css-controller']['engineAvatar'];
-    // logicStorage['key-down']['engineAvatar'] = undefined;
-    // delete logicStorage['key-down']['engineAvatar'];
-  };
+(function () {
+  if (!logicStorage['logout']['engineAvatar'])
+    logicStorage['logout']['engineAvatar'] = () => {
+      s('.btn-avatar-graphics-engine').remove();
+      s('avatar-graphics-engine').remove();
+      guiSections = guiSections.filter((g) => g !== 'avatar-graphics-engine');
+      intanceMenuBtns();
+      // logicStorage['logout']['engineAvatar'] = undefined;
+      // delete logicStorage['logout']['engineAvatar'];
+      // logicStorage['css-controller']['engineAvatar'] = undefined;
+      // delete logicStorage['css-controller']['engineAvatar'];
+      // logicStorage['key-down']['engineAvatar'] = undefined;
+      // delete logicStorage['key-down']['engineAvatar'];
+    };
 
-guiSections.push('avatar-graphics-engine');
-append(
-  'common-menu',
-  /*html*/ `
+  guiSections.push('avatar-graphics-engine');
+  append(
+    'common-menu',
+    /*html*/ `
 
 <menu-button class='in custom-cursor btn-avatar-graphics-engine'>
     <div class='abs center'>
@@ -24,11 +25,11 @@ append(
 </menu-button>
 
 `
-);
+  );
 
-prepend(
-  'gui-layer',
-  /*html*/ `
+  prepend(
+    'gui-layer',
+    /*html*/ `
   
     <avatar-graphics-engine style='display: none'>
       <style>
@@ -40,6 +41,7 @@ prepend(
     </avatar-graphics-engine>
   
   `
-);
+  );
 
-intanceMenuBtns();
+  intanceMenuBtns();
+})();
