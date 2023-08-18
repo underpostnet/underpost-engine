@@ -55,23 +55,23 @@ row {
     display: flex;
 }
 
-.g-center {
+.col-center {
     justify-content: center;
 }
 
-.g-end {
+.col-end {
     justify-content: flex-end;
 }
 
-.g-start {
+.col-start {
     justify-content: flex-start;
 }
 
-.g-sa {
+.col-sa {
     justify-content: space-around;
 }
 
-.g-sb {
+.col-sb {
     justify-content: space-between;
 }
 
