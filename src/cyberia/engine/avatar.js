@@ -46,6 +46,15 @@
           width: 100px;
           padding: 0px;
         }
+        .engineAvatar-cell {
+          box-sizing: border-box;
+          border: 2px solid yellow;
+          width: 18px;
+          height: 18px;
+        }
+        .engineAvatar-cell:hover {
+          border: 2px solid white;
+        }
       </style>
       <sub-content-gui class='in'>
             <div class='in title-section'>Avatar Engine</div>
@@ -56,6 +65,9 @@
                   copy current hex color
               </button>
             </div>
+
+            <avatar-engine-grid class='in'>
+            </avatar-engine-grid> 
       </sub-content-gui>
   
     </avatar-graphics-engine>
@@ -70,4 +82,21 @@
     await copyData(s('.engineAvatar-input-color').value);
     renderNotification('success', 'hex color to clipboard');
   };
+
+  const renderGridAvatarEngine = () => {
+    const avatarEngineDim = 29;
+    let render = '';
+    range(0, avatarEngineDim).map((y) => {
+      render += /*html*/ `<div class='fl'>`;
+      range(0, avatarEngineDim).map((x) => {
+        render += /*html*/ `
+            <div class='in fll engineAvatar-cell custom-cursor'>
+            </div>
+        `;
+      });
+      render += /*html*/ `</div>`;
+    });
+    htmls('avatar-engine-grid', render);
+  };
+  renderGridAvatarEngine();
 })();
