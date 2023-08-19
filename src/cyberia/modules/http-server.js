@@ -30,7 +30,7 @@ const microdata = JSON.parse(fs.readFileSync(`./src/${nameApp}/assets/microdata.
 
 const fxEngineRender = `
 ${fs.readFileSync(`./src/${nameApp}/engine/map.js`, 'utf8')}
-${fs.readFileSync(`./src/${nameApp}/engine/avatar.js`, 'utf8')}
+${fs.readFileSync(`./src/${nameApp}/engine/object.js`, 'utf8')}
 `;
 
 const userRender = (req, res) => {
