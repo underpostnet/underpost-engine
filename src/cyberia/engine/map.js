@@ -285,7 +285,7 @@
         width: 100%;
         height: 100%;
       }
-      .engineMap-content-util-color-board {
+      .engineMap-content-tools-board {
         top: 10px;
         left: 56px;
         /* background: black; */
@@ -306,7 +306,7 @@
     
     <div class='in engineMap-content-menu'>
       <div class='in engineMap-content-top-menu'>
-        <div class='fix engineMap-content-util-color-board custom-cursor'>
+        <div class='fix engineMap-content-tools-board custom-cursor'>
           <input type='color' class='inl engineMap-input-color'>
           <button class='inl custom-cursor engineMap-btn engineMap-copy-current-hex-color'>
               copy current hex color
@@ -575,7 +575,7 @@
 
   intanceMenuBtns();
 
-  dragDrop(`.engineMap-content-util-color-board`);
+  dragDrop(`.engineMap-content-tools-board`);
 
   const changeSizeCell = () => (currentSizeCell = s('.engineMap-size-paint').value - 1);
 
