@@ -371,6 +371,8 @@ const decimalAdjust = (type, value, exp) => {
   // https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Math/round
 };
 
+const floatFixed = (v, d) => parseFloat(v).toFixed(d);
+
 // Decimal round
 
 const round10 = (value, exp) => {
@@ -452,6 +454,7 @@ const commonFunctions = () => `
     const renderLang = ${renderLang};
     const passwordMatchValidator = ${passwordMatchValidator};
     const JSONweb = ${JSONweb};
+    const floatFixed = ${floatFixed};
     ${merge};
     ${objectEquals};
     ${getJoystickDirection};
@@ -490,4 +493,5 @@ export {
   JSONweb,
   objectEquals,
   getJoystickDirection,
+  floatFixed,
 };

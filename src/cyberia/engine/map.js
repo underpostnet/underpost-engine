@@ -332,8 +332,85 @@
            set auto tmi <span style='color: red'>off</span>
           </button>
 
+          <button class='inl engineMap-btn custom-cursor engineMap-copy'>
+            copy
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-paste'>
+            paste
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-clean'>
+            clean
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-png'>
+            download png
+          </button>
+          <button class='inl engineMap-btn custom-cursor engineMap-svg'>
+            download svg
+          </button>
+          <div class='in'>
+            size <input type='number' class='inl engineMap-size-paint' value=${currentSizeCell + 1}>
+          </div> 
+
           <div class='inl engineMap-engine-content'>
-            <div class='inl engineMap-engine-content-title'>biome engine</div>
+            <div class='in engineMap-engine-content-title'>solid json</div>
+            <div class='in'>
+                <button class='inl engineMap-btn custom-cursor engineMap-copy-solid-json'>
+                  copy
+                </button>
+            
+                <button class='inl engineMap-btn custom-cursor engineMap-load-solid-json'>
+                  load 
+                </button>
+                <div class='in engineMap-json-display'></div>
+              </div>
+          </div>
+
+          <div class='inl engineMap-engine-content'>
+            <button class='inl engineMap-btn custom-cursor engineMap-upload'>
+              upload map
+            </button>
+            <textarea class='engineMap-metadata-json-input' rows='7' cols='50'>
+{
+  "name_map": "or56m",
+  "position": [5, 3],
+  "types": ["pvp", "pve"],
+  "safe_cords": []
+}
+            </textarea>
+          </div>
+          <div class='inl engineMap-engine-content'>
+              name map
+            <input type='text' class='engineMap-input-name-map-load'>
+            <button class='inl engineMap-btn custom-cursor engineMap-load-map'>
+              load map
+            </button>
+          </div>
+          <div class='inl engineMap-engine-content'>
+            <div class='in engineMap-engine-content-title'>color json</div>
+            <div class='in'>
+              <button class='inl engineMap-btn custom-cursor engineMap-copy-color-json'>
+                copy
+              </button>
+              <button class='inl engineMap-btn custom-cursor engineMap-load-color-json'>
+                load
+              </button>
+            </div>
+          </div>
+          <div class='inl engineMap-engine-content'>
+              <div class='in engineMap-engine-content-title'>object engine</div>
+              <button class='inl engineMap-btn custom-cursor engineMap-object-quadrant'>
+                quadrant object <span style='color: red'>off</span>
+              </button>
+              <button class='inl engineMap-btn custom-cursor engineMap-clean-object'>
+                clean object <span style='color: red'>off</span>
+              </button>
+                json
+              <input type='text'  class='inl engineMap-json-object'>
+          </div>
+
+
+          <div class='inl engineMap-engine-content'>
+              <div class='inl engineMap-engine-content-title'>biome engine</div>
               <button class='inl engineMap-btn custom-cursor engineMap-gen-biome'>
                   test
               </button>
@@ -343,111 +420,9 @@
               <button class='inl engineMap-btn custom-cursor engineMap-biome-color-city'>
                   color city
               </button>
-            </div>
           </div>
 
-        </div>
-        <button class='inl engineMap-btn custom-cursor engineMap-copy'>
-          copy
-        </button>
-        <button class='inl engineMap-btn custom-cursor engineMap-paste'>
-          paste
-        </button>
-        <button class='inl engineMap-btn custom-cursor engineMap-clean'>
-          clean
-        </button>
-        <button class='inl engineMap-btn custom-cursor engineMap-png'>
-          download png
-        </button>
-        <button class='inl engineMap-btn custom-cursor engineMap-svg'>
-          download svg
-        </button>
-        <div class='in'>
-          size <input type='number' class='inl engineMap-size-paint' value=${currentSizeCell + 1}>
-        </div> 
-      </div>
-      <div class='inl engineMap-engine-content'>
-        <div class='in engineMap-engine-content-title'>solid json</div>
-        <div class='in'>
-            <button class='inl engineMap-btn custom-cursor engineMap-copy-solid-json'>
-              copy
-            </button>
-        
-            <button class='inl engineMap-btn custom-cursor engineMap-load-solid-json'>
-              load 
-            </button>
-            <div class='in engineMap-json-display'></div>
-          </div>
-      </div>
-      
-      <div class='inl engineMap-engine-content'>
-          <button class='inl engineMap-btn custom-cursor engineMap-upload'>
-            upload map
-          </button>
-          <textarea class='engineMap-metadata-json-input' rows='7' cols='50'>
-{
-  "name_map": "or56m",
-  "position": [5, 3],
-  "types": ["pvp", "pve"],
-  "safe_cords": []
-}
-          </textarea>
-        </div>
-      <div class='inl engineMap-engine-content'>
-           name map
-          <input type='text' class='engineMap-input-name-map-load'>
-          <button class='inl engineMap-btn custom-cursor engineMap-load-map'>
-            load map
-          </button>
-      </div>
-      <div class='inl engineMap-engine-content'>
-        <div class='in engineMap-engine-content-title'>color json</div>
-        <div class='in'>
-          <button class='inl engineMap-btn custom-cursor engineMap-copy-color-json'>
-            copy
-          </button>
-          <button class='inl engineMap-btn custom-cursor engineMap-load-color-json'>
-            load
-          </button>
-        </div>
-      </div>
-      <div class='inl engineMap-engine-content'>
-          <div class='in engineMap-engine-content-title'>object engine</div>
-          <button class='inl engineMap-btn custom-cursor engineMap-object-quadrant'>
-            quadrant object <span style='color: red'>off</span>
-          </button>
-          <button class='inl engineMap-btn custom-cursor engineMap-clean-object'>
-            clean object <span style='color: red'>off</span>
-          </button>
-            json
-          <input type='text'  class='inl engineMap-json-object'>
-      </div>
-      <div class='in engineMap-engine-content'>
-        <div class='in'>
-          name map <input type='text' class='adjacent-link-input'>
-          <button class='inl engineMap-btn custom-cursor adjacent-link-btn'>load</button>
-          <button class='inl engineMap-btn custom-cursor engineMap-set-origin-gate'>
-            set origin gate <span style='color: red'>off</span>
-          </button>
-          <pre class='in info-adj-map-click'>
-          </pre>
-          <pre class='in gate-terminal-json-info'>
-          </pre>
-        </div>
-        <div class='fl'>
-          ${range(1, 9)
-            .map(
-              (i) => /*html*/ `
-              <adjancen-map-link class='in fll'>
-                  <img class='abs adjancen-map-link-img adjancen-map-link-img-${i}' style='display: none'>
-                  ${adjMapEngineIndex.includes(i) ? renderAjcLinkGrid(i) : ''}
-              </adjancen-map-link>
-          `
-            )
-            .join('')}
-        </div>          
-      </div>
-      <div class='in engineMap-engine-content'>
+          <div class='in engineMap-engine-content'>
       <div class='in engineMap-engine-content-title'>adjacent map engine</div>
         <div class='in'>
           name map <input type='text' class='inl engineMap-name-adjacent-map'>
@@ -558,7 +533,37 @@
         <br><br>
       </div>
     </div>
-   
+
+      </div>
+    </div>      
+  </div>
+
+    <div class='in engineMap-engine-content'>
+      <div class='in'>
+        name map <input type='text' class='adjacent-link-input'>
+        <button class='inl engineMap-btn custom-cursor adjacent-link-btn'>load</button>
+        <button class='inl engineMap-btn custom-cursor engineMap-set-origin-gate'>
+          set origin gate <span style='color: red'>off</span>
+        </button>
+        <pre class='in info-adj-map-click'>
+        </pre>
+        <pre class='in gate-terminal-json-info'>
+        </pre>
+      </div>
+      <div class='fl'>
+        ${range(1, 9)
+          .map(
+            (i) => /*html*/ `
+            <adjancen-map-link class='in fll'>
+                <img class='abs adjancen-map-link-img adjancen-map-link-img-${i}' style='display: none'>
+                ${adjMapEngineIndex.includes(i) ? renderAjcLinkGrid(i) : ''}
+            </adjancen-map-link>
+        `
+          )
+          .join('')}
+      </div>          
+    </div>
+
     <engineMap-grid class='in custom-cursor'></engineMap-grid>
     <br><br>
 
@@ -781,6 +786,7 @@
                         range(0, engineMapCellPixelFactor - 1).map((sumY) => {
                           if (!globalSolidStorage[baseX + sumX]) globalSolidStorage[baseX + sumX] = {};
                           globalSolidStorage[baseX + sumX][baseY + sumY] = solidMode;
+                          globalMapObjectStorage[baseX + sumX][baseY + sumY] = solidMode;
                         })
                       );
                     }
