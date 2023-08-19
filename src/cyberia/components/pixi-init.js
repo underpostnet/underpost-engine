@@ -207,7 +207,7 @@ const renderPixiInitElement = (element) => {
             element.koyn - params[type][element.id].lastKoyn
           }</span><img src='/icons/50x50/koyn.gif' class='inl icon-board-img'> ] koyns.
           `;
-          renderEventBoard(/*html*/ { tag: 'KOYN', msg, history: true });
+          renderEventBoard({ tag: 'KOYN', msg, history: true });
           if (s('.bag-koyn-indicator')) htmls('.bag-koyn-indicator', getK(element.koyn));
           if (s('.modal-count-koyn')) htmls('.modal-count-koyn', getK(element.koyn));
           params[type][element.id].lastKoyn = newInstance(element.koyn);

@@ -89,7 +89,7 @@ const renderMapsQuests = () => {
   setNotiContentMap();
   htmls(
     'map-quests-render',
-    /*html*/ mapMetaData.quests
+    mapMetaData.quests
       .map((questData) => {
         if (!elements['user'].find((e) => e.id === socket.id).successQuests.includes(questData.id))
           renderNotiCircleQuests();
